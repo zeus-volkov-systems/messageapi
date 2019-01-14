@@ -26,7 +26,7 @@ public class PathUtils {
         String returnPath;
         switch (EnvUtils.getOS()) {
             case "osx":
-                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/groovy/test", "");
                 replaceMain = replaceLast(replaceTest, "/classes/java/main", "");
                 returnPath = path.replace("{}", replaceMain);
                 return returnPath;

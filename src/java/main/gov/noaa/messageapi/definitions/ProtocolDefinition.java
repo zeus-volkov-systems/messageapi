@@ -2,8 +2,11 @@ package gov.noaa.messageapi.definitions;
 
 import java.util.Map;
 import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
 
-import gov.noaa.messageapi.parsers.ProtocolDefinitionParser;
+import gov.noaa.messageapi.parsers.protocols.MetadataParser;
+import gov.noaa.messageapi.parsers.protocols.ConnectionParser;
 
 /**
  * A protocol definition holds the definition of a protocol. It essentially
@@ -15,14 +18,35 @@ import gov.noaa.messageapi.parsers.ProtocolDefinitionParser;
  */
 public class ProtocolDefinition {
 
-    public List<Map<String,Object>> connectionMaps = null;
+    private Map<String,Object> metadataMap = null;
+    private List<Map<String,Object>> connectionMaps = null;
 
-    public ProtocolDefinition(String spec) throws Exception {
-        parseProtocolDefinitionSpec(spec);
+    public ProtocolDefinition(Map<String,Object> properties) throws Exception {
+        parseMetadataSpec((String) properties.get("metadata"));
+        parseConnectionSpec((String) properties.get("connections"));
     }
 
-    private void parseProtocolDefinitionSpec(String spec) throws Exception {
-        this.connectionMaps = new ProtocolDefinitionParser(spec).getConnectionMaps();
+    public ProtocolDefinition(ProtocolDefinition definition) {
+        this.metadataMap = new HashMap<String,Object>(definition.getMetadataMap());
+        this.connectionMaps = new ArrayList<Map<String,Object>>(definition.getConnectionMaps());
+    }
+
+    private void parseMetadataSpec(String spec) throws Exception {
+        MetadataParser parser = new MetadataParser(spec);
+        this.metadataMap = parser.getMetadataMap();
+    }
+
+    private void parseConnectionSpec(String spec) throws Exception {
+        ConnectionParser parser = new ConnectionParser(spec);
+        this.connectionMaps = parser.getConnectionMaps();
+    }
+
+    public Map<String,Object> getMetadataMap() {
+        return this.metadataMap;
+    }
+
+    public List<Map<String,Object>> getConnectionMaps() {
+        return this.connectionMaps;
     }
 
 }

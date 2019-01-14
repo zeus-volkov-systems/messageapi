@@ -1,27 +1,27 @@
 package gov.noaa.messageapi.protocols;
 
 import java.util.Map;
+import java.util.HashMap;
 
-public abstract class BaseProtocol {
+import gov.noaa.messageapi.interfaces.IProtocol;
+import gov.noaa.messageapi.definitions.ProtocolDefinition;
 
-    private String type;
+public class BaseProtocol {
+
     private Map<String, Object> properties;
+    protected ProtocolDefinition definition;
 
     public BaseProtocol(Map<String, Object> properties) {
         setProperties(properties);
     }
 
+    public BaseProtocol(IProtocol protocol) {
+        this.definition = new ProtocolDefinition(protocol.getDefinition());
+        this.properties = new HashMap<String,Object>(protocol.getProperties());
+    }
+
     private void setProperties(Map<String, Object> properties) {
         this.properties = properties;
-        setType((String) properties.get("type"));
-    }
-
-    private void setType(String type) {
-        this.type = type.toLowerCase();
-    }
-
-    public String getType() {
-        return this.type;
     }
 
     public Map<String,Object> getProperties() {
@@ -40,5 +40,13 @@ public abstract class BaseProtocol {
             return true;
         }
         return false;
+    }
+
+    public ProtocolDefinition getDefinition() {
+        return this.definition;
+    }
+
+    protected void createProtocolDefinition(Map<String,Object> properties) throws Exception {
+        this.definition = new ProtocolDefinition(properties);
     }
 }

@@ -1,9 +1,8 @@
 {
-    "type": "standard",
     "connections": [
         {
             "name": "/path/to/test.db",
-            "url": "whatever",
+            "path": "whatever",
             "user": "test",
             "password": null
         }

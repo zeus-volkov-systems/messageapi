@@ -27,11 +27,24 @@ public class SessionPluginParser extends BasePluginParser implements IPluginPars
         try {
             Map<String, Object> constructor = getConstructor();
             IContainer container = buildContainer((Map<String, Object>) constructor.get("container"));
+            System.out.println("BUILT CONTAINER!");
+            System.out.println(container);
             IProtocol protocol = buildProtocol((Map<String, Object>) constructor.get("protocol"));
+            System.out.println("BUILT PROTOCOL!");
+            System.out.println(protocol);
             ISchema schema = buildSchema((Map<String, Object>) constructor.get("schema"));
+            System.out.println("BUILT SCHEMA!");
+            System.out.println(schema);
             Class<?>[] ctrClasses = {IContainer.class, IProtocol.class, ISchema.class};
+            System.out.println("Ctr Classes");
+            System.out.println(ctrClasses);
             Object[] args = {container, protocol, schema};
-            return (ISession) constructPlugin(Class.forName(getPlugin()), ctrClasses, args);
+            System.out.println("Args:");
+            System.out.println(args);
+            ISession s = (ISession) constructPlugin(Class.forName(getPlugin()), ctrClasses, args);
+            System.out.println("Session: ");
+            System.out.println(s);
+            return s;
         } catch (Exception e) {
             return null;
         }
