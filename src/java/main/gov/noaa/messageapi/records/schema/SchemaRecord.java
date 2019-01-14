@@ -15,7 +15,7 @@ import gov.noaa.messageapi.factories.ConditionFactory;
 
 public class SchemaRecord implements IRecord {
 
-    private static final Logger logger = LogManager.getLogger("HelloWorld");
+    private static final Logger logger = LogManager.getLogger();
 
     private List<IField> fields = null;
     private List<ICondition> conditions = null;
