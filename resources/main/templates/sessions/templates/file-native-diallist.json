@@ -1,0 +1,20 @@
+{
+    "container": {
+        "type": "file",
+        "properties": {
+            "name": "test.txt",
+            "path": "/path/to/file"
+        }
+    },
+    "protocol": {
+        "type": "native",
+        "properties": {
+        }
+    },
+    "schema": {
+        "type": "diallist",
+        "properties": {
+            "headers": false
+        }
+    }
+}

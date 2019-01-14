@@ -1,0 +1,23 @@
+{
+    "container": {
+        "type": "file",
+        "properties": {
+            "name": "test.txt",
+            "path": "/path/to/file"
+        }
+    },
+    "protocol": {
+        "type": "ftp",
+        "properties": {
+            "server": "ncdcftp",
+            "user": "anonymous",
+            "password": "guest"
+        }
+    },
+    "schema": {
+        "type": "diallist",
+        "properties": {
+            "headers": false
+        }
+    }
+}

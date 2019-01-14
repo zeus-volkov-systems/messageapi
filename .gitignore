@@ -1,0 +1,36 @@
+#compilation
+*.class
+*.o
+*.so
+*.mod
+*.jnilib
+*.gch
+
+
+#for gradle builds
+build/*
+.gradle/*
+
+#for leiningen builds
+.lein*
+/.lein-*
+/target
+/classes
+/checkouts
+target/*
+/.nrepl-port
+
+#for maven builds
+pom.xml
+pom.xml.asc
+
+#for buildship builds
+.project
+.settings
+
+#output and debugging
+*.log
+
+
+#miscellanious and/or local
+.classpath

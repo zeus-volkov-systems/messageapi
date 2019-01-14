@@ -1,0 +1,11 @@
+{
+    "relationships": [
+        {
+            "id": "test1",
+            "type": "left join",
+            "parent": "testTable1",
+            "child": "testTable2",
+            "field": "key"
+        }
+    ]
+}

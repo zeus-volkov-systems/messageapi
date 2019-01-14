@@ -1,0 +1,11 @@
+{
+    "type": "standard",
+    "connections": [
+        {
+            "name": "/path/to/test.db",
+            "url": "whatever",
+            "user": "test",
+            "password": null
+        }
+    ]
+}

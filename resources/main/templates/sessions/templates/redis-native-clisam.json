@@ -1,0 +1,20 @@
+{
+    "container": {
+        "type": "redis",
+        "properties": {
+            "server": "localhost",
+            "usage": "async"
+        }
+    },
+    "protocol": {
+        "type": "native",
+        "properties": {
+        }
+    },
+    "schema": {
+        "type": "clisam",
+        "properties": {
+            "collection": "test"
+        }
+    }
+}

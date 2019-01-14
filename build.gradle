@@ -1,0 +1,72 @@
+plugins {
+    id 'groovy'
+    id 'maven-publish'
+    id 'java'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'gov.noaa'
+            artifactId 'messageapi'
+            version "${messageApiVersion}"
+
+            from components.java
+        }
+    }
+}
+
+sourceCompatibility = "${javaVersion}"
+targetCompatibility = "${javaVersion}"
+
+defaultTasks 'clean', 'rebuild', 'publishToMavenLocal'
+
+repositories {
+    mavenCentral()
+    jcenter()
+    //mavenLocal()
+}
+
+dependencies {
+    compile ("org.apache.logging.log4j:log4j-api:${log4jVersion}",
+             "org.apache.logging.log4j:log4j-core:${log4jVersion}",
+             "com.googlecode.json-simple:json-simple:${jsonSimpleVersion}",
+             "org.codehaus.groovy:groovy-all:${groovyVersion}")
+    testCompile ("org.codehaus.groovy:groovy-all:${groovyVersion}",
+                  "junit:junit:${jUnitVersion}",
+                  "org.spockframework:spock-core:${spockVersion}")
+    testRuntime ("com.athaydes:spock-reports:${spockReportsVersion}")
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'MessageAPI',
+                   'Implementation-Version': "${messageApiVersion}"
+    }
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ['src/java/main']
+        groovy.srcDirs = ['src/java/main']
+        resources.srcDirs = ['resources/main']
+    }
+    test {
+        java.srcDirs = ['src/java/test']
+        groovy.srcDirs = ['src/groovy/test']
+        resources.srcDirs = ['resources/test']
+    }
+}
+
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+
+task rebuild(dependsOn: [build, test]) {
+    doLast {
+        println "MessageAPI rebuilt successfully."
+    }
+}

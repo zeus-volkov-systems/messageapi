@@ -1,0 +1,44 @@
+{
+    "conditions": [
+        {
+            "id": "1",
+            "type": "comparison",
+            "operator": ">=",
+            "field": "key",
+            "value": null
+        },
+        {
+            "id": "2",
+            "type": "comparison",
+            "operator": "<",
+            "field": "key",
+            "value": null
+        },
+        {
+            "id": "three",
+            "type": "composite",
+            "operator": "or",
+            "conditions": ["1","2","hi"]
+        },
+        {
+            "id": "hi",
+            "type": "comparison",
+            "operator": "=",
+            "field": "type",
+            "value": null
+        },
+        {
+            "id": "dummy",
+            "type": "comparison",
+            "operator": "=",
+            "field": "type",
+            "value": null
+        },
+        {
+            "id": "nested_join",
+            "type": "composite",
+            "operator": "and",
+            "conditions": ["dummy", "three"]
+        }
+    ]
+}
