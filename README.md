@@ -96,7 +96,9 @@ Here we describe the three dimensions of a MessageAPI session:
 
  Now that we've described the general information model, we will describe how a typical program will use this system.
 
- In a java class, 
+All important parts of the MessageAPI model can be imported as interfaces. By convention, interfaces in MessageAPI begin with a capital I, followed by the word for the model component that the interface represents (no space). The most important interfaces of MessageAPI  that will probably be used are the ISession, IRequest, IRecord, and IResponse interfaces. Other interfaces that are useful are the IRejection, IField, IRelationship, and ICondition interfaces.
+
+All of the interface documentation can be found in the appropriate javadoc.
 
 
 ### Configurations
