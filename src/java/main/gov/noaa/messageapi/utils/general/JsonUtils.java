@@ -96,10 +96,10 @@ public class JsonUtils {
             while (it.hasNext()) {
                 String currKey = it.next();
                 Object currObj = JsonUtils.get(jsonObject, currKey);
-                String objType = currObj.getClass().getName();
-                if (objType.contains("JSONArray")) {
+                //String objType = currObj.getClass().getName();
+                if (currObj instanceof JSONArray) {
                     objMap.put(currKey, (Object) convertArray((JSONArray) currObj));
-                } else if (objType.contains("JSONObject")){
+                } else if (currObj instanceof JSONObject){
                     objMap.put(currKey, (Object) convertObject((JSONObject) currObj));
                 } else {
                     objMap.put(currKey, currObj);
@@ -107,7 +107,7 @@ public class JsonUtils {
             }
             return objMap;
         } catch (Exception e){
-            System.err.println("Exception thrown while converting the object: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
@@ -119,10 +119,10 @@ public class JsonUtils {
             Iterator<Object> it = jsonArray.iterator();
             while (it.hasNext()) {
                 Object currObj = it.next();
-                String objType = currObj.getClass().getName();
-                if (objType.contains("JSONArray")) {
+                //String objType = currObj.getClass().getName();
+                if (currObj instanceof JSONArray) {
                     arrays.add((Object) convertArray((JSONArray) currObj));
-                } else if (objType.contains("JSONObject")){
+                } else if (currObj instanceof JSONObject){
                     arrays.add((Object) convertObject((JSONObject) currObj));
                 } else {
                     arrays.add(currObj);
@@ -130,7 +130,7 @@ public class JsonUtils {
             }
             return arrays;
         } catch (Exception e) {
-            System.err.println("Exception thrown while converting the array: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
