@@ -17,7 +17,7 @@ class SessionUnitTests extends spock.lang.Specification {
             session in gov.noaa.messageapi.interfaces.ISession
     }
 
-    def "Test add request creation."() {
+    def "Test creating a session ADD request."() {
         given:
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
             ISession session = SessionFactory.create(sessionSpec)
@@ -28,14 +28,14 @@ class SessionUnitTests extends spock.lang.Specification {
             request in gov.noaa.messageapi.interfaces.IRequest
     }
 
-    def "Test creating two requests, make sure they are different"() {
+    def "Test creating two session requests, make sure they are different instances"() {
         given:
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
             ISession session = SessionFactory.create(sessionSpec)
-        when:
+        when: "We create two separate requests on the same session"
             IRequest r1 = session.createAddRequest()
             IRequest r2 = session.createAddRequest()
-        then:
+        then: "Then the two requests should be different instances."
             r1 != r2
     }
 

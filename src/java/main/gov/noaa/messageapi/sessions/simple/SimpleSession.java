@@ -34,7 +34,7 @@ public class SimpleSession extends BaseSession implements ISession {
         return this.createRequest("get");
     }
 
-    public IResponse submit(IRequest request) {
+    public IResponse submitRequest(IRequest request) {
         IResponse response = this.createResponse(request);
         return response;
     }

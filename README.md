@@ -94,11 +94,17 @@ Here we describe the three dimensions of a MessageAPI session:
  - Containers are what define records as seen by the session target(s), either as the source or destination of some data (or both). There can be multiple containers per session and fields defined in the schema can exist on more than one container. Containers conceptually represent different endpoints - e.g., different tables in a database, different databases, an email address, a kafka topic, etc. Because records passed in a session can be parsed into multiple containers, records or parts of records can be passed to multiple endpoints concurrently in a single request. Some containers may have relationships defined between them, and these are defined in the relationships spec attached to the containers spec. These relationships are evaluated when processing requests in order to ensure that users always see records in the flat structure specified in the schema.
  - Protocols are specialized, library specific implementations that translate between container record sets and some external system. These protocols are the parts of the system that call out to the external world, such as FTP servers, email clients, Kafka topics, or similar things. Protocols depend on the system that needs to be called out to, so they are more specialized plugin components than the schema or container parts of MessageAPI, which can generally be reused with almost any message type.
 
- Now that we've described the general information model, we will describe how a typical program will use this system.
+ Now that we've described the general topology, we will describe how a typical program will use this system using the API available.
 
 All important parts of the MessageAPI model can be imported as interfaces. By convention, interfaces in MessageAPI begin with a capital I, followed by the word for the model component that the interface represents (no space). The most important interfaces of MessageAPI  that will probably be used are the ISession, IRequest, IRecord, and IResponse interfaces. Other interfaces that are useful are the IRejection, IField, IRelationship, and ICondition interfaces.
 
-All of the interface documentation can be found in the appropriate javadoc.
+The overall strategy for using MessageAPI is simple:
+
+Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples). Using the session object, create the kind of request you want to use (i.e., an add, get, remove, or update request). On any request type, create a record. The request record is type-contextual - in an 'add' or 'update' request, the record will contain a field set (based on the session spec) that can be filled with values that are to be inserted. 'update' requests can also use the record more generally, to update certain records when specified conditionals are met. In a 'get' request, the fields are the fields requested, and conditions may be used to specify conditions for retrieving response records. 
+
+All of the interface documentation can be found in the corresponding javadoc if it's complete. If it's not complete, please make a pull request for if you know what the interface does, or file a bug and the documentation will be updated when possible.
+
+To illustrate a typical use
 
 
 ### Configurations

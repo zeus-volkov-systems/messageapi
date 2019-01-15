@@ -9,6 +9,6 @@ public interface ISession {
     public IRequest createUpdateRequest();
     public IRequest createRemoveRequest();
     public IRequest createGetRequest();
-    public IResponse submit(IRequest request);
+    public IResponse submitRequest(IRequest request);
 
 }
