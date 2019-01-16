@@ -52,7 +52,7 @@ sourceSets {
         resources.srcDirs = ['resources/main']
     }
     test {
-        java.srcDirs = ['src/java/test']
+        java.srcDirs = ['src/java/test','src/java/main']
         groovy.srcDirs = ['src/groovy/test']
         resources.srcDirs = ['resources/test']
     }
