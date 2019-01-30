@@ -220,8 +220,6 @@ Here we describe the three dimensions of a MessageAPI session:
           }
         ```
 
-
-
  - Protocols are specialized, library specific implementations that translate between container record sets and some external system. These protocols are the parts of the system that call out to the external world, such as FTP servers, email clients, Kafka topics, or similar things. Protocols depend on the system that needs to be called out to, so they are more specialized plugin components than the schema or container parts of MessageAPI, which can generally be reused with almost any message type.
 
 ```
@@ -236,10 +234,56 @@ The overall strategy for using MessageAPI is simple:
 
 Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples). Using the session object, create the kind of request you want to use (i.e., an add, get, remove, or update request). On any request type, create a record. The request record is type-contextual - in an 'add' or 'update' request, the record will contain a field set (based on the session spec) that can be filled with values that are to be inserted. 'update' requests can also use the record more generally, to update certain records when specified conditionals are met. In a 'get' request, the fields are the fields requested, and conditions may be used to specify conditions for retrieving response records.
 
-All of the interface documentation can be found in the corresponding javadoc if it's complete. If it's not complete, please make a pull request for if you know what the interface does, or file a bug and the documentation will be updated when possible.
+All of the interface documentation should be found in the corresponding javadoc. If it's there, please add and make a pull request for the documentation if you know what the interface does, or file a bug and the documentation will be updated when possible.
 
-To illustrate a typical use
+To illustrate a typical use case, we will give a couple of examples - the first is adding some records, the second is getting some records.
 
+Here is how a class would add records with conditions from a list of program records according to a message api spec.
+
+```
+package gov.noaa.messageapi.test;
+
+import gov.noaa.messageapi.factories.SessionFactory;
+
+import gov.noaa.messageapi.interfaces.ISession;
+import gov.noaa.messageapi.interfaces.IRequest;
+import gov.noaa.messageapi.interfaces.IRecord;
+import gov.noaa.messageapi.interfaces.IResponse;
+import gov.noaa.messageapi.interfaces.IRejection;
+
+import java.util.List;
+
+public class addRecordsTest {
+
+    private ISession session;
+
+    public addRecordsTest(sessionSpec) {
+        this.session = SessionFactory.create(sessionSpec);
+    }
+
+    public addRecords(List<List<String>> recordsToAdd) {
+        IRequest request = this.session.createAddRequest();
+        for (List<String> recordToAdd: recordsToAdd) {
+            IRecord record = request.createRecord();
+            for (int i = 0; i < record.getFields().size(); i++) {
+                record.setField(i, recordToAdd.get(i));
+            }
+        }
+        IResponse response = this.session.submitRequest(request);
+        while (!response.isComplete()) {}
+        if (response.getRejections().size() > 0) {
+            for (int j = 0; j < response.getRejections().size(); j++) {
+                System.err.println("Rejected record because " + response.getRejections().get(j).getReasons());
+            }
+        } else {
+            return;
+        }
+    }
+}
+```
+There is a lot going on in the above example, but it's all straightforward.
+
+We first create a persistent session object based on a given spec when the class is loaded somewhere else. This session then has a defined schema, container set, and protocol which were all based on some runtime loaded text files. When the addRecords method is called with a bunch of string based records, an add request is then created from the session. The add request is then populated with records (using createRecord on the request) for every record that the user has. This is done by setting field values for the record - again, these fields are all in the declarative spec that was loaded when the session was loaded. In this case, record field values are set by index. It is also valid to set record field values by named fields - there are use cases for both approaches. In this case we are not setting any record conditions, but those are done the same way as fields (record.setCondition(conditionID, conditionValue)). Once we've finished populating our response with all of the records, we submit the request to the session and immediately receive a response. Requests are submitted asynchronously to sessions to mitigate any blocking and responses are returned immediately even if their work hasn't yet finished. This means the submitter can keep working if they want, and hold the request for later use, wait for it to complete by monitoring an isComplete method, or toss it away if there's no need to make sure of the response. When the response finally finishes, it will contain a set of rejections (if any) based on conditions or based on a failed protocol action. These rejections can be inspected individually for the record as well as reasons for the rejection.
 
 ### Configurations
 
