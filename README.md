@@ -187,7 +187,7 @@ Here we describe the three dimensions of a MessageAPI session:
       }
       ```
 
-      - A container 'containers' json specification file (containers.json)
+    - A container 'containers' json specification file (containers.json)
         ```
         {
             "containers": [
@@ -205,7 +205,7 @@ Here we describe the three dimensions of a MessageAPI session:
         }
         ```
 
-      - A container 'relationships' json specification file (relationships.json)
+    - A container 'relationships' json specification file (relationships.json)
         ```
           {
               "relationships": [
@@ -261,7 +261,7 @@ public class addRecordsTest {
         this.session = SessionFactory.create(sessionSpec);
     }
 
-    public addRecords(List<List<String>> recordsToAdd) {
+    public void addRecords(List<List<String>> recordsToAdd) {
         IRequest request = this.session.createAddRequest();
         for (List<String> recordToAdd: recordsToAdd) {
             IRecord record = request.createRecord();
@@ -275,8 +275,6 @@ public class addRecordsTest {
             for (int j = 0; j < response.getRejections().size(); j++) {
                 System.err.println("Rejected record because " + response.getRejections().get(j).getReasons());
             }
-        } else {
-            return;
         }
     }
 }
