@@ -7,24 +7,12 @@ MessageAPI is a completely pluggable and simple message transport layer that pro
 an information model and code-level API for consumption and/or production of arbitrary
 content to/from arbitrary endpoints.
 
-Apart from a set of basic plugins, this is all that MessageAPI provides. This makes MessageAPI capable of passing any message content anywhere - code objects, database entries, emails, etc., to or through any protocol - ftp, smtp, kafka, etc.
+Apart from a set of basic plugins, this is all that MessageAPI provides. This makes MessageAPI capable of passing any message content - code objects, database entries, emails, etc., to anywhere - database tables, inboxes, s3 buckets, etc. - through any protocol - ftp, smtp, kafka, etc.
 
-The benefits of using MessageAPI are extreme schema flexibility, tool decoupling, transport optimization potential, message API standardization, and a self-documenting information model.
+The benefits of using MessageAPI are its extreme schema flexibility, potential for tool decoupling and transport optimization, API standardization across all messaging, and self documentation through an information model.
 
 It's important to point out that MessageAPI does not replace traditional load balancing brokers (ActiveMQ, RabbitMQ)
-or streaming platforms like Kafka. These other messaging systems are appropriate as protocol or container layer plugins in MessageAPI, depending on how the implementation models the system. MessageAPI adds additional desired behaviors to these tools - including the ability to switch them out at will as streaming technologies evolve, and adding a declarative model to them.
-
-## Installation and Deployment
-
-Install MessageAPI by navigating to the cloned directory and running
-
-```
-make install
-```
-
-This will install MessageAPI to the local repository on disk.
-The main MessageAPI package will only pull Log4J and SimpleJSON for use as dependencies,
-while the package testing additionally requires Spock.
+or streaming platforms (Kafka, Storm). These other messaging systems are appropriate as protocol or container layer plugins in MessageAPI, depending on how the implementation models the system. MessageAPI adds additional desired behaviors to these tools - including the ability to switch them out at will as streaming technologies evolve, and adding a declarative model to them.
 
 ### Description
 
@@ -38,6 +26,7 @@ on the classpath at runtime that understand the spec, anything can be written in
 
 However, that wouldn't be very useful in practice, so MessageAPI provides a standard
 topology that will suit most messaging tasks, along with providing a matching set of basic plugins.
+This set of default classes can then serve as a reference for writing better versions of those which are provided and/or customized plugins for different containers or protocols.
 
 In the provided model, the spec looks like the following:
 
@@ -70,39 +59,30 @@ In the provided model, the spec looks like the following:
 }
 ```
 
-In the default MessageAPI topology, sessions are the primary abstraction.
-Sessions in turn consist of schema, container, and protocol abstractions, and each
-of these has its own set of properties that must/can be specified. Notice that in
-the spec, any key labeled "plugin" points to a class. These classes are what are read
-at runtime (when the spec itself is referenced in the code). Anything found within
-the "constructor" map is then used by the class to build itself.
+In the default MessageAPI topology, sessions are the primary abstraction. Sessions in turn consist of schema, container, and protocol abstractions, and each of these has its own set of properties that must/can be specified. Notice that in the example spec, any key labeled "plugin" points to a class. These classes are what are read at runtime (when the spec itself is referenced in the code). Anything found within the "constructor" map is then used by the class to build itself.
 
-So, for example, if the above spec is taken literally, when it is used in the code, an instance of the
-"class.namespace.SessionPluginClass" class is loaded with the corresponding "constructor"
-map passed in as the constructor argument. This in turn kicks off the system to read the schema,
-container, and protocol classes and create those using their own constructor maps. The information
-found in values (usually JSON maps, with the exception being the "operators" key in the schema constructor)
-will be read and parsed at that time to build the component and ultimately the session.
+So, for example, if the above spec is taken literally, when it is used in the code, an instance of the "class.namespace.SessionPluginClass" class is loaded with the corresponding "constructor" map passed in as the constructor argument. This in turn kicks off the system to read the schema, container, and protocol classes and create those using their own constructor maps. The information found in the associated key-values (usually referencing an underlying JSON map, with the exception being the "operators" key in the schema constructor) will be read and parsed at that time to build the component and ultimately the session.
 
-Once built, this session is then in memory and can be reused as often as necessary. MessageAPI trades initial speed of compile-time class construction for the flexibility and declarative nature of doing it at runtime, but mitigates this by allowing already created session objects to be reused. additionally, individual parts of already created session objects can be used to create new objects (for example, using an existing in-memory schema instance, that's part of an existing, in-memory session, for use in creating a different, new session object).
+Once built, this session is then in memory and can be reused as often as necessary. MessageAPI trades initial speed of compile-time class construction for the flexibility and declarative nature of doing it at runtime  (although the initial bootstrapping is generally very fast anyway), and then allows already created session objects to be reused. Additionally, individual parts of already created session objects can be used to create new objects (for example, using an existing in-memory schema instance, that's part of an existing, in-memory session, for use in creating a different, new session object).
 
-Each session component is considered a fundamental and loosely orthogonal dimension of its parent. Every message session, no matter what the type, can be created by specifying these three dimensions, and this concept is what allows MessageAPI to provide a powerful abstract framework on top of arbitrary messages. Each of these dimensions has its own particular properties which define it. All also include a catchall 'metadata' property for storage of other useful self-documenting information.
+Each session component is considered a fundamental and loosely orthogonal dimension of its parent. Every message session, no matter what the type, can be created by specifying these three dimensions, and this concept is what allows MessageAPI to provide a powerful abstract framework on top of arbitrary messages. Each of these dimensions has its own particular properties which define it. All also include a catchall 'metadata' property for storage of other useful self-documenting information, such as version or identifying labels.
 
 Here we describe the three dimensions of a MessageAPI session:
 
- - Schemas are what define records as seen by the session holder. This is the part of the topology which defines what fields a record will have, any conditions on those fields, and an operator factory class that provides methods on evaluating fields against conditions (conditions may contain arbitrary logic). A schema field set is a flat set of field definitions. For example, software that wants to pass email messages through MessageAPI could have a field set of 'email, subject, body'. In the provided schema class, fields need to be provided with a 'name', 'type', and 'required' properties. The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. Conditions can be set on these fields that qualify records when passed in, serving as a potentially powerful filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator. There are two provided types in the default - composite and comparison. Comparison type conditions are direct comparisons (things like equivalency, greater than, etc.) while composite conditions reference other conditions and specify either an 'and' or an 'or' operator. This allows multiple conditions to be nested, referenced by their IDs. Composite conditions can also include other composite conditions and will be unpacked and applied recursively. The only restriction on conditions is that no infinite loops are permitted.
+ - Schemas
+    - Schemas are what define records as seen by the session holder. This is the part of the topology which defines what fields a record will have, any conditions on those fields, and an operator factory class that provides methods on evaluating fields against conditions (conditions may contain arbitrary logic). A schema field set is a flat set of field definitions. For example, software that wants to pass email messages through MessageAPI could have a field set of 'email, subject, body'. In the provided schema class, fields need to be provided with a 'name', 'type', and 'required' properties. The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. Conditions can be set on these fields that qualify records when passed in, serving as a potentially powerful filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator. There are two provided types in the default - composite and comparison. Comparison type conditions are direct comparisons (things like equivalency, greater than, etc.) while composite conditions reference other conditions and specify either an 'and' or an 'or' operator. This allows multiple conditions to be nested, referenced by their IDs. Composite conditions can also include other composite conditions and will be unpacked and applied recursively. The only restriction on conditions is that no infinite loops are permitted. Conditions are applied on both 'get' and 'put' type operations, which provide a SQL type selection for records in arbitrary containers.
 
- - A schema 'metadata' json specification file (metadata.json)
+    - A schema 'metadata' json specification file (metadata.json)
       ```
       {
           "metadata": {
-              "name": "schema_name",
-              "type": "schema_type"
+              "name": "clisam",
+              "type": "simple"
           }
       }
       ```
 
- - A schema 'fields' json specification file (fields.json)
+    - A schema 'fields' json specification file (fields.json)
      ```
      {
          "fields": [
@@ -145,7 +125,7 @@ Here we describe the three dimensions of a MessageAPI session:
      }
      ```
 
- - A schema 'conditions' json specification file (conditions.json)
+     - A schema 'conditions' json specification file (conditions.json)
      ```
      {
          "conditions": [
@@ -193,10 +173,54 @@ Here we describe the three dimensions of a MessageAPI session:
      }
      ```
 
- - Containers are what define records as seen by the session target(s), either as the source (for gets) or destination (for puts) of some data (or both, for situations where there is two-way data flow). There can be multiple containers per session and fields defined in the schema can exist on more than one container. Containers conceptually represent different endpoints - e.g., different tables in a database, different databases, an email address, a kafka topic, etc. Because records passed in a session can be parsed into multiple containers, records or parts of records can be passed to multiple endpoints concurrently in a single request. Some containers may have relationships defined between them, and these are defined in the relationships spec attached to the containers spec. These relationships are evaluated when processing requests in order to ensure that users always see records in the flat structure specified in the schema.
+ - Containers
+    - Containers are what define records as seen by the session target(s), either as the source (for gets) or destination (for puts) of some data (or both, for situations where there is two-way data flow). There can be multiple containers per session and fields defined in the schema can exist on more than one container. Containers conceptually represent different endpoints - e.g., different tables in a database, different databases, an email address, a directory, a file, a Kafka topic, etc. Because records passed in a session can be parsed into multiple containers, records or parts of records can be passed to multiple endpoints concurrently in a single request. Some containers may have relationships defined between them, and these are defined in the relationships spec attached to the containers spec. These relationships are evaluated when processing 'get' type requests in order to ensure that users always see returned records in the flat structure specified in the schema. Relationships are completely unnecessary in many situations if data is being pushed.
 
-```
-```
+    - A container 'metadata' json specification file (metadata.json)
+      ```
+      {
+          "metadata": {
+              "name": "clisam",
+              "type": "simple",
+              "version": "1.0"
+          }
+      }
+      ```
+
+      - A container 'containers' json specification file (containers.json)
+        ```
+        {
+            "containers": [
+                {
+                    "name": "testTable1",
+                    "namespace": "/path/to/test.db",
+                    "fields": ["key", "record", "filename", "type"]
+                },
+                {
+                    "name": "testTable2",
+                    "namespace": "/path/to/test2.db",
+                    "fields": ["key", "type", "receipt_date", "insert_date"]
+                }
+            ]
+        }
+        ```
+
+      - A container 'relationships' json specification file (relationships.json)
+        ```
+          {
+              "relationships": [
+                  {
+                      "id": "test1",
+                      "join": "left",
+                      "parent": "testTable1",
+                      "child": "testTable2",
+                      "field": "key"
+                  }
+              ]
+          }
+        ```
+
+
 
  - Protocols are specialized, library specific implementations that translate between container record sets and some external system. These protocols are the parts of the system that call out to the external world, such as FTP servers, email clients, Kafka topics, or similar things. Protocols depend on the system that needs to be called out to, so they are more specialized plugin components than the schema or container parts of MessageAPI, which can generally be reused with almost any message type.
 
@@ -221,6 +245,18 @@ To illustrate a typical use
 
 
 ### Instructions
+
+## Installation and Deployment
+
+Install MessageAPI by navigating to the cloned directory and running
+
+```
+make install
+```
+
+This will install MessageAPI to the local repository on disk.
+The main MessageAPI package will only pull Log4J and SimpleJSON for use as dependencies,
+while the package testing additionally requires Spock.
 
 ## Developer Guide
 
