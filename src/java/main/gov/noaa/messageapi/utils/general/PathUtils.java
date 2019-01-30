@@ -22,8 +22,8 @@ public class PathUtils {
     /**
      * This method expands the {} special character found in strings that are read during parsing.
      * This method is not durable but it works on current OSX Darwin and both Redhat and Ubuntu Linuxes.
-     * If there is a better, more general way of finding the root project directory, this method should be
-     * replaced.
+     * If there is a better, more general way of finding the root project directory, the method business logic should
+     * be replaced by that.
      * @param  path The path containing a {} character to be replaced by the relative package path.
      * @return      Returns the path with {} replaced by the package path.
      */
