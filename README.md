@@ -7,12 +7,12 @@ MessageAPI is a completely pluggable and simple message transport layer that pro
 an information model and code-level API for consumption and/or production of arbitrary
 content to/from arbitrary endpoints.
 
-Apart from a set of basic plugins, this is all that MessageAPI provides. This makes
-MessageAPI capable of passing any message content anywhere - code objects, database
-entries, emails, etc.
+Apart from a set of basic plugins, this is all that MessageAPI provides. This makes MessageAPI capable of passing any message content anywhere - code objects, database entries, emails, etc., to or through any protocol - ftp, smtp, kafka, etc.
 
-The benefits of using MessageAPI are extreme schema flexibility, tool decoupling,
-transport optimization potential, message API standardization, and a self-documenting information model.
+The benefits of using MessageAPI are extreme schema flexibility, tool decoupling, transport optimization potential, message API standardization, and a self-documenting information model.
+
+It's important to point out that MessageAPI does not replace traditional load balancing brokers (ActiveMQ, RabbitMQ)
+or streaming platforms like Kafka. These other messaging systems are appropriate as protocol or container layer plugins in MessageAPI, depending on how the implementation models the system. MessageAPI adds additional desired behaviors to these tools - including the ability to switch them out at will as streaming technologies evolve, and adding a declarative model to them.
 
 ## Installation and Deployment
 
@@ -92,112 +92,111 @@ Here we describe the three dimensions of a MessageAPI session:
 
  - Schemas are what define records as seen by the session holder. This is the part of the topology which defines what fields a record will have, any conditions on those fields, and an operator factory class that provides methods on evaluating fields against conditions (conditions may contain arbitrary logic). A schema field set is a flat set of field definitions. For example, software that wants to pass email messages through MessageAPI could have a field set of 'email, subject, body'. In the provided schema class, fields need to be provided with a 'name', 'type', and 'required' properties. The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. Conditions can be set on these fields that qualify records when passed in, serving as a potentially powerful filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator. There are two provided types in the default - composite and comparison. Comparison type conditions are direct comparisons (things like equivalency, greater than, etc.) while composite conditions reference other conditions and specify either an 'and' or an 'or' operator. This allows multiple conditions to be nested, referenced by their IDs. Composite conditions can also include other composite conditions and will be unpacked and applied recursively. The only restriction on conditions is that no infinite loops are permitted.
 
-```
+ - A schema 'metadata' json specification file (metadata.json)
+      ```
+      {
+          "metadata": {
+              "name": "schema_name",
+              "type": "schema_type"
+          }
+      }
+      ```
 
-```
-
- - Containers are what define records as seen by the session target(s), either as the source or destination of some data (or both). There can be multiple containers per session and fields defined in the schema can exist on more than one container. Containers conceptually represent different endpoints - e.g., different tables in a database, different databases, an email address, a kafka topic, etc. Because records passed in a session can be parsed into multiple containers, records or parts of records can be passed to multiple endpoints concurrently in a single request. Some containers may have relationships defined between them, and these are defined in the relationships spec attached to the containers spec. These relationships are evaluated when processing requests in order to ensure that users always see records in the flat structure specified in the schema.
-
-    - A schema 'metadata' json specification file (metadata.json)
-         ```
-         {
-             "metadata": {
-                 "name": "schema_name",
-                 "type": "schema_type"
+ - A schema 'fields' json specification file (fields.json)
+     ```
+     {
+         "fields": [
+             {
+                 "name": "id",
+                 "type": "integer",
+                 "required": false
+             },
+             {
+                 "name": "key",
+                 "type": "string",
+                 "required": true
+             },
+             {
+                 "name": "record",
+                 "type": "string",
+                 "required": true
+             },
+             {
+                 "name": "filename",
+                 "type": "string",
+                 "required": true
+             },
+             {
+                 "name": "type",
+                 "type": "string",
+                 "required": true
+             },
+             {
+                 "name": "receipt_date",
+                 "type": "datetime",
+                 "required": true
+             },
+             {
+                 "name": "insert_date",
+                 "type": "datetime",
+                 "required": true
              }
-         }
-         ```
+         ]
+     }
+     ```
 
-    - A schema 'fields' json specification file (fields.json)
-        ```
-        {
-            "fields": [
-                {
-                    "name": "id",
-                    "type": "integer",
-                    "required": false
-                },
-                {
-                    "name": "key",
-                    "type": "string",
-                    "required": true
-                },
-                {
-                    "name": "record",
-                    "type": "string",
-                    "required": true
-                },
-                {
-                    "name": "filename",
-                    "type": "string",
-                    "required": true
-                },
-                {
-                    "name": "type",
-                    "type": "string",
-                    "required": true
-                },
-                {
-                    "name": "receipt_date",
-                    "type": "datetime",
-                    "required": true
-                },
-                {
-                    "name": "insert_date",
-                    "type": "datetime",
-                    "required": true
-                }
-            ]
-        }
-        ```
+ - A schema 'conditions' json specification file (conditions.json)
+     ```
+     {
+         "conditions": [
+             {
+                 "id": "1",
+                 "type": "comparison",
+                 "operator": ">=",
+                 "field": "key",
+                 "value": null
+             },
+             {
+                 "id": "2",
+                 "type": "comparison",
+                 "operator": "<",
+                 "field": "key",
+                 "value": null
+             },
+             {
+                 "id": "three",
+                 "type": "composite",
+                 "operator": "or",
+                 "conditions": ["1","2","hi"]
+             },
+             {
+                 "id": "hi",
+                 "type": "comparison",
+                 "operator": "=",
+                 "field": "type",
+                 "value": null
+             },
+             {
+                 "id": "dummy",
+                 "type": "comparison",
+                 "operator": "=",
+                 "field": "type",
+                 "value": null
+             },
+             {
+                 "id": "nested_join",
+                 "type": "composite",
+                 "operator": "and",
+                 "conditions": ["dummy", "three"]
+             }
+         ]
+     }
+     ```
 
-    - A schema 'conditions' json specification file (conditions.json)
-        ```
-        {
-            "conditions": [
-                {
-                    "id": "1",
-                    "type": "comparison",
-                    "operator": ">=",
-                    "field": "key",
-                    "value": null
-                },
-                {
-                    "id": "2",
-                    "type": "comparison",
-                    "operator": "<",
-                    "field": "key",
-                    "value": null
-                },
-                {
-                    "id": "three",
-                    "type": "composite",
-                    "operator": "or",
-                    "conditions": ["1","2","hi"]
-                },
-                {
-                    "id": "hi",
-                    "type": "comparison",
-                    "operator": "=",
-                    "field": "type",
-                    "value": null
-                },
-                {
-                    "id": "dummy",
-                    "type": "comparison",
-                    "operator": "=",
-                    "field": "type",
-                    "value": null
-                },
-                {
-                    "id": "nested_join",
-                    "type": "composite",
-                    "operator": "and",
-                    "conditions": ["dummy", "three"]
-                }
-            ]
-        }
-        ```
+ - Containers are what define records as seen by the session target(s), either as the source (for gets) or destination (for puts) of some data (or both, for situations where there is two-way data flow). There can be multiple containers per session and fields defined in the schema can exist on more than one container. Containers conceptually represent different endpoints - e.g., different tables in a database, different databases, an email address, a kafka topic, etc. Because records passed in a session can be parsed into multiple containers, records or parts of records can be passed to multiple endpoints concurrently in a single request. Some containers may have relationships defined between them, and these are defined in the relationships spec attached to the containers spec. These relationships are evaluated when processing requests in order to ensure that users always see records in the flat structure specified in the schema.
+
+```
+```
 
  - Protocols are specialized, library specific implementations that translate between container record sets and some external system. These protocols are the parts of the system that call out to the external world, such as FTP servers, email clients, Kafka topics, or similar things. Protocols depend on the system that needs to be called out to, so they are more specialized plugin components than the schema or container parts of MessageAPI, which can generally be reused with almost any message type.
 

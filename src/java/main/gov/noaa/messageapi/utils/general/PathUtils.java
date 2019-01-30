@@ -19,6 +19,14 @@ public class PathUtils {
         }
     }
 
+    /**
+     * This method expands the {} special character found in strings that are read during parsing.
+     * This method is not durable but it works on current OSX Darwin and both Redhat and Ubuntu Linuxes.
+     * If there is a better, more general way of finding the root project directory, this method should be
+     * replaced.
+     * @param  path The path containing a {} character to be replaced by the relative package path.
+     * @return      Returns the path with {} replaced by the package path.
+     */
     public static String reconcileKeywords(String path) {
         File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
         String replaceTest;
@@ -26,7 +34,7 @@ public class PathUtils {
         String returnPath;
         switch (EnvUtils.getOS()) {
             case "osx":
-                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/groovy/test", "");
+                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
                 replaceMain = replaceLast(replaceTest, "/classes/java/main", "");
                 returnPath = path.replace("{}", replaceMain);
                 return returnPath;
