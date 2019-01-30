@@ -1,0 +1,14 @@
+{
+    "containers": [
+        {
+            "name": "rab25",
+            "namespace": "case.edu",
+            "fields": ["recipient", "sender", "subject", "body"]
+        },
+        {
+            "name": "ryan.berkheimer",
+            "namespace": "noaa.gov",
+            "fields": ["recipient", "sender", "subject", "body"]
+        }
+    ]
+}

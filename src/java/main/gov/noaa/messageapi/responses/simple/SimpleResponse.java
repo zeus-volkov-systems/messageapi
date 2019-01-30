@@ -12,9 +12,11 @@ public class SimpleResponse extends BaseResponse implements IResponse {
         super(request);
         CompletableFuture.supplyAsync(() -> this.request.prepare())
             .thenAccept(rejections -> setRejections(rejections))
-                .thenRun(() -> CompletableFuture.supplyAsync(() -> this.request.process())
+                .thenRun(() ->
+                    CompletableFuture.supplyAsync(() -> this.request.process())
                 .thenAccept(records -> setRecords(records)))
-                .thenRun(() -> setComplete(true));
+                    .thenRun(() ->
+                        setComplete(true));
     }
 
 }

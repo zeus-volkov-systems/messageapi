@@ -198,6 +198,7 @@ Some containers may have relationships defined between them, and these are defin
 Relationships are completely unnecessary in many situations if data is being pushed.
 
 - A container 'metadata' json specification file (metadata.json)
+
       ```
       {
           "metadata": {
@@ -209,6 +210,7 @@ Relationships are completely unnecessary in many situations if data is being pus
       ```
 
 - A container 'containers' json specification file (containers.json)
+
         ```
         {
             "containers": [
@@ -227,6 +229,7 @@ Relationships are completely unnecessary in many situations if data is being pus
         ```
 
 - A container 'relationships' json specification file (relationships.json)
+
         ```
           {
               "relationships": [
