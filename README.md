@@ -67,24 +67,27 @@ Once built, this session is then in memory and can be reused as often as necessa
 
 Each session component is considered a fundamental and loosely orthogonal dimension of its parent. Every message session, no matter what the type, can be created by specifying these three dimensions, and this concept is what allows MessageAPI to provide a powerful abstract framework on top of arbitrary messages. Each of these dimensions has its own particular properties which define it. All also include a catchall 'metadata' property for storage of other useful self-documenting information, such as version or identifying labels.
 
+#### MessageAPI Session Topology
+
 Here we describe the three dimensions of a MessageAPI session:
 
- - Schemas
-    - Schemas are what define records as seen by the session holder. This is the part of the topology which defines what fields a record will have, any conditions on those fields, and an operator factory class that provides methods on evaluating fields against conditions (conditions may contain arbitrary logic).
+ ##### Schemas
 
-    A schema field set is a flat set of field definitions - for example, software that wants to pass email messages through MessageAPI could have a field set of 'email, subject, body'.
+Schemas are what define records as seen by the session holder. This is the part of the topology which defines what fields a record will have, any conditions on those fields, and an operator factory class that provides methods on evaluating fields against conditions (conditions may contain arbitrary logic).
 
-    In the provided schema class, fields need to be provided with a 'name', 'type', and 'required' properties.
+A schema field set is a flat set of field definitions - for example, software that wants to pass email messages through MessageAPI could have a field set of 'email, subject, body'.
 
-    The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. Conditions can be set on these fields that qualify records when passed in, serving as a potentially powerful filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator.
+In the provided schema class, fields need to be provided with a 'name', 'type', and 'required' properties.
 
-    There are two provided types in the default - composite and comparison.
+The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. Conditions can be set on these fields that qualify records when passed in, serving as a potentially powerful filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator.
 
-    Comparison type conditions are direct comparisons (things like equivalency, greater than, etc.) while composite conditions reference other conditions and specify either an 'and' or an 'or' operator. This allows multiple conditions to be nested, referenced by their IDs.
+There are two provided types in the default - composite and comparison.
 
-    Composite conditions can also include other composite conditions and will be unpacked and applied recursively. The only restriction on conditions is that no infinite loops are permitted. Conditions are applied on both 'get' and 'put' type operations, which provide a SQL type selection for records in arbitrary containers.
+Comparison type conditions are direct comparisons (things like equivalency, greater than, etc.) while composite conditions reference other conditions and specify either an 'and' or an 'or' operator. This allows multiple conditions to be nested, referenced by their IDs.
 
-    - A schema 'metadata' json specification file (metadata.json)
+Composite conditions can also include other composite conditions and will be unpacked and applied recursively. The only restriction on conditions is that no infinite loops are permitted. Conditions are applied on both 'get' and 'put' type operations, which provide a SQL type selection for records in arbitrary containers.
+
+- A schema 'metadata' json specification file (metadata.json)
       ```
       {
           "metadata": {
@@ -94,7 +97,7 @@ Here we describe the three dimensions of a MessageAPI session:
       }
       ```
 
-    - A schema 'fields' json specification file (fields.json)
+- A schema 'fields' json specification file (fields.json)
      ```
      {
          "fields": [
@@ -137,7 +140,7 @@ Here we describe the three dimensions of a MessageAPI session:
      }
      ```
 
-     - A schema 'conditions' json specification file (conditions.json)
+- A schema 'conditions' json specification file (conditions.json)
      ```
      {
          "conditions": [
@@ -185,16 +188,16 @@ Here we describe the three dimensions of a MessageAPI session:
      }
      ```
 
- - Containers
-    - Containers are what define records as seen by the session target(s), either as the source (for gets) or destination (for puts) of some data (or both, for situations where there is two-way data flow). There can be multiple containers per session and fields defined in the schema can exist on more than one container.
+##### Containers
+Containers are what define records as seen by the session target(s), either as the source (for gets) or destination (for puts) of some data (or both, for situations where there is two-way data flow). There can be multiple containers per session and fields defined in the schema can exist on more than one container.
 
-    Containers conceptually represent different endpoints - e.g., different tables in a database, different databases, an email address, a directory, a file, a Kafka topic, etc. Because records passed in a session can be parsed into multiple containers, records or parts of records can be passed to multiple endpoints concurrently in a single request.
+Containers conceptually represent different endpoints - e.g., different tables in a database, different databases, an email address, a directory, a file, a Kafka topic, etc. Because records passed in a session can be parsed into multiple containers, records or parts of records can be passed to multiple endpoints concurrently in a single request.
 
-    Some containers may have relationships defined between them, and these are defined in the relationships spec attached to the containers spec. These relationships are evaluated when processing 'get' type requests in order to ensure that users always see returned records in the flat structure specified in the schema.
+Some containers may have relationships defined between them, and these are defined in the relationships spec attached to the containers spec. These relationships are evaluated when processing 'get' type requests in order to ensure that users always see returned records in the flat structure specified in the schema.
 
-    Relationships are completely unnecessary in many situations if data is being pushed.
+Relationships are completely unnecessary in many situations if data is being pushed.
 
-    - A container 'metadata' json specification file (metadata.json)
+- A container 'metadata' json specification file (metadata.json)
       ```
       {
           "metadata": {
@@ -205,7 +208,7 @@ Here we describe the three dimensions of a MessageAPI session:
       }
       ```
 
-    - A container 'containers' json specification file (containers.json)
+- A container 'containers' json specification file (containers.json)
         ```
         {
             "containers": [
@@ -223,7 +226,7 @@ Here we describe the three dimensions of a MessageAPI session:
         }
         ```
 
-    - A container 'relationships' json specification file (relationships.json)
+- A container 'relationships' json specification file (relationships.json)
         ```
           {
               "relationships": [
@@ -238,16 +241,18 @@ Here we describe the three dimensions of a MessageAPI session:
           }
         ```
 
- - Protocols
-    - Protocols are specialized, library specific implementations that translate between container record sets and some external system. These protocols are the parts of the system that call out to the external world, such as FTP servers, email clients, Kafka topics, or similar things.
+##### Protocols
+Protocols are specialized, library specific implementations that translate between container record sets and some external system. These protocols are the parts of the system that call out to the external world, such as FTP servers, email clients, Kafka topics, or similar things.
 
-    Protocols depend on the system that needs to be called out to, so they are more specialized plugin components than the schema or container parts of MessageAPI, which can generally be reused with almost any message type.
-
-```
+Protocols depend on the system that needs to be called out to, so they are more specialized plugin components than the schema or container parts of MessageAPI, which can generally be reused with almost any message type.
 
 ```
 
- Now that we've described the general topology, we will describe how a typical program will use this system using the API available.
+```
+
+#### MessageAPI API and Examples
+
+Now that we've described the general topology, we will describe how a typical program will use this system using the API available.
 
 All important parts of the MessageAPI model can be imported as interfaces. By convention, interfaces in MessageAPI begin with a capital I, followed by the word for the model component that the interface represents (no space). The most important interfaces of MessageAPI  that will probably be used are the ISession, IRequest, IRecord, and IResponse interfaces. Other interfaces that are useful are the IRejection, IField, IRelationship, and ICondition interfaces.
 
@@ -257,8 +262,10 @@ Use the imported SessionFactory to create an ISession (pass the path to a specif
 
 All of the interface documentation should be found in the corresponding javadoc. If it's there, please add and make a pull request for the documentation if you know what the interface does, or file a bug and the documentation will be updated when possible.
 
+##### API Examples
 To illustrate a typical use case, we will give a couple of examples - the first is adding some records, the second is getting some records.
 
+###### Adding Records
 Here is how a class would add records with conditions from a list of program records according to a message api spec.
 
 ```
@@ -300,9 +307,10 @@ public class addRecordsTest {
     }
 }
 ```
+
 There is a lot going on in the above example, but it's all straightforward.
 
-We first create a persistent session object based on a given spec when the class is loaded somewhere else. This session then has a defined schema, container set, and protocol which were all based on some runtime loaded text files.
+We first create a persistent session object based on a given spec when the example class is instantiated somewhere else. This session that is created then immediately has a concretely-defined schema, container set, and protocol which were all based on some runtime loaded text files.
 
 When the addRecords method is called with a bunch of string based records, an add request is then created from the session. The add request is then populated with records (using createRecord on the request) for every record that the user has. This is done by setting field values for the record - again, these fields are all in the declarative spec that was loaded when the session was loaded.
 
