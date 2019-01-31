@@ -88,6 +88,7 @@ Comparison type conditions are direct comparisons (things like equivalency, grea
 Composite conditions can also include other composite conditions and will be unpacked and applied recursively. The only restriction on conditions is that no infinite loops are permitted. Conditions are applied on both 'get' and 'put' type operations, which provide a SQL type selection for records in arbitrary containers.
 
 - A schema 'metadata' json specification file (metadata.json)
+
       ```
       {
           "metadata": {
@@ -98,6 +99,7 @@ Composite conditions can also include other composite conditions and will be unp
       ```
 
 - A schema 'fields' json specification file (fields.json)
+
      ```
      {
          "fields": [
@@ -141,6 +143,7 @@ Composite conditions can also include other composite conditions and will be unp
      ```
 
 - A schema 'conditions' json specification file (conditions.json)
+
      ```
      {
          "conditions": [
