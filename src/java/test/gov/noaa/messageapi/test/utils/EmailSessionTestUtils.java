@@ -28,12 +28,37 @@ public class EmailSessionTestUtils {
         record.setField("body", body);
     }
 
-    public static IRequest getTestRequest1() throws Exception {
+    public static void setTestRecordConditions(IRecord record, String senderequals) {
+        record.setCondition("senderequals", senderequals);
+    }
+
+    public static IRequest getTestAddRequest1() throws Exception {
         IRequest request = getAddRequest();
         setTestRecordFields(request.createRecord(),"sender1", "recipient1", "subject1", "body1");
         setTestRecordFields(request.createRecord(),"sender2", "recipient2", "subject2", "body2");
         setTestRecordFields(request.createRecord(),"sender3", "recipient3", "subject3", "body3");
         setTestRecordFields(request.createRecord(), null, "recipient1", "subject1", "body1");
+        return request;
+    }
+
+    public static IRequest getTestAddRequest2() throws Exception {
+        IRequest request = getAddRequest();
+        IRecord record1 = request.createRecord();
+        IRecord record2 = request.createRecord();
+        IRecord record3 = request.createRecord();
+        IRecord record4 = request.createRecord();
+        setTestRecordFields(record1,"sender1", "recipient1", "subject1", "body1");
+        setTestRecordFields(record2,"sender2", "recipient2", "subject2", "body2");
+        setTestRecordFields(record3,"sender3", "recipient3", "subject3", "body3");
+        setTestRecordFields(record4, "sender4", "recipient1", "subject1", "body1");
+        //we dont set a condition on record1, any sender is ok (success)
+        setTestRecordConditions(record2, "sender2"); //record 2 must have a sender of sender2 (success)
+        setTestRecordConditions(record3, "sender1"); //record 3 must have a sender of sender1 (fail)
+        setTestRecordConditions(record4, "sender1"); //record 4 must have a sender of sender1 (fail)
+        System.out.println(record2.getConditions().get(0).getId());
+        System.out.println(record2.getConditions().get(0).getType());
+        System.out.println(record2.getConditions().get(0).getOperator());
+        System.out.println(record2.getConditions().get(0).getValue());
         return request;
     }
 }

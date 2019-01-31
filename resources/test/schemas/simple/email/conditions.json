@@ -1,3 +1,11 @@
 {
-    "conditions": []
+    "conditions": [
+        {
+            "id": "senderequals",
+            "type": "comparison",
+            "operator": "=",
+            "field": "sender",
+            "value": null
+        }
+    ]
 }
