@@ -13,11 +13,11 @@ class RejectionUtilsUnitTests extends spock.lang.Specification {
 
 
     def "Tests rejection of a missing required record in a set with proper return message."() {
-        given:
+        given: "A standard email session test setup with add request"
             IRequest testRequest = EmailSessionTestUtils.getTestRequest1()
-        when:
+        when: "we pass the request through the rejection utils method to test rejecting missing required fields"
             List<IRejection> rejections = RejectionUtils.getRequiredFieldRejections(testRequest.getRecords());
-        then:
+        then: "we should reject 1 record due to a missing value on a required field, and the message should be correct"
             rejections.size() == 1
             rejections.get(0).getReasons().size() == 1
             rejections.get(0).getReasons().get(0) == "Required field sender was missing a value."
