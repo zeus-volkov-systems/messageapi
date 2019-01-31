@@ -20,9 +20,9 @@ class FieldUtilsUnitTests extends spock.lang.Specification {
             ISchema testSchema = testRequest.getSchema()
             IRecord testRecord = testRequest.getRecords().get(1)
             List<ICondition> testConditions = testRecord.getConditions()
-        when: "we look at the top level conditions"
+        when: "We validate a record against its field conditions"
             boolean isValid = FieldUtils.validateConditions(testSchema, testRecord, testConditions)
-        then: "The record should satisfy these conditions"
+        then: "The record should be valid (we expect conditions to be satisfied using this test data)"
             isValid == true
         }
 
