@@ -55,10 +55,6 @@ public class EmailSessionTestUtils {
         setTestRecordConditions(record2, "sender2"); //record 2 must have a sender of sender2 (success)
         setTestRecordConditions(record3, "sender1"); //record 3 must have a sender of sender1 (fail)
         setTestRecordConditions(record4, "sender1"); //record 4 must have a sender of sender1 (fail)
-        System.out.println(record2.getConditions().get(0).getId());
-        System.out.println(record2.getConditions().get(0).getType());
-        System.out.println(record2.getConditions().get(0).getOperator());
-        System.out.println(record2.getConditions().get(0).getValue());
         return request;
     }
 }

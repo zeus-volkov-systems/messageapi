@@ -120,7 +120,7 @@ public class FieldUtils {
     private static boolean evaluateFieldCondition(ISchema s, IRecord r, ICondition condition) {
         if (condition.getType().equals("comparison")) {
             IComparisonCondition c = (IComparisonCondition) condition;
-            if (validateFieldCondition(s, c.getOperator(), r.getField(c.getField()), c)) {
+            if (validateFieldCondition(s, r.getField(c.getField()).getType(), r.getField(c.getField()), c)) {
                 return true;
             }
             return false;
