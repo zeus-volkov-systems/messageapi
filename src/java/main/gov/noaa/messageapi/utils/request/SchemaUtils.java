@@ -32,7 +32,7 @@ public class SchemaUtils {
                 return r.getRecord();
             }).collect(Collectors.toList());
             List<IRecord> filteredRecords = records.stream()
-                .filter(r -> rejectedRecords.contains(r)).collect(Collectors.toList());
+                .filter(r -> !rejectedRecords.contains(r)).collect(Collectors.toList());
             return filteredRecords;
         }
         return records;
