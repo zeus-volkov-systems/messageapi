@@ -71,4 +71,18 @@ public class EmailSessionTestUtils {
         return request;
     }
 
+    public static IRequest getTestAddRequest4() throws Exception {
+        IRequest request = getAddRequest();
+        IRecord record1 = request.createRecord();
+        IRecord record2 = request.createRecord();
+        IRecord record3 = request.createRecord();
+        IRecord record4 = request.createRecord();
+        setTestRecordFields(record1,"sender1", "recipient1", "subject1", "body1");
+        setTestRecordFields(record2, null, "recipient2", "subject2", "body2");
+        setTestRecordFields(record3,"sender3", "recipient3", "subject3", "body3");
+        setTestRecordFields(record4, "sender4", "recipient1", "subject1", "body1");
+        return request;
+    }
+
+
 }

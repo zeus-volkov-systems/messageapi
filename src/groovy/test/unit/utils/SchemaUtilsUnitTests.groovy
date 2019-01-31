@@ -47,7 +47,7 @@ class SchemaUtilsUnitTests extends spock.lang.Specification {
         given: "a request with a set of records"
             IRequest testRequest = EmailSessionTestUtils.getTestAddRequest2()
             List<IRecord> testRecords = testRequest.getRecords()
-        when: "we remove fields from records where the fields have not been assigned values"
+        when: "we remove conditions from records where the conditions have not been assigned values"
             List<IRecord> updatedTestRecords = SchemaUtils.filterNonValuedConditions(testRecords)
         then: "All records should still exist, but their condition sets should be adjusted based on rejected fields"
             updatedTestRecords.size() == 4
@@ -56,6 +56,21 @@ class SchemaUtilsUnitTests extends spock.lang.Specification {
             updatedTestRecords.get(2).getConditions().size() == 1
             updatedTestRecords.get(3).getConditions().size() == 1
         }
+
+    def "Tests filtering non-valued conditions from records in a record set."() {
+        given: "a request with a set of records"
+            IRequest testRequest = EmailSessionTestUtils.getTestAddRequest4()
+            List<IRecord> testRecords = testRequest.getRecords()
+        when: "we remove fields from records where the fields have not been assigned values and then remove associated conditions that reference those fields"
+            List<IRecord> updatedTestRecords = SchemaUtils.filterFieldlessConditions(SchemaUtils.filterNonValuedFields(testRecords))
+        then: "All records should still exist, but their condition sets should be adjusted based on rejected fields"
+            updatedTestRecords.size() == 4
+            updatedTestRecords.get(0).getConditions().size() == 1
+            updatedTestRecords.get(1).getConditions().size() == 0
+            updatedTestRecords.get(2).getConditions().size() == 1
+            updatedTestRecords.get(3).getConditions().size() == 1
+        }
+
 
 
 }
