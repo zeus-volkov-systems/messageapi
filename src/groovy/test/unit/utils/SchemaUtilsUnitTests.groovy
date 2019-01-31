@@ -29,4 +29,18 @@ class SchemaUtilsUnitTests extends spock.lang.Specification {
         }
 
 
+    def "Tests filtering non-valued fields from records in a record set."() {
+        given: "a request with a set of records"
+            IRequest testRequest = EmailSessionTestUtils.getTestAddRequest3()
+            List<IRecord> testRecords = testRequest.getRecords()
+        when: "we remove fields from records where the fields have not been assigned values"
+            List<IRecord> updatedTestRecords = SchemaUtils.filterNonValuedFields(testRecords)
+        then: "All records should still exist, but their field sets should be adjusted based on rejected fields"
+            updatedTestRecords.size() == 4
+            updatedTestRecords.get(0).getFields().size() == 4
+            updatedTestRecords.get(1).getFields().size() == 4
+            updatedTestRecords.get(2).getFields().size() == 3
+            updatedTestRecords.get(3).getFields().size() == 3
+        }
+
 }
