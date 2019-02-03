@@ -1,6 +1,7 @@
 package gov.noaa.messageapi.utils.request;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.ISchema;
@@ -41,7 +42,7 @@ public class RejectionUtils {
         if (!ListUtils.isAllNulls(rejections)) {
             return ListUtils.removeAllNulls(rejections);
         }
-        return null;
+        return new ArrayList<IRejection>();
     }
 
     /**
@@ -63,7 +64,7 @@ public class RejectionUtils {
         if (!ListUtils.isAllNulls(rejections)) {
             return ListUtils.removeAllNulls(rejections);
         }
-        return null;
+        return new ArrayList<IRejection>();
     }
 
 }
