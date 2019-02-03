@@ -152,7 +152,10 @@ public class FieldUtils {
      */
     private static boolean evaluateAndCondition(ISchema s, IRecord r, List<ICondition> conditions) {
         List<Boolean> results = conditions.stream()
-            .map(c -> evaluateFieldCondition(s, r, c)).collect(Collectors.toList());
+            .map(c -> {
+                return evaluateFieldCondition(s, r, c);
+            }).collect(Collectors.toList());
+        System.out.println("FINAL LIST: " + results);
         if (ListUtils.eliminateDuplicates(results).contains(true) && results.size() == 1) {
             return true;
         }
