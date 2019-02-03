@@ -90,10 +90,13 @@ public class FieldUtils {
      * @return            Whether or not the record satisfies all conditions
      */
     public static boolean validateConditions(ISchema schema, IRecord record, List<ICondition> conditions) {
-        if (evaluateAndCondition(schema, record, conditions)) {
-            return true;
+        if (conditions.size() > 0) {
+            if (evaluateAndCondition(schema, record, conditions)) {
+                return true;
+            }
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**
