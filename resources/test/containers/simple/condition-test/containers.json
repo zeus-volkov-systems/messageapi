@@ -1,0 +1,14 @@
+{
+    "containers": [
+        {
+            "name": "required-fields",
+            "namespace": "condition-test",
+            "fields": ["boolean-required", "float-required", "integer-required", "string-required", "datetime-required"]
+        },
+        {
+            "name": "optional-fields",
+            "namespace": "condition-test",
+            "fields": ["boolean-optional", "float-optional", "integer-optional", "string-optional", "datetime-optional"]
+        }
+    ]
+}

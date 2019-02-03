@@ -1,0 +1,54 @@
+{
+    "fields": [
+        {
+            "name": "boolean-required",
+            "type": "boolean",
+            "required": true
+        },
+        {
+            "name": "boolean-optional",
+            "type": "boolean",
+            "required": false
+        },
+        {
+            "name": "float-required",
+            "type": "float",
+            "required": true
+        },
+        {
+            "name": "float-optional",
+            "type": "float",
+            "required": false
+        },
+        {
+            "name": "integer-required",
+            "type": "integer",
+            "required": true
+        },
+        {
+            "name": "integer-optional",
+            "type": "integer",
+            "required": false
+        },
+        {
+            "name": "string-required",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "string-optional",
+            "type": "string",
+            "required": false
+        },
+        {
+            "name": "datetime-required",
+            "type": "datetime",
+            "required": true
+        },
+        {
+            "name": "datetime-optional",
+            "type": "datetime",
+            "required": false
+        },
+    ]
+}

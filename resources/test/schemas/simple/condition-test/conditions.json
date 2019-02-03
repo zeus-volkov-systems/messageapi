@@ -1,0 +1,24 @@
+{
+    "conditions": [
+        {
+            "id": "string-required-equals-1",
+            "type": "comparison",
+            "operator": "=",
+            "field": "string-required",
+            "value": null
+        },
+        {
+            "id": "string-required-equals-2",
+            "type": "comparison",
+            "operator": "=",
+            "field": "string-required",
+            "value": null
+        },
+        {
+            "id": "string-requires-composite",
+            "type": "composite",
+            "operator": "or",
+            "conditions": ["string-required-equals-1", "string-required-equals-2"]
+        }
+    ]
+}
