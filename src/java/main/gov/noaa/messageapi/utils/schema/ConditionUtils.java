@@ -213,7 +213,7 @@ public class ConditionUtils {
             compositeConditions.stream()
             .map(composite -> {
                 return getRootConditions(list, r.getCondition(composite), r);
-            });
+            }).collect(Collectors.toList());
         }
         return ListUtils.eliminateDuplicates(list);
     }
@@ -236,7 +236,7 @@ public class ConditionUtils {
             .map(composite -> {
                 list.add(composite);
                 return getChildConditions(list, r.getCondition(composite), r);
-            });
+            }).collect(Collectors.toList());
         }
         return ListUtils.eliminateDuplicates(list);
     }
