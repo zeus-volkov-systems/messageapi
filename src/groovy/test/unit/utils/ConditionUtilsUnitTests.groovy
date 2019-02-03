@@ -9,6 +9,7 @@ import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.ICondition;
 
 import gov.noaa.messageapi.test.utils.EmailSessionTestUtils;
+import gov.noaa.messageapi.test.utils.ConditionTestSessionTestUtils;
 
 class ConditionUtilsUnitTests extends spock.lang.Specification {
 
@@ -23,6 +24,18 @@ class ConditionUtilsUnitTests extends spock.lang.Specification {
             conditions.size() == 1
             conditions.get(0).getId() == "senderequals"
     }
+
+    def "Tests assembly of top level conditions on a nested condition set."() {
+        given: "A standard condition-test session test setup with add request and the first record in that request"
+            IRequest testRequest = ConditionTestSessionTestUtils.getTestAddRequest1()
+            IRecord record1 = testRequest.getRecords().get(0)
+        when: "we look at the top level conditions"
+            List<ICondition> conditions = ConditionUtils.getTopLevelConditions(record1);
+        then: "we should get one top level condition"
+            conditions.size() == 1
+            conditions.get(0).getId() == "string-requires-composite"
+    }
+
 
 
 }
