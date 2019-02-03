@@ -40,9 +40,6 @@ public class ConditionTestSessionTestUtils {
         IRecord r1 = request.createRecord();
         setTestRecordFields(r1, true, new Float(3.14159), 42, "test-string-value", new Date());
         setTestRecordConditions(r1, "test-string-value1", "test-string-value");
-        System.out.println(r1.getField("string-required").getValue());
-        System.out.println(r1.getCondition("string-required-equals-1").getValue());
-        System.out.println(r1.getCondition("string-required-equals-2").getValue());
         return request;
     }
 }
