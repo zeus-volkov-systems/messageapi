@@ -155,7 +155,8 @@ public class FieldUtils {
             .map(c -> {
                 return evaluateFieldCondition(s, r, c);
             }).collect(Collectors.toList());
-        if (ListUtils.eliminateDuplicates(results).contains(true) && results.size() == 1) {
+        List<Boolean> uniqueResults = ListUtils.eliminateDuplicates(results);
+        if (uniqueResults.contains(true) && uniqueResults.size() == 1) {
             return true;
         }
         return false;
