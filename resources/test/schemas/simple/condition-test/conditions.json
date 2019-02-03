@@ -19,6 +19,13 @@
             "type": "composite",
             "operator": "or",
             "conditions": ["string-required-equals-1", "string-required-equals-2"]
+        },
+        {
+            "id": "integer-required-less-than",
+            "type": "comparison",
+            "operator": "<",
+            "field": "integer-required",
+            "value": null
         }
     ]
 }
