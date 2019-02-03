@@ -3,6 +3,7 @@
  */
 
 import gov.noaa.messageapi.test.utils.EmailSessionTestUtils;
+import gov.noaa.messageapi.test.utils.ConditionTestSessionTestUtils;
 
 import gov.noaa.messageapi.factories.SessionFactory;
 import gov.noaa.messageapi.interfaces.ISession;
@@ -50,5 +51,13 @@ class RequestUnitTests extends spock.lang.Specification {
             rej2.getRecord().getField("sender").getValue() == "sender1"
         }
 
+    def "Test add request preparation with nested conditions."() {
+        given: "A standard email session test setup with add request and the first record in that request"
+            IRequest testRequest = ConditionTestSessionTestUtils.getTestAddRequest1()
+        when: "We call prepare on the test request"
+            List<IRejection> rejections = testRequest.prepare()
+        then: "We should have no rejections"
+            rejections.size() == 0
+        }
 
 }
