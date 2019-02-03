@@ -30,16 +30,17 @@ public class ConditionTestSessionTestUtils {
         record.setField("datetime-required", d);
     }
 
-    public static void setTestRecordConditions(IRecord record, String s1, String s2) {
+    public static void setTestRecordConditions(IRecord record, String s1, String s2, Integer i1) {
         record.setCondition("string-required-equals-1", s1);
         record.setCondition("string-required-equals-2", s2);
+        record.setCondition("integer-required-less-than", i1);
     }
 
     public static IRequest getTestAddRequest1() throws Exception {
         IRequest request = getAddRequest();
         IRecord r1 = request.createRecord();
         setTestRecordFields(r1, true, new Float(3.14159), 42, "test-string-value", new Date());
-        setTestRecordConditions(r1, "test-string-value1", "test-string-value");
+        setTestRecordConditions(r1, "test-string-value1", "test-string-value", 50);
         return request;
     }
 }
