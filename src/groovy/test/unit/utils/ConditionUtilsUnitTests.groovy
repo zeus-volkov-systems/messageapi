@@ -32,8 +32,9 @@ class ConditionUtilsUnitTests extends spock.lang.Specification {
         when: "we look at the top level conditions"
             List<ICondition> conditions = ConditionUtils.getTopLevelConditions(record1);
         then: "we should get one top level condition"
-            conditions.size() == 1
+            conditions.size() == 2
             conditions.get(0).getId() == "string-requires-composite"
+            conditions.get(1).getId() == "integer-required-less-than"
     }
 
 
