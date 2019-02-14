@@ -11,6 +11,16 @@
             "required": false
         },
         {
+            "name": "float-required",
+            "type": "float",
+            "required": true
+        },
+        {
+            "name": "float-optional",
+            "type": "float",
+            "required": false
+        },
+        {
             "name": "double-required",
             "type": "double",
             "required": true
