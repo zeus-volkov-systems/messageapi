@@ -5,6 +5,7 @@ import gov.noaa.messageapi.interfaces.IOperatorFactory;
 
 import gov.noaa.messageapi.operators.BooleanOperator;
 import gov.noaa.messageapi.operators.FloatOperator;
+import gov.noaa.messageapi.operators.DoubleOperator;
 import gov.noaa.messageapi.operators.IntegerOperator;
 import gov.noaa.messageapi.operators.StringOperator;
 import gov.noaa.messageapi.operators.DateTimeOperator;
@@ -46,6 +47,8 @@ public class OperatorFactory implements IOperatorFactory {
                 return new BooleanOperator();
             case "float":
                 return new FloatOperator();
+            case "double":
+                return new DoubleOperator();
             case "integer":
                 return new IntegerOperator();
             case "string":

@@ -11,13 +11,13 @@
             "required": false
         },
         {
-            "name": "float-required",
-            "type": "float",
+            "name": "double-required",
+            "type": "double",
             "required": true
         },
         {
-            "name": "float-optional",
-            "type": "float",
+            "name": "double-optional",
+            "type": "double",
             "required": false
         },
         {
@@ -49,6 +49,6 @@
             "name": "datetime-optional",
             "type": "datetime",
             "required": false
-        },
+        }
     ]
 }
