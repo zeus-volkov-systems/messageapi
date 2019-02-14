@@ -3,12 +3,17 @@
         {
             "name": "required-fields",
             "namespace": "condition-test",
-            "fields": ["boolean-required", "float-required", "integer-required", "string-required", "datetime-required"]
+            "fields": ["boolean-required", "float-required", "double-required", "integer-required", "string-required", "datetime-required"]
         },
         {
             "name": "optional-fields",
             "namespace": "condition-test",
-            "fields": ["boolean-optional", "float-optional", "integer-optional", "string-optional", "datetime-optional"]
+            "fields": ["boolean-optional", "float-optional", "double-optional", "integer-optional", "string-optional", "datetime-optional"]
+        },
+        {
+            "name": "mix-and-match",
+            "namespace": "condition-test",
+            "fields": ["string-required", "string-optional", "datetime-required"]
         }
     ]
 }
