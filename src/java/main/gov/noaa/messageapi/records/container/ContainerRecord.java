@@ -43,7 +43,7 @@ public class ContainerRecord implements IContainerRecord {
 
     private void setFieldSets(List<IFieldSet> fieldSets) {
         this.fieldSets = fieldSets.stream().map(fieldSet -> {
-            return new FieldSet(fieldSet);
+            return fieldSet.getCopy();
         }).collect(Collectors.toList());
     }
 
