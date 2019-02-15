@@ -15,7 +15,7 @@ public class SimpleField implements IField {
 
     private String name = null;
     private String type = null;
-    private Boolean required = null;
+    private Boolean required = false;
     private Object value = null;
     private Boolean valid = true;
 
@@ -30,10 +30,10 @@ public class SimpleField implements IField {
     }
 
     public SimpleField(IField field) {
-        this.name = (String) field.getName();
-        this.type = (String) field.getType();
-        this.required = (boolean) field.isRequired();
-        this.valid = (boolean) field.isValid();
+        this.name = field.getName();
+        this.type = field.getType();
+        this.required = field.isRequired();
+        this.valid = field.isValid();
         this.value = field.getValue();
     }
 
