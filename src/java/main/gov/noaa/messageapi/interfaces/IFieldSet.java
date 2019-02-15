@@ -9,5 +9,6 @@ public interface IFieldSet {
     public String getName();
     public String getNamespace();
     public List<IField> getFields();
+    public IFieldSet getCopy();
 
 }
