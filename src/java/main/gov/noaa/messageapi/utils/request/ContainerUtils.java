@@ -1,29 +1,46 @@
 package gov.noaa.messageapi.utils.request;
 
-import gov.noaa.messageapi.utils.containers.UnitUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IContainer;
-import gov.noaa.messageapi.interfaces.IContainerUnit;
-import gov.noaa.messageapi.interfaces.IRelationship;
-import gov.noaa.messageapi.records.container.RootUnit;
-import gov.noaa.messageapi.utils.containers.RelationshipUtils;
+import gov.noaa.messageapi.interfaces.IContainerRecord;
+import gov.noaa.messageapi.interfaces.IFieldSet;
+
+import gov.noaa.messageapi.records.container.ContainerRecord;
+
+import gov.noaa.messageapi.utils.containers.FieldSetUtils;
 
 public class ContainerUtils {
 
-    public static List<IContainerUnit> getContainers(IContainer container, List<IRecord> records) {
-        IContainerUnit recordBlueprint = getBlueprint(container);
-        return records.stream().map(r -> {
-            return recordBlueprint.getCopy(r);
+    /**
+     * Converts a set of schema records to container records according to the specified container.
+     * This involves first creating a record blueprint based on the container definition (which contains
+     * field sets (called field units), and relationship sets (called relationship units), and then
+     * duplicating the record blueprint for every schema record and copying values from those fields
+     * to any matching field unit.
+     * @param  container The container containing definitions of field units and relationship units
+     * @param  records   The schema records to be converted to container records
+     * @return           A list of container records
+     */
+    public static List<IContainerRecord> convertSchemaRecords(IContainer container, List<IRecord> schemaRecords) {
+        IContainerRecord containerRecordTemplate = createRecordTemplate(container);
+        return schemaRecords.stream().map(schemaRecord -> {
+            return FieldSetUtils.setFieldValues(containerRecordTemplate.getCopy(), schemaRecord.getFields());
         }).collect(Collectors.toList());
     }
 
-    public static IContainerUnit getBlueprint(IContainer container) {
-        List<IContainerUnit> fieldUnits = UnitUtils.buildFieldUnits(container.getDefinition().getContainerMaps());
-        List<IRelationship> relationships = RelationshipUtils.buildRelationships(container.getDefinition().getRelationshipMaps());
-        return new RootUnit(fieldUnits, relationships);
+    /**
+     * Creates an empty record for use in record conversion by copy. Uses the
+     * definition of the provided container to create a new empty record object,
+     * with
+     * @param  container The container containing a definition that the template ContainerRecord object will be based on
+     * @return           A new, empty,
+     */
+    public static IContainerRecord createRecordTemplate(IContainer container) {
+        List<IFieldSet> fieldSets = FieldSetUtils.buildFieldSets(container.getDefinition().getContainerMaps());
+        return new ContainerRecord(fieldSets);
     }
 
 }
