@@ -60,4 +60,15 @@ class RequestUnitTests extends spock.lang.Specification {
             rejections.size() == 0
         }
 
+    def "Test add request preparation and processing with nested conditions."() {
+        given: "A standard email session test setup with add request and the first record in that request"
+            IRequest testRequest = ConditionTestSessionTestUtils.getTestAddRequest1()
+        when: "We call prepare on the test request"
+            List<IRejection> rejections = testRequest.prepare()
+            List<IRecord> finalRecords = testRequest.process()
+        then: "We should have no rejections"
+            rejections.size() == 0
+        }
+
+
 }
