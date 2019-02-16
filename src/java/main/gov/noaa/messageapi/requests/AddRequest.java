@@ -46,17 +46,6 @@ public class AddRequest extends BaseRequest implements IRequest {
 
     public List<IRecord> process() {
         List<IContainerRecord> containerRecords = ContainerUtils.convertSchemaRecords(this.getContainer(), this.getRecords());
-        System.out.println("Container records...");
-        containerRecords.stream().forEach(cR -> {
-            cR.getFieldSets().stream().forEach(fS -> {
-                System.out.println("Container Name: " + fS.getName());
-                System.out.println("Container Namespace: " + fS.getName());
-                System.out.println("...Fields...");
-                fS.getFields().stream().forEach(f -> {
-                    System.out.println(f.getName() + ": " + f.getValue());
-                });
-            });
-        });
         return this.records;
     }
 

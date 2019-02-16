@@ -52,7 +52,7 @@ class RequestUnitTests extends spock.lang.Specification {
         }
 
     def "Test add request preparation with nested conditions."() {
-        given: "A standard email session test setup with add request and the first record in that request"
+        given: "A standard condition session test setup with add request and the first record in that request"
             IRequest testRequest = ConditionTestSessionTestUtils.getTestAddRequest1()
         when: "We call prepare on the test request"
             List<IRejection> rejections = testRequest.prepare()
@@ -61,7 +61,7 @@ class RequestUnitTests extends spock.lang.Specification {
         }
 
     def "Test add request preparation and processing with nested conditions."() {
-        given: "A standard email session test setup with add request and the first record in that request"
+        given: "A standard condition session test setup with add request and the first record in that request"
             IRequest testRequest = ConditionTestSessionTestUtils.getTestAddRequest1()
         when: "We call prepare on the test request"
             List<IRejection> rejections = testRequest.prepare()
@@ -69,6 +69,5 @@ class RequestUnitTests extends spock.lang.Specification {
         then: "We should have no rejections"
             rejections.size() == 0
         }
-
 
 }
