@@ -13,14 +13,14 @@ import gov.noaa.messageapi.interfaces.IMetadata;
 public class DefaultMetadata implements IMetadata {
 
     private String id = null;
-    private String version = null;
+    private Object version = null;
     private String description = null;
     private Map<String,Object> classifiers = null;
 
     @SuppressWarnings("unchecked")
     public DefaultMetadata(Map<String, Object> metadataMap) {
         setId((String) metadataMap.get("id"));
-        setVersion((String) metadataMap.get("version"));
+        setVersion(metadataMap.get("version"));
         setClassifiers((Map<String,Object>) metadataMap.get("classifiers"));
         setDescription((String) metadataMap.get("description"));
     }
@@ -29,7 +29,7 @@ public class DefaultMetadata implements IMetadata {
         return this.id;
     }
 
-    public String getVersion() {
+    public Object getVersion() {
         return this.version;
     }
 
@@ -49,7 +49,7 @@ public class DefaultMetadata implements IMetadata {
         this.id = id;
     }
 
-    private void setVersion(String version) {
+    private void setVersion(Object version) {
         this.version = version;
     }
 

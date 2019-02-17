@@ -10,7 +10,6 @@ import gov.noaa.messageapi.definitions.SchemaDefinition;
 
 public interface ISchema extends IComponent {
 
-    public String getName();
     public SchemaDefinition getDefinition();
     public void initialize(IContainer c, IProtocol p);
     public IRecord createRecord();

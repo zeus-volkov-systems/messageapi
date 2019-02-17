@@ -4,12 +4,14 @@ import java.util.Map;
 import java.util.HashMap;
 
 import gov.noaa.messageapi.interfaces.IProtocol;
+import gov.noaa.messageapi.interfaces.IMetadata;
 import gov.noaa.messageapi.definitions.ProtocolDefinition;
 
 public class BaseProtocol {
 
     private Map<String, Object> properties;
     protected ProtocolDefinition definition;
+    protected IMetadata metadata = null;
 
     public BaseProtocol(Map<String, Object> properties) {
         setProperties(properties);
@@ -44,6 +46,10 @@ public class BaseProtocol {
 
     public ProtocolDefinition getDefinition() {
         return this.definition;
+    }
+
+    public IMetadata getMetadata() {
+        return this.metadata;
     }
 
     protected void createProtocolDefinition(Map<String,Object> properties) throws Exception {

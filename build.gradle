@@ -28,9 +28,7 @@ repositories {
 }
 
 dependencies {
-    compile ("org.apache.logging.log4j:log4j-api:${log4jVersion}",
-             "org.apache.logging.log4j:log4j-core:${log4jVersion}",
-             "com.googlecode.json-simple:json-simple:${jsonSimpleVersion}",
+    compile ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}",
              "org.codehaus.groovy:groovy-all:${groovyVersion}")
     testCompile ("org.codehaus.groovy:groovy-all:${groovyVersion}",
                   "junit:junit:${jUnitVersion}",

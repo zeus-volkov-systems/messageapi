@@ -5,7 +5,9 @@ import java.util.Map;
 import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IContainer;
+
 import gov.noaa.messageapi.containers.BaseContainer;
+import gov.noaa.messageapi.metadata.DefaultMetadata;
 
 public class DefaultContainer extends BaseContainer implements IContainer {
 
@@ -15,6 +17,7 @@ public class DefaultContainer extends BaseContainer implements IContainer {
 
     public DefaultContainer(IContainer container) {
         super(container);
+        this.setMetadata(container.getDefinition().getMetadataMap());
     }
 
     public IContainer getCopy() {
@@ -24,15 +27,16 @@ public class DefaultContainer extends BaseContainer implements IContainer {
     public void initialize(IProtocol p, ISchema s) {
         try {
             this.createContainerDefinition(this.getProperties());
+            this.setMetadata(this.definition.getMetadataMap());
         } catch (Exception e) {}
     }
 
     public String getType() {
-        return (String) this.definition.getMetadataMap().get("type");
+        return "DefaultContainer";
     }
 
-    public String getName() {
-        return (String) this.definition.getMetadataMap().get("name");
+    private void setMetadata(Map<String,Object> metadataMap) {
+        this.metadata = new DefaultMetadata(metadataMap);
     }
 
 }

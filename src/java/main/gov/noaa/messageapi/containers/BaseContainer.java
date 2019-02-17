@@ -4,12 +4,14 @@ import java.util.Map;
 import java.util.HashMap;
 
 import gov.noaa.messageapi.interfaces.IContainer;
+import gov.noaa.messageapi.interfaces.IMetadata;
 import gov.noaa.messageapi.definitions.ContainerDefinition;
 
 public class BaseContainer {
 
     private Map<String, Object> properties;
     protected ContainerDefinition definition;
+    protected IMetadata metadata = null;
 
     public BaseContainer(Map<String, Object> properties) {
         setProperties(properties);
@@ -44,6 +46,10 @@ public class BaseContainer {
 
     public ContainerDefinition getDefinition() {
         return this.definition;
+    }
+
+    public IMetadata getMetadata() {
+        return this.metadata;
     }
 
     protected void createContainerDefinition(Map<String,Object> properties) throws Exception {

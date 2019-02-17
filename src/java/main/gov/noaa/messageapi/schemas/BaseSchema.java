@@ -4,12 +4,15 @@ import java.util.Map;
 import java.util.HashMap;
 
 import gov.noaa.messageapi.interfaces.ISchema;
+import gov.noaa.messageapi.interfaces.IMetadata;
 import gov.noaa.messageapi.definitions.SchemaDefinition;
 
 public class BaseSchema {
 
-    private Map<String, Object> properties;
-    protected SchemaDefinition definition;
+    private Map<String, Object> properties = null;
+    protected SchemaDefinition definition = null;
+    protected IMetadata metadata = null;
+
 
     public BaseSchema(Map<String, Object> properties) {
         setProperties(properties);
@@ -44,6 +47,10 @@ public class BaseSchema {
 
     public SchemaDefinition getDefinition() {
         return this.definition;
+    }
+
+    public IMetadata getMetadata() {
+        return this.metadata;
     }
 
     protected void createSchemaDefinition(Map<String,Object> properties) throws Exception {

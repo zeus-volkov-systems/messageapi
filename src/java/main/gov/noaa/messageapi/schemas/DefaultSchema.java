@@ -9,6 +9,8 @@ import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IOperator;
 
 import gov.noaa.messageapi.schemas.BaseSchema;
+import gov.noaa.messageapi.metadata.DefaultMetadata;
+
 import gov.noaa.messageapi.records.schema.SchemaRecord;
 
 public class DefaultSchema extends BaseSchema implements ISchema {
@@ -19,6 +21,7 @@ public class DefaultSchema extends BaseSchema implements ISchema {
 
     public DefaultSchema(ISchema schema) {
         super(schema);
+        this.setMetadata(schema.getDefinition().getMetadataMap());
     }
 
     public ISchema getCopy() {
@@ -28,6 +31,7 @@ public class DefaultSchema extends BaseSchema implements ISchema {
     public void initialize(IContainer c, IProtocol p) {
         try {
             this.createSchemaDefinition(this.getProperties());
+            this.setMetadata(this.definition.getMetadataMap());
         } catch (Exception e) {}
     }
 
@@ -40,11 +44,11 @@ public class DefaultSchema extends BaseSchema implements ISchema {
     }
 
     public String getType() {
-        return (String) this.definition.getMetadataMap().get("type");
+        return "DefaultSchema";
     }
 
-    public String getName() {
-        return (String) this.definition.getMetadataMap().get("name");
+    private void setMetadata(Map<String,Object> metadataMap) {
+        this.metadata = new DefaultMetadata(metadataMap);
     }
 
 }
