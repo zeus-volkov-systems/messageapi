@@ -1,8 +1,8 @@
 {
-    "plugin": "gov.noaa.messageapi.sessions.simple.SimpleSession",
+    "plugin": "gov.noaa.messageapi.sessions.DefaultSession",
     "constructor": {
         "schema": {
-            "plugin": "gov.noaa.messageapi.schemas.simple.SimpleSchema",
+            "plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
             "constructor": {
                 "metadata": "{}/resources/main/storage/schemas/simple/clisam/metadata.json",
                 "fields": "{}/resources/main/storage/schemas/simple/clisam/fields.json",
@@ -11,17 +11,18 @@
             }
         },
         "container": {
-            "plugin": "gov.noaa.messageapi.containers.simple.SimpleContainer",
+            "plugin": "gov.noaa.messageapi.containers.DefaultContainer",
             "constructor": {
                 "metadata": "{}/resources/main/storage/containers/simple/clisam/metadata.json",
-                "containers": "{}/resources/main/storage/containers/simple/clisam/containers.json",
+                "bins": "{}/resources/main/storage/containers/simple/clisam/bins.json",
                 "relationships": "{}/resources/main/storage/containers/simple/clisam/relationships.json"
             }
         },
         "protocol": {
             "plugin": "gov.noaa.messageapi.protocols.jdbc.SimpleJdbcProtocol",
             "constructor": {
-                "definitions": "{}/resources/main/storage/protocols/jdbc/clisam.json"
+                "metadata": "{}/resources/main/storage/protocols/jdbc/metadata.json",
+                "connections": "{}/resources/main/storage/protocols/jdbc/connections.json"
             }
         }
     }

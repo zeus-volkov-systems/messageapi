@@ -12,8 +12,8 @@ import gov.noaa.messageapi.interfaces.IComparisonCondition;;
  */
 public class ComparisonCondition extends BaseCondition implements IComparisonCondition {
 
-    private Object value;
-    private String field;
+    private Object value = null;
+    private String field = null;
 
     /**
      * Constructor for creating a new ComparisonCondition from a map.
@@ -23,7 +23,9 @@ public class ComparisonCondition extends BaseCondition implements IComparisonCon
     public ComparisonCondition(Map<String,Object> conditionMap) {
         super(conditionMap);
         setField((String) conditionMap.get("field"));
-        setValue(conditionMap.get("value"));
+        if (conditionMap.containsKey("value")) {
+            setValue(conditionMap.get("value"));
+        }
     }
 
     /**

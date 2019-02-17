@@ -1,26 +1,25 @@
 package gov.noaa.messageapi.records.container;
 
-import gov.noaa.messageapi.fieldsets.FieldSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IContainerRecord;
-import gov.noaa.messageapi.interfaces.IFieldSet;
+import gov.noaa.messageapi.interfaces.IBin;
 import gov.noaa.messageapi.interfaces.ICondition;
 import gov.noaa.messageapi.interfaces.IRelationship;
 
 public class ContainerRecord implements IContainerRecord {
 
-    private List<IFieldSet> fieldSets = null;
+    private List<IBin> bins = null;
     private List<IRelationship> relationships = null;
     private List<ICondition> conditions = null;
 
-    public ContainerRecord(List<IFieldSet> fieldSets) {
-        setFieldSets(fieldSets);
+    public ContainerRecord(List<IBin> bins) {
+        setBins(bins);
     }
 
     public ContainerRecord(IContainerRecord containerRecord) {
-        setFieldSets(containerRecord.getFieldSets());
+        setBins(containerRecord.getBins());
         setRelationships(containerRecord.getRelationships());
         setConditions(containerRecord.getConditions());
     }
@@ -29,8 +28,8 @@ public class ContainerRecord implements IContainerRecord {
         return new ContainerRecord(this);
     }
 
-    public List<IFieldSet> getFieldSets() {
-        return this.fieldSets;
+    public List<IBin> getBins() {
+        return this.bins;
     }
 
     public List<IRelationship> getRelationships() {
@@ -41,9 +40,9 @@ public class ContainerRecord implements IContainerRecord {
         return this.conditions;
     }
 
-    private void setFieldSets(List<IFieldSet> fieldSets) {
-        this.fieldSets = fieldSets.stream().map(fieldSet -> {
-            return fieldSet.getCopy();
+    private void setBins(List<IBin> bins) {
+        this.bins = bins.stream().map(bin -> {
+            return bin.getCopy();
         }).collect(Collectors.toList());
     }
 

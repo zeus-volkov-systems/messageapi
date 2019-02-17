@@ -1,7 +1,7 @@
 {
     "connections": [
         {
-            "name": "/path/to/test.db",
+            "id": "/path/to/test.db",
             "path": "whatever",
             "user": "test",
             "password": null

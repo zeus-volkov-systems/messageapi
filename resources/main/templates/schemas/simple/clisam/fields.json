@@ -1,37 +1,37 @@
 {
     "fields": [
         {
-            "name": "id",
+            "id": "id",
             "type": "integer",
             "required": false
         },
         {
-            "name": "key",
+            "id": "key",
             "type": "string",
             "required": true
         },
         {
-            "name": "record",
+            "id": "record",
             "type": "string",
             "required": true
         },
         {
-            "name": "filename",
+            "id": "filename",
             "type": "string",
             "required": true
         },
         {
-            "name": "type",
+            "id": "type",
             "type": "string",
             "required": true
         },
         {
-            "name": "receipt_date",
+            "id": "receipt_date",
             "type": "datetime",
             "required": true
         },
         {
-            "name": "insert_date",
+            "id": "insert_date",
             "type": "datetime",
             "required": true
         }

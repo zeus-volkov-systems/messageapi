@@ -1,6 +1,6 @@
-package gov.noaa.messageapi.sessions.simple;
+package gov.noaa.messageapi.sessions;
 
-import gov.noaa.messageapi.responses.simple.SimpleResponse;
+import gov.noaa.messageapi.responses.DefaultResponse;
 import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IContainer;
@@ -11,9 +11,9 @@ import gov.noaa.messageapi.sessions.BaseSession;
 
 import gov.noaa.messageapi.factories.RequestFactory;
 
-public class SimpleSession extends BaseSession implements ISession {
+public class DefaultSession extends BaseSession implements ISession {
 
-    public SimpleSession(IContainer c, IProtocol p, ISchema s) {
+    public DefaultSession(IContainer c, IProtocol p, ISchema s) {
         super(c, p, s);
         initializeSession(c,p,s);
     }
@@ -44,7 +44,7 @@ public class SimpleSession extends BaseSession implements ISession {
     }
 
     private IResponse createResponse(IRequest request) {
-        return new SimpleResponse(request);
+        return new DefaultResponse(request);
     }
 
     private void initializeSession(IContainer c, IProtocol p, ISchema s) {

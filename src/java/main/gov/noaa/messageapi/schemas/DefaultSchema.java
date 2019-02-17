@@ -1,9 +1,6 @@
-package gov.noaa.messageapi.schemas.simple;
+package gov.noaa.messageapi.schemas;
 
 import java.util.Map;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IContainer;
@@ -14,28 +11,24 @@ import gov.noaa.messageapi.interfaces.IOperator;
 import gov.noaa.messageapi.schemas.BaseSchema;
 import gov.noaa.messageapi.records.schema.SchemaRecord;
 
-public class SimpleSchema extends BaseSchema implements ISchema {
+public class DefaultSchema extends BaseSchema implements ISchema {
 
-    private static final Logger logger = LogManager.getLogger();
-
-    public SimpleSchema(Map<String, Object> properties) {
+    public DefaultSchema(Map<String, Object> properties) {
         super(properties);
     }
 
-    public SimpleSchema(ISchema schema) {
+    public DefaultSchema(ISchema schema) {
         super(schema);
     }
 
     public ISchema getCopy() {
-        return new SimpleSchema(this);
+        return new DefaultSchema(this);
     }
 
     public void initialize(IContainer c, IProtocol p) {
         try {
             this.createSchemaDefinition(this.getProperties());
-        } catch (Exception e) {
-            logger.error("Could not create schema definition.");
-        }
+        } catch (Exception e) {}
     }
 
     public IRecord createRecord() {

@@ -4,15 +4,13 @@
             "id": "1",
             "type": "comparison",
             "operator": ">=",
-            "field": "key",
-            "value": null
+            "field": "key"
         },
         {
             "id": "2",
             "type": "comparison",
             "operator": "<",
-            "field": "key",
-            "value": null
+            "field": "key"
         },
         {
             "id": "three",
@@ -24,15 +22,13 @@
             "id": "hi",
             "type": "comparison",
             "operator": "=",
-            "field": "type",
-            "value": null
+            "field": "type"
         },
         {
             "id": "dummy",
             "type": "comparison",
             "operator": "=",
-            "field": "type",
-            "value": null
+            "field": "type"
         },
         {
             "id": "nested_join",

@@ -1,22 +1,22 @@
 {
     "fields": [
         {
-            "name": "sender",
+            "id": "sender",
             "type": "string",
             "required": true
         },
         {
-            "name": "recipient",
+            "id": "recipient",
             "type": "string",
             "required": true
         },
         {
-            "name": "subject",
+            "id": "subject",
             "type": "string",
             "required": true
         },
         {
-            "name": "body",
+            "id": "body",
             "type": "string",
             "required": true
         }

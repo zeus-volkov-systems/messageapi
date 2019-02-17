@@ -11,34 +11,38 @@ import gov.noaa.messageapi.interfaces.IField;
  * The field also holds a value, which is assigned by the user during request creation
  * or accessed by the user during response parsing.
  */
-public class SimpleField implements IField {
+public class DefaultField implements IField {
 
-    private String name = null;
+    private String id = null;
     private String type = null;
     private Boolean required = false;
     private Object value = null;
     private Boolean valid = true;
 
-    public SimpleField(Map<String, Object> fieldMap) {
-        this.name = (String) fieldMap.get("name");
+    public DefaultField(Map<String, Object> fieldMap) {
+        this.id = (String) fieldMap.get("id");
         this.type = (String) fieldMap.get("type");
         this.required = (boolean) fieldMap.get("required");
     }
 
-    public SimpleField(String name) {
-        this.name = name;
+    public DefaultField(String id) {
+        this.id = id;
     }
 
-    public SimpleField(IField field) {
-        this.name = field.getName();
+    public DefaultField(IField field) {
+        this.id = field.getId();
         this.type = field.getType();
         this.required = field.isRequired();
         this.valid = field.isValid();
         this.value = field.getValue();
     }
 
+    public String getId(){
+        return this.id;
+    }
+
     public String getName(){
-        return this.name;
+        return this.id;
     }
 
     public String getType(){

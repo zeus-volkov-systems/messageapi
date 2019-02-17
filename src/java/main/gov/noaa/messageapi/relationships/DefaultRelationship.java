@@ -1,24 +1,24 @@
-package gov.noaa.messageapi.relationships.simple;
+package gov.noaa.messageapi.relationships;
 
 import java.util.Map;
 
 import gov.noaa.messageapi.relationships.BaseRelationship;
 import gov.noaa.messageapi.interfaces.IRelationship;
 
-public class SimpleRelationship extends BaseRelationship implements IRelationship {
+public class DefaultRelationship extends BaseRelationship implements IRelationship {
 
     private String parent;
     private String child;
     private String field;
 
-    public SimpleRelationship(Map<String,Object> relationshipMap) {
+    public DefaultRelationship(Map<String,Object> relationshipMap) {
         super(relationshipMap);
         setParent((String) relationshipMap.get("parent"));
         setChild((String) relationshipMap.get("child"));
         setField((String) relationshipMap.get("field"));
     }
 
-    public SimpleRelationship(IRelationship relationship) {
+    public DefaultRelationship(IRelationship relationship) {
         super(relationship);
         setParent(relationship.getParent());
         setChild(relationship.getChild());

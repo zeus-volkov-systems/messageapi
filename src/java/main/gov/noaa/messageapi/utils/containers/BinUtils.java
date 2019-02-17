@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IContainerRecord;
-import gov.noaa.messageapi.interfaces.IFieldSet;
+import gov.noaa.messageapi.interfaces.IBin;
 import gov.noaa.messageapi.interfaces.IField;
-import gov.noaa.messageapi.fieldsets.FieldSet;
+import gov.noaa.messageapi.bins.DefaultBin;
 
-public class FieldSetUtils {
+public class BinUtils {
 
-    public static List<IFieldSet> buildFieldSets(List<Map<String,Object>> fieldContainerMaps) {
-        return fieldContainerMaps.stream().map(m -> {
-            return new FieldSet(m);
+    public static List<IBin> buildBins(List<Map<String,Object>> binMaps) {
+        return binMaps.stream().map(m -> {
+            return new DefaultBin(m);
         }).collect(Collectors.toList());
     }
 
@@ -25,10 +25,10 @@ public class FieldSetUtils {
      */
     public static IContainerRecord setFieldValues(IContainerRecord containerRecord, List<IField> schemaFields) {
         schemaFields.stream().forEach(schemaField -> {
-            containerRecord.getFieldSets().stream().forEach(fieldSet -> {
-                fieldSet.getFields().stream().forEach(fieldSetField -> {
-                    if (schemaField.getName().equals(fieldSetField.getName())) {
-                        fieldSetField.setValue(schemaField.getValue());
+            containerRecord.getBins().stream().forEach(bin -> {
+                bin.getFields().stream().forEach(binField -> {
+                    if (schemaField.getName().equals(binField.getName())) {
+                        binField.setValue(schemaField.getValue());
                     }
                 });
             });

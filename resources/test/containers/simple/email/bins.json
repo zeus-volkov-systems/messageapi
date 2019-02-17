@@ -1,0 +1,14 @@
+{
+    "bins": [
+        {
+            "id": "rab25",
+            "classifiers": {"namespace": "case.edu"},
+            "fields": ["recipient", "sender", "subject", "body"]
+        },
+        {
+            "id": "ryan.berkheimer",
+            "classifiers": {"namespace": "noaa.gov"},
+            "fields": ["recipient", "sender", "subject", "body"]
+        }
+    ]
+}

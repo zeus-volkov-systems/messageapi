@@ -1,62 +1,62 @@
 {
     "fields": [
         {
-            "name": "boolean-required",
+            "id": "boolean-required",
             "type": "boolean",
             "required": true
         },
         {
-            "name": "boolean-optional",
+            "id": "boolean-optional",
             "type": "boolean",
             "required": false
         },
         {
-            "name": "float-required",
+            "id": "float-required",
             "type": "float",
             "required": true
         },
         {
-            "name": "float-optional",
+            "id": "float-optional",
             "type": "float",
             "required": false
         },
         {
-            "name": "double-required",
+            "id": "double-required",
             "type": "double",
             "required": true
         },
         {
-            "name": "double-optional",
+            "id": "double-optional",
             "type": "double",
             "required": false
         },
         {
-            "name": "integer-required",
+            "id": "integer-required",
             "type": "integer",
             "required": true
         },
         {
-            "name": "integer-optional",
+            "id": "integer-optional",
             "type": "integer",
             "required": false
         },
         {
-            "name": "string-required",
+            "id": "string-required",
             "type": "string",
             "required": true
         },
         {
-            "name": "string-optional",
+            "id": "string-optional",
             "type": "string",
             "required": false
         },
         {
-            "name": "datetime-required",
+            "id": "datetime-required",
             "type": "datetime",
             "required": true
         },
         {
-            "name": "datetime-optional",
+            "id": "datetime-optional",
             "type": "datetime",
             "required": false
         }

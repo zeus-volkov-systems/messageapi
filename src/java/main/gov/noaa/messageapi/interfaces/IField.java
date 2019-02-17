@@ -2,6 +2,7 @@ package gov.noaa.messageapi.interfaces;
 
 public interface IField {
 
+    public String getId();
     public String getName();
     public String getType();
     public boolean isRequired();

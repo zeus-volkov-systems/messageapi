@@ -12,7 +12,7 @@ import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.ICompositeCondition;
 import gov.noaa.messageapi.interfaces.IComparisonCondition;
 
-import gov.noaa.messageapi.rejections.simple.SimpleRejection;
+import gov.noaa.messageapi.rejections.DefaultRejection;
 
 import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.schema.ConditionUtils;
@@ -65,7 +65,7 @@ public class FieldUtils {
      */
     public static List<IRejection> validateRequired(IRequest request) {
         return request.getRecords().stream().map(r -> {
-            IRejection rejection = new SimpleRejection(r);
+            IRejection rejection = new DefaultRejection(r);
             r.getFields().forEach(f -> {
                 if (f.isRequired() && f.getValue() == null) {
                     rejection.addReason(String.format("Empty required field %s.", f.getName()));

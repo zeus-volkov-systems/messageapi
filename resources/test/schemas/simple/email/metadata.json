@@ -1,6 +1,8 @@
 {
     "metadata": {
-        "name": "clisam",
-        "type": "simple"
+        "id": "email",
+        "version": 1.0,
+        "classifiers": {},
+        "description": null
     }
 }

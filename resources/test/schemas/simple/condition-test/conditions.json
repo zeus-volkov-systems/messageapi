@@ -4,15 +4,13 @@
             "id": "string-required-equals-1",
             "type": "comparison",
             "operator": "=",
-            "field": "string-required",
-            "value": null
+            "field": "string-required"
         },
         {
             "id": "string-required-equals-2",
             "type": "comparison",
             "operator": "=",
-            "field": "string-required",
-            "value": null
+            "field": "string-required"
         },
         {
             "id": "string-requires-composite",
@@ -24,8 +22,7 @@
             "id": "integer-required-less-than",
             "type": "comparison",
             "operator": "<",
-            "field": "integer-required",
-            "value": null
+            "field": "integer-required"
         }
     ]
 }

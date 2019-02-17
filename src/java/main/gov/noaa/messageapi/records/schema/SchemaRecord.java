@@ -4,18 +4,14 @@ import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.ICondition;
-import gov.noaa.messageapi.fields.SimpleField;
+import gov.noaa.messageapi.fields.DefaultField;
 import gov.noaa.messageapi.factories.ConditionFactory;
 
 public class SchemaRecord implements IRecord {
 
-    private static final Logger logger = LogManager.getLogger();
 
     private List<IField> fields = null;
     private List<ICondition> conditions = null;
@@ -42,7 +38,7 @@ public class SchemaRecord implements IRecord {
 
     private void initializeFields(List<Map<String,Object>> fieldMaps) {
         this.fields = fieldMaps.stream().map(fieldMap -> {
-                IField f = new SimpleField(fieldMap);
+                IField f = new DefaultField(fieldMap);
                 return f;
             }).collect(Collectors.toList());
     }
@@ -61,7 +57,7 @@ public class SchemaRecord implements IRecord {
     public void setFields(List<IField> fields) {
         this.fields = fields.stream().map(f -> {
             try {
-                IField newField = new SimpleField(f);
+                IField newField = new DefaultField(f);
                 return newField;
             } catch (Exception e) {
                 return null;
@@ -87,16 +83,13 @@ public class SchemaRecord implements IRecord {
                 this.fields.stream().filter(f -> f.getName().equals(castField))
                             .findFirst().get().setValue(fieldValue);
             } catch (Exception e) {
-                logger.error("Error setting field value from field name.");
             }
         } else if (field instanceof IField) {
             IField castField = (IField) field;
             try {
                 this.fields.stream().filter(f -> f.getName().equals(castField.getName()))
                             .findFirst().get().setValue(fieldValue);
-            } catch (Exception e) {
-                logger.error("Error setting field value from field object.");
-            }
+            } catch (Exception e) {}
         }
     }
 
@@ -107,16 +100,13 @@ public class SchemaRecord implements IRecord {
                 this.conditions.stream().filter(c -> c.getId().equals(castCondition))
                             .findFirst().get().setValue(conditionValue);
             } catch (Exception e) {
-                logger.error("Error setting condition value from condition id.");
             }
         } else if (condition instanceof ICondition) {
             ICondition castCondition = (ICondition) condition;
             try {
                 this.conditions.stream().filter(c -> c.getId().equals(castCondition.getId()))
                             .findFirst().get().setValue(conditionValue);
-            } catch (Exception e) {
-                logger.error("Error setting condition value from condition object.");
-            }
+            } catch (Exception e) {}
         }
     }
 
@@ -125,7 +115,6 @@ public class SchemaRecord implements IRecord {
             return this.fields.stream().filter(field -> field.getName().equals(fieldName))
                                 .findFirst().get();
         } catch (Exception e) {
-            logger.error("No field found on the record for the given name.");
             return null;
         }
     }
@@ -135,7 +124,6 @@ public class SchemaRecord implements IRecord {
             return this.conditions.stream().filter(condition -> condition.getId().equals(conditionId))
                                 .findFirst().get();
         } catch (Exception e) {
-            logger.error("No condition found on the record for the given id.");
             return null;
         }
     }

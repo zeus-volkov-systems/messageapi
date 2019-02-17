@@ -5,15 +5,10 @@ import java.util.Set;
 import java.util.HashSet;
 import java.lang.reflect.Constructor;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import gov.noaa.messageapi.parsers.BaseParser;
 import gov.noaa.messageapi.utils.general.PathUtils;
 
 public abstract class BasePluginParser extends BaseParser {
-
-    private static final Logger logger = LogManager.getLogger();
 
     public BasePluginParser(String spec) throws Exception {
         super(PathUtils.reconcileKeywords(spec));
@@ -25,7 +20,7 @@ public abstract class BasePluginParser extends BaseParser {
 
     public void process(){
         if (!validateConstructorKeys(getRequiredConstructorKeys())) {
-            logger.error(String.format("Could not parse the %s plugin, invalid keyset.", getPlugin()));
+            System.out.println(String.format("Could not parse the %s plugin, invalid keyset.", getPlugin()));
         }
     }
 

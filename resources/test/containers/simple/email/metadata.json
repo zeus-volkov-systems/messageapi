@@ -1,6 +1,7 @@
 {
     "metadata": {
-        "name": "email",
-        "type": "simple"
+        "id": "condition-test",
+        "classifiers": {},
+        "description": null
     }
 }

@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IRelationship;
-import gov.noaa.messageapi.relationships.simple.SimpleRelationship;
+import gov.noaa.messageapi.relationships.DefaultRelationship;
 import gov.noaa.messageapi.utils.general.ListUtils;
 
 public class RelationshipUtils {
 
     public static List<IRelationship> buildRelationships(List<Map<String,Object>> relationshipMaps) {
         return relationshipMaps.stream().map(r -> {
-            return new SimpleRelationship(r);
+            return new DefaultRelationship(r);
         }).collect(Collectors.toList());
     }
 

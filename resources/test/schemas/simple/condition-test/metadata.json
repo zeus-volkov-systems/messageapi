@@ -1,6 +1,8 @@
 {
     "metadata": {
-        "name": "clisam",
-        "type": "simple"
+        "id": "condition-test",
+        "version": 1.0,
+        "classifiers": {},
+        "description": null
     }
 }

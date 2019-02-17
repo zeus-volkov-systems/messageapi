@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IRejection;
 import gov.noaa.messageapi.interfaces.IRecord;
-import gov.noaa.messageapi.rejections.simple.SimpleRejection;
+import gov.noaa.messageapi.rejections.DefaultRejection;
 import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.schema.FieldUtils;
 import gov.noaa.messageapi.utils.schema.ConditionUtils;
@@ -35,7 +35,7 @@ public class RejectionUtils {
                 return null;
             }).collect(Collectors.toList());
             if (!ListUtils.isAllNulls(reasons)) {
-                return new SimpleRejection(r, ListUtils.removeAllNulls(reasons));
+                return new DefaultRejection(r, ListUtils.removeAllNulls(reasons));
             }
             return null;
         }).collect(Collectors.toList());
@@ -57,7 +57,7 @@ public class RejectionUtils {
         List<IRejection> rejections = records.stream().map(r -> {
             if (!FieldUtils.validateConditions(schema, r, ConditionUtils.getTopLevelConditions(r))) {
                 String reason = ReasonUtils.getInvalidFieldReason();
-                return new SimpleRejection(r, reason);
+                return new DefaultRejection(r, reason);
             }
             return null;
         }).collect(Collectors.toList());

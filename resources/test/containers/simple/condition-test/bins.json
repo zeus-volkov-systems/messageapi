@@ -1,18 +1,18 @@
 {
-    "containers": [
+    "bins": [
         {
-            "name": "required-fields",
-            "namespace": "condition-test",
+            "id": "required-fields",
+            "classifiers": {"namespace": "condition-test"},
             "fields": ["boolean-required", "float-required", "double-required", "integer-required", "string-required", "datetime-required"]
         },
         {
-            "name": "optional-fields",
-            "namespace": "condition-test",
+            "id": "optional-fields",
+            "classifiers": {"namespace": "condition-test"},
             "fields": ["boolean-optional", "float-optional", "double-optional", "integer-optional", "string-optional", "datetime-optional"]
         },
         {
-            "name": "mix-and-match",
-            "namespace": "condition-test",
+            "id": "mix-and-match",
+            "classifiers": {"namespace": "condition-test"},
             "fields": ["string-required", "string-optional", "datetime-required"]
         }
     ]

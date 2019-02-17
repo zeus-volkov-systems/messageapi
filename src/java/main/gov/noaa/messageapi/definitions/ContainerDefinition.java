@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 import gov.noaa.messageapi.parsers.containers.MetadataParser;
-import gov.noaa.messageapi.parsers.containers.ContainerParser;
+import gov.noaa.messageapi.parsers.containers.BinParser;
 import gov.noaa.messageapi.parsers.containers.RelationshipParser;
 
 /**
@@ -19,18 +19,18 @@ import gov.noaa.messageapi.parsers.containers.RelationshipParser;
 public class ContainerDefinition {
 
     private Map<String,Object> metadataMap = null;
-    private List<Map<String,Object>> containerMaps = null;
+    private List<Map<String,Object>> binMaps = null;
     private List<Map<String,Object>> relationshipMaps = null;
 
     public ContainerDefinition(Map<String, Object> properties) throws Exception {
         parseMetadataSpec((String) properties.get("metadata"));
-        parseContainerSpec((String) properties.get("containers"));
+        parseBinSpec((String) properties.get("bins"));
         parseRelationshipSpec((String) properties.get("relationships"));
     }
 
     public ContainerDefinition(ContainerDefinition definition) {
         this.metadataMap = new HashMap<String,Object>(definition.getMetadataMap());
-        this.containerMaps = new ArrayList<Map<String,Object>>(definition.getContainerMaps());
+        this.binMaps = new ArrayList<Map<String,Object>>(definition.getBinMaps());
         this.relationshipMaps = new ArrayList<Map<String,Object>>(definition.getRelationshipMaps());
     }
 
@@ -39,9 +39,9 @@ public class ContainerDefinition {
         this.metadataMap = parser.getMetadataMap();
     }
 
-    private void parseContainerSpec(String spec) throws Exception {
-        ContainerParser parser = new ContainerParser(spec);
-        this.containerMaps = parser.getContainerMaps();
+    private void parseBinSpec(String spec) throws Exception {
+        BinParser parser = new BinParser(spec);
+        this.binMaps = parser.getBinMaps();
     }
 
     private void parseRelationshipSpec(String spec) throws Exception {
@@ -53,8 +53,8 @@ public class ContainerDefinition {
         return this.metadataMap;
     }
 
-    public List<Map<String,Object>> getContainerMaps() {
-        return this.containerMaps;
+    public List<Map<String,Object>> getBinMaps() {
+        return this.binMaps;
     }
 
     public List<Map<String,Object>> getRelationshipMaps() {
