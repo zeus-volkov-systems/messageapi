@@ -19,9 +19,10 @@
             }
         },
         "protocol": {
-            "plugin": "gov.noaa.messageapi.protocols.jdbc.SimpleJdbcProtocol",
+            "plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
             "constructor": {
                 "metadata": "{}/resources/test/protocols/jdbc/sqlite/clisam/metadata.json",
+                "endpoint": "gov.noaa.messageapi.test.endpoints.EmailEndpointTest",
                 "connections": "{}/resources/test/protocols/jdbc/sqlite/clisam/connections.json"
             }
         }

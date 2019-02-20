@@ -20,15 +20,18 @@ public class ProtocolDefinition {
 
     private Map<String,Object> metadataMap = null;
     private List<Map<String,Object>> connectionMaps = null;
+    private String endpoint = null;
 
     public ProtocolDefinition(Map<String,Object> properties) throws Exception {
         parseMetadataSpec((String) properties.get("metadata"));
         parseConnectionSpec((String) properties.get("connections"));
+        parseEndpoint((String) properties.get("endpoint"));
     }
 
     public ProtocolDefinition(ProtocolDefinition definition) {
         this.metadataMap = new HashMap<String,Object>(definition.getMetadataMap());
         this.connectionMaps = new ArrayList<Map<String,Object>>(definition.getConnectionMaps());
+        this.endpoint = definition.getEndpoint();
     }
 
     private void parseMetadataSpec(String spec) throws Exception {
@@ -41,12 +44,20 @@ public class ProtocolDefinition {
         this.connectionMaps = parser.getConnectionMaps();
     }
 
+    private void parseEndpoint(String endpoint) throws Exception {
+        this.endpoint = endpoint;
+    }
+
     public Map<String,Object> getMetadataMap() {
         return this.metadataMap;
     }
 
     public List<Map<String,Object>> getConnectionMaps() {
         return this.connectionMaps;
+    }
+
+    public String getEndpoint() {
+        return this.endpoint;
     }
 
 }

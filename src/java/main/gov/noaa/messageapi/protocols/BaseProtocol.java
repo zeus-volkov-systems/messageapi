@@ -3,8 +3,11 @@ package gov.noaa.messageapi.protocols;
 import java.util.Map;
 import java.util.HashMap;
 
+import java.lang.reflect.Constructor;
+
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IMetadata;
+import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.definitions.ProtocolDefinition;
 
 public class BaseProtocol {
@@ -55,4 +58,16 @@ public class BaseProtocol {
     protected void createProtocolDefinition(Map<String,Object> properties) throws Exception {
         this.definition = new ProtocolDefinition(properties);
     }
+
+    protected IConnection initializeConnection(String endpoint, Map<String,Object> constructor) throws Exception {
+        Class<?>[] ctrClasses = {Map.class};
+        Object[] args = {constructor};
+        return (IConnection) instantiateEndpoint(Class.forName(endpoint), ctrClasses, args);
+    }
+
+    protected Object instantiateEndpoint(Class<?> pluginClass, Class<?>[] ctrClasses, Object[] args) throws Exception {
+        Constructor<?> constructor = pluginClass.getDeclaredConstructor(ctrClasses);
+        return constructor.newInstance(args);
+    }
+
 }

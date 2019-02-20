@@ -1,3 +1,9 @@
 {
-    "connections": []
+    "connections": [
+        {
+            "id": "simple",
+            "bins": "*",
+            "parameters": {}
+        }
+    ]
 }

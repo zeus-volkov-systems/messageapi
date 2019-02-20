@@ -1,5 +1,6 @@
 package gov.noaa.messageapi.requests;
 
+import gov.noaa.messageapi.utils.request.ProtocolUtils;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class AddRequest extends BaseRequest implements IRequest {
 
     public List<IRecord> process() {
         List<IContainerRecord> containerRecords = ContainerUtils.convertSchemaRecords(this.getContainer(), this.getRecords());
+        ProtocolUtils.convertContainerRecords(this.getProtocol(), containerRecords);
         return this.records;
     }
 
