@@ -5,8 +5,9 @@ import java.util.Set;
 import java.util.HashSet;
 
 import gov.noaa.messageapi.interfaces.IProtocol;
-import gov.noaa.messageapi.parsers.plugins.BasePluginParser;
 import gov.noaa.messageapi.interfaces.IPluginParser;
+
+import gov.noaa.messageapi.parsers.plugins.BasePluginParser;
 
 public class ProtocolPluginParser extends BasePluginParser implements IPluginParser {
 
@@ -27,6 +28,8 @@ public class ProtocolPluginParser extends BasePluginParser implements IPluginPar
     protected Set<String> getRequiredConstructorKeys() {
         Set<String> set = new HashSet<String>();
         set.add("metadata");
+        set.add("endpoint");
+        set.add("connections");
         return set;
     }
 
