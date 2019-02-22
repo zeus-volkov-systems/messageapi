@@ -14,7 +14,7 @@ import gov.noaa.messageapi.interfaces.ICompositeCondition;
  */
 public class CompositeCondition extends BaseCondition implements ICompositeCondition {
 
-    private Object value;
+    private Object value = null;
 
     /**
      * Constructor for creating a new CompositeCondition from a map.
