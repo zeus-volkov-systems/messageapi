@@ -1,21 +1,31 @@
 package gov.noaa.messageapi.connections;
 
 import java.util.Map;
+import java.lang.reflect.Constructor;
+
+import gov.noaa.messageapi.interfaces.IEndpoint;
 
 public class BaseConnection {
 
-    private String name;
+    private IEndpoint endpoint;
 
-    public BaseConnection(Map<String,Object> connectionMap) throws Exception {
-        setName((String) connectionMap.get("name"));
+    public BaseConnection(String endpointClass, Map<String,Object> constructorMap) throws Exception {
+        this.endpoint = initializeConnection(endpointClass, constructorMap);
     }
 
-    private void setName(String name) {
-        this.name = name;
+    protected IEndpoint getEndpoint() {
+        return this.endpoint;
     }
 
-    public String getName() {
-        return this.name;
+    private IEndpoint initializeConnection(String endpoint, Map<String,Object> constructor) throws Exception {
+        Class<?>[] ctrClasses = {Map.class};
+        Object[] args = {constructor};
+        return (IEndpoint) instantiateEndpoint(Class.forName(endpoint), ctrClasses, args);
+    }
+
+    private Object instantiateEndpoint(Class<?> pluginClass, Class<?>[] ctrClasses, Object[] args) throws Exception {
+        Constructor<?> constructor = pluginClass.getDeclaredConstructor(ctrClasses);
+        return constructor.newInstance(args);
     }
 
 }

@@ -1,17 +1,24 @@
 package gov.noaa.messageapi.connections;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultConnection {
+import gov.noaa.messageapi.interfaces.IConnection;
+import gov.noaa.messageapi.interfaces.IProtocolRecord;
+import gov.noaa.messageapi.interfaces.IContainerRecord;
+
+
+public class DefaultConnection extends BaseConnection implements IConnection {
 
     private String id;
     private List<String> bins;
 
     @SuppressWarnings("unchecked")
-    public DefaultConnection(Map<String,Object> connectionMap) throws Exception {
+    public DefaultConnection(String endpointClass, Map<String,Object> connectionMap) throws Exception {
+        super(endpointClass, (Map<String,Object>) connectionMap.get("parameters"));
         setId((String) connectionMap.get("id"));
-        setBins((List<String>) connectionMap.get("bins"));
+        setBins(connectionMap.get("bins"));
     }
 
     public String getId() {
@@ -22,11 +29,21 @@ public class DefaultConnection {
         return this.bins;
     }
 
+    public IProtocolRecord process(List<IContainerRecord> containerRecords) {
+        return this.getEndpoint().process(containerRecords);
+    }
+
     private void setId(String id) {
         this.id = id;
     }
 
-    private void setBins(List<String> bins) {
-        this.bins = bins;
+    @SuppressWarnings("unchecked")
+    private void setBins(Object bins) {
+        if (bins instanceof String) {
+            this.bins = new ArrayList<String>();
+            this.bins.add((String) bins);
+        } else if (bins instanceof List) {
+            this.bins = (List<String>) bins;
+        }
     }
 }

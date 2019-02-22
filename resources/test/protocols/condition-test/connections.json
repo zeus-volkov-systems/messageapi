@@ -2,8 +2,21 @@
     "connections": [
         {
             "id": "1",
-            "bins": "*",
-            "parameters": {}
+            "bins": ["*"],
+            "parameters": {
+                "sender": "ryan.berkheimer@noaa.gov",
+                "password": "testpassword1234",
+                "receivers": ["rab25@case.edu", "ryan.berkheimer@noaa.gov"]
+            }
+        },
+        {
+            "id": "2",
+            "bins": ["*"],
+            "parameters": {
+                "sender": "jackson.pollock@cia.org",
+                "password": "passpass64",
+                "receivers": ["template1@org.org", "template2@org.org"]
+            }
         }
     ]
 }

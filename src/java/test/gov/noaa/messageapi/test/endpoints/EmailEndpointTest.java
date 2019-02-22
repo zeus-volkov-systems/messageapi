@@ -3,17 +3,18 @@ package gov.noaa.messageapi.test.endpoints;
 import java.util.List;
 import java.util.Map;
 
-import gov.noaa.messageapi.interfaces.IConnection;
+import gov.noaa.messageapi.interfaces.IEndpoint;
 import gov.noaa.messageapi.interfaces.IContainerRecord;
+import gov.noaa.messageapi.interfaces.IProtocolRecord;
 
-public class EmailEndpointTest implements IConnection {
+import gov.noaa.messageapi.records.protocol.ProtocolRecord;
 
-    public EmailEndpointTest(Map<String,Object> parameters) {
-        System.out.println("Email Endpoint Test!!!");
-    }
+public class EmailEndpointTest implements IEndpoint {
 
-    public void process(List<IContainerRecord> containerRecords) {
-        System.out.println("Email endpoint test processing: " + containerRecords);
+    public EmailEndpointTest(Map<String,Object> parameters) {}
+
+    public IProtocolRecord process(List<IContainerRecord> containerRecords) {
+        return new ProtocolRecord();
     }
 
 }

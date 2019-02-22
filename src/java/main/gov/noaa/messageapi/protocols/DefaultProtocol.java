@@ -1,5 +1,6 @@
 package gov.noaa.messageapi.protocols;
 
+import gov.noaa.messageapi.connections.DefaultConnection;
 import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,17 +64,14 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
         this.metadata = new DefaultMetadata(metadataMap);
     }
 
-    @SuppressWarnings("unchecked")
     private void setConnections(String endpoint, List<Map<String,Object>> connectionMaps) throws Exception {
         this.connections = ListUtils.removeAllNulls(connectionMaps.stream().map(connectionMap -> {
             try {
-                return initializeConnection(endpoint, (Map<String,Object>) connectionMap.get("parameters"));
+                return new DefaultConnection(endpoint, (Map<String,Object>) connectionMap);
             } catch (Exception e) {
                 return null;
             }
         }).collect(Collectors.toList()));
     }
-
-
 
 }
