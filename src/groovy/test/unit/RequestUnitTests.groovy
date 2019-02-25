@@ -14,14 +14,14 @@ import gov.noaa.messageapi.interfaces.IField;
 
 class RequestUnitTests extends spock.lang.Specification {
 
-    def "Test creating an add request."() {
+    def "Test creating a publisher request."() {
         given:
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
             ISession session = SessionFactory.create(sessionSpec)
         when: "We create an add request"
-            IRequest request = session.createAddRequest()
+            IRequest request = session.createRequest()
         then: "Add request is created and of the proper type"
-            request.getType() == "add"
+            request.getType() == "publisher"
             request in gov.noaa.messageapi.interfaces.IRequest
     }
 
@@ -30,8 +30,8 @@ class RequestUnitTests extends spock.lang.Specification {
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
             ISession session = SessionFactory.create(sessionSpec)
         when: "We create two separate requests on the same session"
-            IRequest r1 = session.createAddRequest()
-            IRequest r2 = session.createAddRequest()
+            IRequest r1 = session.createRequest()
+            IRequest r2 = session.createRequest()
         then: "Then the two requests should be different instances."
             r1 != r2
     }

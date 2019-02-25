@@ -10,18 +10,18 @@ import gov.noaa.messageapi.interfaces.IRequest;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
 
-public class GetRequest extends BaseRequest implements IRequest {
+public class ConsumerRequest extends BaseRequest implements IRequest {
 
-    public GetRequest(ISchema schema, IContainer container, IProtocol protocol) {
-        super("get", schema, container, protocol);
+    public ConsumerRequest(ISchema schema, IContainer container, IProtocol protocol) {
+        super("consumer", schema, container, protocol);
     }
 
-    public GetRequest(IRequest request) {
+    public ConsumerRequest(IRequest request) {
         super(request);
     }
 
-    public GetRequest getCopy() {
-        return new GetRequest(this);
+    public ConsumerRequest getCopy() {
+        return new ConsumerRequest(this);
     }
 
     public List<IRecord> process() {

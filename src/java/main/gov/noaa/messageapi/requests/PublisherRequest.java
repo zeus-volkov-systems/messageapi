@@ -19,18 +19,18 @@ import gov.noaa.messageapi.utils.request.ContainerUtils;
 import gov.noaa.messageapi.utils.request.RejectionUtils;
 import gov.noaa.messageapi.utils.general.ListUtils;
 
-public class AddRequest extends BaseRequest implements IRequest {
+public class PublisherRequest extends BaseRequest implements IRequest {
 
-    public AddRequest(ISchema schema, IContainer container, IProtocol protocol) {
-        super("add", schema, container, protocol);
+    public PublisherRequest(ISchema schema, IContainer container, IProtocol protocol) {
+        super("publisher", schema, container, protocol);
     }
 
-    public AddRequest(IRequest request) {
+    public PublisherRequest(IRequest request) {
         super(request);
     }
 
-    public AddRequest getCopy() {
-        return new AddRequest(this);
+    public PublisherRequest getCopy() {
+        return new PublisherRequest(this);
     }
 
     public List<IRejection> prepare() {

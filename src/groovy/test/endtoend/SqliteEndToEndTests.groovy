@@ -12,7 +12,7 @@ class Sqlite extends spock.lang.Specification {
             def sessionSpec = this.getClass().getResource('sessions/endtoend/sqllite-jdbc-clisam.json').getPath()
         when: "We create a new session."
             def session = SessionFactory.create(sessionSpec)
-            IRequest request = session.createAddRequest()
+            IRequest request = session.createRequest()
             IRecord
         then: "We should successfully add records with no errors."
     }*/

@@ -17,7 +17,7 @@ public class EmailSessionTestUtils {
     }
 
     public static IRequest getAddRequest() throws Exception {
-        return getSession().createAddRequest();
+        return getSession().createRequest();
     }
 
     public static void setTestRecordFields(IRecord record, String sender,

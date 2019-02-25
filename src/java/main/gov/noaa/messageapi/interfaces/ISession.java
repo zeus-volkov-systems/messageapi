@@ -5,10 +5,7 @@ import gov.noaa.messageapi.interfaces.IResponse;
 
 public interface ISession {
 
-    public IRequest createAddRequest();
-    public IRequest createUpdateRequest();
-    public IRequest createRemoveRequest();
-    public IRequest createGetRequest();
+    public IRequest createRequest();
     public IResponse submitRequest(IRequest request);
 
 }

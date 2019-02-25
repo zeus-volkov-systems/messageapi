@@ -16,7 +16,7 @@ class ConditionUnitTests extends spock.lang.Specification {
             def conditionValue = "testConditionValue"
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
             ISession session = SessionFactory.create(sessionSpec)
-            IRequest request = session.createAddRequest()
+            IRequest request = session.createRequest()
             IRecord record = request.createRecord()
             ICondition condition = record.getCondition("1")
         when:

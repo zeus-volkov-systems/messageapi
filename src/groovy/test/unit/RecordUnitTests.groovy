@@ -15,7 +15,7 @@ class RecordUnitTests extends spock.lang.Specification {
         given:
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
             ISession session = SessionFactory.create(sessionSpec)
-            IRequest request = session.createAddRequest()
+            IRequest request = session.createRequest()
         when: "We create a record on a request"
             IRecord record = request.createRecord()
         then: "The record is successfully created"
@@ -26,7 +26,7 @@ class RecordUnitTests extends spock.lang.Specification {
         given:
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
             ISession session = SessionFactory.create(sessionSpec)
-            IRequest request = session.createAddRequest()
+            IRequest request = session.createRequest()
         when: "We create two records on the same request"
             IRecord r1 = request.createRecord()
             IRecord r2 = request.createRecord()
@@ -39,7 +39,7 @@ class RecordUnitTests extends spock.lang.Specification {
         given:
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
             ISession session = SessionFactory.create(sessionSpec)
-            IRequest request = session.createAddRequest()
+            IRequest request = session.createRequest()
             IRecord record = request.createRecord()
             def expectedFieldNames = ['id', 'key', 'record', 'filename', 'type', 'receipt_date', 'insert_date']
         when:
