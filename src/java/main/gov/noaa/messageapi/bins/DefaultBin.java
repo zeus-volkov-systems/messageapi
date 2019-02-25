@@ -20,7 +20,7 @@ public class DefaultBin implements IBin {
     public DefaultBin(Map<String,Object> fieldMap) {
         setId((String) fieldMap.get("name"));
         setClassifiers((Map<String,Object>) fieldMap.get("classifiers"));
-        initialzeFields((List<String>) fieldMap.get("fields"));
+        initializeFields((List<String>) fieldMap.get("fields"));
     }
 
     public DefaultBin(IBin bin) {
@@ -57,7 +57,7 @@ public class DefaultBin implements IBin {
         this.classifiers = classifiers;
     }
 
-    private void initialzeFields(List<String> fieldNames) {
+    private void initializeFields(List<String> fieldNames) {
         this.fields = fieldNames.stream()
             .map(name -> new DefaultField(name)).collect(Collectors.toList());
     }
