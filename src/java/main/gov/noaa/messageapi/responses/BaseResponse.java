@@ -26,19 +26,23 @@ public class BaseResponse {
         return this.records;
     }
 
-    public boolean isComplete() {
+    public IRequest getRequest() {
+        return this.request;
+    }
+
+    public boolean getComplete() {
         return this.complete;
     }
 
-    protected void setRecords(List<IRecord> records) {
+    public void setRecords(List<IRecord> records) {
         this.records = records;
     }
 
-    protected void setRejections(List<IRejection> rejections) {
+    public void setRejections(List<IRejection> rejections) {
         this.rejections = rejections;
     }
 
-    protected void setComplete(boolean complete) {
+    public void setComplete(boolean complete) {
         this.complete = complete;
     }
 

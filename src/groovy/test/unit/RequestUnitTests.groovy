@@ -8,6 +8,7 @@ import gov.noaa.messageapi.test.utils.ConditionTestSessionTestUtils;
 import gov.noaa.messageapi.factories.SessionFactory;
 import gov.noaa.messageapi.interfaces.ISession;
 import gov.noaa.messageapi.interfaces.IRequest;
+import gov.noaa.messageapi.interfaces.IResponse;
 import gov.noaa.messageapi.interfaces.IRejection;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IField;
@@ -40,7 +41,9 @@ class RequestUnitTests extends spock.lang.Specification {
         given: "A standard email session test setup with add request and the first record in that request"
             IRequest testRequest = EmailSessionTestUtils.getTestAddRequest5()
         when: "We call prepare on the test request"
-            List<IRejection> rejections = testRequest.prepare()
+            IResponse response = testRequest.submit()
+            while (!response.getComplete()) {}
+            List<IRejection> rejections = response.getRejections()
         then: "We should have the proper number of rejections due to the overall running process"
             rejections.size() == 2
             IRejection rej1 = rejections.get(0)
@@ -51,23 +54,14 @@ class RequestUnitTests extends spock.lang.Specification {
             rej2.getRecord().getField("sender").getValue() == "sender1"
         }
 
-    def "Test add request preparation with nested conditions."() {
-        given: "A standard condition session test setup with add request and the first record in that request"
-            IRequest testRequest = ConditionTestSessionTestUtils.getTestAddRequest1()
-        when: "We call prepare on the test request"
-            List<IRejection> rejections = testRequest.prepare()
-        then: "We should have no rejections"
-            rejections.size() == 0
-        }
-
     def "Test add request preparation and processing with nested conditions."() {
         given: "A standard condition session test setup with add request and the first record in that request"
             IRequest testRequest = ConditionTestSessionTestUtils.getTestAddRequest1()
-        when: "We call prepare on the test request"
-            List<IRejection> rejections = testRequest.prepare()
-            List<IRecord> finalRecords = testRequest.process()
+        when: "We submit the request"
+            IResponse response = testRequest.submit()
+            while (!response.getComplete()) {}
         then: "We should have no rejections"
-            rejections.size() == 0
+            response.getRejections().size() == 0
         }
 
 }

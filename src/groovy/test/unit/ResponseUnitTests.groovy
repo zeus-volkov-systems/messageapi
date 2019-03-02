@@ -20,8 +20,8 @@ def "Tests the gathering of a reponse submission of a prepared request through a
         ISession session = ConditionTestSessionTestUtils.getSession();
         IRequest testRequest = ConditionTestSessionTestUtils.getTestAddRequest1()
     when: "We submit the test session and wait for completion"
-        IResponse response = session.submitRequest(testRequest)
-        while (!response.isComplete()) {}
+        IResponse response = testRequest.submit()
+        while (!response.getComplete()) {}
     then: "We should have no rejections"
         response.getRejections().size() == 0
         response.getRecords().size() == 1

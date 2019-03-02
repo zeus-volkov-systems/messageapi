@@ -1,14 +1,10 @@
 package gov.noaa.messageapi.requests;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IRequest;
-import gov.noaa.messageapi.interfaces.IRecord;
-import gov.noaa.messageapi.interfaces.IRejection;
+import gov.noaa.messageapi.interfaces.IResponse;
 
 public class ConsumeRequest extends BaseRequest implements IRequest {
 
@@ -24,19 +20,7 @@ public class ConsumeRequest extends BaseRequest implements IRequest {
         return new ConsumeRequest(this);
     }
 
-    public List<IRecord> process() {
-        return this.records;
-    }
+    public void process(IResponse response) {}
 
-    public List<IRejection> prepare() {
-        return new ArrayList<IRejection>();
-    }
-
-    public List<IRejection> analyzeSchema() {
-        return new ArrayList<IRejection>();
-    }
-
-    public void prepareSchema(List<IRejection> rejections) {
-    }
 
 }

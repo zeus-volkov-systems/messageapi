@@ -10,13 +10,7 @@ public class DefaultResponse extends BaseResponse implements IResponse {
 
     public DefaultResponse(IRequest request) {
         super(request);
-        CompletableFuture.supplyAsync(() -> this.request.prepare())
-            .thenAccept(rejections -> setRejections(rejections))
-                .thenRun(() ->
-                    CompletableFuture.supplyAsync(() -> this.request.process())
-                .thenAccept(records -> setRecords(records)))
-                    .thenRun(() ->
-                        setComplete(true));
+        CompletableFuture.runAsync(() -> this.request.process(this));
     }
 
 }
