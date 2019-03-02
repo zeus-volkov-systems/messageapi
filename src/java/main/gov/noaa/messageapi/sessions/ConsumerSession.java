@@ -19,5 +19,4 @@ public class ConsumerSession extends DefaultSession implements ISession {
         return new ConsumeRequest(this.schema, this.container, this.protocol);
     }
 
-
 }
