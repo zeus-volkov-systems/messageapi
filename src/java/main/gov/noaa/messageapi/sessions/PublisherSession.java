@@ -8,7 +8,7 @@ import gov.noaa.messageapi.interfaces.IRequest;
 import gov.noaa.messageapi.interfaces.IResponse;
 
 import gov.noaa.messageapi.sessions.DefaultSession;
-import gov.noaa.messageapi.requests.PublisherRequest;
+import gov.noaa.messageapi.requests.PublishRequest;
 
 
 public class PublisherSession extends DefaultSession implements ISession {
@@ -18,7 +18,7 @@ public class PublisherSession extends DefaultSession implements ISession {
     }
 
     public IRequest createRequest() {
-        return new PublisherRequest(this.schema, this.container, this.protocol);
+        return new PublishRequest(this.schema, this.container, this.protocol);
     }
 
     public IResponse submitRequest(IRequest request) {

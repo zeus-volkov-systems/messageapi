@@ -7,7 +7,7 @@ import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IRequest;
 
 import gov.noaa.messageapi.sessions.DefaultSession;
-import gov.noaa.messageapi.requests.ConsumerRequest;
+import gov.noaa.messageapi.requests.ConsumeRequest;
 
 public class ConsumerSession extends DefaultSession implements ISession {
 
@@ -16,7 +16,7 @@ public class ConsumerSession extends DefaultSession implements ISession {
     }
 
     public IRequest createRequest() {
-        return new ConsumerRequest(this.schema, this.container, this.protocol);
+        return new ConsumeRequest(this.schema, this.container, this.protocol);
     }
 
 
