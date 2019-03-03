@@ -220,16 +220,21 @@ Relationships are completely unnecessary in many situations if data is being pus
 
         ```
         {
-            "containers": [
+            "bins": [
                 {
-                    "name": "testTable1",
-                    "namespace": "/path/to/test.db",
-                    "fields": ["key", "record", "filename", "type"]
+                    "id": "required-fields",
+                    "classifiers": {"namespace": "condition-test"},
+                    "fields": ["boolean-required", "float-required", "double-required", "integer-required", "string-required", "datetime-required"]
                 },
                 {
-                    "name": "testTable2",
-                    "namespace": "/path/to/test2.db",
-                    "fields": ["key", "type", "receipt_date", "insert_date"]
+                    "id": "optional-fields",
+                    "classifiers": {"namespace": "condition-test"},
+                    "fields": ["boolean-optional", "float-optional", "double-optional", "integer-optional", "string-optional", "datetime-optional"]
+                },
+                {
+                    "id": "mix-and-match",
+                    "classifiers": {"namespace": "condition-test"},
+                    "fields": ["string-required", "string-optional", "datetime-required"]
                 }
             ]
         }
