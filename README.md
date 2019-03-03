@@ -47,13 +47,14 @@ In the provided model, the spec looks like the following:
             "plugin": "class.namespace.ContainerPluginClass",
             "constructor": {
                 "metadata": "path/to/container/metadata.json",
-                "containers": "path/to/containers.json",
+                "bins": "path/to/container/bins.json",
                 "relationships": "path/to/relationships.json"
             }
         },
         "protocol": {
-            "plugin": "class.namespace.ProtocolPluginClass",
-            "constructor": {}
+            "metadata": "path/to/protocol/metadata.json",
+            "endpoint": "class.namespace.ProtocolEndpointConnectionClass",
+            "connections": "path/to/endpoint/connection_maps.json"
         }
     }
 }
@@ -92,8 +93,10 @@ Composite conditions can also include other composite conditions and will be unp
       ```
       {
           "metadata": {
-              "name": "clisam",
-              "type": "simple"
+              "id": "some-unique-id-for-yourself-to-know-what-schema-your-data-was-in",
+              "version": 1.0,
+              "classifiers": {},
+              "description": null
           }
       }
       ```
@@ -205,9 +208,10 @@ Relationships are completely unnecessary in many situations if data is being pus
       ```
       {
           "metadata": {
-              "name": "clisam",
-              "type": "simple",
-              "version": "1.0"
+              "id": "some-unique-id-for-yourself-to-know-what-containerized-your-data",
+              "version": 1.0,
+              "classifiers": {},
+              "description": null
           }
       }
       ```
@@ -248,13 +252,40 @@ Relationships are completely unnecessary in many situations if data is being pus
         ```
 
 ##### Protocols
-Protocols are specialized, library specific implementations that translate between container record sets and some external system. These protocols are the parts of the system that call out to the external world, such as FTP servers, email clients, Kafka topics, or similar things.
+Protocols are specialized, library specific implementations that translate between container record sets and some external system. These protocols are the parts of the system that call out to the external world, such as FTP servers, email clients, Kafka topics, an Aeron message transport layer, or similar things. They can return immediately, or be long lived.
 
-Protocols depend on the system that needs to be called out to, so they are more specialized plugin components than the schema or container parts of MessageAPI, which can generally be reused with almost any message type.
+The default protocol class provided by MessageAPI requires users to provide a protocol Endpoint class in the constructor map, and a set of connections to that endpoint class which will be used in instances. Each connection map should hold an id to identify the connection on return, a list of bins that the connection map should process, and a map of constructor parameters that can be used during instance connection.
+
+The default protocol also holds metadata map, similar to the other two parts of a standard ISession.
+
+Here is an example of a connections map used by an email type endpoint:
 
 ```
-
+{
+    "connections": [
+        {
+            "id": "1",
+            "bins": ["*"],
+            "parameters": {
+                "sender": "me@test.com",
+                "password": "testpassword1234",
+                "receivers": ["recipient1@me.gov", "recipient2@me.edu"]
+            }
+        },
+        {
+            "id": "2",
+            "bins": ["only_secret_bins1"],
+            "parameters": {
+                "sender": "jackson.pollock@cia.org",
+                "password": "passpass64",
+                "receivers": ["template1@org.org", "template2@org.org"]
+            }
+        }
+    ]
+}
 ```
+
+Note that there's a special character "*" that allows specification of all bins from the container layer.
 
 #### MessageAPI API and Examples
 
@@ -264,9 +295,11 @@ All important parts of the MessageAPI model can be imported as interfaces. By co
 
 The overall strategy for using MessageAPI is simple:
 
-Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples). Using the session object, create the kind of request you want to use (i.e., an add, get, remove, or update request). On any request type, create a record. The request record is type-contextual - in an 'add' or 'update' request, the record will contain a field set (based on the session spec) that can be filled with values that are to be inserted. 'update' requests can also use the record more generally, to update certain records when specified conditionals are met. In a 'get' request, the fields are the fields requested, and conditions may be used to specify conditions for retrieving response records.
+Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples). Using the session object, create a request - the request type was baked into the session on session creation, so it's already set in memory (for example , a publish request in a publish session, or consume request in a consume session). On the request, create record(s) that will be sent to the endpoint.
 
-All of the interface documentation should be found in the corresponding javadoc. If it's there, please add and make a pull request for the documentation if you know what the interface does, or file a bug and the documentation will be updated when possible.
+Once the records are set, call submit on the request. This submission immediately creates a duplicate of the entire request inside a response object, and then returns. All logic is processed against that request copy and its parent response asynchronously. Inside a response, protocols can produce response records and response rejections.
+
+This design is thread safe, because when submitted, a copy is operated on, and the original request is immutable. This design is also flexible, being able to handle throwaway results (just don't consume the IResponse), all-at-once-returns (like sql calls that return a bunch of data), or over-time-returns (subscription type returns). For example, to wait for all the data, just put a while(!response.isComplete()){}; before any further logic in the program. Or keep the response inline, and continue to pull records down the line over time, if it's a dynamic/streaming endpoint.
 
 ##### API Examples
 To illustrate a typical use case, we will give a couple of examples - the first is adding some records, the second is getting some records.
@@ -296,14 +329,14 @@ public class addRecordsTest {
     }
 
     public void addRecords(List<List<String>> recordsToAdd) {
-        IRequest request = this.session.createAddRequest();
+        IRequest request = this.session.createRequest();
         for (List<String> recordToAdd: recordsToAdd) {
             IRecord record = request.createRecord();
             for (int i = 0; i < record.getFields().size(); i++) {
                 record.setField(i, recordToAdd.get(i));
             }
         }
-        IResponse response = this.session.submitRequest(request);
+        IResponse response = request.submit();
         while (!response.isComplete()) {}
         if (response.getRejections().size() > 0) {
             for (int j = 0; j < response.getRejections().size(); j++) {
@@ -316,15 +349,17 @@ public class addRecordsTest {
 
 There is a lot going on in the above example, but it's all straightforward.
 
-We first create a persistent session object based on a given spec when the example class is instantiated somewhere else. This session that is created then immediately has a concretely-defined schema, container set, and protocol which were all based on some runtime loaded text files.
+We first create a persistent session object based on a given spec when the example class is instantiated somewhere else. This session that is created then immediately has a concretely-defined schema, container set, and protocol which were all based on some runtime loaded text files. These are now in memory, and can be quickly grabbed and reused on any children requests based on this session.
 
-When the addRecords method is called with a bunch of string based records, an add request is then created from the session. The add request is then populated with records (using createRecord on the request) for every record that the user has. This is done by setting field values for the record - again, these fields are all in the declarative spec that was loaded when the session was loaded.
+When the addRecords method above is called with a list of string based records, a request is created from the session. The request is then populated with records (using createRecord on the request) for every record that the user has. This is done by setting field values for the record - again, these fields are all in the declarative spec that was loaded when the session was loaded.
 
 In this case, record field values are set by index. It is also valid to set record field values by named fields - there are use cases for both approaches. In this case we are not setting any record conditions, but those are done the same way as fields (record.setCondition(conditionID, conditionValue)).
 
-Once we've finished populating our response with all of the records, we submit the request to the session and immediately receive a response. Requests are submitted asynchronously to sessions to mitigate any blocking and responses are returned immediately even if their work hasn't yet finished. This means the submitter can keep working if they want, and hold the request for later use, wait for it to complete by monitoring an isComplete method, or toss it away if there's no need to make sure of the response.
+Once we've finished populating our response with all of the records, we submit the request to the session and immediately receive a response. Requests are submitted asynchronously and copied-on-submit to mitigate any blocking and responses or mutability issues and are returned immediately even if their work hasn't yet finished. This means the submitter can keep working if they want, and hold the request for later use, wait for it to complete by monitoring an isComplete method, or toss it away if there's no need to make sure of the response.
 
-When the response finally finishes, it will contain a set of rejections (if any) based on conditions or based on a failed protocol action. These rejections can be inspected individually for the record as well as reasons for the rejection.
+When the response finally finishes, it will contain a set of final rejections (if any) based on conditions or based on a failed protocol action and final records. The rejections can be inspected individually for the record as well as reasons for the rejection, and the records can be consumed according to the original defined schema.
+
+Because requests contain a copy of the session variables which created them, they can always be the source of truth for any properties that might be inspected later. Schema, Container, Protocol information can always be inspected later, and the user should be confident in knowing that this COC for this data remained immutable since session-birth.
 
 ### Configurations
 
@@ -336,7 +371,7 @@ When the response finally finishes, it will contain a set of rejections (if any)
 Install MessageAPI by navigating to the cloned directory and running
 
 ```
-make install
+gradle
 ```
 
 This will install MessageAPI to the local repository on disk.
