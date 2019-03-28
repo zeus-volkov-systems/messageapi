@@ -9,6 +9,8 @@ public interface IConnection {
 
     public String getId();
     public List<String> getBins();
+    public List<String> getClassifiers();
+    public List<String> getClassifers(String classifierKey);
     public IProtocolRecord process(List<IContainerRecord> containerRecords);
 
 }
