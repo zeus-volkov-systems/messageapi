@@ -12,6 +12,7 @@
         {
             "id": "2",
             "bins": ["*"],
+            "classifiers": {"namespace": ["/path/to/test.db"]},
             "parameters": {
                 "sender": "jackson.pollock@cia.org",
                 "password": "passpass64",
