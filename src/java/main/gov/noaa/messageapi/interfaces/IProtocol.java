@@ -13,6 +13,7 @@ public interface IProtocol extends IComponent {
 
     public void initialize(IContainer c, ISchema s);
     public ProtocolDefinition getDefinition();
-    public void process(List<IContainerRecord> containerRecords);
+    public List<IConnection> getConnections();
+    public void process(IResponse response, List<IContainerRecord> containerRecords);
 
 }
