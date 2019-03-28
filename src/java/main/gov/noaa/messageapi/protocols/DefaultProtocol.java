@@ -1,6 +1,5 @@
 package gov.noaa.messageapi.protocols;
 
-import gov.noaa.messageapi.connections.DefaultConnection;
 import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,9 +9,11 @@ import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.IContainerRecord;
+import gov.noaa.messageapi.interfaces.IResponse;
 
 import gov.noaa.messageapi.protocols.BaseProtocol;
 import gov.noaa.messageapi.metadata.DefaultMetadata;
+import gov.noaa.messageapi.connections.DefaultConnection;
 
 import gov.noaa.messageapi.utils.general.ListUtils;
 
@@ -42,7 +43,7 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
         }
     }
 
-    public void initialize(IContainer c, ISchema s){
+    public void initialize(IContainer c, ISchema s) {
         try {
             this.createProtocolDefinition(this.getProperties());
             this.setMetadata(this.definition.getMetadataMap());
@@ -50,7 +51,11 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
         } catch (Exception e) {}
     }
 
-    public void process(List<IContainerRecord> containerRecords) {
+    public List<IConnection> getConnections() {
+        return this.connections;
+    }
+
+    public void process(IResponse response, List<IContainerRecord> containerRecords) {
         for(IConnection c: this.connections) {
             c.process(containerRecords);
         }
