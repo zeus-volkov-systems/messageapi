@@ -1,5 +1,6 @@
 package gov.noaa.messageapi.records.container;
 
+import java.util.UUID;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,15 +11,18 @@ import gov.noaa.messageapi.interfaces.IRelationship;
 
 public class ContainerRecord implements IContainerRecord {
 
+    private UUID id = null;
     private List<IBin> bins = null;
     private List<IRelationship> relationships = null;
     private List<ICondition> conditions = null;
 
     public ContainerRecord(List<IBin> bins) {
+        setID(UUID.randomUUID());
         setBins(bins);
     }
 
     public ContainerRecord(IContainerRecord containerRecord) {
+        setID(containerRecord.getID());
         setBins(containerRecord.getBins());
         setRelationships(containerRecord.getRelationships());
         setConditions(containerRecord.getConditions());
@@ -26,6 +30,10 @@ public class ContainerRecord implements IContainerRecord {
 
     public ContainerRecord getCopy() {
         return new ContainerRecord(this);
+    }
+
+    public UUID getID() {
+        return this.id;
     }
 
     public List<IBin> getBins() {
@@ -38,6 +46,10 @@ public class ContainerRecord implements IContainerRecord {
 
     public List<ICondition> getConditions() {
         return this.conditions;
+    }
+
+    private void setID(UUID uuid) {
+        this.id = uuid;
     }
 
     private void setBins(List<IBin> bins) {
