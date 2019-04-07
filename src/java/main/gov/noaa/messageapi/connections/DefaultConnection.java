@@ -41,7 +41,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
     }
 
     public IPacket process(IProtocolRecord record) {
-        return new DefaultPacket();
+        return this.getEndpoint().process(record);
     }
 
     public String getId() {
@@ -68,10 +68,6 @@ public class DefaultConnection extends BaseConnection implements IConnection {
      */
     public List<Object> getClassiferValues(String classifierKey) {
         return this.classifiers.get(classifierKey);
-    }
-
-    public IProtocolRecord process(List<IContainerRecord> containerRecords) {
-        return this.getEndpoint().process(containerRecords);
     }
 
     private void setId(String id) {
