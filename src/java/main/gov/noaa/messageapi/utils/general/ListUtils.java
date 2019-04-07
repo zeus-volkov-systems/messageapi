@@ -45,4 +45,13 @@ public class ListUtils {
         return list.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+    /**
+     * Returns true if list (collection) is null or empty.
+     * @param  c The list to check
+     * @return   true if list is null/empty
+     */
+    public static boolean isNullOrEmpty( final Collection< ? > c ) {
+    return c == null || c.isEmpty();
+    }
+
 }
