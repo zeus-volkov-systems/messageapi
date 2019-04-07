@@ -17,12 +17,12 @@ public class ContainerRecord implements IContainerRecord {
     private List<ICondition> conditions = null;
 
     public ContainerRecord(List<IBin> bins) {
-        setID();
+        generateId();
         setBins(bins);
     }
 
     public ContainerRecord(IContainerRecord containerRecord) {
-        setID();
+        generateId();
         setBins(containerRecord.getBins());
         setRelationships(containerRecord.getRelationships());
         setConditions(containerRecord.getConditions());
@@ -32,7 +32,7 @@ public class ContainerRecord implements IContainerRecord {
         return new ContainerRecord(this);
     }
 
-    public UUID getID() {
+    public UUID getId() {
         return this.id;
     }
 
@@ -48,7 +48,7 @@ public class ContainerRecord implements IContainerRecord {
         return this.conditions;
     }
 
-    private void setID() {
+    private void generateId() {
         this.id = UUID.randomUUID();
     }
 
