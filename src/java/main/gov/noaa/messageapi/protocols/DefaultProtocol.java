@@ -8,8 +8,6 @@ import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IConnection;
-import gov.noaa.messageapi.interfaces.IContainerRecord;
-import gov.noaa.messageapi.interfaces.IResponse;
 
 import gov.noaa.messageapi.protocols.BaseProtocol;
 import gov.noaa.messageapi.metadata.DefaultMetadata;
@@ -53,12 +51,6 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
 
     public List<IConnection> getConnections() {
         return this.connections;
-    }
-
-    public void process(IResponse response, List<IContainerRecord> containerRecords) {
-        for(IConnection c: this.connections) {
-            c.process(containerRecords);
-        }
     }
 
     public String getType() {
