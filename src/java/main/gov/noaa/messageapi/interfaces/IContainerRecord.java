@@ -9,7 +9,7 @@ import gov.noaa.messageapi.interfaces.ICondition;
 
 public interface IContainerRecord {
 
-    public UUID getID();
+    public UUID getId();
     public List<IBin> getBins();
     public List<IRelationship> getRelationships();
     public List<ICondition> getConditions();
