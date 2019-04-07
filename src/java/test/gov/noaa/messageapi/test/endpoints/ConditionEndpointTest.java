@@ -8,10 +8,12 @@ import gov.noaa.messageapi.packets.DefaultPacket;
 
 public class ConditionEndpointTest implements IEndpoint {
 
-    public ConditionEndpointTest(Map<String,Object> parameters) {}
+    public ConditionEndpointTest(Map<String,Object> parameters) {
+    }
 
     public DefaultPacket process(IProtocolRecord protocolRecord) {
-        return new DefaultPacket();
+        DefaultPacket packet = new DefaultPacket();
+        return packet;
     }
 
 }

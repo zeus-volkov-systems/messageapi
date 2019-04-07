@@ -24,7 +24,7 @@ def "Tests the gathering of a reponse submission of a prepared request through a
         while (!response.getComplete()) {}
     then: "We should have no rejections"
         response.getRejections().size() == 0
-        response.getRecords().size() == 1
+        response.getRecords().size() == 6
     }
 
 }

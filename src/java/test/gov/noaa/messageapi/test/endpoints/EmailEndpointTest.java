@@ -11,7 +11,9 @@ public class EmailEndpointTest implements IEndpoint {
     public EmailEndpointTest(Map<String,Object> parameters) {}
 
     public DefaultPacket process(IProtocolRecord record) {
-        return new DefaultPacket();
+        DefaultPacket packet = new DefaultPacket();
+        packet.addRecords(record.getRecords());
+        return packet;
     }
 
 }
