@@ -3,6 +3,7 @@ package gov.noaa.messageapi.utils.request;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IRejection;
@@ -28,6 +29,12 @@ public class PacketUtils {
         dataPacket.setRecords(SchemaUtils.filterRejections(filteredRecords, secondaryRejections));
         dataPacket.setRejections(ListUtils.flatten(new ArrayList<List<IRejection>>(Arrays.asList(primaryRejections, secondaryRejections))));
         return dataPacket;
+    }
+
+    public static IPacket create(List<IPacket> packets) {
+        List<IRecord> allRecords = ListUtils.flatten(packets.stream().map(packet -> packet.getRecords()).collect(Collectors.toList()));
+        List<IRejection> allRejections = ListUtils.flatten(packets.stream().map(packet -> packet.getRejections()).collect(Collectors.toList()));
+        return new DefaultPacket(allRecords, allRejections);
     }
 
 }
