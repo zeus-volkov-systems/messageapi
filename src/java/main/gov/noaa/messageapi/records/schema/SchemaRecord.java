@@ -27,6 +27,10 @@ public class SchemaRecord implements IRecord {
         setConditions(record.getConditions());
     }
 
+    public SchemaRecord(List<IField> fields) {
+        setFields(fields);
+    }
+
     public SchemaRecord(IRecord record, List<Map<String,Object>> fieldMaps) {
         initializeFields(fieldMaps);
         setConditions(record.getConditions());
