@@ -1,5 +1,6 @@
 package gov.noaa.messageapi.interfaces;
 
+import java.util.Map;
 import java.util.List;
 
 import gov.noaa.messageapi.interfaces.ISubmission;
@@ -9,7 +10,7 @@ public interface IConnection {
 
     public String getId();
     public List<String> getBins();
-    public List<String> getClassifiers();
+    public  Map<String,List<Object>> getClassifiers();
     public List<String> getClassifers(String classifierKey);
     public ISubmission process(IProtocolRecord record);
 
