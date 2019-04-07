@@ -5,7 +5,7 @@ import java.util.List;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
 
-public interface ISubmission {
+public interface IPacket {
 
     public void setRecords(List<IRecord> records);
     public void addRecord(IRecord record);

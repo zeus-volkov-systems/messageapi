@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 import gov.noaa.messageapi.interfaces.IConnection;
-import gov.noaa.messageapi.interfaces.ISubmission;
+import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.IContainerRecord;
 
-import gov.noaa.messageapi.submissions.DefaultSubmission;
+import gov.noaa.messageapi.packets.DefaultPacket;
 
 
 public class DefaultConnection extends BaseConnection implements IConnection {
@@ -40,8 +40,8 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         }
     }
 
-    public ISubmission process(IProtocolRecord record) {
-        return new DefaultSubmission();
+    public IPacket process(IProtocolRecord record) {
+        return new DefaultPacket();
     }
 
     public String getId() {

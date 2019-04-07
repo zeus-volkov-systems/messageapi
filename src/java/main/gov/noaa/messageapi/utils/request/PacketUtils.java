@@ -1,24 +1,24 @@
-package gov.noaa.messageapi.utils;
+package gov.noaa.messageapi.utils.request;
 
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
-import gov.noaa.messageapi.interfaces.ISubmission;
+import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IRejection;
 import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IRecord;
 
-import gov.noaa.messageapi.submissions.DefaultSubmission;
+import gov.noaa.messageapi.packets.DefaultPacket;
 
 import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.request.SchemaUtils;
 import gov.noaa.messageapi.utils.request.RejectionUtils;
 
-public class SubmissionUtils {
+public class PacketUtils {
 
-    public static ISubmission create(ISchema schema, List<IRecord> records) {
-        ISubmission submission = new DefaultSubmission();
+    public static IPacket create(ISchema schema, List<IRecord> records) {
+        IPacket submission = new DefaultPacket();
         List<IRejection> primaryRejections = RejectionUtils.getRequiredFieldRejections(records);
         List<IRecord> filteredRecords = SchemaUtils.filterFieldlessConditions(
                                          SchemaUtils.filterNonValuedConditions(

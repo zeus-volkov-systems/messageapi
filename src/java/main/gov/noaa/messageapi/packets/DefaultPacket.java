@@ -1,9 +1,9 @@
-package gov.noaa.messageapi.submissions;
+package gov.noaa.messageapi.packets;
 
 import java.util.List;
 import java.util.ArrayList;
 
-import gov.noaa.messageapi.interfaces.ISubmission;
+import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
 
@@ -11,17 +11,17 @@ import gov.noaa.messageapi.interfaces.IRejection;
  * A submission is a simple collection of a record list and a rejection list with
  * facilities to add to, replace, and retrieve those lists.
  */
-public class DefaultSubmission implements ISubmission {
+public class DefaultPacket implements IPacket {
 
     public List<IRecord> records = null;
     public List<IRejection> rejections = null;
 
-    public DefaultSubmission() {
+    public DefaultPacket() {
         this.records = new ArrayList<IRecord>();
         this.rejections = new ArrayList<IRejection>();
     }
 
-    public DefaultSubmission(List<IRecord> records, List<IRejection> rejections) {
+    public DefaultPacket(List<IRecord> records, List<IRejection> rejections) {
         this.records = records;
         this.rejections = rejections;
     }

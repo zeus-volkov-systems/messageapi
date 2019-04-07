@@ -8,8 +8,8 @@ import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IResponse;
-import gov.noaa.messageapi.interfaces.ISubmission;
 import gov.noaa.messageapi.interfaces.IConnection;
+import gov.noaa.messageapi.interfaces.IPacket;
 
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.IContainerRecord;
@@ -17,10 +17,10 @@ import gov.noaa.messageapi.interfaces.IContainerRecord;
 import gov.noaa.messageapi.responses.BaseResponse;
 import gov.noaa.messageapi.requests.PublishRequest;
 
-import gov.noaa.messageapi.utils.SubmissionUtils;
-import gov.noaa.messageapi.utils.ConnectionUtils;
+import gov.noaa.messageapi.utils.protocol.ConnectionUtils;
 import gov.noaa.messageapi.utils.request.ContainerUtils;
 import gov.noaa.messageapi.utils.request.ProtocolUtils;
+import gov.noaa.messageapi.utils.request.PacketUtils;
 
 
 public class PublishResponse extends BaseResponse implements IResponse {
@@ -28,10 +28,10 @@ public class PublishResponse extends BaseResponse implements IResponse {
     public PublishResponse(PublishRequest request) {
         super(request);
         validate(this.request.getSchema(), this.request.getRecords())
-                  .thenCompose(outgoingSubmission -> this.factor(this.request.getContainer(), outgoingSubmission.getRecords()))
+                  .thenCompose(outgoingPacket -> this.factor(this.request.getContainer(), outgoingPacket.getRecords()))
                   .thenCompose(containerRecords -> this.prepare(this.request.getProtocol(), containerRecords))
                   .thenCompose(protocolRecords -> this.process(this.request.getProtocol().getConnections(), protocolRecords))
-                  //.thenCompose(incomingSubmission -> this.resolve(, processedRecords))
+                  //.thenCompose(incomingPacket -> this.resolve(, processedRecords))
                   .thenAccept(status -> this.setComplete(true));
     }
 
@@ -42,9 +42,9 @@ public class PublishResponse extends BaseResponse implements IResponse {
      * @param  records
      * @return
      */
-    CompletableFuture<ISubmission> validate(ISchema schema, List<IRecord> records) {
+    CompletableFuture<IPacket> validate(ISchema schema, List<IRecord> records) {
     	return CompletableFuture.supplyAsync(() -> {
-    		ISubmission submission = SubmissionUtils.create(this.request.getSchema(), this.request.getRecords());
+    		IPacket submission = PacketUtils.create(this.request.getSchema(), this.request.getRecords());
             this.setRejections(submission.getRejections());
             return submission;
     	});
@@ -62,7 +62,7 @@ public class PublishResponse extends BaseResponse implements IResponse {
         });
     }
 
-    CompletableFuture<ISubmission> process(List<IConnection> connections, List<IProtocolRecord> recordSets) {
+    CompletableFuture<IPacket> process(List<IConnection> connections, List<IProtocolRecord> recordSets) {
         return CompletableFuture.supplyAsync(() -> {
             return ConnectionUtils.submitRecords(connections, recordSets);
         });
