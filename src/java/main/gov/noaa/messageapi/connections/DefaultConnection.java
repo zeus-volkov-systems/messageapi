@@ -6,15 +6,18 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 import gov.noaa.messageapi.interfaces.IConnection;
+import gov.noaa.messageapi.interfaces.ISubmission;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.IContainerRecord;
+
+import gov.noaa.messageapi.submissions.DefaultSubmission;
 
 
 public class DefaultConnection extends BaseConnection implements IConnection {
 
     private String id;
     private List<String> bins = null;
-    private Map<String,List<String>> classifiers = null;
+    private Map<String,List<Object>> classifiers = null;
 
     @SuppressWarnings("unchecked")
     public DefaultConnection(String endpointClass, Map<String,Object> connectionMap) throws Exception {
@@ -27,14 +30,18 @@ public class DefaultConnection extends BaseConnection implements IConnection {
                 setBins(new ArrayList<String>());
             }
             if (connectionMap.containsKey("classifiers")) {
-                setClassifiers((Map<String,List<String>>)connectionMap.get("classifiers"));
+                setClassifiers((Map<String,List<Object>>)connectionMap.get("classifiers"));
             } else {
-                setClassifiers(new HashMap<String,List<String>>());
+                setClassifiers(new HashMap<String,List<Object>>());
             }
         } catch (Exception e) {
             System.out.println("Error in connection instantiation. Stacktrace to follow.");
             System.out.println(e.getStackTrace());
         }
+    }
+
+    public ISubmission process(IProtocolRecord record) {
+        return new DefaultSubmission();
     }
 
     public String getId() {
@@ -49,8 +56,8 @@ public class DefaultConnection extends BaseConnection implements IConnection {
      * Returns the list of classifiers that have been associated with this connection.
      * @return an arraylist containing every classifier associated with this connection.
      */
-    public List<String> getClassifiers() {
-        return new ArrayList<>(this.classifiers.keySet());
+    public Map<String,List<Object>> getClassifiers() {
+        return this.classifiers;
     }
 
     /**
@@ -59,7 +66,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
      *                      (e.g., classifiers= [namespace], and ["namespace"] has "namespace1, namespace2")
      * @return               Outputs a list of classifiers for the provided key.
      */
-    public List<String> getClassifers(String classifierKey) {
+    public List<Object> getClassiferValues(String classifierKey) {
         return this.classifiers.get(classifierKey);
     }
 
@@ -81,7 +88,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         }
     }
 
-    private void setClassifiers(Map<String,List<String>> classifiers) {
+    private void setClassifiers(Map<String,List<Object>> classifiers) {
         this.classifiers = classifiers;
     }
 }
