@@ -37,16 +37,16 @@ public class PublishResponse extends BaseResponse implements IResponse {
 
     /**
      * Async method that validates an input schema, returning an intermediate
-     * submission object with validated records and rejections.
+     * packet object with validated records and rejections.
      * @param  schema  The schema attached to the session that created the request
      * @param  records
      * @return
      */
     CompletableFuture<IPacket> validate(ISchema schema, List<IRecord> records) {
     	return CompletableFuture.supplyAsync(() -> {
-    		IPacket submission = PacketUtils.create(this.request.getSchema(), this.request.getRecords());
-            this.setRejections(submission.getRejections());
-            return submission;
+    		IPacket packet = PacketUtils.create(this.request.getSchema(), this.request.getRecords());
+            this.setRejections(packet.getRejections());
+            return packet;
     	});
     }
 

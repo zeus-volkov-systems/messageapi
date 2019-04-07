@@ -8,7 +8,7 @@ import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
 
 /**
- * A submission is a simple collection of a record list and a rejection list with
+ * A packet is a simple collection of a record list and a rejection list with
  * facilities to add to, replace, and retrieve those lists.
  */
 public class DefaultPacket implements IPacket {
