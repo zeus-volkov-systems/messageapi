@@ -1,10 +1,16 @@
 package gov.noaa.messageapi.interfaces;
 
-//import gov.noaa.messageapi.interfaces.IContainerRecord;
+import java.util.UUID;
+import java.util.List;
+
+import gov.noaa.messageapi.interfaces.IRecord;
 
 public interface IProtocolRecord {
 
-    //public String getAction();
-    //public List<IContainerRecord> getRecords();
+    public String getConnection();
+    public List<IRecord> getRecords();
+    public List<IRecord> getRecordsByBin(String binId);
+    public List<IRecord> getRecordsByClassifier(String key, Object value);
+    public List<IRecord> getRecordsByUUID(UUID uuid);
 
 }
