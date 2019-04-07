@@ -11,7 +11,7 @@ public interface IConnection {
     public String getId();
     public List<String> getBins();
     public  Map<String,List<Object>> getClassifiers();
-    public List<String> getClassifers(String classifierKey);
+    public List<Object> getClassifers(String classifierKey);
     public ISubmission process(IProtocolRecord record);
 
 }
