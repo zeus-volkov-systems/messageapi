@@ -18,16 +18,16 @@ import gov.noaa.messageapi.utils.request.RejectionUtils;
 public class PacketUtils {
 
     public static IPacket create(ISchema schema, List<IRecord> records) {
-        IPacket submission = new DefaultPacket();
+        IPacket dataPacket = new DefaultPacket();
         List<IRejection> primaryRejections = RejectionUtils.getRequiredFieldRejections(records);
         List<IRecord> filteredRecords = SchemaUtils.filterFieldlessConditions(
                                          SchemaUtils.filterNonValuedConditions(
                                           SchemaUtils.filterNonValuedFields(
                                            SchemaUtils.filterRejections(records, primaryRejections))));
         List<IRejection> secondaryRejections = RejectionUtils.getFieldConditionRejections(schema, filteredRecords);
-        submission.setRecords(SchemaUtils.filterRejections(filteredRecords, secondaryRejections));
-        submission.setRejections(ListUtils.flatten(new ArrayList<List<IRejection>>(Arrays.asList(primaryRejections, secondaryRejections))));
-        return submission;
+        dataPacket.setRecords(SchemaUtils.filterRejections(filteredRecords, secondaryRejections));
+        dataPacket.setRejections(ListUtils.flatten(new ArrayList<List<IRejection>>(Arrays.asList(primaryRejections, secondaryRejections))));
+        return dataPacket;
     }
 
 }
