@@ -31,7 +31,7 @@ public class PacketUtils {
         return dataPacket;
     }
 
-    public static IPacket create(List<IPacket> packets) {
+    public static IPacket combineResults(List<IPacket> packets) {
         List<IRecord> allRecords = ListUtils.flatten(packets.stream().map(packet -> packet.getRecords()).collect(Collectors.toList()));
         List<IRejection> allRejections = ListUtils.flatten(packets.stream().map(packet -> packet.getRejections()).collect(Collectors.toList()));
         return new DefaultPacket(allRecords, allRejections);
