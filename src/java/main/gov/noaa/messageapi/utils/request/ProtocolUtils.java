@@ -30,7 +30,7 @@ public class ProtocolUtils {
     public static IProtocolRecord createProtocolRecord(IConnection connection, List<IContainerRecord> containerRecords) {
         String connId = connection.getId();
         List<String> connBins = connection.getBins();
-        Map<String,List<String>> connClassifiers = connection.getClassifiers();
+        Map<String,List<Object>> connClassifiers = connection.getClassifiers();
         List<Map<IRecord, Map<String,Object>>> recordList = ListUtils.flatten(containerRecords.stream().map(containerRecord -> {
             UUID recordId = containerRecord.getId();
             return ListUtils.removeAllNulls(containerRecord.getBins().stream().map(bin -> {
@@ -41,7 +41,7 @@ public class ProtocolUtils {
     }
 
     public static Map<IRecord, Map<String,Object>> convertBinToRecord(IBin bin, UUID recordId,
-                                                        List<String> connBins, Map<String,List<String>> connClassifiers) {
+                                                        List<String> connBins, Map<String,List<Object>> connClassifiers) {
         String binId = bin.getId();
         Map<String, Object> binClassifiers = bin.getClassifiers();
         if (binMatch(binId, connBins) || classifierMatch(binClassifiers, connClassifiers)) {
@@ -68,7 +68,7 @@ public class ProtocolUtils {
     }
 
     public static Boolean classifierMatch(Map<String,Object> binClassifiers,
-                                          Map<String,List<String>> connClassifiers) {
+                                          Map<String,List<Object>> connClassifiers) {
         List<String> matchKeys = ListUtils.removeAllNulls(binClassifiers.keySet()
                                                                         .stream()
                                                                         .filter(key -> connClassifiers
@@ -84,7 +84,7 @@ public class ProtocolUtils {
     @SuppressWarnings("unchecked")
     public static Boolean classifierValueMatch(List<String> keys,
                                                 Map<String,Object> binClassifiers,
-                                                Map<String,List<String>> connClassifiers) {
+                                                Map<String,List<Object>> connClassifiers) {
         List<String> fullMatch = ListUtils.removeAllNulls(keys
                                                           .stream()
                                                           .filter(key -> {
