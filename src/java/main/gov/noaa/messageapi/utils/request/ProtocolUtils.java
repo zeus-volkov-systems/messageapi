@@ -61,20 +61,14 @@ public class ProtocolUtils {
     }
 
     public static Boolean binMatch(String binId, List<String> connBins) {
-        if (connBins.contains(binId)) {
+        if (connBins.contains(binId) || connBins.contains("*")) {
             return true;
         }
         return false;
     }
 
-    public static Boolean classifierMatch(Map<String,Object> binClassifiers,
-                                          Map<String,List<Object>> connClassifiers) {
-        List<String> matchKeys = ListUtils.removeAllNulls(binClassifiers.keySet()
-                                                                        .stream()
-                                                                        .filter(key -> connClassifiers
-                                                                                       .keySet()
-                                                                                       .contains(key))
-                                                                        .collect(Collectors.toList()));
+    public static Boolean classifierMatch(Map<String,Object> binClassifiers, Map<String,List<Object>> connClassifiers) {
+        List<String> matchKeys = ListUtils.removeAllNulls(binClassifiers.keySet().stream().filter(key -> connClassifiers.keySet().contains(key)).collect(Collectors.toList()));
         if (classifierValueMatch(matchKeys, binClassifiers, connClassifiers)) {
             return true;
         }
@@ -82,19 +76,11 @@ public class ProtocolUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static Boolean classifierValueMatch(List<String> keys,
-                                                Map<String,Object> binClassifiers,
-                                                Map<String,List<Object>> connClassifiers) {
-        List<String> fullMatch = ListUtils.removeAllNulls(keys
-                                                          .stream()
-                                                          .filter(key -> {
+    public static Boolean classifierValueMatch(List<String> keys, Map<String,Object> binClassifiers, Map<String,List<Object>> connClassifiers) {
+        List<String> fullMatch = ListUtils.removeAllNulls(keys.stream().filter(key -> {
             Object classVal = binClassifiers.get(key);
             if (classVal instanceof List) {
-                if (((List<Object>) classVal).stream().filter(val -> connClassifiers
-                                                                     .get(key)
-                                                                     .contains(val))
-                                                                     .findAny()
-                                                                     .isPresent()) {
+                if (((List<Object>) classVal).stream().filter(val -> connClassifiers.get(key).contains(val)).findAny().isPresent()) {
                     return true;
                 }
                 return false;
