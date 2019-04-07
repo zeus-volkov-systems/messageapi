@@ -53,9 +53,9 @@ public class ProtocolUtils {
     public static Map<IRecord,Map<String,Object>> makeBinRecordMap(UUID id, IRecord record, String binId, Map<String,Object> classifiers) {
         Map<IRecord,Map<String,Object>> retMap = new HashMap<IRecord, Map<String,Object>>();
         Map<String, Object> valMap = new HashMap<String, Object>();
-        valMap.put("CLASSIFIERS",classifiers);
-        valMap.put("BIN", binId);
         valMap.put("UUID", id);
+        valMap.put("BIN", binId);
+        valMap.put("CLASSIFIERS",classifiers);
         retMap.put(record, valMap);
         return retMap;
     }
