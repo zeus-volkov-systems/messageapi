@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
-import gov.noaa.messageapi.interfaces.IContainerRecord;
-
-import gov.noaa.messageapi.packets.DefaultPacket;
-
 
 public class DefaultConnection extends BaseConnection implements IConnection {
 
