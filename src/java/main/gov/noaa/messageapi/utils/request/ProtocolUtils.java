@@ -54,7 +54,7 @@ public class ProtocolUtils {
         Map<IRecord,Map<String,Object>> retMap = new HashMap<IRecord, Map<String,Object>>();
         Map<String, Object> valMap = new HashMap<String, Object>();
         valMap.put("UUID", id);
-        valMap.put("BIN", collectionId);
+        valMap.put("COLLECTION", collectionId);
         valMap.put("CLASSIFIERS",classifiers);
         retMap.put(record, valMap);
         return retMap;
