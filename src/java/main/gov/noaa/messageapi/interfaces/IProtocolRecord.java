@@ -12,5 +12,6 @@ public interface IProtocolRecord {
     public List<IRecord> getRecordsByCollection(String collectionId);
     public List<IRecord> getRecordsByClassifier(String key, Object value);
     public List<IRecord> getRecordsByUUID(UUID uuid);
+    public List<IRecord> getRecordsByTransformation(String transformationId);
 
 }

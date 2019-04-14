@@ -58,6 +58,10 @@ public class ProtocolRecord implements IProtocolRecord {
         }).map(e -> e.getKey()).collect(Collectors.toList());
     }
 
+    public List<IRecord> getRecordsByTransformation(String transformationId) {
+        return this.getRecords();
+    }
+
     private void setConnection(String connection) {
         this.connection = connection;
     }
