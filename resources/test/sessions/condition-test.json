@@ -15,7 +15,7 @@
             "constructor": {
                 "metadata": "{}/resources/test/containers/simple/condition-test/metadata.json",
                 "collections": "{}/resources/test/containers/simple/condition-test/collections.json",
-                "relationships": "{}/resources/test/containers/simple/condition-test/relationships.json"
+                "transformations": "{}/resources/test/containers/simple/condition-test/transformations.json"
             }
         },
         "protocol": {

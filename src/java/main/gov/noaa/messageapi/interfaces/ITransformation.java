@@ -1,7 +1,7 @@
 package gov.noaa.messageapi.interfaces;
 
 
-public interface IRelationship {
+public interface ITransformation {
 
     public String getId();
     public String getType();

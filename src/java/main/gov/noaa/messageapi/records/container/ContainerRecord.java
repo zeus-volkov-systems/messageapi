@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 import gov.noaa.messageapi.interfaces.IContainerRecord;
 import gov.noaa.messageapi.interfaces.ICollection;
 import gov.noaa.messageapi.interfaces.ICondition;
-import gov.noaa.messageapi.interfaces.IRelationship;
+import gov.noaa.messageapi.interfaces.ITransformation;
 
 public class ContainerRecord implements IContainerRecord {
 
     private UUID id = null;
     private List<ICollection> collections = null;
-    private List<IRelationship> relationships = null;
+    private List<ITransformation> transformations = null;
     private List<ICondition> conditions = null;
 
     public ContainerRecord(List<ICollection> collections) {
@@ -24,7 +24,7 @@ public class ContainerRecord implements IContainerRecord {
     public ContainerRecord(IContainerRecord containerRecord) {
         generateId();
         setCollections(containerRecord.getCollections());
-        setRelationships(containerRecord.getRelationships());
+        setTransformations(containerRecord.getTransformations());
         setConditions(containerRecord.getConditions());
     }
 
@@ -40,8 +40,8 @@ public class ContainerRecord implements IContainerRecord {
         return this.collections;
     }
 
-    public List<IRelationship> getRelationships() {
-        return this.relationships;
+    public List<ITransformation> getTransformations() {
+        return this.transformations;
     }
 
     public List<ICondition> getConditions() {
@@ -58,8 +58,8 @@ public class ContainerRecord implements IContainerRecord {
         }).collect(Collectors.toList());
     }
 
-    private void setRelationships(List<IRelationship> relationships) {
-        this.relationships = relationships;
+    private void setTransformations(List<ITransformation> transformations) {
+        this.transformations = transformations;
     }
 
     private void setConditions(List<ICondition> conditions) {

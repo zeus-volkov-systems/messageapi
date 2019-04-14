@@ -4,14 +4,14 @@ import java.util.UUID;
 import java.util.List;
 
 import gov.noaa.messageapi.interfaces.ICollection;
-import gov.noaa.messageapi.interfaces.IRelationship;
+import gov.noaa.messageapi.interfaces.ITransformation;
 import gov.noaa.messageapi.interfaces.ICondition;
 
 public interface IContainerRecord {
 
     public UUID getId();
     public List<ICollection> getCollections();
-    public List<IRelationship> getRelationships();
+    public List<ITransformation> getTransformations();
     public List<ICondition> getConditions();
     public IContainerRecord getCopy();
 

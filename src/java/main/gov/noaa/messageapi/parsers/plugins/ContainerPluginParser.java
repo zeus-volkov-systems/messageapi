@@ -28,7 +28,7 @@ public class ContainerPluginParser extends BasePluginParser implements IPluginPa
         Set<String> set = new HashSet<String>();
         set.add("metadata");
         set.add("collections");
-        set.add("relationships");
+        set.add("transformations");
         return set;
     }
 

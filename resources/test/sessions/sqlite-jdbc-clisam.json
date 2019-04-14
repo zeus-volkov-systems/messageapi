@@ -15,7 +15,7 @@
             "constructor": {
                 "metadata": "{}/resources/test/containers/simple/clisam/metadata.json",
                 "collections": "{}/resources/test/containers/simple/clisam/collections.json",
-                "relationships": "{}/resources/test/containers/simple/clisam/relationships.json"
+                "transformations": "{}/resources/test/containers/simple/clisam/transformations.json"
             }
         },
         "protocol": {

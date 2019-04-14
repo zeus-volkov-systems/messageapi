@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import gov.noaa.messageapi.parsers.containers.MetadataParser;
 import gov.noaa.messageapi.parsers.containers.CollectionParser;
-import gov.noaa.messageapi.parsers.containers.RelationshipParser;
+import gov.noaa.messageapi.parsers.containers.TransformationParser;
 
 /**
  * A container definition holds the definition of a container. It essentially
@@ -20,18 +20,18 @@ public class ContainerDefinition {
 
     private Map<String,Object> metadataMap = null;
     private List<Map<String,Object>> collectionMaps = null;
-    private List<Map<String,Object>> relationshipMaps = null;
+    private List<Map<String,Object>> transformationMaps = null;
 
     public ContainerDefinition(Map<String, Object> properties) throws Exception {
         parseMetadataSpec((String) properties.get("metadata"));
         parseCollectionSpec((String) properties.get("collections"));
-        parseRelationshipSpec((String) properties.get("relationships"));
+        parseTransformationSpec((String) properties.get("transformations"));
     }
 
     public ContainerDefinition(ContainerDefinition definition) {
         this.metadataMap = new HashMap<String,Object>(definition.getMetadataMap());
         this.collectionMaps = new ArrayList<Map<String,Object>>(definition.getCollectionMaps());
-        this.relationshipMaps = new ArrayList<Map<String,Object>>(definition.getRelationshipMaps());
+        this.transformationMaps = new ArrayList<Map<String,Object>>(definition.getTransformationMaps());
     }
 
     private void parseMetadataSpec(String spec) throws Exception {
@@ -44,9 +44,9 @@ public class ContainerDefinition {
         this.collectionMaps = parser.getCollectionMaps();
     }
 
-    private void parseRelationshipSpec(String spec) throws Exception {
-        RelationshipParser parser = new RelationshipParser(spec);
-        this.relationshipMaps = parser.getRelationshipMaps();
+    private void parseTransformationSpec(String spec) throws Exception {
+        TransformationParser parser = new TransformationParser(spec);
+        this.transformationMaps = parser.getTransformationMaps();
     }
 
     public Map<String,Object> getMetadataMap() {
@@ -57,8 +57,8 @@ public class ContainerDefinition {
         return this.collectionMaps;
     }
 
-    public List<Map<String,Object>> getRelationshipMaps() {
-        return this.relationshipMaps;
+    public List<Map<String,Object>> getTransformationMaps() {
+        return this.transformationMaps;
     }
 
 }

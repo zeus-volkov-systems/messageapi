@@ -17,10 +17,10 @@ public class ContainerUtils {
     /**
      * Converts a set of schema records to container records according to the specified container.
      * This involves first creating a record blueprint based on the container definition (which contains
-     * field sets (called field units), and relationship sets (called relationship units), and then
+     * field sets (called field units), and transformation sets (called transformation units), and then
      * duplicating the record blueprint for every schema record and copying values from those fields
      * to any matching field unit.
-     * @param  container The container containing definitions of field units and relationship units
+     * @param  container The container containing definitions of field units and transformation units
      * @param  records   The schema records to be converted to container records
      * @return           A list of container records
      */

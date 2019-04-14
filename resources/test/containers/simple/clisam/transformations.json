@@ -1,5 +1,5 @@
 {
-    "relationships": [
+    "transformations": [
         {
             "id": "test1",
             "type": "left join",
