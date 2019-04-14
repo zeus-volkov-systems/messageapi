@@ -2,7 +2,7 @@
     "connections": [
         {
             "id": "1",
-            "bins": "*",
+            "collections": "*",
             "parameters": {}
         }
     ]

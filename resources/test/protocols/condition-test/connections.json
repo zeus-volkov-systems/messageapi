@@ -2,7 +2,7 @@
     "connections": [
         {
             "id": "1",
-            "bins": ["*"],
+            "collections": ["*"],
             "parameters": {
                 "sender": "ryan.berkheimer@noaa.gov",
                 "password": "testpassword1234",
@@ -11,7 +11,7 @@
         },
         {
             "id": "2",
-            "bins": ["*"],
+            "collections": ["*"],
             "classifiers": {"namespace": ["/path/to/test.db"]},
             "parameters": {
                 "sender": "jackson.pollock@cia.org",

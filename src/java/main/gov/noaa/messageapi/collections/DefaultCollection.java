@@ -1,36 +1,36 @@
-package gov.noaa.messageapi.bins;
+package gov.noaa.messageapi.collections;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import gov.noaa.messageapi.interfaces.IBin;
+import gov.noaa.messageapi.interfaces.ICollection;
 import gov.noaa.messageapi.interfaces.IField;
 
 import gov.noaa.messageapi.fields.DefaultField;
 
 
-public class DefaultBin implements IBin {
+public class DefaultCollection implements ICollection {
 
     protected String id = null;
     protected Map<String,Object> classifiers = null;
     protected List<IField> fields = null;
 
     @SuppressWarnings("unchecked")
-    public DefaultBin(Map<String,Object> fieldMap) {
+    public DefaultCollection(Map<String,Object> fieldMap) {
         setId((String) fieldMap.get("name"));
         setClassifiers((Map<String,Object>) fieldMap.get("classifiers"));
         initializeFields((List<String>) fieldMap.get("fields"));
     }
 
-    public DefaultBin(IBin bin) {
-        setId(bin.getId());
-        setClassifiers(bin.getClassifiers());
-        setFields(bin.getFields());
+    public DefaultCollection(ICollection collection) {
+        setId(collection.getId());
+        setClassifiers(collection.getClassifiers());
+        setFields(collection.getFields());
     }
 
-    public DefaultBin getCopy() {
-        return new DefaultBin(this);
+    public DefaultCollection getCopy() {
+        return new DefaultCollection(this);
     }
 
     public String getId() {

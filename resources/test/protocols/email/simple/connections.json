@@ -2,7 +2,7 @@
     "connections": [
         {
             "id": "simple",
-            "bins": "*",
+            "collections": "*",
             "parameters": {}
         }
     ]

@@ -12,7 +12,7 @@ import gov.noaa.messageapi.interfaces.IProtocolRecord;
 public class DefaultConnection extends BaseConnection implements IConnection {
 
     private String id;
-    private List<String> bins = null;
+    private List<String> collections = null;
     private Map<String,List<Object>> classifiers = null;
 
     @SuppressWarnings("unchecked")
@@ -20,10 +20,10 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         super(endpointClass, (Map<String,Object>) connectionMap.get("parameters"));
         try {
             setId((String) connectionMap.get("id"));
-            if (connectionMap.containsKey("bins")) {
-                setBins(connectionMap.get("bins"));
+            if (connectionMap.containsKey("collections")) {
+                setCollections(connectionMap.get("collections"));
             } else {
-                setBins(new ArrayList<String>());
+                setCollections(new ArrayList<String>());
             }
             if (connectionMap.containsKey("classifiers")) {
                 setClassifiers((Map<String,List<Object>>)connectionMap.get("classifiers"));
@@ -44,8 +44,8 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         return this.id;
     }
 
-    public List<String> getBins() {
-        return this.bins;
+    public List<String> getCollections() {
+        return this.collections;
     }
 
     /**
@@ -71,12 +71,12 @@ public class DefaultConnection extends BaseConnection implements IConnection {
     }
 
     @SuppressWarnings("unchecked")
-    private void setBins(Object bins) {
-        if (bins instanceof String) {
-            this.bins = new ArrayList<String>();
-            this.bins.add((String) bins);
-        } else if (bins instanceof List) {
-            this.bins = (List<String>) bins;
+    private void setCollections(Object collections) {
+        if (collections instanceof String) {
+            this.collections = new ArrayList<String>();
+            this.collections.add((String) collections);
+        } else if (collections instanceof List) {
+            this.collections = (List<String>) collections;
         }
     }
 

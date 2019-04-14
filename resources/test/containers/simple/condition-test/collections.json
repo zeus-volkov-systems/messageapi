@@ -1,5 +1,5 @@
 {
-    "bins": [
+    "collections": [
         {
             "id": "required-fields",
             "classifiers": {"namespace": "condition-test"},

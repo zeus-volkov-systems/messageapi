@@ -27,7 +27,7 @@ public class ContainerPluginParser extends BasePluginParser implements IPluginPa
     protected Set<String> getRequiredConstructorKeys() {
         Set<String> set = new HashSet<String>();
         set.add("metadata");
-        set.add("bins");
+        set.add("collections");
         set.add("relationships");
         return set;
     }

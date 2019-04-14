@@ -1,5 +1,5 @@
 {
-    "bins": [
+    "collections": [
         {
             "id": "testTable1",
             "classifiers": {"namespace": "/path/to/test.db"},

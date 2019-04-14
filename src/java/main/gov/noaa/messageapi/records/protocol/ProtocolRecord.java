@@ -28,9 +28,9 @@ public class ProtocolRecord implements IProtocolRecord {
         return new ArrayList<IRecord>(this.recordMap.keySet());
     }
 
-    public List<IRecord> getRecordsByBin(String binId) {
+    public List<IRecord> getRecordsByCollection(String collectionId) {
         return this.recordMap.entrySet().stream().filter(e -> {
-            if (((String)e.getValue().get("BIN")).equals(binId)) {
+            if (((String)e.getValue().get("BIN")).equals(collectionId)) {
                 return true;
             }
             return false;

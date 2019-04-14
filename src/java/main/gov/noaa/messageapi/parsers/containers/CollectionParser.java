@@ -8,15 +8,15 @@ import java.util.HashSet;
 import gov.noaa.messageapi.parsers.BaseParser;
 import gov.noaa.messageapi.utils.general.PathUtils;
 
-public class BinParser extends BaseParser {
+public class CollectionParser extends BaseParser {
 
-    public BinParser(String spec) throws Exception {
+    public CollectionParser(String spec) throws Exception {
         super(PathUtils.reconcileKeywords(spec));
     }
 
     @SuppressWarnings("unchecked")
-    public List<Map<String, Object>> getBinMaps() {
-        return (List<Map<String,Object>>) super.getValue("bins");
+    public List<Map<String, Object>> getCollectionMaps() {
+        return (List<Map<String,Object>>) super.getValue("collections");
     }
 
     public void process(){
@@ -24,7 +24,7 @@ public class BinParser extends BaseParser {
 
     public Set<String> getRequiredKeys() {
         Set<String> set = new HashSet<String>();
-        set.add("bins");
+        set.add("collections");
         return set;
     }
 

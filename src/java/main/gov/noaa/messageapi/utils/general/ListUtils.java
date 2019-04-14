@@ -21,7 +21,7 @@ public class ListUtils {
     /**
      * Flattens a collection of lists into a single flat list.
      * @param  collection The collection of lists to flatten
-     * @return      A flat list created from all the combined elements of the nested input list.
+     * @return      A flat list created from all the comcollectioned elements of the nested input list.
      */
     public static <T> List<T> flatten(Collection<List<T>> collection) {
         return collection.stream().flatMap(Collection::stream).collect(Collectors.toList());

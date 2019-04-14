@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IContainerRecord;
-import gov.noaa.messageapi.interfaces.IBin;
+import gov.noaa.messageapi.interfaces.ICollection;
 
 import gov.noaa.messageapi.records.container.ContainerRecord;
 
-import gov.noaa.messageapi.utils.containers.BinUtils;
+import gov.noaa.messageapi.utils.containers.CollectionUtils;
 
 public class ContainerUtils {
 
@@ -27,7 +27,7 @@ public class ContainerUtils {
     public static List<IContainerRecord> convertSchemaRecords(IContainer container, List<IRecord> schemaRecords) {
         IContainerRecord containerRecordTemplate = createRecordTemplate(container);
         return schemaRecords.stream().map(schemaRecord -> {
-            return BinUtils.setFieldValues(containerRecordTemplate.getCopy(), schemaRecord.getFields());
+            return CollectionUtils.setFieldValues(containerRecordTemplate.getCopy(), schemaRecord.getFields());
         }).collect(Collectors.toList());
     }
 
@@ -39,8 +39,8 @@ public class ContainerUtils {
      * @return           A new, empty,
      */
     public static IContainerRecord createRecordTemplate(IContainer container) {
-        List<IBin> bins = BinUtils.buildBins(container.getDefinition().getBinMaps());
-        return new ContainerRecord(bins);
+        List<ICollection> collections = CollectionUtils.buildCollections(container.getDefinition().getCollectionMaps());
+        return new ContainerRecord(collections);
     }
 
 }

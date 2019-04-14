@@ -9,7 +9,7 @@ import gov.noaa.messageapi.interfaces.IProtocolRecord;
 public interface IConnection {
 
     public String getId();
-    public List<String> getBins();
+    public List<String> getCollections();
     public  Map<String,List<Object>> getClassifiers();
     public List<Object> getClassiferValues(String classifierKey);
     public IPacket process(IProtocolRecord record);

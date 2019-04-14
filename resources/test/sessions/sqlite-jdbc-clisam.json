@@ -14,7 +14,7 @@
             "plugin": "gov.noaa.messageapi.containers.DefaultContainer",
             "constructor": {
                 "metadata": "{}/resources/test/containers/simple/clisam/metadata.json",
-                "bins": "{}/resources/test/containers/simple/clisam/bins.json",
+                "collections": "{}/resources/test/containers/simple/clisam/collections.json",
                 "relationships": "{}/resources/test/containers/simple/clisam/relationships.json"
             }
         },

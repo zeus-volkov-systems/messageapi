@@ -5,25 +5,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IContainerRecord;
-import gov.noaa.messageapi.interfaces.IBin;
+import gov.noaa.messageapi.interfaces.ICollection;
 import gov.noaa.messageapi.interfaces.ICondition;
 import gov.noaa.messageapi.interfaces.IRelationship;
 
 public class ContainerRecord implements IContainerRecord {
 
     private UUID id = null;
-    private List<IBin> bins = null;
+    private List<ICollection> collections = null;
     private List<IRelationship> relationships = null;
     private List<ICondition> conditions = null;
 
-    public ContainerRecord(List<IBin> bins) {
+    public ContainerRecord(List<ICollection> collections) {
         generateId();
-        setBins(bins);
+        setCollections(collections);
     }
 
     public ContainerRecord(IContainerRecord containerRecord) {
         generateId();
-        setBins(containerRecord.getBins());
+        setCollections(containerRecord.getCollections());
         setRelationships(containerRecord.getRelationships());
         setConditions(containerRecord.getConditions());
     }
@@ -36,8 +36,8 @@ public class ContainerRecord implements IContainerRecord {
         return this.id;
     }
 
-    public List<IBin> getBins() {
-        return this.bins;
+    public List<ICollection> getCollections() {
+        return this.collections;
     }
 
     public List<IRelationship> getRelationships() {
@@ -52,9 +52,9 @@ public class ContainerRecord implements IContainerRecord {
         this.id = UUID.randomUUID();
     }
 
-    private void setBins(List<IBin> bins) {
-        this.bins = bins.stream().map(bin -> {
-            return bin.getCopy();
+    private void setCollections(List<ICollection> collections) {
+        this.collections = collections.stream().map(collection -> {
+            return collection.getCopy();
         }).collect(Collectors.toList());
     }
 
