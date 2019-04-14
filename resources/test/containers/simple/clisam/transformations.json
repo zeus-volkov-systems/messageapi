@@ -2,10 +2,13 @@
     "transformations": [
         {
             "id": "test1",
-            "type": "left join",
-            "parent": "testTable1",
-            "child": "testTable2",
-            "field": "key"
+            "operator": "join",
+            "parameters": {
+                "collection_a": "testTable1",
+                "collection_b": "testTable2",
+                "field": "collection_b"
+            },
+            "fields": ["key", "record", "filename", "type", "collection_b"]
         }
     ]
 }

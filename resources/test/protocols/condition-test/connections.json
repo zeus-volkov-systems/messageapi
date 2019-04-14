@@ -13,6 +13,7 @@
             "id": "2",
             "collections": ["*"],
             "classifiers": {"namespace": ["/path/to/test.db"]},
+            "transformations": [],
             "parameters": {
                 "sender": "jackson.pollock@cia.org",
                 "password": "passpass64",
