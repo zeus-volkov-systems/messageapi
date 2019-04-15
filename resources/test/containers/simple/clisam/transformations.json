@@ -1,14 +1,24 @@
 {
     "transformations": [
         {
-            "id": "test1",
+            "id": "join-test",
             "operator": "join",
+            "fields": ["key", "record", "filename", "type", "mix-and-match"],
             "parameters": {
-                "collection_a": "testTable1",
-                "collection_b": "testTable2",
-                "field": "collection_b"
+                "join_field": "key",
+                "new_field": "mix-and-match"
             },
-            "fields": ["key", "record", "filename", "type", "collection_b"]
+            "records" : {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
+                         "child":  {"COLLECTION": "mix-and-match"}}
+        },
+        {
+            "id": "reduce-test",
+            "operator": "reduce-sum",
+            "fields": ["key", "mix-and-match-sum"],
+            "parameters": {
+                "reduce-field": "mix-and-match"
+            },
+            "records": {"collection" : {"TRANSFORMATION": "join-test"}}
         }
     ]
 }
