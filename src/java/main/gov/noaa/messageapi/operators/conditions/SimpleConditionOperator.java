@@ -1,9 +1,9 @@
-package gov.noaa.messageapi.operators;
+package gov.noaa.messageapi.operators.conditions;
 
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.ICondition;
 
-public abstract class SimpleOperator {
+public abstract class SimpleConditionOperator {
 
     protected abstract Integer getCompareValue(IField field, ICondition condition);
 

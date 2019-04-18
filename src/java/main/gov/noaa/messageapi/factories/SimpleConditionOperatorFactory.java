@@ -1,14 +1,14 @@
 package gov.noaa.messageapi.factories;
 
-import gov.noaa.messageapi.interfaces.IOperator;
-import gov.noaa.messageapi.interfaces.IOperatorFactory;
+import gov.noaa.messageapi.interfaces.IConditionOperator;
+import gov.noaa.messageapi.interfaces.IConditionOperatorFactory;
 
-import gov.noaa.messageapi.operators.BooleanOperator;
-import gov.noaa.messageapi.operators.FloatOperator;
-import gov.noaa.messageapi.operators.DoubleOperator;
-import gov.noaa.messageapi.operators.IntegerOperator;
-import gov.noaa.messageapi.operators.StringOperator;
-import gov.noaa.messageapi.operators.DateTimeOperator;
+import gov.noaa.messageapi.operators.conditions.BooleanConditionOperator;
+import gov.noaa.messageapi.operators.conditions.FloatConditionOperator;
+import gov.noaa.messageapi.operators.conditions.DoubleConditionOperator;
+import gov.noaa.messageapi.operators.conditions.IntegerConditionOperator;
+import gov.noaa.messageapi.operators.conditions.StringConditionOperator;
+import gov.noaa.messageapi.operators.conditions.DateTimeConditionOperator;
 
 /**
  * Creates new Operators for use in comparison between conditions and fields attached to
@@ -25,15 +25,15 @@ import gov.noaa.messageapi.operators.DateTimeOperator;
  * such as custom object type comparisons. Every operator that this possible returns
  * should extend the IOperator interface.
  */
-public class OperatorFactory implements IOperatorFactory {
+public class SimpleConditionOperatorFactory implements IConditionOperatorFactory {
 
     /**
      * Copy constructor accessor for accessing the copy constructor for an
      * Interfaced OperatorFactory.
      * @return A new OperatorFactory object
      */
-    public IOperatorFactory getCopy() {
-        return new OperatorFactory();
+    public IConditionOperatorFactory getCopy() {
+        return new SimpleConditionOperatorFactory();
     }
 
     /**
@@ -41,20 +41,20 @@ public class OperatorFactory implements IOperatorFactory {
      * @param  type The type of operator to return
      * @return      A new operator based on the specified type
      */
-    public IOperator getOperator(String type) {
+    public IConditionOperator getOperator(String type) {
         switch (type) {
             case "boolean":
-                return new BooleanOperator();
+                return new BooleanConditionOperator();
             case "float":
-                return new FloatOperator();
+                return new FloatConditionOperator();
             case "double":
-                return new DoubleOperator();
+                return new DoubleConditionOperator();
             case "integer":
-                return new IntegerOperator();
+                return new IntegerConditionOperator();
             case "string":
-                return new StringOperator();
+                return new StringConditionOperator();
             case "datetime":
-                return new DateTimeOperator();
+                return new DateTimeConditionOperator();
         }
         return null;
     }

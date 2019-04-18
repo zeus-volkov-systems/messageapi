@@ -13,7 +13,7 @@ import gov.noaa.messageapi.conditions.CompositeCondition;
  * It should be able to produce conditions based on an input that match
  * a supported condition type used by request and record processing.
  */
-public class ConditionFactory {
+public class ConditionTypeFactory {
 
     public static ICondition create(Map<String,Object> conditionMap) throws Exception {
         switch((String) conditionMap.get("type")) {

@@ -1,10 +1,10 @@
-package gov.noaa.messageapi.operators;
+package gov.noaa.messageapi.operators.conditions;
 
-import gov.noaa.messageapi.interfaces.IOperator;
+import gov.noaa.messageapi.interfaces.IConditionOperator;
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.ICondition;
 
-public class StringOperator implements IOperator {
+public class StringConditionOperator implements IConditionOperator {
 
     public boolean compare(IField field, ICondition condition) {
         switch(condition.getOperator()) {

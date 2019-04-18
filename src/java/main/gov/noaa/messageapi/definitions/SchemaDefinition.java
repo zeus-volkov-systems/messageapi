@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
-import gov.noaa.messageapi.interfaces.IOperatorFactory;
+import gov.noaa.messageapi.interfaces.IConditionOperatorFactory;
 import gov.noaa.messageapi.parsers.schemas.MetadataParser;
 import gov.noaa.messageapi.parsers.schemas.FieldParser;
 import gov.noaa.messageapi.parsers.schemas.ConditionParser;
@@ -25,7 +25,7 @@ public class SchemaDefinition {
     private Map<String,Object> metadataMap = null;
     private List<Map<String,Object>> fieldMaps = null;
     private List<Map<String,Object>> conditionMaps = null;
-    private IOperatorFactory operatorFactory = null;
+    private IConditionOperatorFactory conditionOperatorFactory = null;
 
     /**
      * This is the operator factory provided by the service. If users
@@ -33,7 +33,7 @@ public class SchemaDefinition {
      * factory will be used.
      */
     private static final String DEFAULT_OPERATOR_FACTORY =
-        "gov.noaa.messageapi.factories.OperatorFactory";
+        "gov.noaa.messageapi.factories.SimpleConditionOperatorFactory";
 
 
     /**
@@ -48,8 +48,8 @@ public class SchemaDefinition {
         parseMetadataSpec((String) properties.get("metadata"));
         parseFieldSpec((String) properties.get("fields"));
         parseConditionSpec((String) properties.get("conditions"));
-        if (properties.containsKey("operators")) {
-            createOperatorFactory((String) properties.get("operators"));
+        if (properties.containsKey("condition-operators")) {
+            createOperatorFactory((String) properties.get("condition-operators"));
         } else {
             createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
         }
@@ -70,7 +70,7 @@ public class SchemaDefinition {
         this.metadataMap = new HashMap<String,Object>(definition.getMetadataMap());
         this.fieldMaps = new ArrayList<Map<String,Object>>(definition.getFieldMaps());
         this.conditionMaps = new ArrayList<Map<String,Object>>(definition.getConditionMaps());
-        this.operatorFactory = definition.getOperatorFactory().getCopy();
+        this.conditionOperatorFactory = definition.getOperatorFactory().getCopy();
     }
 
     /**
@@ -82,7 +82,7 @@ public class SchemaDefinition {
      * @throws Exception     Throws an exception if there is an error loading the operator class.
      */
     private void createOperatorFactory(String operatorClass) throws Exception {
-        this.operatorFactory = OperatorParser.build(operatorClass);
+        this.conditionOperatorFactory = OperatorParser.build(operatorClass);
     }
 
     /**
@@ -151,8 +151,8 @@ public class SchemaDefinition {
      * Returns the Operator Factory (operator accessor) contained by this SchemaDefinition.
      * @return An OperatorFactory object.
      */
-    public IOperatorFactory getOperatorFactory() {
-        return this.operatorFactory;
+    public IConditionOperatorFactory getOperatorFactory() {
+        return this.conditionOperatorFactory;
     }
 
 }

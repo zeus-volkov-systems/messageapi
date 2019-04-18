@@ -6,7 +6,7 @@ import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IRecord;
-import gov.noaa.messageapi.interfaces.IOperator;
+import gov.noaa.messageapi.interfaces.IConditionOperator;
 
 import gov.noaa.messageapi.schemas.BaseSchema;
 import gov.noaa.messageapi.metadata.DefaultMetadata;
@@ -39,7 +39,7 @@ public class DefaultSchema extends BaseSchema implements ISchema {
         return new SchemaRecord(this.definition.getFieldMaps(), this.definition.getConditionMaps());
     }
 
-    public IOperator getOperator(String type) {
+    public IConditionOperator getOperator(String type) {
         return this.definition.getOperatorFactory().getOperator(type);
     }
 

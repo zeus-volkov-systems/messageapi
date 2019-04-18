@@ -1,12 +1,12 @@
-package gov.noaa.messageapi.operators;
+package gov.noaa.messageapi.operators.conditions;
 
 import java.util.Date;
 
-import gov.noaa.messageapi.interfaces.IOperator;
+import gov.noaa.messageapi.interfaces.IConditionOperator;
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.ICondition;
 
-public class DateTimeOperator extends SimpleOperator implements IOperator {
+public class DateTimeConditionOperator extends SimpleConditionOperator implements IConditionOperator {
 
     public boolean compare(IField field, ICondition condition) {
         return super.compare(field, condition);

@@ -6,8 +6,7 @@
             "fields": ["key", "record", "filename", "type", "mix-and-match"],
             "parameters": {
                 "join_field": "key",
-                "new_field": "mix-and-match"
-            },
+                "new_field": "mix-and-match"},
             "records" : {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
                          "child":  {"COLLECTION": "mix-and-match"}}
         },
@@ -18,7 +17,7 @@
             "parameters": {
                 "reduce-field": "mix-and-match"
             },
-            "records": {"collection" : {"TRANSFORMATION": "join-test"}}
+            "records": {"reduce-list" : {"TRANSFORMATION": "join-test"}}
         }
     ]
 }

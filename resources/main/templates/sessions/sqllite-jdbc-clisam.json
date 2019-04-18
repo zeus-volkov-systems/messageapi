@@ -7,7 +7,7 @@
                 "metadata": "{}/resources/main/storage/schemas/simple/clisam/metadata.json",
                 "fields": "{}/resources/main/storage/schemas/simple/clisam/fields.json",
                 "conditions": "{}/resources/main/storage/schemas/simple/clisam/conditions.json",
-                "operators": "gov.noaa.messageapi.factories.OperatorFactory"
+                "condition-operators": "gov.noaa.messageapi.factories.SimpleConditionOperatorFactory"
             }
         },
         "container": {

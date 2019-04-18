@@ -8,7 +8,7 @@ import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.ICondition;
 import gov.noaa.messageapi.fields.DefaultField;
-import gov.noaa.messageapi.factories.ConditionFactory;
+import gov.noaa.messageapi.factories.ConditionTypeFactory;
 
 public class SchemaRecord implements IRecord {
 
@@ -50,7 +50,7 @@ public class SchemaRecord implements IRecord {
     private void initializeConditions(List<Map<String,Object>> conditionMaps) {
         this.conditions = conditionMaps.stream().map(conditionMap -> {
             try {
-                ICondition c = ConditionFactory.create(conditionMap);
+                ICondition c = ConditionTypeFactory.create(conditionMap);
                 return c;
             } catch (Exception e) {
                 return null;
@@ -72,7 +72,7 @@ public class SchemaRecord implements IRecord {
     public void setConditions(List<ICondition> conditions) {
         this.conditions = conditions.stream().map(c -> {
             try {
-                ICondition newCondition = ConditionFactory.create(c);
+                ICondition newCondition = ConditionTypeFactory.create(c);
                 return newCondition;
             } catch (Exception e) {
                 return null;
