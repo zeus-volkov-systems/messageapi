@@ -7,7 +7,7 @@
                 "metadata": "{}/resources/test/schemas/simple/email/metadata.json",
                 "fields": "{}/resources/test/schemas/simple/email/fields.json",
                 "conditions": "{}/resources/test/schemas/simple/email/conditions.json",
-                "condition-operators": "gov.noaa.messageapi.factories.SimpleConditionOperatorFactory"
+                "condition-factory": "gov.noaa.messageapi.factories.SimpleConditionFactory"
             }
         },
         "container": {
@@ -16,7 +16,7 @@
                 "metadata": "{}/resources/test/containers/simple/email/metadata.json",
                 "collections": "{}/resources/test/containers/simple/email/collections.json",
                 "transformations": "{}/resources/test/containers/simple/email/transformations.json",
-                "transformation-operators": "gov.noaa.messageapi.factories.SimpleTransformationOperatorFactory"
+                "transformation-factory": "gov.noaa.messageapi.factories.SimpleTransformationFactory"
             }
         },
         "protocol": {

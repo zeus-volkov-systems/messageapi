@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
 
+import gov.noaa.messageapi.interfaces.ITransformationFactory;
+
 import gov.noaa.messageapi.parsers.containers.MetadataParser;
 import gov.noaa.messageapi.parsers.containers.CollectionParser;
 import gov.noaa.messageapi.parsers.containers.TransformationParser;
+import gov.noaa.messageapi.parsers.containers.TransformationFactoryParser;
 
 /**
  * A container definition holds the definition of a container. It essentially
@@ -21,6 +24,12 @@ public class ContainerDefinition {
     private Map<String,Object> metadataMap = null;
     private List<Map<String,Object>> collectionMaps = null;
     private List<Map<String,Object>> transformationMaps = null;
+    private ITransformationFactory transformationFactory = null;
+
+
+    private static final String DEFAULT_TRANSFORMATION_FACTORY =
+        "gov.noaa.messageapi.factories.SimpleTransformationFactory";
+
 
     public ContainerDefinition(Map<String, Object> properties) throws Exception {
         if (properties.containsKey("metadata")) {
@@ -38,12 +47,21 @@ public class ContainerDefinition {
         } else {
             throw new Exception("Missing necessary 'transformations' key when parsing container definition.");
         }
+        if (properties.containsKey("transformation_factory")) {
+            createTransformationFactory((String) properties.get("transformation-factory"));
+        } else {
+            createTransformationFactory(DEFAULT_TRANSFORMATION_FACTORY);
+        }
     }
 
     public ContainerDefinition(ContainerDefinition definition) {
         this.metadataMap = new HashMap<String,Object>(definition.getMetadataMap());
         this.collectionMaps = new ArrayList<Map<String,Object>>(definition.getCollectionMaps());
         this.transformationMaps = new ArrayList<Map<String,Object>>(definition.getTransformationMaps());
+    }
+
+    private void createTransformationFactory(String transformationClass) throws Exception {
+        this.transformationFactory = TransformationFactoryParser.build(transformationClass);
     }
 
     private void parseMetadataSpec(String spec) throws Exception {
@@ -71,6 +89,10 @@ public class ContainerDefinition {
 
     public List<Map<String,Object>> getTransformationMaps() {
         return this.transformationMaps;
+    }
+
+    public ITransformationFactory getTransformationFactory() {
+        return this.transformationFactory;
     }
 
 }
