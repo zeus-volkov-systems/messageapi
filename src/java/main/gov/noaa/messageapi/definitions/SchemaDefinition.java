@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
-import gov.noaa.messageapi.interfaces.IConditionOperatorFactory;
+import gov.noaa.messageapi.interfaces.IConditionFactory;
 import gov.noaa.messageapi.parsers.schemas.MetadataParser;
 import gov.noaa.messageapi.parsers.schemas.FieldParser;
 import gov.noaa.messageapi.parsers.schemas.ConditionParser;
-import gov.noaa.messageapi.parsers.schemas.OperatorParser;
+import gov.noaa.messageapi.parsers.schemas.ConditionOperatorParser;
 
 /**
  * A SchemaDefinition is used by the StorageService to parse a specified
@@ -25,7 +25,7 @@ public class SchemaDefinition {
     private Map<String,Object> metadataMap = null;
     private List<Map<String,Object>> fieldMaps = null;
     private List<Map<String,Object>> conditionMaps = null;
-    private IConditionOperatorFactory conditionOperatorFactory = null;
+    private IConditionFactory conditionOperatorFactory = null;
 
     /**
      * This is the operator factory provided by the service. If users
@@ -33,7 +33,7 @@ public class SchemaDefinition {
      * factory will be used.
      */
     private static final String DEFAULT_OPERATOR_FACTORY =
-        "gov.noaa.messageapi.factories.SimpleConditionOperatorFactory";
+        "gov.noaa.messageapi.factories.SimpleConditionFactory";
 
 
     /**
@@ -82,7 +82,7 @@ public class SchemaDefinition {
      * @throws Exception     Throws an exception if there is an error loading the operator class.
      */
     private void createOperatorFactory(String operatorClass) throws Exception {
-        this.conditionOperatorFactory = OperatorParser.build(operatorClass);
+        this.conditionOperatorFactory = ConditionOperatorParser.build(operatorClass);
     }
 
     /**
@@ -151,7 +151,7 @@ public class SchemaDefinition {
      * Returns the Operator Factory (operator accessor) contained by this SchemaDefinition.
      * @return An OperatorFactory object.
      */
-    public IConditionOperatorFactory getOperatorFactory() {
+    public IConditionFactory getOperatorFactory() {
         return this.conditionOperatorFactory;
     }
 
