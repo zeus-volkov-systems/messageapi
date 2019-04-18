@@ -23,9 +23,21 @@ public class ContainerDefinition {
     private List<Map<String,Object>> transformationMaps = null;
 
     public ContainerDefinition(Map<String, Object> properties) throws Exception {
-        parseMetadataSpec((String) properties.get("metadata"));
-        parseCollectionSpec((String) properties.get("collections"));
-        parseTransformationSpec((String) properties.get("transformations"));
+        if (properties.containsKey("metadata")) {
+            parseMetadataSpec((String) properties.get("metadata"));
+        } else {
+            throw new Exception("Missing necessary 'metadata' key when parsing container definition.");
+        }
+        if (properties.containsKey("collections")) {
+            parseCollectionSpec((String) properties.get("collections"));
+        } else {
+            throw new Exception("Missing necessary 'collections' key when parsing container definition.");
+        }
+        if (properties.containsKey("transformations")) {
+            parseTransformationSpec((String) properties.get("transformations"));
+        } else {
+            throw new Exception("Missing necessary 'transformations' key when parsing container definition.");
+        }
     }
 
     public ContainerDefinition(ContainerDefinition definition) {
