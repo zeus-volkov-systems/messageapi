@@ -1,12 +1,12 @@
 package gov.noaa.messageapi.interfaces;
 
+import java.util.Map;
+import java.util.List;
+
+import gov.noaa.messageapi.interfaces.IRecord;
 
 public interface ITransformation {
 
-    public String getId();
-    public String getType();
-    public String getParent();
-    public String getChild();
-    public String getField();
+    public List<IRecord> process(Map<String,List<IRecord>> transformationMap);
 
 }
