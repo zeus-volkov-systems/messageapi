@@ -8,6 +8,7 @@ public class ConditionOperatorParser {
         try {
             return (IConditionFactory) constructPlugin(Class.forName(operatorClass));
         } catch (Exception e) {
+            System.err.println(String.format("Could not construct the ConditionOperatorFactory using the given class %s", operatorClass));
             return null;
         }
     }

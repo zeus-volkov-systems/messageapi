@@ -8,6 +8,7 @@ public class TransformationFactoryParser {
         try {
             return (ITransformationFactory) constructPlugin(Class.forName(transformationClass));
         } catch (Exception e) {
+            System.err.println(String.format("Could not construct the TransformationFactory using the given class %s", transformationClass));
             return null;
         }
     }
