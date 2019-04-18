@@ -45,9 +45,21 @@ public class SchemaDefinition {
      * @throws Exception  An exception is thrown if there is an issue parsing the schema definition.
      */
     public SchemaDefinition(Map<String, Object> properties) throws Exception {
-        parseMetadataSpec((String) properties.get("metadata"));
-        parseFieldSpec((String) properties.get("fields"));
-        parseConditionSpec((String) properties.get("conditions"));
+        if (properties.containsKey("metadata")) {
+            parseMetadataSpec((String) properties.get("metadata"));
+        } else {
+            throw new Exception("Missing necessary 'metadata' key on schema definition.");
+        }
+        if (properties.containsKey("fields")) {
+            parseFieldSpec((String) properties.get("fields"));
+        } else {
+            throw new Exception("Missing necessary 'fields' key on schema definition.");
+        }
+        if (properties.containsKey("conditions")) {
+            parseConditionSpec((String) properties.get("conditions"));
+        } else {
+            throw new Exception("Missing necessary 'conditions' key on schema definition.");
+        }
         if (properties.containsKey("condition-factory")) {
             createOperatorFactory((String) properties.get("condition-factory"));
         } else {
