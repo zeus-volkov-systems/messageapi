@@ -20,9 +20,15 @@ public class DefaultField implements IField {
     private Boolean valid = true;
 
     public DefaultField(Map<String, Object> fieldMap) {
-        this.id = (String) fieldMap.get("id");
-        this.type = (String) fieldMap.get("type");
-        this.required = (boolean) fieldMap.get("required");
+        if (fieldMap.containsKey("id")) {
+            this.id = (String) fieldMap.get("id");
+        }
+        if (fieldMap.containsKey("type")) {
+            this.type = (String) fieldMap.get("type");
+        }
+        if (fieldMap.containsKey("required")) {
+            this.required = (boolean) fieldMap.get("required");
+        }
     }
 
     public DefaultField(String id) {
