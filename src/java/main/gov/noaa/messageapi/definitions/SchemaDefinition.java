@@ -48,8 +48,8 @@ public class SchemaDefinition {
         parseMetadataSpec((String) properties.get("metadata"));
         parseFieldSpec((String) properties.get("fields"));
         parseConditionSpec((String) properties.get("conditions"));
-        if (properties.containsKey("condition-operators")) {
-            createOperatorFactory((String) properties.get("condition-operators"));
+        if (properties.containsKey("condition-factory")) {
+            createOperatorFactory((String) properties.get("condition-factory"));
         } else {
             createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
         }
