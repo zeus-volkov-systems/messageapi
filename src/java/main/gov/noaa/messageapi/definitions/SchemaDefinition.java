@@ -48,17 +48,17 @@ public class SchemaDefinition {
         if (properties.containsKey("metadata")) {
             parseMetadataSpec((String) properties.get("metadata"));
         } else {
-            throw new Exception("Missing necessary 'metadata' key on schema definition.");
+            throw new Exception("Missing necessary 'metadata' key when parsing schema definition.");
         }
         if (properties.containsKey("fields")) {
             parseFieldSpec((String) properties.get("fields"));
         } else {
-            throw new Exception("Missing necessary 'fields' key on schema definition.");
+            throw new Exception("Missing necessary 'fields' key when parsing schema definition.");
         }
         if (properties.containsKey("conditions")) {
             parseConditionSpec((String) properties.get("conditions"));
         } else {
-            throw new Exception("Missing necessary 'conditions' key on schema definition.");
+            throw new Exception("Missing necessary 'conditions' key when parsing schema definition.");
         }
         if (properties.containsKey("condition-factory")) {
             createOperatorFactory((String) properties.get("condition-factory"));

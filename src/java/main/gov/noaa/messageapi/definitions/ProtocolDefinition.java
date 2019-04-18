@@ -23,9 +23,21 @@ public class ProtocolDefinition {
     private String endpoint = null;
 
     public ProtocolDefinition(Map<String,Object> properties) throws Exception {
-        parseMetadataSpec((String) properties.get("metadata"));
-        parseConnectionSpec((String) properties.get("connections"));
-        parseEndpoint((String) properties.get("endpoint"));
+        if (properties.containsKey("metadata")) {
+            parseMetadataSpec((String) properties.get("metadata"));
+        } else {
+            throw new Exception("Missing necessary 'metadata' key when parsing protocol definition.");
+        }
+        if (properties.containsKey("connections")) {
+            parseConnectionSpec((String) properties.get("connections"));
+        } else {
+            throw new Exception("Missing necessary 'connections' key when parsing protocol definition.");
+        }
+        if (properties.containsKey("endpoint")) {
+            parseEndpoint((String) properties.get("endpoint"));
+        } else {
+            throw new Exception("Missing necessary 'endpoint' key when parsing protocol definition.");
+        }
     }
 
     public ProtocolDefinition(ProtocolDefinition definition) {
