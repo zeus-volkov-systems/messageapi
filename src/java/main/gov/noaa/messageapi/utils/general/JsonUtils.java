@@ -62,7 +62,7 @@ public class JsonUtils {
 
     public static boolean hasKey(JSONObject model, String k) throws Exception {
         try {
-            if (Arrays.asList(keys(model)).contains(k)) {
+            if (Arrays.asList(keys(model)).contains((Object) k)) {
                 return true;
             }
             return false;
