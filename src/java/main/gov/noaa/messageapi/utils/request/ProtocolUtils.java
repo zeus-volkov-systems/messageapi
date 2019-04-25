@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IProtocol;
+import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.ICollection;
 import gov.noaa.messageapi.interfaces.IRecord;
@@ -21,7 +22,7 @@ import gov.noaa.messageapi.records.protocol.ProtocolRecord;
 
 public class ProtocolUtils {
 
-    public static List<IProtocolRecord> convertContainerRecords(IProtocol protocol, List<IContainerRecord> containerRecords) {
+    public static List<IProtocolRecord> convertContainerRecords(IProtocol protocol, IContainer container, List<IContainerRecord> containerRecords) {
         return protocol.getConnections().stream().map(c -> {
             return createProtocolRecord(c, containerRecords);
         }).collect(Collectors.toList());
