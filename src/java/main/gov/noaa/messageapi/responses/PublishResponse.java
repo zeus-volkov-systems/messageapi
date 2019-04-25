@@ -30,7 +30,7 @@ public class PublishResponse extends BaseResponse implements IResponse {
         super(request);
         validate(this.request.getSchema(), this.request.getRecords())
                   .thenCompose(outgoingPacket -> this.factor(this.request.getContainer(), outgoingPacket))
-                  .thenCompose(containerRecords -> this.prepare(this.request.getProtocol(), containerRecords))
+                  .thenCompose(containerRecords -> this.prepare(this.request.getProtocol(), this.request.getContainer(), containerRecords))
                   .thenCompose(protocolRecords -> this.process(this.request.getProtocol().getConnections(), protocolRecords))
                   .thenCompose(incomingPacket -> this.resolve(incomingPacket))
                   .thenAccept(status -> this.setComplete(status));
@@ -73,9 +73,9 @@ public class PublishResponse extends BaseResponse implements IResponse {
      * @param  records  A list of records to be prepared
      * @return          A CompletableFuture representing a protocol preparation process that will eventually yield a list of protocol records
      */
-    CompletableFuture<List<IProtocolRecord>> prepare(IProtocol protocol, List<IContainerRecord> records) {
+    CompletableFuture<List<IProtocolRecord>> prepare(IProtocol protocol, IContainer container, List<IContainerRecord> records) {
         return CompletableFuture.supplyAsync(() -> {
-            return ProtocolUtils.convertContainerRecords(protocol, records);
+            return ProtocolUtils.convertContainerRecords(protocol, container, records);
         });
     }
 
