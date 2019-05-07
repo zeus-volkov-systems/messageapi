@@ -16,8 +16,8 @@ public class ProtocolRecord implements IProtocolRecord {
 
     public ProtocolRecord(String connection,
                           Map<IRecord, Map<String,Object>> recordMap) {
-        setConnection(connection);
-        setRecords(recordMap);
+        this.setConnection(connection);
+        this.setRecords(recordMap);
     }
 
     public String getConnection(){

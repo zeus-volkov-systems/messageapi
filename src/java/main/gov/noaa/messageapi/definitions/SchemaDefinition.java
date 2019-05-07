@@ -131,7 +131,7 @@ public class SchemaDefinition {
      * @throws Exception Throws an exception in the case that the map could not be parsed.
      */
     private void parseConditionSpec(Map<String,String> conditionMap) throws Exception {
-        if (conditionMap.containsKey("conditions")) {
+        if (conditionMap.containsKey("map")) {
             ConditionParser parser = new ConditionParser((String) conditionMap.get("map"));
             this.conditionMaps = parser.getConditionMaps();
             if (conditionMap.containsKey("factory")) {

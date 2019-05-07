@@ -14,21 +14,27 @@ public class DefaultConnection extends BaseConnection implements IConnection {
     private String id;
     private List<String> collections = null;
     private Map<String,List<Object>> classifiers = null;
+    private List<String> transformations = null;
 
     @SuppressWarnings("unchecked")
     public DefaultConnection(String endpointClass, Map<String,Object> connectionMap) throws Exception {
         super(endpointClass, (Map<String,Object>) connectionMap.get("parameters"));
         try {
-            setId((String) connectionMap.get("id"));
+            this.setId((String) connectionMap.get("id"));
             if (connectionMap.containsKey("collections")) {
-                setCollections(connectionMap.get("collections"));
+                this.setCollections(connectionMap.get("collections"));
             } else {
-                setCollections(new ArrayList<String>());
+                this.setCollections(new ArrayList<String>());
             }
             if (connectionMap.containsKey("classifiers")) {
-                setClassifiers((Map<String,List<Object>>)connectionMap.get("classifiers"));
+                this.setClassifiers((Map<String,List<Object>>)connectionMap.get("classifiers"));
             } else {
-                setClassifiers(new HashMap<String,List<Object>>());
+                this.setClassifiers(new HashMap<String,List<Object>>());
+            }
+            if (connectionMap.containsKey("transformations")) {
+                this.setTransformations((List<String>) connectionMap.get("transformations"));
+            } else {
+                this.setTransformations(new ArrayList<String>());
             }
         } catch (Exception e) {
             System.out.println("Error in connection instantiation. Stacktrace to follow.");
@@ -54,6 +60,10 @@ public class DefaultConnection extends BaseConnection implements IConnection {
      */
     public Map<String,List<Object>> getClassifiers() {
         return this.classifiers;
+    }
+
+    public List<String> getTransformations() {
+        return this.transformations;
     }
 
     /**
@@ -82,5 +92,9 @@ public class DefaultConnection extends BaseConnection implements IConnection {
 
     private void setClassifiers(Map<String,List<Object>> classifiers) {
         this.classifiers = classifiers;
+    }
+
+    private void setTransformations(List<String> transformations) {
+        this.transformations = transformations;
     }
 }
