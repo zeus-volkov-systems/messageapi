@@ -28,7 +28,7 @@ public class PublishResponse extends BaseResponse implements IResponse {
 
     public PublishResponse(PublishRequest request) {
         super(request);
-        validate(this.request.getSchema(), this.request.getRecords())
+        this.validate(this.request.getSchema(), this.request.getRecords())
                   .thenCompose(outgoingPacket -> this.factor(this.request.getContainer(), outgoingPacket))
                   .thenCompose(containerRecords -> this.prepare(this.request.getProtocol(), this.request.getContainer(), containerRecords))
                   .thenCompose(protocolRecords -> this.process(this.request.getProtocol().getConnections(), protocolRecords))
