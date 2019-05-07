@@ -23,8 +23,8 @@ import gov.noaa.messageapi.records.protocol.ProtocolRecord;
 public class ProtocolUtils {
 
     public static List<IProtocolRecord> convertContainerRecords(IProtocol protocol, IContainer container, List<IContainerRecord> containerRecords) {
-        return protocol.getConnections().stream().map(c -> {
-            return createProtocolRecord(c, containerRecords);
+        return protocol.getConnections().stream().map(conn -> {
+            return createProtocolRecord(conn, containerRecords);
         }).collect(Collectors.toList());
     }
 
