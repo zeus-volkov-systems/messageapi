@@ -34,17 +34,17 @@ public class ContainerDefinition {
     @SuppressWarnings("unchecked")
     public ContainerDefinition(Map<String, Object> properties) throws Exception {
         if (properties.containsKey("metadata")) {
-            parseMetadataSpec((String) properties.get("metadata"));
+            this.parseMetadataSpec((String) properties.get("metadata"));
         } else {
             throw new Exception("Missing necessary 'metadata' key when parsing container definition.");
         }
         if (properties.containsKey("collections")) {
-            parseCollectionSpec((String) properties.get("collections"));
+            this.parseCollectionSpec((String) properties.get("collections"));
         } else {
             throw new Exception("Missing necessary 'collections' key when parsing container definition.");
         }
         if (properties.containsKey("transformations")) {
-            parseTransformationSpec((Map<String,String>) properties.get("transformations"));
+            this.parseTransformationSpec((Map<String,String>) properties.get("transformations"));
         } else {
             throw new Exception("Missing necessary 'transformations' key when parsing container definition.");
         }
