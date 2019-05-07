@@ -3,12 +3,14 @@
         {
             "id": "testTable1",
             "classifiers": {"namespace": "/path/to/test.db"},
-            "fields": ["key", "record", "filename", "type"]
+            "fields": ["key", "record", "filename", "type"],
+            "conditions": ["condition1", "condition2", "condition3"]
         },
         {
             "id": "testTable2",
             "classifiers": {"namespace": "/path/to/test2.db"},
-            "fields": ["key", "type", "receipt_date", "insert_date"]
+            "fields": ["key", "type", "receipt_date", "insert_date"],
+            "conditions": ["conditionX", "condition5", "condition3"]
         }
     ]
 }

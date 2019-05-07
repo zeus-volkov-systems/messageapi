@@ -30,7 +30,7 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
     public DefaultProtocol(IProtocol protocol) throws Exception {
         super(protocol);
         this.setMetadata(protocol.getDefinition().getMetadataMap());
-        this.setConnections(protocol.getDefinition().getEndpoint(), protocol.getDefinition().getConnectionMaps());
+        this.setConnections(protocol.getDefinition().getEndpointMap());
     }
 
     public IProtocol getCopy() {
@@ -45,7 +45,7 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
         try {
             this.createProtocolDefinition(this.getProperties());
             this.setMetadata(this.definition.getMetadataMap());
-            this.setConnections(this.definition.getEndpoint(), this.definition.getConnectionMaps());
+            this.setConnections(this.definition.getEndpointMap());
         } catch (Exception e) {}
     }
 
@@ -61,13 +61,16 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
         this.metadata = new DefaultMetadata(metadataMap);
     }
 
-    private void setConnections(String endpoint, List<Map<String,Object>> connectionMaps) throws Exception {
-        this.connections = ListUtils.removeAllNulls(connectionMaps.stream().map(connectionMap -> {
-            try {
-                return new DefaultConnection(endpoint, (Map<String,Object>) connectionMap);
-            } catch (Exception e) {
-                return null;
-            }
+    private void setConnections(Map<String, List<Map<String,Object>>> endpointMap) throws Exception {
+        this.connections = ListUtils.flatten(endpointMap.entrySet().stream().map(entry -> {
+            String plugin = entry.getKey();
+            return ListUtils.removeAllNulls(entry.getValue().stream().map(connectionMap -> {
+                try {
+                    return (IConnection) new DefaultConnection(plugin, (Map<String,Object>) connectionMap);
+                } catch (Exception e) {
+                    return null;
+                }
+            }).collect(Collectors.toList()));
         }).collect(Collectors.toList()));
     }
 

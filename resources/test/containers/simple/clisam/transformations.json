@@ -1,24 +1,21 @@
 {
     "transformations": [
-        {
-            "id": "join-test",
-            "operator": "join",
-            "fields": ["key", "record", "filename", "type", "mix-and-match"],
-            "parameters": {
-                "join_field": "key",
-                "collection_field": "mix-and-match"},
-            "records" : {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
-                         "child":  {"COLLECTION": "mix-and-match"},
-                         "other": "ALL"}
-        },
-        {
-            "id": "reduce-test",
-            "operator": "reduce-sum",
-            "fields": ["key", "mix-and-match-sum"],
-            "parameters": {
-                "reduce-field": "mix-and-match"
-            },
-            "records": {"reduce-list" : {"TRANSFORMATION": "join-test"}}
-        }
-    ]
+    {
+        "id": "join-test",
+        "operator": "join",
+        "constructor": {"join_field": "key",
+                        "collection_field": "mix-and-match"},
+        "records": {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
+                    "child":  {"COLLECTION": "mix-and-match"},
+                    "other": "ALL"},
+        "fields": ["key", "record", "filename", "type", "mix-and-match"]
+    },
+    {
+        "id": "reduce-test",
+        "operator": "reduce-sum",
+        "constructor": {"reduce-field": "mix-and-match",
+                        "reduce-target": "mix-and-match-reduction"},
+        "records": {"reduce-list" : {"TRANSFORMATION": "join-test"}},
+        "fields": ["key", "mix-and-match-reduction"]
+    }]
 }

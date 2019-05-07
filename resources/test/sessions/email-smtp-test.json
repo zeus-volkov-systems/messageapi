@@ -1,31 +1,15 @@
-{
-    "plugin": "gov.noaa.messageapi.sessions.PublisherSession",
-    "constructor": {
-        "schema": {
-            "plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
-            "constructor": {
-                "metadata": "{}/resources/test/schemas/simple/email/metadata.json",
-                "fields": "{}/resources/test/schemas/simple/email/fields.json",
-                "conditions": "{}/resources/test/schemas/simple/email/conditions.json",
-                "condition-factory": "gov.noaa.messageapi.factories.SimpleConditionFactory"
-            }
-        },
-        "container": {
-            "plugin": "gov.noaa.messageapi.containers.DefaultContainer",
-            "constructor": {
-                "metadata": "{}/resources/test/containers/simple/email/metadata.json",
-                "collections": "{}/resources/test/containers/simple/email/collections.json",
-                "transformations": "{}/resources/test/containers/simple/email/transformations.json",
-                "transformation-factory": "gov.noaa.messageapi.factories.SimpleTransformationFactory"
-            }
-        },
-        "protocol": {
-            "plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
-            "constructor": {
-                "metadata": "{}/resources/test/protocols/email/simple/metadata.json",
-                "endpoint": "gov.noaa.messageapi.test.endpoints.EmailEndpointTest",
-                "connections": "{}/resources/test/protocols/email/simple/connections.json"
-            }
-        }
-    }
-}
+{"plugin": "gov.noaa.messageapi.sessions.PublisherSession",
+ "constructor": {"schema": {"plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
+                            "constructor": {"metadata": "{}/resources/test/schemas/simple/email/metadata.json",
+                                            "fields": "{}/resources/test/schemas/simple/email/fields.json",
+                                            "conditions": {"map": "{}/resources/test/schemas/simple/email/conditions.json",
+                                                           "factory": "gov.noaa.messageapi.factories.SimpleConditionFactory"}}},
+                 "container": {"plugin": "gov.noaa.messageapi.containers.DefaultContainer",
+                               "constructor": {"metadata": "{}/resources/test/containers/simple/email/metadata.json",
+                                               "collections": "{}/resources/test/containers/simple/email/collections.json",
+                                               "transformations": {"map": "{}/resources/test/containers/simple/email/transformations.json",
+                                                                   "factory": "gov.noaa.messageapi.factories.SimpleTransformationFactory"}}},
+                 "protocol": {"plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
+                              "constructor": {"metadata": "{}/resources/test/protocols/email/simple/metadata.json",
+                                              "endpoints": [{"plugin": "gov.noaa.messageapi.test.endpoints.EmailEndpointTest",
+                                                             "connections": "{}/resources/test/protocols/email/simple/email-connections.json"}]}}}}

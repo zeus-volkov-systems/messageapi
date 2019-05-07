@@ -3,10 +3,14 @@ package gov.noaa.messageapi.definitions;
 import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.AbstractMap;
+
+import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.parsers.protocols.MetadataParser;
 import gov.noaa.messageapi.parsers.protocols.ConnectionParser;
+
+import gov.noaa.messageapi.utils.general.ListUtils;
 
 /**
  * A protocol definition holds the definition of a protocol. It essentially
@@ -19,22 +23,17 @@ import gov.noaa.messageapi.parsers.protocols.ConnectionParser;
 public class ProtocolDefinition {
 
     private Map<String,Object> metadataMap = null;
-    private List<Map<String,Object>> connectionMaps = null;
-    private String endpoint = null;
+    private Map<String,List<Map<String,Object>>> endpointMap = null;
 
+    @SuppressWarnings("unchecked")
     public ProtocolDefinition(Map<String,Object> properties) throws Exception {
         if (properties.containsKey("metadata")) {
-            parseMetadataSpec((String) properties.get("metadata"));
+            this.parseMetadataSpec((String) properties.get("metadata"));
         } else {
             throw new Exception("Missing necessary 'metadata' key when parsing protocol definition.");
         }
-        if (properties.containsKey("connections")) {
-            parseConnectionSpec((String) properties.get("connections"));
-        } else {
-            throw new Exception("Missing necessary 'connections' key when parsing protocol definition.");
-        }
-        if (properties.containsKey("endpoint")) {
-            parseEndpoint((String) properties.get("endpoint"));
+        if (properties.containsKey("endpoints")) {
+            this.parseEndpoints((List<Map<String,String>>) properties.get("endpoints"));
         } else {
             throw new Exception("Missing necessary 'endpoint' key when parsing protocol definition.");
         }
@@ -42,8 +41,7 @@ public class ProtocolDefinition {
 
     public ProtocolDefinition(ProtocolDefinition definition) {
         this.metadataMap = new HashMap<String,Object>(definition.getMetadataMap());
-        this.connectionMaps = new ArrayList<Map<String,Object>>(definition.getConnectionMaps());
-        this.endpoint = definition.getEndpoint();
+        this.endpointMap = new HashMap<String, List<Map<String,Object>>>(definition.getEndpointMap());
     }
 
     private void parseMetadataSpec(String spec) throws Exception {
@@ -51,25 +49,34 @@ public class ProtocolDefinition {
         this.metadataMap = parser.getMetadataMap();
     }
 
-    private void parseConnectionSpec(String spec) throws Exception {
-        ConnectionParser parser = new ConnectionParser(spec);
-        this.connectionMaps = parser.getConnectionMaps();
-    }
-
-    private void parseEndpoint(String endpoint) throws Exception {
-        this.endpoint = endpoint;
+    private void parseEndpoints(List<Map<String,String>> endpoints) throws Exception {
+        this.endpointMap = new HashMap<String,List<Map<String,Object>>>();
+        ListUtils.removeAllNulls(endpoints.stream().map(endpointMap -> {
+            if (endpointMap.containsKey("plugin")) {
+                if (endpointMap.containsKey("connections")) {
+                    try {
+                        ConnectionParser connParser = new ConnectionParser(endpointMap.get("connections"));
+                        return new AbstractMap.SimpleEntry<String, List<Map<String,Object>>>
+                            ((String) endpointMap.get("plugin"),
+                            (List<Map<String,Object>>) connParser.getConnectionMaps());
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
+            }
+            return null;
+        }).collect(Collectors.toList()))
+            .stream()
+            .forEach(endpointMapEntry -> this.endpointMap.put(endpointMapEntry.getKey(),
+                                                        endpointMapEntry.getValue()));
     }
 
     public Map<String,Object> getMetadataMap() {
         return this.metadataMap;
     }
 
-    public List<Map<String,Object>> getConnectionMaps() {
-        return this.connectionMaps;
-    }
-
-    public String getEndpoint() {
-        return this.endpoint;
+    public Map<String,List<Map<String,Object>>> getEndpointMap() {
+        return this.endpointMap;
     }
 
 }
