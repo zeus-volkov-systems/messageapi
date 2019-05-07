@@ -12,4 +12,4 @@
                  "protocol": {"plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
                               "constructor": {"metadata": "{}/resources/test/protocols/email/simple/metadata.json",
                                               "endpoints": [{"plugin": "gov.noaa.messageapi.test.endpoints.EmailEndpointTest",
-                                                             "connections": "{}/resources/test/protocols/email/simple/email-connections.json"}]}}}}
+                                                             "connections": "{}/resources/test/protocols/email/simple/connections.json"}]}}}}
