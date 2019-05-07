@@ -44,6 +44,7 @@ public class SchemaDefinition {
      * @param  properties A map containing specific schema-blueprint-related info
      * @throws Exception  An exception is thrown if there is an issue parsing the schema definition.
      */
+    @SuppressWarnings("unchecked")
     public SchemaDefinition(Map<String, Object> properties) throws Exception {
         if (properties.containsKey("metadata")) {
             parseMetadataSpec((String) properties.get("metadata"));
@@ -56,14 +57,9 @@ public class SchemaDefinition {
             throw new Exception("Missing necessary 'fields' key when parsing schema definition.");
         }
         if (properties.containsKey("conditions")) {
-            parseConditionSpec((String) properties.get("conditions"));
+            parseConditionSpec((Map<String,String>) properties.get("conditions"));
         } else {
             throw new Exception("Missing necessary 'conditions' key when parsing schema definition.");
-        }
-        if (properties.containsKey("condition-factory")) {
-            createOperatorFactory((String) properties.get("condition-factory"));
-        } else {
-            createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
         }
     }
 
@@ -122,17 +118,29 @@ public class SchemaDefinition {
     }
 
     /**
-     * Parses a condition map from a location specified by a string.
-     * This map holds a flat list of conditions that the user will interact with
+     * Parses a condition map from a location specified by a string and a factory from a given class string.
+     * The condition map holds a flat list of conditions that the user will interact with
      * through the record interface. Every condition holds a set of properties.
      * Properties of conditions are mostly immutable, except for values of basic
      * comparison conditions.
-     * @param  spec      A string pointing to a JSON map containing a schema condition spec.
+     * The factory class usually should contain switches for each condition operator referenced
+     * in a condition map. If no factory is provided, the default factory is used, which handles
+     * basic (=, /=, <, >, <=, >=) operations on basic (boolean, float, double, int, string, datetime) datatypes.
+     * @param  conditionMap      A conditionMap containing map and factory keywords
      * @throws Exception Throws an exception in the case that the map could not be parsed.
      */
-    private void parseConditionSpec(String spec) throws Exception {
-        ConditionParser parser = new ConditionParser(spec);
-        this.conditionMaps = parser.getConditionMaps();
+    private void parseConditionSpec(Map<String,String> conditionMap) throws Exception {
+        if (conditionMap.containsKey("factory")) {
+            createOperatorFactory((String) conditionMap.get("factory"));
+        } else {
+            createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
+        }
+        if (conditionMap.containsKey("conditions")) {
+            ConditionParser parser = new ConditionParser((String) conditionMap.get("map"));
+            this.conditionMaps = parser.getConditionMaps();
+        } else {
+            this.conditionMaps = new ArrayList<Map<String,Object>>();
+        }
     }
 
     /**
