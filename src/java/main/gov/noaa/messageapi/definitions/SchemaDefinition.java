@@ -47,19 +47,19 @@ public class SchemaDefinition {
     @SuppressWarnings("unchecked")
     public SchemaDefinition(Map<String, Object> properties) throws Exception {
         if (properties.containsKey("metadata")) {
-            parseMetadataSpec((String) properties.get("metadata"));
+            this.parseMetadataSpec((String) properties.get("metadata"));
         } else {
             throw new Exception("Missing necessary 'metadata' key when parsing schema definition.");
         }
         if (properties.containsKey("fields")) {
-            parseFieldSpec((String) properties.get("fields"));
+            this.parseFieldSpec((String) properties.get("fields"));
         } else {
             throw new Exception("Missing necessary 'fields' key when parsing schema definition.");
         }
         if (properties.containsKey("conditions")) {
-            parseConditionSpec((Map<String,String>) properties.get("conditions"));
+            this.parseConditionSpec((Map<String,String>) properties.get("conditions"));
         } else {
-            throw new Exception("Missing necessary 'conditions' key when parsing schema definition.");
+            this.setEmptyConditions();
         }
     }
 
@@ -126,20 +126,21 @@ public class SchemaDefinition {
      * The factory class usually should contain switches for each condition operator referenced
      * in a condition map. If no factory is provided, the default factory is used, which handles
      * basic (=, /=, <, >, <=, >=) operations on basic (boolean, float, double, int, string, datetime) datatypes.
+     * If no conditions are found, currently the
      * @param  conditionMap      A conditionMap containing map and factory keywords
      * @throws Exception Throws an exception in the case that the map could not be parsed.
      */
     private void parseConditionSpec(Map<String,String> conditionMap) throws Exception {
-        if (conditionMap.containsKey("factory")) {
-            createOperatorFactory((String) conditionMap.get("factory"));
-        } else {
-            createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
-        }
         if (conditionMap.containsKey("conditions")) {
             ConditionParser parser = new ConditionParser((String) conditionMap.get("map"));
             this.conditionMaps = parser.getConditionMaps();
+            if (conditionMap.containsKey("factory")) {
+                this.createOperatorFactory((String) conditionMap.get("factory"));
+            } else {
+                this.createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
+            }
         } else {
-            this.conditionMaps = new ArrayList<Map<String,Object>>();
+            this.setEmptyConditions();
         }
     }
 
@@ -173,6 +174,14 @@ public class SchemaDefinition {
      */
     public IConditionFactory getOperatorFactory() {
         return this.conditionOperatorFactory;
+    }
+
+    /**
+     * sets empty conditions on the definition.
+     */
+    private void setEmptyConditions() throws Exception {
+        this.conditionMaps = new ArrayList<Map<String,Object>>();
+        this.createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
     }
 
 }
