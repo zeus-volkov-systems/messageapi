@@ -38,7 +38,7 @@ public class ConsumerSession extends BaseSession implements ISession {
     /**
      * Creates a clean consume request, using the session parameters for the
      * request constructor
-     * @return [description]
+     * @return returns the created request
      */
     public IRequest createRequest() {
         return new ConsumeRequest(this.getSchema(), this.getContainer(), this.getProtocol());
