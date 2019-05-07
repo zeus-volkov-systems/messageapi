@@ -44,7 +44,7 @@ public class ContainerDefinition {
             throw new Exception("Missing necessary 'collections' key when parsing container definition.");
         }
         if (properties.containsKey("transformations")) {
-            parseTransformationMap((Map<String,String>) properties.get("transformations"));
+            parseTransformationSpec((Map<String,String>) properties.get("transformations"));
         } else {
             throw new Exception("Missing necessary 'transformations' key when parsing container definition.");
         }
@@ -70,7 +70,7 @@ public class ContainerDefinition {
         this.collectionMaps = parser.getCollectionMaps();
     }
 
-    private void parseTransformationMap(Map<String,String> transformationSpec) throws Exception {
+    private void parseTransformationSpec(Map<String,String> transformationSpec) throws Exception {
         if (transformationSpec.containsKey("map")) {
             TransformationParser parser = new TransformationParser(transformationSpec.get("map"));
             this.transformationMaps = parser.getTransformationMaps();

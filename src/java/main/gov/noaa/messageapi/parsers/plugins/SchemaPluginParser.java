@@ -28,7 +28,6 @@ public class SchemaPluginParser extends BasePluginParser implements IPluginParse
         Set<String> set = new HashSet<String>();
         set.add("metadata");
         set.add("fields");
-        set.add("conditions");
         return set;
     }
 
