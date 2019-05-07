@@ -31,6 +31,7 @@ public class ContainerDefinition {
         "gov.noaa.messageapi.factories.SimpleTransformationFactory";
 
 
+    @SuppressWarnings("unchecked")
     public ContainerDefinition(Map<String, Object> properties) throws Exception {
         if (properties.containsKey("metadata")) {
             parseMetadataSpec((String) properties.get("metadata"));
@@ -43,14 +44,9 @@ public class ContainerDefinition {
             throw new Exception("Missing necessary 'collections' key when parsing container definition.");
         }
         if (properties.containsKey("transformations")) {
-            parseTransformationSpec((String) properties.get("transformations"));
+            parseTransformationMap((Map<String,String>) properties.get("transformations"));
         } else {
             throw new Exception("Missing necessary 'transformations' key when parsing container definition.");
-        }
-        if (properties.containsKey("transformation_factory")) {
-            createTransformationFactory((String) properties.get("transformation-factory"));
-        } else {
-            createTransformationFactory(DEFAULT_TRANSFORMATION_FACTORY);
         }
     }
 
@@ -74,9 +70,18 @@ public class ContainerDefinition {
         this.collectionMaps = parser.getCollectionMaps();
     }
 
-    private void parseTransformationSpec(String spec) throws Exception {
-        TransformationParser parser = new TransformationParser(spec);
-        this.transformationMaps = parser.getTransformationMaps();
+    private void parseTransformationMap(Map<String,String> transformationSpec) throws Exception {
+        if (transformationSpec.containsKey("map")) {
+            TransformationParser parser = new TransformationParser(transformationSpec.get("map"));
+            this.transformationMaps = parser.getTransformationMaps();
+            if (transformationSpec.containsKey("factory")) {
+                this.createTransformationFactory((String) transformationSpec.get("factory"));
+            } else {
+                this.createTransformationFactory(DEFAULT_TRANSFORMATION_FACTORY);
+            }
+        } else {
+            this.setEmptyTransformationMaps();
+        }
     }
 
     public Map<String,Object> getMetadataMap() {
@@ -93,6 +98,15 @@ public class ContainerDefinition {
 
     public ITransformationFactory getTransformationFactory() {
         return this.transformationFactory;
+    }
+
+    /**
+     * Sets the definition transformation maps to be empty, the transformation
+     * factory to be the default.
+     */
+    private void setEmptyTransformationMaps() throws Exception {
+        this.transformationMaps = new ArrayList<Map<String,Object>>();
+        this.createTransformationFactory(DEFAULT_TRANSFORMATION_FACTORY);
     }
 
 }
