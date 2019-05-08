@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.IPacket;
@@ -77,7 +78,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
     }
 
     private void setId(String id) {
-        this.id = id;
+        this.id = id + "_" + UUID.randomUUID().toString();
     }
 
     @SuppressWarnings("unchecked")
