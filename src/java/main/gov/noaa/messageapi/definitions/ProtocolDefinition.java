@@ -49,6 +49,13 @@ public class ProtocolDefinition {
         this.metadataMap = parser.getMetadataMap();
     }
 
+    /**
+     * Takes a list of endpoint entries from the global session spec and converts
+     * them to a single endpoint map, where endpoint classes point to a list of
+     * their connection class maps.
+     * @param  endpoints A list of endpoint entries that contain pointers to endpoint classes and a location of their connection maps.
+     * @throws Exception Throws an exception if there's a failure when constructing the ProtocolDefinition endpoint map.
+     */
     private void parseEndpoints(List<Map<String,String>> endpoints) throws Exception {
         this.endpointMap = new HashMap<String,List<Map<String,Object>>>();
         ListUtils.removeAllNulls(endpoints.stream().map(endpointMap -> {
