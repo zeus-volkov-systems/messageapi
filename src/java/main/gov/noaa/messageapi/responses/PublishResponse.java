@@ -24,6 +24,16 @@ import gov.noaa.messageapi.utils.request.PacketUtils;
 import gov.noaa.messageapi.utils.general.ListUtils;
 
 
+/**
+ * A PublishResponse is the main processing unit of Default System Publishing.
+ * Publishing Responses operate on Publish Requests, which are the fundamental
+ * containers and work specifications of Default System Publishing.
+ * PublishResponses work in a procedurally stereotyped manner - requests are
+ * validated, factored, prepared, processed, resolved, and then marked as completed,
+ * in that order. Each of these stages is run in an internally-asynchronous manner,
+ * which allows for parallelization on an intra-stage level. On an inter-stage level,
+ * they are dependent on each other in a procedural manner.
+ */
 public class PublishResponse extends BaseResponse implements IResponse {
 
     public PublishResponse(PublishRequest request) {
