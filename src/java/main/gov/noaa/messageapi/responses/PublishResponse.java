@@ -36,6 +36,13 @@ import gov.noaa.messageapi.utils.general.ListUtils;
  */
 public class PublishResponse extends BaseResponse implements IResponse {
 
+    /**
+     * The default constructor for a publish response. When a response is created
+     * using this constructor, all processing is performed immediately on the provided
+     * request - in order, these steps are -validation, factoring, preparation, processing,
+     * and resolution.
+     * @param request A request containing records to process and resolve in the response.
+     */
     public PublishResponse(PublishRequest request) {
         super(request);
         this.validate(this.request.getSchema(), this.request.getRecords())
@@ -92,9 +99,11 @@ public class PublishResponse extends BaseResponse implements IResponse {
     /**
      * Async method that processes protocol record sets using connections,
      * returning a packet
-     * @param  connections [description]
-     * @param  recordSets  [description]
-     * @return             [description]
+     * @param  connections A list of connections that will be matched to and process record sets.
+     * @param  recordSets  A list of protocol records to process in an associated
+     *  connection (each protocol record contains a set of records).
+     * @return             returns a CompletableFuture that eventaully resolves
+     * to a data packet, containing the combined results from all connection data processing.
      */
     CompletableFuture<IPacket> process(List<IConnection> connections, List<IProtocolRecord> recordSets) {
         List<CompletableFuture<IPacket>> packetFutures = ListUtils.removeAllNulls(connections.stream().map(c -> {
@@ -114,9 +123,17 @@ public class PublishResponse extends BaseResponse implements IResponse {
         });
     }
 
+    /**
+     * Resolves a data packet by setting the response records equal to the
+     * combined records and rejections contained in the packet that was
+     * put together out of data retrieved from the protocol layer.
+     * @param  packet A data packet containing records and rejections compiled
+     * from the protocol layer
+     * @return        Returns a completable future that contains (true) when
+     * the operation is complete
+     */
     CompletableFuture<Boolean> resolve(IPacket packet) {
         return CompletableFuture.supplyAsync(() -> {
-            //here we should do a protocol resolution based on the protocol/container/schema specs
             this.setRecords(packet.getRecords());
             this.getRejections().addAll(packet.getRejections());
             return true;
