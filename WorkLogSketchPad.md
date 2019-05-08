@@ -26,9 +26,9 @@ a list of transformation hash-maps owned by the Container Definition
 as an object factory owned by the Container Definition
 3. On session initialization, we load the connection maps into memory as a list
 of connection hash-maps
-4. On initialization of a protocol, in the setConnections method, connections
-are built in memory from the protocol definition endpoint map
-5.
+4. On initialization of a protocol, in the setConnections method, connections in
+the protocol definition endpoint map are turned into a flat list of connections,
+and held by the protocol.
 
 
 ## Previous Foci
