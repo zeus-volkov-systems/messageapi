@@ -11,7 +11,7 @@ public interface IConnection {
     public String getId();
     public List<String> getCollections();
     public  Map<String,List<Object>> getClassifiers();
-    public List<String> getTransformations();
+    public Map<String, Map<String,Object>> getTransformationMap();
     public List<Object> getClassiferValues(String classifierKey);
     public IPacket process(IProtocolRecord record);
 

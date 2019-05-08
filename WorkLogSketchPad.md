@@ -12,6 +12,20 @@ with current development, and should be supplemental to the repository record.
 
 ### Transformations
 
+The goal is to make the method getRecordsByTransformation("transformationID")
+on the protocol record functional. 'Being functional' in this context means
+when we call this method from an endpoint class instance, we should get a list
+of records that satisfy the conditions specified by the transformation.
+
+**We want the method to conform to the following conditions**
+
+- method should only compute when called (lazy behavior)
+- method should be as fast/optimized as possible - don't build common things more than we have to
+- method should select data from the protocol record records map
+- method should allow any combination of record sets to be used in transformations
+
+**Baselining our Status**
+
 #### The following configuration maps are involved in transformations:
 
 - the global transformation list of transformation maps (contains specifications of transformations)

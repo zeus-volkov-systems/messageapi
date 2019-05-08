@@ -1,7 +1,7 @@
 package gov.noaa.messageapi.connections;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -9,16 +9,19 @@ import java.util.UUID;
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
+import gov.noaa.messageapi.interfaces.ITransformationFactory;
 
 public class DefaultConnection extends BaseConnection implements IConnection {
 
     private String id;
     private List<String> collections = null;
     private Map<String,List<Object>> classifiers = null;
-    private List<String> transformations = null;
+    private Map<String, Map<String, Object>> transformationMap = null;
 
     @SuppressWarnings("unchecked")
-    public DefaultConnection(String endpointClass, Map<String,Object> connectionMap) throws Exception {
+    public DefaultConnection(String endpointClass, Map<String,Object> connectionMap,
+                             ITransformationFactory transformationFactory,
+                             List<Map<String,Object>> rawTransformationMaps) throws Exception {
         super(endpointClass, (Map<String,Object>) connectionMap.get("constructor"));
         try {
             this.setId((String) connectionMap.get("id"));
@@ -33,9 +36,9 @@ public class DefaultConnection extends BaseConnection implements IConnection {
                 this.setClassifiers(new HashMap<String,List<Object>>());
             }
             if (connectionMap.containsKey("transformations")) {
-                this.setTransformations((List<String>) connectionMap.get("transformations"));
+                this.buildTransformationMap((List<String>) connectionMap.get("transformations"), transformationFactory, rawTransformationMaps);
             } else {
-                this.setTransformations(new ArrayList<String>());
+                this.transformationMap = new HashMap<String, Map<String, Object>>();
             }
         } catch (Exception e) {
             System.out.println("Error in connection instantiation. Stacktrace to follow.");
@@ -63,8 +66,18 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         return this.classifiers;
     }
 
-    public List<String> getTransformations() {
-        return this.transformations;
+    /**
+     * Returns the transformation map of this connection. A transformation map contains
+     * transformation ids as keys, each with an associated map value, where this
+     * map value holds two string keys - instance, which contains a value of the
+     * transformation instance, and args, which contains another map value,
+     * containing process parameter keys (e.g., join_field_1) corresponding to a
+     * stereotyped representation of the record set datatype it is eventually
+     * meant to hold (eg, CLASSIFIER.CLASSKEY.CLASSVAL)
+     * @return The transformation map associated with the connection.
+     */
+    public Map<String, Map<String,Object>> getTransformationMap() {
+        return this.transformationMap;
     }
 
     /**
@@ -95,7 +108,9 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         this.classifiers = classifiers;
     }
 
-    private void setTransformations(List<String> transformations) {
-        this.transformations = transformations;
+    private void buildTransformationMap(List<String> transformations,
+                                        ITransformationFactory transformationFactory,
+                                        List<Map<String,Object>> rawTransformationMaps) {
+        this.transformationMap = new HashMap<String,Map<String,Object>>();
     }
 }
