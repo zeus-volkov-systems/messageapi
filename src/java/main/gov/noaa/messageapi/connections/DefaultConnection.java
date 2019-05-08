@@ -19,7 +19,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
 
     @SuppressWarnings("unchecked")
     public DefaultConnection(String endpointClass, Map<String,Object> connectionMap) throws Exception {
-        super(endpointClass, (Map<String,Object>) connectionMap.get("parameters"));
+        super(endpointClass, (Map<String,Object>) connectionMap.get("constructor"));
         try {
             this.setId((String) connectionMap.get("id"));
             if (connectionMap.containsKey("collections")) {

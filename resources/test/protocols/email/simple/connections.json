@@ -3,7 +3,7 @@
         {
             "id": "simple",
             "collections": "*",
-            "parameters": {}
+            "constructor": {}
         }
     ]
 }

@@ -3,7 +3,7 @@
         {
             "id": "1",
             "collections": ["*"],
-            "parameters": {
+            "constructor": {
                 "sender": "ryan.berkheimer@noaa.gov",
                 "password": "testpassword1234",
                 "receivers": ["rab25@case.edu", "ryan.berkheimer@noaa.gov"]
@@ -14,7 +14,7 @@
             "collections": ["*"],
             "classifiers": {"namespace": ["/path/to/test.db"]},
             "transformations": [],
-            "parameters": {
+            "constructor": {
                 "sender": "jackson.pollock@cia.org",
                 "password": "passpass64",
                 "receivers": ["template1@org.org", "template2@org.org"]
