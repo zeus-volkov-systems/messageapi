@@ -14,7 +14,7 @@ public class BaseProtocol {
     protected IMetadata metadata = null;
 
     public BaseProtocol(Map<String, Object> properties) {
-        setProperties(properties);
+        this.setProperties(properties);
     }
 
     public BaseProtocol(IProtocol protocol) {
