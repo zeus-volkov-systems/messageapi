@@ -63,7 +63,7 @@ public class ProtocolRecord implements IProtocolRecord {
         //A transformation object has a process method and a describe method. The describe method should return a map containing
         //keys that we need to provide. Keys should be record sets. We can then pull the record sets out of the record map and process
         //these records according to the transformation. E.g., our transformation ID key corresponds to an instance value that returns,
-        //from the transformation describe method, a map containing keys "1", "2", "3" with values "classifier=x.a, classifer=y.b, collection=z".
+        //from the transformation describe method, a map containing keys "1", "2", "3" with values "classifier=x.a, classifer=y.b, collection=z", transformation="t".
         //Based on these, we can create a new map (with keys 1, 2, 3) and replace the values with copies of the record sets corresponding
         //to that request. We turn the {1: {classifier: [key,val]}, 2: {classifier: [key,val]}, 3: {collection: id}} map into one with the actual
         //record call (this can be acquired by iterating over map keys, inspecting the map value, and making the appropriate call on the protocol record).
