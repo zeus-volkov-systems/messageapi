@@ -18,15 +18,15 @@ public class DefaultCollection implements ICollection {
 
     @SuppressWarnings("unchecked")
     public DefaultCollection(Map<String,Object> fieldMap) {
-        setId((String) fieldMap.get("name"));
-        setClassifiers((Map<String,Object>) fieldMap.get("classifiers"));
-        initializeFields((List<String>) fieldMap.get("fields"));
+        this.setId((String) fieldMap.get("name"));
+        this.setClassifiers((Map<String,Object>) fieldMap.get("classifiers"));
+        this.initializeFields((List<String>) fieldMap.get("fields"));
     }
 
     public DefaultCollection(ICollection collection) {
-        setId(collection.getId());
-        setClassifiers(collection.getClassifiers());
-        setFields(collection.getFields());
+        this.setId(collection.getId());
+        this.setClassifiers(collection.getClassifiers());
+        this.setFields(collection.getFields());
     }
 
     public DefaultCollection getCopy() {
