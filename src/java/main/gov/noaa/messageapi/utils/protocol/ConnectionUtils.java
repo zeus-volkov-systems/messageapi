@@ -24,16 +24,18 @@ public class ConnectionUtils {
     }
 
     /**
-     * [getConnectionTransformations description]
+     * For a given list of named transformations, correlates each against a rawTransformationMap list,
+     * adding it to the list if it exists, and then finding any referenced transformations, adding each
+     * to the master list in turn.
      * @param  namedTransformations  [description]
      * @param  rawTransformationMaps [description]
      * @return                       [description]
      */
     public static List<String> getConnectionTransformations(List<String> namedTransformations, List<Map<String,Object>> rawTransformationMaps) {
         List<String> connTransformations = new ArrayList<String>();
-        return ListUtils.removeAllNulls(ListUtils.flatten(namedTransformations.stream().map(namedTransformation -> {
+        return ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(namedTransformations.stream().map(namedTransformation -> {
             return getFullConnectionList(namedTransformation, connTransformations, rawTransformationMaps);
-        }).collect(Collectors.toList())));
+        }).collect(Collectors.toList()))));
     }
 
     @SuppressWarnings("unchecked")
