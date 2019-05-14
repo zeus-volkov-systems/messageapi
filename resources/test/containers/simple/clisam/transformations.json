@@ -7,7 +7,7 @@
                         "collection_field": "mix-and-match"},
         "records": {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
                     "child":  {"COLLECTION": "mix-and-match"},
-                    "other": "ALL"},
+                    "other": "UUID"},
         "fields": ["key", "record", "filename", "type", "mix-and-match"]
     },
     {
