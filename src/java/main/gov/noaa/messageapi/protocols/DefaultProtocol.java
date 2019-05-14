@@ -130,8 +130,8 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
     /**
      * Instantiates connection objects and adds them to this protocol's connection list.
      * Connection objects are built using the protocol's definition connection map.
-     * @param  endpointMap The endpoint map containing k-v pairs k is endpoint string,
-     * v is a map of all connection specs for that particular endpoint.
+     * @param  endpointMap The endpoint map containing entries where k is endpoint string
+     * and v is a map of all connection specs for that particular endpoint.
      * @throws Exception   Throws an exception in the case that connections are
      * not successfully created or added to the protocol
      */
