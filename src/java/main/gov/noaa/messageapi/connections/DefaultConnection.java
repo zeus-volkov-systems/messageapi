@@ -46,7 +46,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         }
     }
 
-    public DefaultConnection(IConnection connection) {
+    public DefaultConnection(IConnection connection) throws Exception {
         super(connection);
         this.setId(connection.getId());
         this.setCollections(connection.getCollections());
@@ -54,7 +54,13 @@ public class DefaultConnection extends BaseConnection implements IConnection {
     }
 
     public DefaultConnection getCopy() {
-        return new DefaultConnection(this);
+        try {
+            return new DefaultConnection(this);
+        } catch (Exception e) {
+            System.out.println("Failed copying connection, stacktrace follows.");
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
