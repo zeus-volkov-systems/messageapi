@@ -13,6 +13,9 @@ public interface IConnection {
     public  Map<String,List<Object>> getClassifiers();
     public Map<String, Map<String,Object>> getTransformationMap();
     public List<Object> getClassiferValues(String classifierKey);
+    public String getEndpointClass();
+    public Map<String,Object> getEndpointConstructor();
     public IPacket process(IProtocolRecord record);
+    public IConnection getCopy();
 
 }
