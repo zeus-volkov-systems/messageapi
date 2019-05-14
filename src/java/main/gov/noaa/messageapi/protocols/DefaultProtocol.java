@@ -51,7 +51,7 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
     public DefaultProtocol(IProtocol protocol) throws Exception {
         super(protocol);
         this.setMetadata(protocol.getDefinition().getMetadataMap());
-        this.copyConnections(protocol.getConnections());
+        this.setConnections(protocol.getConnections());
     }
 
     /**
@@ -152,11 +152,15 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
     }
 
     /**
-     * TODO: Implement this by adding a getCopy() method on the connection class that returns a deep copy.
-     * @param connections [description]
+     * Sets this protocols connections collection to a deep-copied set of the passed
+     * connection set. This method is primarily used during request building to ensure
+     * immutability in the case of threaded operation.
+     * @param connections A list of connections to deep-copy
      */
-    private void copyConnections(List<IConnection> connections) {
-        this.connections = connections;
+    private void setConnections(List<IConnection> connections) {
+        this.connections = ListUtils.removeAllNulls(connections.stream().map(conn -> {
+            return conn.getCopy();
+        }).collect(Collectors.toList()));
     }
 
 }
