@@ -102,6 +102,14 @@ In order to implement the transformation, the following modifications must be ma
 2. During session initialization, update the initialization method in the default protocol so that the transformation factory and the raw transformation spec maps are passed into the setConnections method
 3. Add a copyConnections() method that deep-copies connection instances when creating new Requests on an in-memory Session.
 4. Add a getCopy() method onto connections (and IConnection requirement) that makes a deep copy of a connection instance to be used with the copyConnections() method in step 3
-5. 
+5. In the connection constructor, make a call to assemble the connection-specific transformation map.
+    - This will involve the following steps
+        - determine all transformations that will be required for use by the connection (including parent transformations of direct referenced ones)
+        - create a map entry for each of these
+            - the key will be the transformation ID
+            - the value will be a map
+                - instantiate the transformation class (from the factory) with associated fields/params and add it to the map
+                - create a value map for the input record sets and add it
+6. In the body of getRecordsByTransformation, add logic that processes a method invocation according to the steps outlined in the previous section.
 
 ## Previous Foci
