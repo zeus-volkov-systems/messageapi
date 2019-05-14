@@ -373,17 +373,20 @@ Because requests contain a copy of the session variables which created them, the
 
 ## Installation and Deployment
 
-Install MessageAPI by navigating to the cloned directory and running
+Building MessageAPI from source requires the gradle build tool. With gradle
+installed, MessageAPI may be built and installed by navigating to the cloned directory and running
 
 ```
 gradle
 ```
 
 This will install MessageAPI to the local repository on disk.
-The main MessageAPI package will only pull Log4J and SimpleJSON for use as dependencies,
-while the package testing additionally requires Spock.
+The main MessageAPI package will only pull Log4J and SimpleJSON for use as dependencies
+from public artifact repositories. The testing suite will also pull Spock.
 
 ## Developer Guide
+
+In addition to reading issue, tag, and push history in the git repository, developers may refer to the more detailed [developer work log history](./WorkLogSketchPad.md). This document outlines features currently and previously under focus, providing motivations, descriptions, design behaviors, and justifications.
 
 ### Bugs
 

@@ -24,9 +24,14 @@ of records that satisfy the conditions specified by the transformation.
 - method should select data from the protocol record records map
 - method should allow any combination of record sets to be used in transformations
 
-**Baselining our Status**
+**We want the internal behavior to conform to the following conditions**
 
-#### The following configuration maps are involved in transformations:
+- transformation factory should be preloaded in the container layer
+- transformation 
+
+#### Baselining our Status
+
+**The following configuration maps are involved in transformations**
 
 - the global transformation list of transformation maps (contains specifications of transformations)
 - the connection list for each endpoint (lists by id transformations that should be available)
@@ -43,6 +48,9 @@ of connection hash-maps
 4. On initialization of a protocol, in the setConnections method, connections in
 the protocol definition endpoint map are turned into a flat list of connections,
 and held by the protocol.
+
+#### Path Forward
+
 
 
 ## Previous Foci
