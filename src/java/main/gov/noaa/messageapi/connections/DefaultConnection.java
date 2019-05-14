@@ -46,6 +46,18 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         }
     }
 
+    public DefaultConnection(IConnection connection) {
+        super(connection);
+        this.setId(connection.getId());
+        this.setCollections(connection.getCollections());
+        this.setClassifiers(connection.getClassifiers());
+    }
+
+    public DefaultConnection getCopy() {
+        return new DefaultConnection(this);
+    }
+
+
     public IPacket process(IProtocolRecord record) {
         return this.getEndpoint().process(record);
     }
