@@ -385,7 +385,7 @@ from public artifact repositories. The testing suite will also pull Spock.
 
 ## Developer Guide
 
-In addition to reading issue, tag, and push history in the git repository, developers may refer to the more detailed [developer work log history](./WorkLogSketchPad.md). This document outlines features currently and previously under focus, providing motivations, descriptions, design behaviors, and justifications.
+In addition to reading issue, tag, and push history in the git repository, developers may refer to the more detailed [developer work log history](./DeveloperWorkLog.md). This document outlines features currently and previously under focus, providing motivations, descriptions, design behaviors, and justifications.
 
 ### Bugs
 

@@ -1,4 +1,4 @@
-# Work Log Sketch Pad
+# Developer Work Log History
 
 This work log was established as an in-package tracking tool for
 system development. It was established fairly late, when the essential
