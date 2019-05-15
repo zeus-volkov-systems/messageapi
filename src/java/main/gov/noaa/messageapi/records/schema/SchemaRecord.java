@@ -10,6 +10,12 @@ import gov.noaa.messageapi.interfaces.ICondition;
 import gov.noaa.messageapi.fields.DefaultField;
 import gov.noaa.messageapi.factories.ConditionTypeFactory;
 
+/**
+ * A SchemaRecord is the principle record type used by an end user who is
+ * consuming the MessageAPI library. SchemaRecords consist of fields and
+ * conditions. Conditions are optional. The user always deals in schema records -
+ * schema records are submitted in requests, and responses return schema records.
+ */
 public class SchemaRecord implements IRecord {
 
 
