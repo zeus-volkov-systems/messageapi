@@ -1,9 +1,9 @@
 package gov.noaa.messageapi.utils.request;
 
-import java.util.HashMap;
-import java.util.UUID;
 import java.util.Map;
 import java.util.List;
+import java.util.UUID;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IProtocol;
