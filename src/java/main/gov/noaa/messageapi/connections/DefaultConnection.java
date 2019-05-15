@@ -137,7 +137,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
     }
 
     private void setTransformationMap(Map<String, Map<String, Object>> transformationMap) {
-
+        this.transformationMap = transformationMap;
     }
 
     /**
@@ -182,5 +182,6 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         this.addCollections(transformationCollections);
         this.addClassifiers(transformationClassifiers);
         this.setTransformationMap(transformationMap);
+        System.out.println(this.getTransformationMap());
     }
 }
