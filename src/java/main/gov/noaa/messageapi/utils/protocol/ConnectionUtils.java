@@ -11,6 +11,8 @@ import java.util.concurrent.CompletableFuture;
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.IPacket;
+import gov.noaa.messageapi.interfaces.ITransformationFactory;
+
 import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.general.MapUtils;
 
@@ -90,6 +92,45 @@ public class ConnectionUtils {
                 }
                 return null;
             }).collect(Collectors.toList())).collect(Collectors.toList())))));
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Map<String, Object>> buildTransformationMap(List<String> ids, List<Map<String,Object>> allMaps, ITransformationFactory factory) {
+        List<Map<String,Object>> idMaps = allMaps.stream().filter(m -> ids.contains((String)m.get("id"))).collect(Collectors.toList());
+        List<Map<String, Map<String, Object>>> tMaps = idMaps.stream().map(m -> {
+            Map<String, Map<String,Object>> templateMap = new HashMap<String, Map<String,Object>>();
+            Map<String,Object> valMap = new HashMap<String,Object>();
+            valMap.put("instance", factory.getTransformation((String)m.get("operator"), (List<String>)m.get("fields"), (Map<String,Object>)m.get("constructor")));
+            valMap.put("parameters", ConnectionUtils.makeRecordSymbolMaps((Map<String,Object>)m.get("records")));
+            templateMap.put((String)m.get("id"), valMap);
+            return templateMap;
+        }).collect(Collectors.toList());
+        return MapUtils.mergeMapList(tMaps);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String,Object> makeRecordSymbolMaps(Map<String,Object> recordMap) {
+        Map<String,Object> symbolMap = new HashMap<String,Object>();
+        recordMap.entrySet().stream().forEach(e -> {
+            if (e.getValue() instanceof String) {
+                if (((String) e.getValue()).equals("UUID")) {
+                    symbolMap.put(e.getKey(), e.getValue());
+                }
+            } else if (e.getValue() instanceof Map) {
+                if (((Map<String, Object>)e.getValue()).containsKey("CLASSIFIER")) {
+                    List<String> valList = (List<String>) ((Map<String, Object>)e.getValue()).get("CLASSIFIER");
+                    symbolMap.put(e.getKey(), String.format("%s=%s.%s", "CLASSIFIER", valList.get(0), valList.get(1)));
+                } else if (((Map<String, Object>)e.getValue()).containsKey("COLLECTION")) {
+                    String val = (String) ((Map<String,Object>)e.getValue()).get("COLLECTION");
+                    symbolMap.put(e.getKey(), String.format("%s=%s", "COLLECTION", val));
+                } else if (((Map<String, Object>)e.getValue()).containsKey("TRANSFORMATION")) {
+                    String val = (String) ((Map<String,Object>)e.getValue()).get("TRANSFORMATION");
+                    symbolMap.put(e.getKey(), String.format("%s=%s", "TRANSFORMATION", val));
+                }
+            }
+        });
+        return symbolMap;
     }
 
 }
