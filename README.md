@@ -31,33 +31,22 @@ This set of default classes can then serve as a reference for writing better ver
 In the provided model, the spec looks like the following:
 
 ```
-{
-    "plugin": "class.namespace.SessionPluginClass",
-    "constructor": {
-        "schema": {
-            "plugin": "class.namespace.SchemaPluginClass",
-            "constructor": {
-                "metadata": "path/to/schema/metadata.json",
-                "fields": "path/to/fields.json",
-                "conditions": "path/to/conditions.json",
-                "operators": "class.namespace.OperatorPluginClass"
-            }
-        },
-        "container": {
-            "plugin": "class.namespace.ContainerPluginClass",
-            "constructor": {
-                "metadata": "path/to/container/metadata.json",
-                "bins": "path/to/container/bins.json",
-                "relationships": "path/to/relationships.json"
-            }
-        },
-        "protocol": {
-            "metadata": "path/to/protocol/metadata.json",
-            "endpoint": "class.namespace.ProtocolEndpointConnectionClass",
-            "connections": "path/to/endpoint/connection_maps.json"
-        }
-    }
-}
+{"plugin": "gov.noaa.messageapi.sessions.PublisherSession",
+ "constructor": {"schema": {"plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
+                            "constructor": {"metadata": "{}/resources/test/schemas/simple/email/metadata.json",
+                                            "fields": "{}/resources/test/schemas/simple/email/fields.json",
+                                            "conditions": {"map": "{}/resources/test/schemas/simple/email/conditions.json",
+                                                           "factory": "gov.noaa.messageapi.factories.SimpleConditionFactory"}}},
+                 "container": {"plugin": "gov.noaa.messageapi.containers.DefaultContainer",
+                               "constructor": {"metadata": "{}/resources/test/containers/simple/email/metadata.json",
+                                               "collections": "{}/resources/test/containers/simple/email/collections.json",
+                                               "transformations": {"map": "{}/resources/test/containers/simple/email/transformations.json",
+                                                                   "factory": "gov.noaa.messageapi.factories.SimpleTransformationFactory"}}},
+                 "protocol": {"plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
+                              "constructor": {"metadata": "{}/resources/test/protocols/email/simple/metadata.json",
+                                              "endpoints": [{"plugin": "gov.noaa.messageapi.test.endpoints.EmailEndpointTest",
+                                                             "connections": "{}/resources/test/protocols/email/simple/connections.json"}]}}}}
+
 ```
 
 In the default MessageAPI topology, sessions are the primary abstraction. Sessions in turn consist of schema, container, and protocol abstractions, and each of these has its own set of properties that must/can be specified. Notice that in the example spec, any key labeled "plugin" points to a class. These classes are what are read at runtime (when the spec itself is referenced in the code). Anything found within the "constructor" map is then used by the class to build itself.
