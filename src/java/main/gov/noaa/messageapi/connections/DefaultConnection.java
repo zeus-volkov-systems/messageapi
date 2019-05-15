@@ -95,7 +95,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
      * transformation instance, and args, which contains another map value,
      * containing process parameter keys (e.g., join_field_1) corresponding to a
      * stereotyped representation of the record set datatype it is eventually
-     * meant to hold (eg, CLASSIFIER.CLASSKEY.CLASSVAL)
+     * meant to hold (eg, CLASSIFIER=CLASSKEY.CLASSVAL)
      * @return The transformation map associated with the connection.
      */
     public Map<String, Map<String,Object>> getTransformationMap() {
