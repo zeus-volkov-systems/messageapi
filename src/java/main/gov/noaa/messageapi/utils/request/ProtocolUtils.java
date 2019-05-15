@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IProtocol;
-import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.ICollection;
 import gov.noaa.messageapi.interfaces.IRecord;
@@ -22,7 +21,18 @@ import gov.noaa.messageapi.records.protocol.ProtocolRecord;
 
 public class ProtocolUtils {
 
-    public static List<IProtocolRecord> convertContainerRecords(IProtocol protocol, IContainer container, List<IContainerRecord> containerRecords) {
+    /**
+     * Converts a list of containerized(factored into collections) records into
+     * protocol records for use by endpoint connections. A protocol record
+     * has a one to one relationship with a connection - i.e., there is one and
+     * only one protocol record created for every connection held by the protocol
+     * passed to this method.
+     * @param  protocol         [description]
+     * @param  container        [description]
+     * @param  containerRecords [description]
+     * @return                  [description]
+     */
+    public static List<IProtocolRecord> convertContainerRecords(IProtocol protocol, List<IContainerRecord> containerRecords) {
         return protocol.getConnections().stream().map(conn -> {
             return createProtocolRecord(conn, containerRecords);
         }).collect(Collectors.toList());
