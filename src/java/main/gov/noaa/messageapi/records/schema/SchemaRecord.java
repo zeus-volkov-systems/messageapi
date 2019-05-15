@@ -18,22 +18,29 @@ public class SchemaRecord implements IRecord {
     private boolean valid = true;
 
     public SchemaRecord(List<Map<String,Object>> fieldMaps, List<Map<String,Object>> conditionMaps) {
-        initializeFields(fieldMaps);
-        initializeConditions(conditionMaps);
+        this.initializeFields(fieldMaps);
+        this.initializeConditions(conditionMaps);
     }
 
     public SchemaRecord(IRecord record) {
-        setFields(record.getFields());
-        setConditions(record.getConditions());
+        this.setFields(record.getFields());
+        this.setConditions(record.getConditions());
     }
 
+    /**
+     * Creates a new SchemaRecord from a list of IFields.
+     * When this constructor is used, the IFields passed are all copied
+     * into new IField instances for parallelization safety
+     * @param fields A list of IFields which will be used to create new IFields
+     * and add to a SchemaRecord
+     */
     public SchemaRecord(List<IField> fields) {
-        setFields(fields);
+        this.setFields(fields);
     }
 
     public SchemaRecord(IRecord record, List<Map<String,Object>> fieldMaps) {
-        initializeFields(fieldMaps);
-        setConditions(record.getConditions());
+        this.initializeFields(fieldMaps);
+        this.setConditions(record.getConditions());
     }
 
     public SchemaRecord getCopy() {
