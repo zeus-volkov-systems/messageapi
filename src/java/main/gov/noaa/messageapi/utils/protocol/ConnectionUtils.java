@@ -1,16 +1,18 @@
 package gov.noaa.messageapi.utils.protocol;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.utils.general.ListUtils;
+import gov.noaa.messageapi.utils.general.MapUtils;
 
 public class ConnectionUtils {
 
@@ -32,9 +34,9 @@ public class ConnectionUtils {
      * @param  rawTransformationMaps A list of transformation maps that have available specifications from the container layer
      * @return                       A list of confirmed, comprehensive transformation ids that will be available to a connection
      */
-    public static List<String> getConnectionTransformations(List<String> namedTransformations, List<Map<String,Object>> rawTransformationMaps) {
+    public static List<String> getAllTransformationIds(List<String> namedTransformations, List<Map<String,Object>> rawTransformationMaps) {
         List<String> connTransformations = new ArrayList<String>();
-        return ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(namedTransformations.stream().map(namedTransformation -> {
+        return (List<String>)ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(namedTransformations.stream().map(namedTransformation -> {
             return getFullConnectionList(namedTransformation, connTransformations, rawTransformationMaps);
         }).collect(Collectors.toList()))));
     }
@@ -56,6 +58,38 @@ public class ConnectionUtils {
             }
         }
         return confirmations;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<String> getTransformationCollections(List<String> transformationIds, List<Map<String,Object>> transformationMaps) {
+        List<Map<String,Object>> recordMaps = transformationMaps.stream().filter(tMap -> transformationIds.contains(tMap.get("id")))
+                .map(tMap -> (Map<String,Object>)tMap.get("records")).collect(Collectors.toList());
+        return ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(recordMaps.stream().map(m -> m.values().stream().map(rec -> {
+                if (rec instanceof Map) {
+                    if (((Map<String,Object>) rec).containsKey("COLLECTION")) {
+                        return (String)((Map<String,Object>)rec).get("COLLECTION");
+                    }
+                }
+                return null;
+            }).collect(Collectors.toList())).collect(Collectors.toList()))));
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public static Map<String,List<Object>> getTransformationClassifiers(List<String> transformationIds, List<Map<String,Object>> transformationMaps) {
+        List<Map<String,Object>> recordMaps = transformationMaps.stream().filter(tMap -> transformationIds.contains(tMap.get("id")))
+                .map(tMap -> (Map<String,Object>)tMap.get("records")).collect(Collectors.toList());
+        return MapUtils.mergeMapsMergeValues(ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(recordMaps.stream().map(recordMap -> recordMap.values().stream().map(record -> {
+                if (record instanceof Map) {
+                    if (((Map<String,Object>) record).containsKey("CLASSIFIER")) {
+                        Map<String,Object> classifierMap = new HashMap<String,Object>();
+                        List<Object> collList = (List<Object>)((Map<String,Object>)record).get("COLLECTION");
+                        classifierMap.put((String) collList.get(0), collList.get(1));
+                        return classifierMap;
+                    }
+                }
+                return null;
+            }).collect(Collectors.toList())).collect(Collectors.toList())))));
     }
 
 }

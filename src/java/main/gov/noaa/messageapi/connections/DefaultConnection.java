@@ -1,5 +1,7 @@
 package gov.noaa.messageapi.connections;
 
+import gov.noaa.messageapi.utils.general.ListUtils;
+import gov.noaa.messageapi.utils.general.MapUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -10,6 +12,8 @@ import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.ITransformationFactory;
+
+import gov.noaa.messageapi.utils.protocol.ConnectionUtils;
 
 public class DefaultConnection extends BaseConnection implements IConnection {
 
@@ -36,7 +40,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
                 this.setClassifiers(new HashMap<String,List<Object>>());
             }
             if (connectionMap.containsKey("transformations")) {
-                this.buildTransformationMap((List<String>) connectionMap.get("transformations"), transformationFactory, rawTransformationMaps);
+                this.integrateTransformations((List<String>) connectionMap.get("transformations"), transformationFactory, rawTransformationMaps);
             } else {
                 this.transformationMap = new HashMap<String, Map<String, Object>>();
             }
@@ -122,13 +126,50 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         }
     }
 
+    /**
+     * Sets the classifier set for this connection. Classifiers are held in
+     * a map of classifier keys, each corresponding to a list value containing
+     * an arbitrary number of unique classifier values to link records
+     * @param classifiers
+     */
     private void setClassifiers(Map<String,List<Object>> classifiers) {
         this.classifiers = classifiers;
     }
 
-    private void buildTransformationMap(List<String> transformations,
+    /**
+     * Adds new collections to the existing collections, ensuring there are no nulls
+     * or duplicates
+     * @param collections [description]
+     */
+    private void addCollections(List<String> collections) {
+        List<List<String>> collectionLists = new ArrayList<List<String>>();
+        collectionLists.add(this.getCollections());
+        collectionLists.add(collections);
+        this.setCollections(ListUtils.flatten(collectionLists));
+    }
+
+    /**
+     * Adds new classifiers to the connection. Does this by merging new classifiers into old ones,
+     * keeping all keys from both sets, while merging values of overlapping keys into a flat map
+     * @param newClassifiers The new classifers to be added to the existing set
+     */
+    private void addClassifiers(Map<String,List<Object>> newClassifiers) {
+        List<Map<String,List<Object>>> classifierMapList = new ArrayList<Map<String,List<Object>>>();
+        classifierMapList.add(this.getClassifiers());
+        classifierMapList.add(newClassifiers);
+        this.setClassifiers(MapUtils.flattenValues(MapUtils.mergeMapsMergeValues(classifierMapList)));
+    }
+
+    private void integrateTransformations(List<String> transformations,
                                         ITransformationFactory transformationFactory,
                                         List<Map<String,Object>> rawTransformationMaps) {
+        List<String> allTransformationIds = ConnectionUtils.getAllTransformationIds(transformations, rawTransformationMaps);
+        //next, based on these transformation IDs, we need to update the collections that we will need for this connection.
+        List<String> transformationCollections = ConnectionUtils.getTransformationCollections(allTransformationIds, rawTransformationMaps);
+        this.addCollections(transformationCollections);
+        //next, based on these transformation IDs, we need to update the classifiers that we will need for this connection.
+        Map<String,List<Object>> transformationClassifiers = ConnectionUtils.getTransformationClassifiers(allTransformationIds, rawTransformationMaps);
+        this.addClassifiers(transformationClassifiers);
         this.transformationMap = new HashMap<String,Map<String,Object>>();
     }
 }

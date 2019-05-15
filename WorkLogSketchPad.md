@@ -34,6 +34,7 @@ of records that satisfy the conditions specified by the transformation.
 - transformation factory should be preloaded in the container layer
 - classifiers and/or collections used by a transformation or its child transformations as parameters must be available to any associated connection
 - the transformation instance should be preloaded before getRecordsByTransformation method invocation
+- records used by a transformation should be immutable, in that they don't change any already existing record
 
 #### Baselining our Status
 

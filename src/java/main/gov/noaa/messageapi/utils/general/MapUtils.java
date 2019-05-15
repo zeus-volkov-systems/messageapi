@@ -1,9 +1,10 @@
 package gov.noaa.messageapi.utils.general;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class MapUtils {
 
@@ -21,5 +22,33 @@ public class MapUtils {
         });
         return mergedMap;
     }
+
+    /**
+     * Merges a list of maps into a single map. If a key overlaps between maps,
+     * that key is added to the merged map with all original values in a list.
+     * @param  list A list of maps to merge
+     * @return      A map with all keys of all input maps, and all their values combined.
+     */
+    public static <K,V> Map<K,List<V>> mergeMapsMergeValues(List<Map<K,V>> list) {
+        List<K> allKeys = ListUtils.eliminateDuplicates(ListUtils.flatten(list.stream().map(m -> m.keySet())
+                                                        .map(s -> new ArrayList<K>(s)).collect(Collectors.toList())));
+        return MapUtils.mergeMapList(allKeys.stream().map(key -> {
+            List<V> valueList = list.stream().filter(m -> m.containsKey(key)).map(m -> m.get(key)).collect(Collectors.toList());
+            Map<K, List<V>> mergedValMap = new HashMap<K, List<V>>();
+            mergedValMap.put(key, valueList);
+            return mergedValMap;
+        }).collect(Collectors.toList()));
+    }
+
+    public static <K,V> Map<K, List<V>> flattenValues(Map<K,List<List<V>>> map) {
+        return MapUtils.mergeMapList(map.entrySet().stream().map(e -> {
+            Map<K,List<V>> mergedValsMap = new HashMap<K,List<V>>();
+            List<V> vals = new ArrayList<V>();
+            e.getValue().stream().forEach(v -> v.stream().forEach(va -> vals.add(va)));
+            mergedValsMap.put(e.getKey(), vals);
+            return mergedValsMap;
+        }).collect(Collectors.toList()));
+    }
+
 
 }
