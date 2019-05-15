@@ -199,7 +199,7 @@ Containers are what define records as seen by the session target(s), either as t
 
 Containers conceptually represent different endpoints - e.g., different tables in a database, different databases, an email address, a directory, a file, a Kafka topic, etc. Because records passed in a session can be parsed into multiple containers, records or parts of records can be passed to multiple endpoints concurrently in a single request.
 
-Some containers may have relationships defined between them, and these are defined in the relationships spec attached to the containers spec. These relationships are evaluated when processing 'get' type requests in order to ensure that users always see returned records in the flat structure specified in the schema.
+Some containers may have transformations defined between them, and these are defined in the relationships spec attached to the containers spec. These relationships are evaluated when processing 'get' type requests in order to ensure that users always see returned records in the flat structure specified in the schema.
 
 Relationships are completely unnecessary in many situations if data is being pushed.
 
@@ -208,19 +208,19 @@ Relationships are completely unnecessary in many situations if data is being pus
       ```
       {
           "metadata": {
-              "id": "some-unique-id-for-yourself-to-know-what-containerized-your-data",
-              "version": 1.0,
+              "id": "condition-test",
+              "version": "1.0",
               "classifiers": {},
               "description": null
           }
       }
       ```
 
-- A container 'containers' json specification file (containers.json)
+- A container 'collections' json specification file (collections.json)
 
         ```
         {
-            "bins": [
+            "collections": [
                 {
                     "id": "required-fields",
                     "classifiers": {"namespace": "condition-test"},
@@ -240,20 +240,30 @@ Relationships are completely unnecessary in many situations if data is being pus
         }
         ```
 
-- A container 'relationships' json specification file (relationships.json)
+- A container 'transformations' json specification file (transformations.json)
 
         ```
-          {
-              "relationships": [
-                  {
-                      "id": "test1",
-                      "join": "left",
-                      "parent": "testTable1",
-                      "child": "testTable2",
-                      "field": "key"
-                  }
-              ]
-          }
+        {
+            "transformations": [
+            {
+                "id": "join-test",
+                "operator": "join",
+                "constructor": {"join_field": "key",
+                                "collection_field": "mix-and-match"},
+                "records": {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
+                            "child":  {"COLLECTION": "mix-and-match"},
+                            "other": "UUID"},
+                "fields": ["key", "record", "filename", "type", "mix-and-match"]
+            },
+            {
+                "id": "reduce-test",
+                "operator": "reduce-sum",
+                "constructor": {"reduce-field": "mix-and-match",
+                                "reduce-target": "mix-and-match-reduction"},
+                "records": {"reduce-list" : {"TRANSFORMATION": "join-test"}},
+                "fields": ["key", "mix-and-match-reduction"]
+            }]
+        }
         ```
 
 ##### Protocols
