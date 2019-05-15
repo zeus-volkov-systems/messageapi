@@ -66,7 +66,7 @@ public class ConnectionUtils {
     public static List<String> getTransformationCollections(List<String> transformationIds, List<Map<String,Object>> transformationMaps) {
         List<Map<String,Object>> recordMaps = transformationMaps.stream().filter(tMap -> transformationIds.contains(tMap.get("id")))
                 .map(tMap -> (Map<String,Object>)tMap.get("records")).collect(Collectors.toList());
-        return ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(recordMaps.stream().map(m -> m.values().stream().map(rec -> {
+        List<String> transformationCollections = ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(recordMaps.stream().map(m -> m.values().stream().map(rec -> {
                 if (rec instanceof Map) {
                     if (((Map<String,Object>) rec).containsKey("COLLECTION")) {
                         return (String)((Map<String,Object>)rec).get("COLLECTION");
@@ -74,6 +74,7 @@ public class ConnectionUtils {
                 }
                 return null;
             }).collect(Collectors.toList())).collect(Collectors.toList()))));
+        return transformationCollections;
     }
 
 
@@ -81,17 +82,18 @@ public class ConnectionUtils {
     public static Map<String,List<Object>> getTransformationClassifiers(List<String> transformationIds, List<Map<String,Object>> transformationMaps) {
         List<Map<String,Object>> recordMaps = transformationMaps.stream().filter(tMap -> transformationIds.contains(tMap.get("id")))
                 .map(tMap -> (Map<String,Object>)tMap.get("records")).collect(Collectors.toList());
-        return MapUtils.mergeMapsMergeValues(ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(recordMaps.stream().map(recordMap -> recordMap.values().stream().map(record -> {
+        Map<String,List<Object>> returnMap =  MapUtils.mergeMapsMergeValues(ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(recordMaps.stream().map(recordMap -> recordMap.values().stream().map(record -> {
                 if (record instanceof Map) {
                     if (((Map<String,Object>) record).containsKey("CLASSIFIER")) {
                         Map<String,Object> classifierMap = new HashMap<String,Object>();
-                        List<Object> collList = (List<Object>)((Map<String,Object>)record).get("COLLECTION");
+                        List<Object> collList = (List<Object>)((Map<String,Object>)record).get("CLASSIFIER");
                         classifierMap.put((String) collList.get(0), collList.get(1));
                         return classifierMap;
                     }
                 }
                 return null;
             }).collect(Collectors.toList())).collect(Collectors.toList())))));
+        return returnMap;
     }
 
 
