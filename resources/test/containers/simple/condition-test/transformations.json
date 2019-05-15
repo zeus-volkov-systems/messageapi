@@ -1,3 +1,22 @@
 {
-    "transformations": []
+    "transformations": [
+    {
+        "id": "join-test",
+        "operator": "join",
+        "constructor": {"join_field": "key",
+                        "collection_field": "mix-and-match"},
+        "records": {"parent": {"CLASSIFIER": ["namespace", 2]},
+                    "child":  {"COLLECTION": "mix-and-match"},
+                    "other": "UUID",
+                    "test": {"TRANSFORMATION": "reduce-test"}},
+        "fields": ["key", "record", "filename", "type", "mix-and-match"]
+    },
+    {
+        "id": "reduce-test",
+        "operator": "reduce",
+        "constructor": {"reduce-field": "mix-and-match",
+                        "reduce-target": "mix-and-match-reduction"},
+        "records": {"reduce-list" : "UUID"},
+        "fields": ["key", "mix-and-match-reduction"]
+    }]
 }

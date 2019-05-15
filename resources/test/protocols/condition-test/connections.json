@@ -3,6 +3,7 @@
         {
             "id": "1",
             "collections": ["*"],
+            "transformations": ["join-test"],
             "constructor": {
                 "sender": "ryan.berkheimer@noaa.gov",
                 "password": "testpassword1234",

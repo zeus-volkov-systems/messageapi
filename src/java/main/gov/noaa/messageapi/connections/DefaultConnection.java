@@ -1,7 +1,5 @@
 package gov.noaa.messageapi.connections;
 
-import gov.noaa.messageapi.utils.general.ListUtils;
-import gov.noaa.messageapi.utils.general.MapUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -13,6 +11,8 @@ import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.ITransformationFactory;
 
+import gov.noaa.messageapi.utils.general.ListUtils;
+import gov.noaa.messageapi.utils.general.MapUtils;
 import gov.noaa.messageapi.utils.protocol.ConnectionUtils;
 
 public class DefaultConnection extends BaseConnection implements IConnection {
@@ -45,8 +45,8 @@ public class DefaultConnection extends BaseConnection implements IConnection {
                 this.setTransformationMap(new HashMap<String, Map<String, Object>>());
             }
         } catch (Exception e) {
-            System.out.println("Error in connection instantiation. Stacktrace to follow.");
-            System.out.println(e.getStackTrace());
+            System.out.println("Error in connection instantiation.");
+            System.out.println(e.getStackTrace().toString());
         }
     }
 
@@ -61,7 +61,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         try {
             return new DefaultConnection(this);
         } catch (Exception e) {
-            System.out.println("Failed copying connection, stacktrace follows.");
+            System.out.println("Failed copying connection.");
             e.printStackTrace();
             return null;
         }
@@ -174,9 +174,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
      * @param transformationFactory A class factory that contains key/value pairs of transformation operator keywords and class references
      * @param rawTransformationMaps The raw transformation maps containing entire transformation specifications
      */
-    private void integrateTransformations(List<String> transformations,
-                                        ITransformationFactory transformationFactory,
-                                        List<Map<String,Object>> rawTransformationMaps) {
+    private void integrateTransformations(List<String> transformations,ITransformationFactory transformationFactory, List<Map<String,Object>> rawTransformationMaps) {
         List<String> allTransformationIds = ConnectionUtils.getAllTransformationIds(transformations, rawTransformationMaps);
         List<String> transformationCollections = ConnectionUtils.getTransformationCollections(allTransformationIds, rawTransformationMaps);
         Map<String,List<Object>> transformationClassifiers = ConnectionUtils.getTransformationClassifiers(allTransformationIds, rawTransformationMaps);
