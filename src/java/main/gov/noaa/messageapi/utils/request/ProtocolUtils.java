@@ -45,7 +45,6 @@ public class ProtocolUtils {
      * @return                  A protocol record, containing a record map based on the containerRecords, for the given connection
      */
     public static IProtocolRecord createProtocolRecord(IConnection connection, List<IContainerRecord> containerRecords) {
-        String connId = connection.getId();
         List<String> connCollections = connection.getCollections();
         Map<String,List<Object>> connClassifiers = connection.getClassifiers();
         List<Map<IRecord, Map<String,Object>>> recordList = ListUtils.flatten(containerRecords.stream().map(containerRecord -> {
@@ -54,7 +53,7 @@ public class ProtocolUtils {
                 return convertCollectionToRecord(collection, recordId, connCollections, connClassifiers);
             }).collect(Collectors.toList()));
         }).collect(Collectors.toList()));
-        return new ProtocolRecord(connId, MapUtils.mergeMapList(recordList));
+        return new ProtocolRecord(connection, MapUtils.mergeMapList(recordList));
     }
 
     /**
