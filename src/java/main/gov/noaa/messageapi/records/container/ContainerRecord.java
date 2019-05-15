@@ -17,15 +17,15 @@ public class ContainerRecord implements IContainerRecord {
     private List<ICondition> conditions = null;
 
     public ContainerRecord(List<ICollection> collections) {
-        generateId();
-        setCollections(collections);
+        this.generateId();
+        this.setCollections(collections);
     }
 
     public ContainerRecord(IContainerRecord containerRecord) {
-        generateId();
-        setCollections(containerRecord.getCollections());
-        setTransformations(containerRecord.getTransformations());
-        setConditions(containerRecord.getConditions());
+        this.generateId();
+        this.setCollections(containerRecord.getCollections());
+        this.setTransformations(containerRecord.getTransformations());
+        this.setConditions(containerRecord.getConditions());
     }
 
     public ContainerRecord getCopy() {
