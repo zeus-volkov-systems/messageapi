@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.AbstractMap;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IRecord;
@@ -85,7 +84,9 @@ public class ProtocolRecord implements IProtocolRecord {
                 }
             }
             return false;
-        }).map(e -> e.getKey()).collect(Collectors.toList());
+        }).map(e -> {
+            return e.getKey();
+        }).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
