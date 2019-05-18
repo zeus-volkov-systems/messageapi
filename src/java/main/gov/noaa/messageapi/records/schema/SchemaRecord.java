@@ -30,7 +30,9 @@ public class SchemaRecord implements IRecord {
 
     public SchemaRecord(IRecord record) {
         this.setFields(record.getFields());
-        this.setConditions(record.getConditions());
+        if (record.getConditions() != null) {
+            this.setConditions(record.getConditions());
+        }
     }
 
     /**
