@@ -1,7 +1,10 @@
 package gov.noaa.messageapi.collections;
 
-import java.util.List;
 import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.ICollection;
@@ -18,14 +21,14 @@ public class DefaultCollection implements ICollection {
 
     @SuppressWarnings("unchecked")
     public DefaultCollection(Map<String,Object> fieldMap) {
-        this.setId((String) fieldMap.get("name"));
+        this.setId((String) fieldMap.get("id"));
         this.setClassifiers((Map<String,Object>) fieldMap.get("classifiers"));
         this.initializeFields((List<String>) fieldMap.get("fields"));
     }
 
     public DefaultCollection(ICollection collection) {
         this.setId(collection.getId());
-        this.setClassifiers(collection.getClassifiers());
+        this.copyClassifiers(collection.getClassifiers());
         this.setFields(collection.getFields());
     }
 
@@ -53,8 +56,21 @@ public class DefaultCollection implements ICollection {
         this.id = id;
     }
 
-    private void setClassifiers(Map<String,Object> classifiers) {
+    private void copyClassifiers(Map<String,Object> classifiers) {
         this.classifiers = classifiers;
+    }
+
+    private void setClassifiers(Map<String,Object> classifiers) {
+        this.classifiers = new HashMap<String,Object>();
+        classifiers.entrySet().forEach(classifierEntry -> {
+            if (classifierEntry.getValue() instanceof List) {
+                    this.classifiers.put(classifierEntry.getKey(), classifierEntry.getValue());
+                } else {
+                    List<Object> classifierEntryValue = new ArrayList<Object>();
+                    classifierEntryValue.add(classifierEntry.getValue());
+                    this.classifiers.put(classifierEntry.getKey(), classifierEntryValue);
+                }
+            });
     }
 
     private void initializeFields(List<String> fieldNames) {
