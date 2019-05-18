@@ -43,9 +43,8 @@ public class ProtocolRecordUtils {
             String [] parameterValueArray = e.getValue().split("=");
             switch(parameterValueArray[0]) {
                 case "CLASSIFIER":
-                    String [] classifierArray = parameterValueArray[1].split(".");
                     return new AbstractMap.SimpleEntry<String,List<IRecord>>(e.getKey(),
-                                protocolRecord.getRecordsByClassifier(classifierArray[0], classifierArray[1]));
+                                protocolRecord.getRecordsByClassifier(parameterValueArray[1], parameterValueArray[2]));
                 case "COLLECTION":
                     return new AbstractMap.SimpleEntry<String,List<IRecord>>(e.getKey(),
                                 protocolRecord.getRecordsByCollection(parameterValueArray[1]));

@@ -125,7 +125,7 @@ public class ConnectionUtils {
             } else if (e.getValue() instanceof Map) {
                 if (((Map<String, Object>)e.getValue()).containsKey("CLASSIFIER")) {
                     List<String> valList = (List<String>) ((Map<String, Object>)e.getValue()).get("CLASSIFIER");
-                    symbolMap.put(e.getKey(), String.format("%s=%s.%s", "CLASSIFIER", valList.get(0), valList.get(1)));
+                    symbolMap.put(e.getKey(), String.format("%s=%s=%s", "CLASSIFIER", valList.get(0), valList.get(1)));
                 } else if (((Map<String, Object>)e.getValue()).containsKey("COLLECTION")) {
                     String val = (String) ((Map<String,Object>)e.getValue()).get("COLLECTION");
                     symbolMap.put(e.getKey(), String.format("%s=%s", "COLLECTION", val));
