@@ -19,13 +19,17 @@ public class ProtocolRecordUtils {
      * @param  parameterMap A parameter map containing keys/values of transformation map collections
      * @return              True if there's a UUID key, false otherwise.
      */
-    public static Boolean hasUUIDParameter(Map<String,String> parameterMap) {
-        return parameterMap.entrySet().stream().filter(e -> {
+    public static String getUUIDParameter(Map<String,String> parameterMap) {
+        List<String> uuidStrings = ListUtils.removeAllNulls(parameterMap.entrySet().stream().map(e -> {
             if (e.getValue().equals("UUID")) {
-                return true;
+                return e.getKey();
             }
-            return false;
-        }).findAny().isPresent();
+            return null;
+        }).collect(Collectors.toList()));
+        if(uuidStrings.size() == 1) {
+            return uuidStrings.get(0);
+        }
+        return null;
     }
 
     public static Map<String,List<IRecord>> buildParameterMap(IProtocolRecord protocolRecord, Map<String,String> parameterMapSpec) {

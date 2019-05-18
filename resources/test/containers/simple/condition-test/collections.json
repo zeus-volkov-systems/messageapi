@@ -3,7 +3,7 @@
         {
             "id": "required-fields",
             "classifiers": {
-                "namespace": ["ctest", 2],
+                "namespace": ["yellow"],
                 "required": true
             },
             "fields": ["boolean-required", "float-required", "double-required", "integer-required", "string-required", "datetime-required"]
@@ -15,7 +15,7 @@
         },
         {
             "id": "mix-and-match",
-            "classifiers": {"namespace": "condition-test"},
+            "classifiers": {"namespace": ["condition-test", "test3"]},
             "fields": ["string-required", "string-optional", "datetime-required"]
         }
     ]

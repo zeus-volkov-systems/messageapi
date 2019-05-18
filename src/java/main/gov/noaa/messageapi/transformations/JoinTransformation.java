@@ -16,12 +16,15 @@ public class JoinTransformation implements ITransformation {
     private IField collectionField = null;
 
     public JoinTransformation(List<String> fields, Map<String,Object> params) {
-        setJoinField((String) params.get("join_field"));
-        setCollectionField((String) params.get("collection_field"));
+        this.setJoinField((String) params.get("join_field"));
+        this.setCollectionField((String) params.get("collection_field"));
     }
 
     public List<IRecord> process(Map<String,List<IRecord>> transformationMap) {
-        return transformationMap.get("test");
+        System.out.println("Hey yooooo! We be processin' up in this thang");
+        System.out.println("Parent records: " + transformationMap.get("parent"));
+        System.out.println("Child records: " + transformationMap.get("child"));
+        return transformationMap.get("parent");
     }
 
     public IField getJoinField() {
@@ -33,11 +36,11 @@ public class JoinTransformation implements ITransformation {
     }
 
     private void setCollectionField(String collectionField) {
-        this.collectionField = new DefaultField(makeCollectionFieldMap(collectionField));
+        this.collectionField = new DefaultField(this.makeCollectionFieldMap(collectionField));
     }
 
     private void setJoinField(String joinField) {
-        this.joinField = new DefaultField(makeJoinFieldMap(joinField));
+        this.joinField = new DefaultField(this.makeJoinFieldMap(joinField));
     }
 
     private Map<String,Object> makeJoinFieldMap(String joinField) {

@@ -5,10 +5,8 @@
         "operator": "join",
         "constructor": {"join_field": "key",
                         "collection_field": "mix-and-match"},
-        "records": {"parent": {"CLASSIFIER": ["namespace", 2]},
-                    "child":  {"COLLECTION": "mix-and-match"},
-                    "other": "UUID",
-                    "test": {"TRANSFORMATION": "reduce-test"}},
+        "records": {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
+                    "child":  {"TRANSFORMATION": "reduce-test"}},
         "fields": ["key", "record", "filename", "type", "mix-and-match"]
     },
     {

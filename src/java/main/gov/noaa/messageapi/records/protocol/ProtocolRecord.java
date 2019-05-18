@@ -58,35 +58,45 @@ public class ProtocolRecord implements IProtocolRecord {
     }
 
     public List<IRecord> getRecordsByCollection(String collectionId) {
-        return this.recordMap.entrySet().stream().filter(e -> {
+        List<IRecord> collectionRecords = this.recordMap.entrySet().stream().filter(e -> {
             if (((String)e.getValue().get("COLLECTION")).equals(collectionId)) {
                 return true;
             }
             return false;
         }).map(e -> e.getKey()).collect(Collectors.toList());
+        if (collectionRecords != null && collectionRecords.size() > 0) {
+            return collectionRecords.stream().map(r -> r.getCopy()).collect(Collectors.toList());
+        }
+        return new ArrayList<IRecord>();
     }
 
     public List<IRecord> getRecordsByUUID(UUID uuid) {
-        return this.recordMap.entrySet().stream().filter(e -> {
+        List<IRecord> uuidRecords = this.recordMap.entrySet().stream().filter(e -> {
             if (((UUID)e.getValue().get("UUID")).equals(uuid)) {
                 return true;
             }
             return false;
         }).map(e -> e.getKey()).collect(Collectors.toList());
+        if (uuidRecords != null && uuidRecords.size() > 0) {
+            return uuidRecords.stream().map(r -> r.getCopy()).collect(Collectors.toList());
+        }
+        return new ArrayList<IRecord>();
     }
 
     @SuppressWarnings("unchecked")
     public List<IRecord> getRecordsByClassifier(String key, Object value) {
-        return this.recordMap.entrySet().stream().filter(e -> {
+        List<IRecord> classRecords = this.recordMap.entrySet().stream().filter(e -> {
             if (((Map<String,Object>)e.getValue().get("CLASSIFIERS")).keySet().contains(key)) {
                 if (((List<Object>)((Map<String,Object>)e.getValue().get("CLASSIFIERS")).get(key)).contains(value)) {
                     return true;
                 }
             }
             return false;
-        }).map(e -> {
-            return e.getKey();
-        }).collect(Collectors.toList());
+        }).map(e -> e.getKey()).collect(Collectors.toList());
+        if (classRecords != null && classRecords.size() > 0) {
+            return classRecords.stream().map(r -> r.getCopy()).collect(Collectors.toList());
+        }
+        return new ArrayList<IRecord>();
     }
 
     @SuppressWarnings("unchecked")
@@ -94,12 +104,12 @@ public class ProtocolRecord implements IProtocolRecord {
         if (this.getTransformationMap().containsKey(transformationId)) {
             ITransformation transformationInstance = (ITransformation)this.getTransformationMap().get(transformationId).get("instance");
             Map<String,String> parameterMapSpec = (Map<String,String>)this.getTransformationMap().get(transformationId).get("parameters");
-            Boolean uuidFlag = ProtocolRecordUtils.hasUUIDParameter(parameterMapSpec);
+            String uuidParam = ProtocolRecordUtils.getUUIDParameter(parameterMapSpec);
             Map<String,List<IRecord>> parameterMap = ProtocolRecordUtils.buildParameterMap(this, parameterMapSpec);
-            if (uuidFlag) {
+            if (uuidParam != null && !uuidParam.isEmpty()) {
                 return ListUtils.flatten(this.getUUIDs().stream().map(uuid -> {
                     Map<String,List<IRecord>> uuidParams = new HashMap<String,List<IRecord>>(parameterMap);
-                    uuidParams.replace("UUID", this.getRecordsByUUID(uuid));
+                    uuidParams.replace(uuidParam, this.getRecordsByUUID(uuid));
                     return transformationInstance.process(uuidParams);
                 }).collect(Collectors.toList()));
             } else {
