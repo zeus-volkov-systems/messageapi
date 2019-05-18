@@ -20,7 +20,6 @@ public class ProtocolRecordUtils {
      * @return              True if there's a UUID key, false otherwise.
      */
     public static Boolean hasUUIDParameter(Map<String,String> parameterMap) {
-        System.out.println("Checking for uuid in: " + parameterMap);
         return parameterMap.entrySet().stream().filter(e -> {
             if (e.getValue().equals("UUID")) {
                 return true;
