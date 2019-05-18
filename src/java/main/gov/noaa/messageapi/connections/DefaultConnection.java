@@ -55,6 +55,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
         this.setId(connection.getId());
         this.setCollections(connection.getCollections());
         this.setClassifiers(connection.getClassifiers());
+        this.setTransformationMap(connection.getTransformationMap());
     }
 
     public DefaultConnection getCopy() {
