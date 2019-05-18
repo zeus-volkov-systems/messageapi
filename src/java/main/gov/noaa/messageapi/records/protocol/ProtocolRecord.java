@@ -1,14 +1,20 @@
 package gov.noaa.messageapi.records.protocol;
 
-import java.util.UUID;
 import java.util.Map;
 import java.util.List;
+import java.util.UUID;
+import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.AbstractMap;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IRecord;
-import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.IConnection;
+import gov.noaa.messageapi.interfaces.IProtocolRecord;
+import gov.noaa.messageapi.interfaces.ITransformation;
+
+import gov.noaa.messageapi.utils.general.ListUtils;
+import gov.noaa.messageapi.utils.protocol.ProtocolRecordUtils;
 
 
 /**
@@ -20,20 +26,36 @@ import gov.noaa.messageapi.interfaces.IConnection;
  */
 public class ProtocolRecord implements IProtocolRecord {
 
-    private IConnection connection;
+    private Map<String, Map<String,Object>> transformationMap;
     private Map<IRecord,Map<String,Object>> recordMap;
+    private List<UUID> uuids;
+    private String connectionId;
 
     public ProtocolRecord(IConnection connection, Map<IRecord, Map<String,Object>> recordMap) {
-        this.setConnection(connection);
-        this.setRecords(recordMap);
+        this.setConnectionId(connection.getId());
+        this.setTransformationMap(connection.getTransformationMap());
+        this.setRecordMap(recordMap);
+        this.setUUIDs(recordMap);
     }
 
-    public IConnection getConnection(){
-        return this.connection;
+    public String getConnectionId() {
+        return this.connectionId;
+    }
+
+    public Map<String, Map<String,Object>> getTransformationMap(){
+        return this.transformationMap;
     }
 
     public List<IRecord> getRecords() {
         return new ArrayList<IRecord>(this.recordMap.keySet());
+    }
+
+    public List<UUID> getUUIDs() {
+        return this.uuids;
+    }
+
+    public Map<IRecord,Map<String,Object>> getRecordMap() {
+        return this.recordMap;
     }
 
     public List<IRecord> getRecordsByCollection(String collectionId) {
@@ -66,17 +88,42 @@ public class ProtocolRecord implements IProtocolRecord {
         }).map(e -> e.getKey()).collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     public List<IRecord> getRecordsByTransformation(String transformationId) {
-        //TODO: Complete method
-        return this.getRecords();
+        if (this.getTransformationMap().containsKey(transformationId)) {
+            ITransformation transformationInstance = (ITransformation)this.getTransformationMap().get(transformationId).get("instance");
+            Map<String,String> parameterMapSpec = (Map<String,String>)this.getTransformationMap().get(transformationId).get("parameters");
+            Boolean uuidFlag = ProtocolRecordUtils.hasUUIDParameter(parameterMapSpec);
+            Map<String,List<IRecord>> parameterMap = ProtocolRecordUtils.buildParameterMap(this, parameterMapSpec);
+            if (uuidFlag) {
+                return ListUtils.flatten(this.getUUIDs().stream().map(uuid -> {
+                    Map<String,List<IRecord>> uuidParams = new HashMap<String,List<IRecord>>(parameterMap);
+                    uuidParams.replace("UUID", this.getRecordsByUUID(uuid));
+                    return transformationInstance.process(uuidParams);
+                }).collect(Collectors.toList()));
+            } else {
+                return transformationInstance.process(parameterMap);
+            }
+        }
+        return null;
     }
 
-    private void setConnection(IConnection connection) {
-        this.connection = connection;
+    private void setTransformationMap(Map<String, Map<String,Object>> transformationMap) {
+        this.transformationMap = transformationMap;
     }
 
-    private void setRecords(Map<IRecord, Map<String,Object>> recordMap) {
+    private void setConnectionId(String connectionId) {
+        this.connectionId = connectionId;
+    }
+
+    private void setRecordMap(Map<IRecord, Map<String,Object>> recordMap) {
         this.recordMap = recordMap;
+    }
+
+    private void setUUIDs(Map<IRecord, Map<String,Object>> recordMap) {
+        this.uuids = ListUtils.eliminateDuplicates(recordMap.values().stream().map(v -> {
+            return (UUID) v.get("UUID");
+        }).collect(Collectors.toList()));
     }
 
 }

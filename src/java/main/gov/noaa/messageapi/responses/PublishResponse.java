@@ -108,7 +108,7 @@ public class PublishResponse extends BaseResponse implements IResponse {
     CompletableFuture<IPacket> process(List<IConnection> connections, List<IProtocolRecord> recordSets) {
         List<CompletableFuture<IPacket>> packetFutures = ListUtils.removeAllNulls(connections.stream().map(c -> {
             try {
-                return ConnectionUtils.submitRecords(c, recordSets.stream().filter(r -> r.getConnection().getId().equals(c.getId())).findFirst().get());
+                return ConnectionUtils.submitRecords(c, recordSets.stream().filter(r -> r.getConnectionId().equals(c.getId())).findFirst().get());
             } catch (Exception e) {
                 System.out.println(e.getStackTrace());
                 return null;

@@ -11,9 +11,10 @@ public class EmailEndpointTest implements IEndpoint {
 
     public EmailEndpointTest(Map<String,Object> parameters) {}
 
-    public IPacket process(IProtocolRecord record) {
+    public IPacket process(IProtocolRecord protocolRecord) {
+        protocolRecord.getRecordsByTransformation("join-test");
         DefaultPacket packet = new DefaultPacket();
-        packet.addRecords(record.getRecords());
+        packet.addRecords(protocolRecord.getRecords());
         return packet;
     }
 
