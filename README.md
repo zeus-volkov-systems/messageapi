@@ -17,7 +17,7 @@ or streaming platforms (Kafka, Storm). These other messaging systems are appropr
 ### Description
 
 At a minimum, using MessageAPI means writing an information model specification
-and incorporating the provided API methods in code to read the it.
+and incorporating the provided API methods in code to read it.
 
 MessageAPI information model specs are completely pluggable and are read when specifically
 referenced at runtime in code. Because specs are completely pluggable, there is no
