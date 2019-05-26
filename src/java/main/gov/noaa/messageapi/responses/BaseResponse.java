@@ -14,8 +14,8 @@ public class BaseResponse {
     private boolean complete = false;
 
     public BaseResponse(IRequest request) {
-        setRequest(request);
-        setComplete(false);
+        this.setRequest(request);
+        this.setComplete(false);
     }
 
     public List<IRejection> getRejections() {
