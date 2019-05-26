@@ -7,8 +7,88 @@ of the package was complete. It attempts to provide a clear
 'state of development' document for developers, to be used for quick integration
 with current development, and should be supplemental to the repository record.
 
+This work log is also useful as a supplemental documentation for end users of the package - features are described and contextualized with as much detail as possible.
+
 
 ## Current Focus
+
+### Collection Conditions
+
+The goal is to implement condition behavior, similar to that currently seen at the record level, at the collection level. This involves allowing the user to optionally specify a 'conditions' property on individual collections, as a key/value pair, where the key is the word 'conditions' is the key, corresponding to a list of condition ids.
+
+Currently, we have conditions listed as a list of maps, e.g.
+
+```
+"conditions": [
+    {
+        "id": "1",
+        "type": "comparison",
+        "operator": ">=",
+        "field": "key"
+    },
+    {
+        "id": "2",
+        "type": "comparison",
+        "operator": "<",
+        "field": "key"
+    },
+    {
+        "id": "three",
+        "type": "composite",
+        "operator": "or",
+        "conditions": ["1","2"]
+    }]
+```
+
+And we have a list of collections in another list of maps, e.g.,
+
+
+```
+"collections": [
+    {
+        "id": "required-fields",
+        "classifiers": {
+            "namespace": ["yellow"],
+            "required": true
+        },
+        "fields": ["boolean-required", "float-required", "double-required", "integer-required", "string-required", "datetime-required"]
+    },
+    {
+        "id": "optional-fields",
+        "classifiers": {"namespace": "condition-test"},
+        "fields": ["boolean-optional", "float-optional", "double-optional", "integer-optional", "string-optional", "datetime-optional"]
+    },
+    {
+        "id": "mix-and-match",
+        "classifiers": {"namespace": ["condition-test", "test3"]},
+        "fields": ["string-required", "string-optional", "datetime-required"]
+    }
+]
+```
+
+Each of these maps is referred to in the Session spec. Following package convention, conditions are contained in the schema, because they are able to be updated (by value) at runtime through the Request API; collections are contained in the container, because they define how to split/categorize/factor each record schema.
+
+Each of these maps follows another package convention, in that they are the sole source of truth for the given domain model/concept within the given Session. This means that all conditions for the entire session are contained in the conditions map, all collections are contained in the collections map - there are no other places where these may be stored.
+
+At the time of this feature specification, the condition map is copied and attached to a record when the record is created on a request. Users can set condition values on the record, or pre-specify values on conditions in the map. When the request is submitted for response, every record is then checked individually against conditions which have set values for that record, and is rejected if it don't meet all conditions.
+
+This feature addition would add these same abilities - condition value setting, record filtering, to collections.
+
+**We want the system to conform to the following conditions**
+
+- conditions are able to be valued on requests by the user, or specified beforehand on the map, in addition to individual records
+- conditions are able to be added to collections by id with an optional 'conditions' keyword on each collections map
+- when a request is submitted, after records are individually filtered, they are only placed in collections if they meet conditions specified on the collection
+
+**We want the internal behavior to conform to the following conditions**
+
+- conditions are now parsed and checked as part of collection map parsing in the container definition
+- a request should hold an ICondition (in addition to a list of IRecords, etc.)
+- when requests are submitted, condition chains are computed for each collection (top level conditions, nested, etc.)
+- when factoring a record into collections, if a schema record does not satisfy the conditions of a collection, that collection is not created
+- that collection should be thrown as a rejection with a reason - rejected in container layer due to condition mismatch
+
+## Previous Foci
 
 ### Transformations
 
@@ -112,5 +192,3 @@ In order to implement the transformation, the following modifications must be ma
                 - instantiate the transformation class (from the factory) with associated fields/params and add it to the map
                 - create a value map for the input record sets and add it
 6. In the body of getRecordsByTransformation, add logic that processes a method invocation according to the steps outlined in the previous section.
-
-## Previous Foci
