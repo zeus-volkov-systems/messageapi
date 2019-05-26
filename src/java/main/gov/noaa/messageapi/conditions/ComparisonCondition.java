@@ -22,9 +22,9 @@ public class ComparisonCondition extends BaseCondition implements IComparisonCon
      */
     public ComparisonCondition(Map<String,Object> conditionMap) {
         super(conditionMap);
-        setField((String) conditionMap.get("field"));
+        this.setField((String) conditionMap.get("field"));
         if (conditionMap.containsKey("value")) {
-            setValue(conditionMap.get("value"));
+            this.setValue(conditionMap.get("value"));
         }
     }
 
@@ -36,8 +36,8 @@ public class ComparisonCondition extends BaseCondition implements IComparisonCon
      */
     public ComparisonCondition(IComparisonCondition condition) {
         super(condition);
-        setField(condition.getField());
-        setValue(condition.getValue());
+        this.setField(condition.getField());
+        this.setValue(condition.getValue());
     }
 
     /**
