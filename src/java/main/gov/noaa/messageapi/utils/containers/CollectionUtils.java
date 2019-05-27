@@ -15,6 +15,14 @@ import gov.noaa.messageapi.collections.DefaultCollection;
  */
 public class CollectionUtils {
 
+    /**
+     * Uses a list of maps containing collection specifications to create a list
+     * of default collection objects. This involves converting every map into a
+     * unique Collection object based on the DefaultCollection class, using
+     * the properties outlined in the map as specification.
+     * @param  collectionMaps A list of collection maps containing instantiation information
+     * @return                A list of DefaultCollection objects
+     */
     public static List<ICollection> buildCollections(List<Map<String,Object>> collectionMaps) {
         return collectionMaps.stream().map(m -> {
             return new DefaultCollection(m);
