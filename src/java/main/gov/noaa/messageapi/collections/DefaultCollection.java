@@ -13,6 +13,13 @@ import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.fields.DefaultField;
 
 /**
+ * DefaultCollection represents a basic, standard collection, which is
+ * a fundamental unit of a container. Collections are subsets of fields
+ * derived from the full fieldset contained in a SchemaRecord. Collections
+ * contain a list of fields, a request-global unique id, a map of classifiers
+ * that help identify the collection in the context of a request/response,
+ * and a list of condition ids that enable determination on whether or not
+ * a given record should produce a collection.
  * @author Ryan Berkheimer
  */
 public class DefaultCollection implements ICollection {
@@ -20,18 +27,25 @@ public class DefaultCollection implements ICollection {
     protected String id = null;
     protected Map<String,Object> classifiers = null;
     protected List<IField> fields = null;
+    protected List<String> conditionIds = null;
 
     @SuppressWarnings("unchecked")
-    public DefaultCollection(Map<String,Object> fieldMap) {
-        this.setId((String) fieldMap.get("id"));
-        this.setClassifiers((Map<String,Object>) fieldMap.get("classifiers"));
-        this.initializeFields((List<String>) fieldMap.get("fields"));
+    public DefaultCollection(Map<String,Object> collectionMap) {
+        this.setId((String) collectionMap.get("id"));
+        this.setClassifiers((Map<String,Object>) collectionMap.get("classifiers"));
+        this.initializeFields((List<String>) collectionMap.get("fields"));
+        if (collectionMap.containsKey("conditions")) {
+            this.setConditionIds((List<String>) collectionMap.get("conditions"));
+        } else {
+            this.setConditionIds(new ArrayList<String>());
+        }
     }
 
     public DefaultCollection(ICollection collection) {
         this.setId(collection.getId());
         this.copyClassifiers(collection.getClassifiers());
         this.setFields(collection.getFields());
+        this.setConditionIds(collection.getConditionIds());
     }
 
     public DefaultCollection getCopy() {
@@ -48,6 +62,10 @@ public class DefaultCollection implements ICollection {
 
     public List<IField> getFields() {
         return this.fields;
+    }
+
+    public List<String> getConditionIds() {
+        return this.conditionIds;
     }
 
     public Object getClassifier(String classiferKey) {
@@ -89,6 +107,10 @@ public class DefaultCollection implements ICollection {
                 return null;
             }
         }).collect(Collectors.toList());
+    }
+
+    private void setConditionIds(List<String> conditionIds) {
+        this.conditionIds = conditionIds;
     }
 
 }

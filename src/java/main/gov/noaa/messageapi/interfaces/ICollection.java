@@ -19,5 +19,6 @@ public interface ICollection {
     public List<IField> getFields();
     public Object getClassifier(String classifierKey);
     public ICollection getCopy();
+    public List<String> getConditionIds();
 
 }
