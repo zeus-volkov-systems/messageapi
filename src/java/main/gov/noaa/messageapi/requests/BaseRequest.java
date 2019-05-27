@@ -62,7 +62,7 @@ public class BaseRequest {
      */
     public IRecord createRecord() {
         IRecord r = this.schema.createRecord();
-        this.records.add(ConditionUtils.nullifyConditions(r));
+        this.records.add(ConditionUtils.nullifyComparisonConditions(r));
         return r;
     }
 

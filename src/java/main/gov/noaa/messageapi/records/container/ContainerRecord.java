@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IContainerRecord;
 import gov.noaa.messageapi.interfaces.ICollection;
-import gov.noaa.messageapi.interfaces.ICondition;
 import gov.noaa.messageapi.interfaces.ITransformation;
 
 /**
@@ -17,7 +16,6 @@ public class ContainerRecord implements IContainerRecord {
     private UUID id = null;
     private List<ICollection> collections = null;
     private List<ITransformation> transformations = null;
-    private List<ICondition> conditions = null;
 
     public ContainerRecord(List<ICollection> collections) {
         this.generateId();
@@ -28,7 +26,6 @@ public class ContainerRecord implements IContainerRecord {
         this.generateId();
         this.setCollections(containerRecord.getCollections());
         this.setTransformations(containerRecord.getTransformations());
-        this.setConditions(containerRecord.getConditions());
     }
 
     public ContainerRecord getCopy() {
@@ -47,10 +44,6 @@ public class ContainerRecord implements IContainerRecord {
         return this.transformations;
     }
 
-    public List<ICondition> getConditions() {
-        return this.conditions;
-    }
-
     private void generateId() {
         this.id = UUID.randomUUID();
     }
@@ -65,7 +58,4 @@ public class ContainerRecord implements IContainerRecord {
         this.transformations = transformations;
     }
 
-    private void setConditions(List<ICondition> conditions) {
-        this.conditions = conditions;
-    }
 }

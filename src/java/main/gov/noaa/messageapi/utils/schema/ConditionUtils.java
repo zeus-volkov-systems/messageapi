@@ -22,15 +22,18 @@ public class ConditionUtils {
 
 
     /**
-     * Used to nullify all conditions on the passed record. Any values that are already
-     * in place on a condition contained in the passed record will be set to null.
+     * Used to nullify comparison conditions on the passed record. Any values that are already
+     * in place on a condition contained in the passed record will be set to null
+     * (if the condition is a comparison condition)
      * The same record will be returned.
      * @param  record A record containing conditions to be nullified
      * @return        The same record that is passed in, with its conditions all holding null as values
      */
-    public static IRecord nullifyConditions(IRecord record) {
+    public static IRecord nullifyComparisonConditions(IRecord record) {
         record.getConditions().stream().forEach(c -> {
-            c.setValue(null);
+            if (c.getType().equals("comparison")) {
+                c.setValue(null);
+            }
         });
         return record;
     }
