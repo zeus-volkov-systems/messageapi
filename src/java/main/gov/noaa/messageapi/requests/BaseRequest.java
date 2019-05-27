@@ -55,6 +55,11 @@ public class BaseRequest {
         return this.records;
     }
 
+    /**
+     * Creates a new record in a request, making sure the conditions are null,
+     * and returns it for update by the user.
+     * @return A new IRecord belonging to the request records collection
+     */
     public IRecord createRecord() {
         IRecord r = this.schema.createRecord();
         this.records.add(ConditionUtils.nullifyConditions(r));
