@@ -24,6 +24,7 @@ import gov.noaa.messageapi.operators.conditions.DateTimeConditionOperator;
  * can be extended, replaced, or supplanted by a user factory to handle things
  * such as custom object type comparisons. Every operator that this possible returns
  * should extend the IOperator interface.
+ * @author Ryan Berkheimer
  */
 public class SimpleConditionFactory implements IConditionFactory {
 

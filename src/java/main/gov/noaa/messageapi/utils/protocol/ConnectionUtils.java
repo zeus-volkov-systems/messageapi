@@ -16,6 +16,10 @@ import gov.noaa.messageapi.interfaces.ITransformationFactory;
 import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.general.MapUtils;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class ConnectionUtils {
 
     public static CompletableFuture<IPacket> submitRecords(IConnection connection, IProtocolRecord record) {

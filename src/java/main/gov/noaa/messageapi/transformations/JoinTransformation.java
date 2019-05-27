@@ -10,6 +10,10 @@ import gov.noaa.messageapi.interfaces.ITransformation;
 
 import gov.noaa.messageapi.fields.DefaultField;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class JoinTransformation implements ITransformation {
 
     private IField joinField = null;

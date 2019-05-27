@@ -2,6 +2,9 @@ package gov.noaa.messageapi.parsers.schemas;
 
 import gov.noaa.messageapi.interfaces.IConditionFactory;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class ConditionOperatorParser {
 
     public static IConditionFactory build(String operatorClass) throws Exception {

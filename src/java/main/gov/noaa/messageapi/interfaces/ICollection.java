@@ -10,6 +10,7 @@ import gov.noaa.messageapi.interfaces.IField;
  * an identifier, and a map of classifiers. Classifiers can be used to group
  * collections together for use in protocols. Classifiers are key-value pairs,
  * where keys are strings, and values are either strings or lists of strings.
+ * @author Ryan Berkheimer
  */
 public interface ICollection {
 

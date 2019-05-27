@@ -9,6 +9,9 @@ import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.containers.BaseContainer;
 import gov.noaa.messageapi.metadata.DefaultMetadata;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class DefaultContainer extends BaseContainer implements IContainer {
 
     public DefaultContainer(Map<String, Object> properties) {

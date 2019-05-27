@@ -16,6 +16,7 @@ import gov.noaa.messageapi.utils.schema.ConditionUtils;
  * be reused by various request types. All public methods included in this utilities
  * module should perform immutable operations on arguments and return a record
  * or record-collection.
+ * @author Ryan Berkheimer
  */
 public class SchemaUtils {
 

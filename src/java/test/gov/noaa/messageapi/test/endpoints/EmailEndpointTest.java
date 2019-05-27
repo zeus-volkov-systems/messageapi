@@ -7,6 +7,10 @@ import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.packets.DefaultPacket;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class EmailEndpointTest implements IEndpoint {
 
     public EmailEndpointTest(Map<String,Object> parameters) {}

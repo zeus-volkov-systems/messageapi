@@ -7,6 +7,9 @@ import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IMetadata;
 import gov.noaa.messageapi.definitions.ContainerDefinition;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class BaseContainer {
 
     private Map<String, Object> properties;

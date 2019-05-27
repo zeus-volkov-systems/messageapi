@@ -10,6 +10,7 @@ import gov.noaa.messageapi.interfaces.ICondition;
  * during processing and validation, the type is either composite or comparison,
  * and the operator depends on type ('and' or 'or' for composites, arbitrary
  * for comparisons (default set is <,>,=,/=,<=,>=)).
+ * @author Ryan Berkheimer
  */
 public class BaseCondition {
 

@@ -13,6 +13,10 @@ import gov.noaa.messageapi.metadata.DefaultMetadata;
 
 import gov.noaa.messageapi.records.schema.SchemaRecord;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class DefaultSchema extends BaseSchema implements ISchema {
 
     public DefaultSchema(Map<String, Object> properties) {

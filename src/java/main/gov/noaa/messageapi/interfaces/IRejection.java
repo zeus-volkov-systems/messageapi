@@ -4,6 +4,9 @@ import java.util.List;
 
 import gov.noaa.messageapi.interfaces.IRecord;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public interface IRejection {
 
     public IRecord getRecord();

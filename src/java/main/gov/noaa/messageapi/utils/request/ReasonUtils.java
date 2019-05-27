@@ -6,6 +6,7 @@ import gov.noaa.messageapi.interfaces.IField;
  * All methods in this class should be static utility methods that can
  * return or operate on Rejection reasons. Methods in this class should
  * be immutable and prefer parallelizable mechanisms where possible.
+ * @author Ryan Berkheimer
  */
 public class ReasonUtils {
 

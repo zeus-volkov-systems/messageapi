@@ -11,6 +11,7 @@ import gov.noaa.messageapi.interfaces.ICompositeCondition;
  * condition (either composite or comparison) ids and and holds an operator
  * (either 'and' or 'or').
  * Composite conditions extend the BaseCondition.
+ * @author Ryan Berkheimer
  */
 public class CompositeCondition extends BaseCondition implements ICompositeCondition {
 

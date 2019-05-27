@@ -16,6 +16,10 @@ import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.request.SchemaUtils;
 import gov.noaa.messageapi.utils.request.RejectionUtils;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class PacketUtils {
 
     public static IPacket create(ISchema schema, List<IRecord> records) {

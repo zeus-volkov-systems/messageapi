@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class ListUtils {
 
     /**

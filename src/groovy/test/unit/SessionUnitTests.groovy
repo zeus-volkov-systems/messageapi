@@ -1,5 +1,6 @@
 /**
  * Tests session operations
+ * @author Ryan Berkheimer
  */
 
  import gov.noaa.messageapi.interfaces.ISession;

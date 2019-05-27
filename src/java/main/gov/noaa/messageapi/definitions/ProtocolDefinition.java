@@ -19,6 +19,7 @@ import gov.noaa.messageapi.utils.general.ListUtils;
  * like protocol record definitions, connection info, etc. as maps.
  * This class is used by the session factory to bootstrap new protocols
  * from a configurable specification.
+ * @author Ryan Berkheimer
  */
 public class ProtocolDefinition {
 

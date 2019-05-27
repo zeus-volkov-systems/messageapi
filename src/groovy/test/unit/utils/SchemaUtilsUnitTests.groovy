@@ -1,5 +1,6 @@
 /**
  * Tests schema utils public methods
+ * @author Ryan Berkheimer
  */
 import java.util.List;
 

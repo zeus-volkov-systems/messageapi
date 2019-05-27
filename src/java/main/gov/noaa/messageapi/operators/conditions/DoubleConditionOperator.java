@@ -5,6 +5,9 @@ import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.ICondition;
 import gov.noaa.messageapi.operators.conditions.SimpleConditionOperator;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class DoubleConditionOperator extends SimpleConditionOperator implements IConditionOperator {
 
     public boolean compare(IField field, ICondition condition) {

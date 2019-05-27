@@ -21,6 +21,7 @@ import gov.noaa.messageapi.utils.schema.ConditionUtils;
  * This static utility class holds generic and immutable methods related to
  * IField processing. Where possible, maps, filters, and other java8 parallelizable
  * mechanisms should be used. This class should only hold threadsafe methods.
+ * @author Ryan Berkheimer
  */
 public class FieldUtils {
 

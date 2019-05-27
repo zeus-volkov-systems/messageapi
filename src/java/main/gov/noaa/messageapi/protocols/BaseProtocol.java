@@ -7,6 +7,10 @@ import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IMetadata;
 import gov.noaa.messageapi.definitions.ProtocolDefinition;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class BaseProtocol {
 
     private Map<String, Object> properties;

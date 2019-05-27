@@ -11,6 +11,10 @@ import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IRecord;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class BaseRequest {
 
     private String type;

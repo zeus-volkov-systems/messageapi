@@ -7,6 +7,10 @@ import gov.noaa.messageapi.interfaces.IContainer;
 
 import gov.noaa.messageapi.parsers.plugins.SessionPluginParser;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class BaseSession {
 
     private IContainer container;

@@ -7,7 +7,9 @@ import gov.noaa.messageapi.utils.general.JsonUtils;
 
 import org.json.simple.JSONObject;
 
-
+/**
+ * @author Ryan Berkheimer
+ */
 public abstract class BaseParser {
 
     protected JSONObject jsonModel;

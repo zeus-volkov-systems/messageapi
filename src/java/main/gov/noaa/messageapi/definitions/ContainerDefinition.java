@@ -18,6 +18,7 @@ import gov.noaa.messageapi.parsers.containers.TransformationFactoryParser;
  * what a container is from how it is used. Container Definitions hold things
  * like container record definitions. This class is used by the session factory
  * to bootstrap new containers from a configurable specification.
+ * @author Ryan Berkheimer
  */
 public class ContainerDefinition {
 

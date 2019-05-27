@@ -33,6 +33,7 @@ import gov.noaa.messageapi.utils.general.ListUtils;
  * in that order. Each of these stages is run in an internally-asynchronous manner,
  * which allows for parallelization on an intra-stage level. On an inter-stage level,
  * they are dependent on each other in a procedural manner.
+ * @author Ryan Berkheimer
  */
 public class PublishResponse extends BaseResponse implements IResponse {
 

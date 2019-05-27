@@ -7,6 +7,10 @@ import java.util.HashSet;
 import gov.noaa.messageapi.parsers.BaseParser;
 import gov.noaa.messageapi.utils.general.PathUtils;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class MetadataParser extends BaseParser {
 
     public MetadataParser(String spec) throws Exception {

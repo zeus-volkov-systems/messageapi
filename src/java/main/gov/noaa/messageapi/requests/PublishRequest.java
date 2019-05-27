@@ -10,6 +10,9 @@ import gov.noaa.messageapi.requests.BaseRequest;
 import gov.noaa.messageapi.responses.PublishResponse;
 
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class PublishRequest extends BaseRequest implements IRequest {
 
     public PublishRequest(ISchema schema, IContainer container, IProtocol protocol) {

@@ -9,6 +9,9 @@ import gov.noaa.messageapi.interfaces.IRequest;
 import gov.noaa.messageapi.interfaces.IRecord;
 
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class ConditionTestSessionTestUtils {
 
     private static final String sessionSpec =

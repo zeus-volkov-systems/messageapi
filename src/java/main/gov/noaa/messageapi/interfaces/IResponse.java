@@ -6,6 +6,9 @@ import gov.noaa.messageapi.interfaces.IRequest;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public interface IResponse {
 
     public boolean getComplete();

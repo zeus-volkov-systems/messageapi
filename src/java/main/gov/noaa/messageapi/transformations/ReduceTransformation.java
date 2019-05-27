@@ -6,6 +6,10 @@ import java.util.List;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.ITransformation;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class ReduceTransformation implements ITransformation {
 
     public ReduceTransformation(List<String> fields, Map<String,Object> params) {

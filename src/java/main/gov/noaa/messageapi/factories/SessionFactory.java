@@ -8,6 +8,7 @@ import gov.noaa.messageapi.parsers.plugins.SessionPluginParser;
  * should conform to the domain model laid out in the documentation and examples.
  * This specification bootstraps required classes at runtime and creates a reusable
  * topology for fast request creation.
+ * @author Ryan Berkheimer
  */
 public class SessionFactory {
 

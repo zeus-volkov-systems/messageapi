@@ -1,5 +1,9 @@
 package gov.noaa.messageapi.utils.general;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class EnvUtils {
 
     public static String getOS(){

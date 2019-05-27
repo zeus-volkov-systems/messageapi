@@ -6,6 +6,9 @@ import java.util.List;
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public interface IConnection {
 
     public String getId();

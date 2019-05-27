@@ -1,5 +1,6 @@
 /**
  * Tests field operations
+ * @author Ryan Berkheimer
  */
 
 import gov.noaa.messageapi.factories.SessionFactory;

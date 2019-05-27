@@ -11,6 +11,10 @@ import gov.noaa.messageapi.interfaces.ICondition;
 import gov.noaa.messageapi.interfaces.IComparisonCondition;
 import gov.noaa.messageapi.utils.general.ListUtils;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class ConditionUtils {
 
     /**

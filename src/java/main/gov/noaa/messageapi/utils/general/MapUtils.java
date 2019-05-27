@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class MapUtils {
 
     /**

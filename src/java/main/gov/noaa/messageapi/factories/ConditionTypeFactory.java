@@ -12,6 +12,7 @@ import gov.noaa.messageapi.conditions.CompositeCondition;
  * Creates new conditions for use in session/request/record building.
  * It should be able to produce conditions based on an input that match
  * a supported condition type used by request and record processing.
+ * @author Ryan Berkheimer
  */
 public class ConditionTypeFactory {
 

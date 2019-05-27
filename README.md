@@ -394,4 +394,4 @@ All bugs encountered should be reported to ryan.berkheimer@noaa.gov.
 
 ## License
 
-Copyright © 2019 United States Government
+Copyright © 2019-* United States Government

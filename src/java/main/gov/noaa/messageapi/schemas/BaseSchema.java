@@ -7,6 +7,10 @@ import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IMetadata;
 import gov.noaa.messageapi.definitions.SchemaDefinition;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class BaseSchema {
 
     private Map<String, Object> properties = null;

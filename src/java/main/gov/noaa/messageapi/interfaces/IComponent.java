@@ -4,6 +4,9 @@ import java.util.Map;
 
 import gov.noaa.messageapi.interfaces.IMetadata;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public interface IComponent {
 
     public String getType();

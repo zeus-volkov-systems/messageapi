@@ -10,6 +10,7 @@ import gov.noaa.messageapi.interfaces.IField;
  * a type (string, boolean, integer, etc), and whether or not the field is required.
  * The field also holds a value, which is assigned by the user during request creation
  * or accessed by the user during response parsing.
+ * @author Ryan Berkheimer
  */
 public class DefaultField implements IField {
 

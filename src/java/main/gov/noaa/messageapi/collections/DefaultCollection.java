@@ -12,7 +12,9 @@ import gov.noaa.messageapi.interfaces.IField;
 
 import gov.noaa.messageapi.fields.DefaultField;
 
-
+/**
+ * @author Ryan Berkheimer
+ */
 public class DefaultCollection implements ICollection {
 
     protected String id = null;

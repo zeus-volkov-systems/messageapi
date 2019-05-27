@@ -1,5 +1,6 @@
 /**
  * Tests request operations
+ * @author Ryan Berkheimer
  */
 
 import gov.noaa.messageapi.test.utils.EmailSessionTestUtils;

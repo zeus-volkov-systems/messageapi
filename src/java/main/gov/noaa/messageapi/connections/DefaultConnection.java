@@ -15,6 +15,9 @@ import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.general.MapUtils;
 import gov.noaa.messageapi.utils.protocol.ConnectionUtils;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class DefaultConnection extends BaseConnection implements IConnection {
 
     private String id;

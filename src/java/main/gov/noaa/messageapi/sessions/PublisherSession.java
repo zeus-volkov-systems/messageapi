@@ -14,6 +14,7 @@ import gov.noaa.messageapi.requests.PublishRequest;
  * The request is clean, in the sense that a new request gets its own copy of session
  * properties on creation - and is publish focused, in the sense that the request
  * is designed for publishing data to arbitrary endpoints through a protocol.
+ * @author Ryan Berkheimer
  */
 public class PublisherSession extends BaseSession implements ISession {
 

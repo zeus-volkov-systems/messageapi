@@ -9,6 +9,10 @@ import gov.noaa.messageapi.interfaces.ICollection;
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.collections.DefaultCollection;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class CollectionUtils {
 
     public static List<ICollection> buildCollections(List<Map<String,Object>> collectionMaps) {

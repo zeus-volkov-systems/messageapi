@@ -8,6 +8,9 @@ import gov.noaa.messageapi.interfaces.IConditionOperator;
 
 import gov.noaa.messageapi.definitions.SchemaDefinition;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public interface ISchema extends IComponent {
 
     public SchemaDefinition getDefinition();

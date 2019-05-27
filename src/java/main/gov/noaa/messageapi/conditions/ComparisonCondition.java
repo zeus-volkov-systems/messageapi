@@ -9,6 +9,7 @@ import gov.noaa.messageapi.interfaces.IComparisonCondition;;
  * A comparison condition is a condition type that holds basic/fundamental
  * comparisons - things like <,>,=,/=, etc.
  * Comparison condition extends the BaseCondition.
+ * @author Ryan Berkheimer
  */
 public class ComparisonCondition extends BaseCondition implements IComparisonCondition {
 

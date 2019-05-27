@@ -8,6 +8,9 @@ import java.util.HashSet;
 import gov.noaa.messageapi.parsers.BaseParser;
 import gov.noaa.messageapi.utils.general.PathUtils;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class CollectionParser extends BaseParser {
 
     public CollectionParser(String spec) throws Exception {

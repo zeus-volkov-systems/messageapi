@@ -10,6 +10,7 @@ import gov.noaa.messageapi.interfaces.IRejection;
 /**
  * A packet is a simple collection of a record list and a rejection list with
  * facilities to add to, replace, and retrieve those lists.
+ * @author Ryan Berkheimer
  */
 public class DefaultPacket implements IPacket {
 

@@ -15,6 +15,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class JsonUtils {
 
     protected final static JSONParser parser;

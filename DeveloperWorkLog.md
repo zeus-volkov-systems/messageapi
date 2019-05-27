@@ -14,6 +14,8 @@ This work log is also useful as a supplemental documentation for end users of th
 
 ### Collection Conditions
 
+*Author: Ryan Berkheimer*
+
 The goal is to implement condition behavior, similar to that currently seen at the record level, at the collection level. This involves allowing the user to optionally specify a 'conditions' property on individual collections, as a key/value pair, where the key is the word 'conditions' is the key, corresponding to a list of condition ids.
 
 Currently, we have conditions listed as a list of maps, e.g.
@@ -91,6 +93,8 @@ This feature addition would add these same abilities - condition value setting, 
 ## Previous Foci
 
 ### Transformations
+
+*Author: Ryan Berkheimer*
 
 The goal is to make the method getRecordsByTransformation("transformationID")
 on the protocol record functional. 'Being functional' in this context means

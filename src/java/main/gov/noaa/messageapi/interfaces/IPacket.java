@@ -5,6 +5,9 @@ import java.util.List;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public interface IPacket {
 
     public void setRecords(List<IRecord> records);

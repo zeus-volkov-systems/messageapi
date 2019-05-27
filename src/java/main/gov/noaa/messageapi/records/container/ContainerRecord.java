@@ -9,6 +9,9 @@ import gov.noaa.messageapi.interfaces.ICollection;
 import gov.noaa.messageapi.interfaces.ICondition;
 import gov.noaa.messageapi.interfaces.ITransformation;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class ContainerRecord implements IContainerRecord {
 
     private UUID id = null;

@@ -1,5 +1,6 @@
 /**
  * Tests field operations
+ * @author Ryan Berkheimer
  */
 import java.util.List;
 

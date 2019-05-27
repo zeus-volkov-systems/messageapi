@@ -9,6 +9,9 @@ import gov.noaa.messageapi.interfaces.IPluginParser;
 
 import gov.noaa.messageapi.parsers.plugins.BasePluginParser;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class ProtocolPluginParser extends BasePluginParser implements IPluginParser {
 
     public ProtocolPluginParser(Object protocolMap) throws Exception {

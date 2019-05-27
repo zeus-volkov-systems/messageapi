@@ -6,6 +6,9 @@ import java.lang.reflect.Constructor;
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.IEndpoint;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class BaseConnection {
 
     private IEndpoint endpoint = null;

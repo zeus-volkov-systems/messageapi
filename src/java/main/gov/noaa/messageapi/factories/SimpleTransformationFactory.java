@@ -9,6 +9,9 @@ import gov.noaa.messageapi.interfaces.ITransformationFactory;
 import gov.noaa.messageapi.transformations.JoinTransformation;
 import gov.noaa.messageapi.transformations.ReduceTransformation;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class SimpleTransformationFactory implements ITransformationFactory {
 
     /**

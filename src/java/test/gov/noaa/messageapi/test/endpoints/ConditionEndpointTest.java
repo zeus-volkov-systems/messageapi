@@ -7,6 +7,9 @@ import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.packets.DefaultPacket;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class ConditionEndpointTest implements IEndpoint {
 
     public ConditionEndpointTest(Map<String,Object> parameters) {

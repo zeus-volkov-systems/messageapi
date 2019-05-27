@@ -7,6 +7,9 @@ import java.util.Collections;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class BaseRejection {
 
     private List<String> reasons = null;

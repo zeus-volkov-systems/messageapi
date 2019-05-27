@@ -19,6 +19,10 @@ import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.records.schema.SchemaRecord;
 import gov.noaa.messageapi.records.protocol.ProtocolRecord;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class ProtocolUtils {
 
     /**

@@ -8,6 +8,9 @@ import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.parsers.plugins.BasePluginParser;
 import gov.noaa.messageapi.interfaces.IPluginParser;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class ContainerPluginParser extends BasePluginParser implements IPluginParser {
 
     public ContainerPluginParser(Object containerMap) throws Exception {

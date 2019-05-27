@@ -22,6 +22,7 @@ import gov.noaa.messageapi.utils.protocol.ProtocolRecordUtils;
  *  (one record per connection) to manage record access via
  *  asking for specific named collections, classifiers, or transformations
  *  that are available to it. These are all named in the specification.
+ *  @author Ryan Berkheimer
  */
 public class ProtocolRecord implements IProtocolRecord {
 

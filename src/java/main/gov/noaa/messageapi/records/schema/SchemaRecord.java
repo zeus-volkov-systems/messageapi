@@ -15,6 +15,7 @@ import gov.noaa.messageapi.factories.ConditionTypeFactory;
  * consuming the MessageAPI library. SchemaRecords consist of fields and
  * conditions. Conditions are optional. The user always deals in schema records -
  * schema records are submitted in requests, and responses return schema records.
+ * @author Ryan Berkheimer
  */
 public class SchemaRecord implements IRecord {
 

@@ -1,5 +1,8 @@
 package gov.noaa.messageapi.interfaces;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public interface IField {
 
     public String getId();

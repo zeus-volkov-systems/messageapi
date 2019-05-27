@@ -7,6 +7,9 @@ import gov.noaa.messageapi.interfaces.IRequest;
 import gov.noaa.messageapi.interfaces.IRecord;
 
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class EmailSessionTestUtils {
 
     private static final String sessionSpec =

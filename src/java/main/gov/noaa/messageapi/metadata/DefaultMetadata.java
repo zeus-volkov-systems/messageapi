@@ -9,6 +9,7 @@ import gov.noaa.messageapi.interfaces.IMetadata;
  * This can be used to provide context to a plugin, track schema changes
  * over time (like the Avro library), or otherwise automate/simplify plugin
  * use for library developers and users.
+ * @author Ryan Berkheimer
  */
 public class DefaultMetadata implements IMetadata {
 

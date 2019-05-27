@@ -9,6 +9,10 @@ import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class ProtocolRecordUtils {
 
     /**

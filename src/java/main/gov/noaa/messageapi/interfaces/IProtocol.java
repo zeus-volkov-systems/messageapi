@@ -8,6 +8,9 @@ import gov.noaa.messageapi.interfaces.ISchema;
 
 import gov.noaa.messageapi.definitions.ProtocolDefinition;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public interface IProtocol extends IComponent {
 
     public void initialize(IContainer c, ISchema s);

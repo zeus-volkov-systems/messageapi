@@ -13,6 +13,7 @@ import gov.noaa.messageapi.requests.ConsumeRequest;
  * The request is clean, in the sense that a new request gets its own copy of session
  * properties on creation - and is consumer focused, in the sense that the request
  * is designed for gathering data from the protocol.
+ * @author Ryan Berkheimer
  */
 public class ConsumerSession extends BaseSession implements ISession {
 

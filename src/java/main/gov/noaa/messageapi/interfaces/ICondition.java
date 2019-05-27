@@ -1,6 +1,8 @@
 package gov.noaa.messageapi.interfaces;
 
-
+/**
+ * @author Ryan Berkheimer
+ */
 public interface ICondition {
 
     public String getId();

@@ -8,6 +8,9 @@ import java.lang.reflect.Constructor;
 import gov.noaa.messageapi.parsers.BaseParser;
 import gov.noaa.messageapi.utils.general.PathUtils;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public abstract class BasePluginParser extends BaseParser {
 
     public BasePluginParser(String spec) throws Exception {

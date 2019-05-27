@@ -18,6 +18,7 @@ import gov.noaa.messageapi.utils.request.ReasonUtils;
  * be reused by various request types. All public methods included in this utilities
  * module should perform immutable operations on arguments and return a rejection
  * or rejection-collection.
+ * @author Ryan Berkheimer
  */
 public class RejectionUtils {
 

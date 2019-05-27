@@ -19,6 +19,7 @@ import gov.noaa.messageapi.parsers.schemas.ConditionOperatorParser;
  * requests, by parent Schemas and Requests. SchemaDefinitions should try
  * to hold as little, simple data as possible in order to maintain performance
  * in construction.
+ * @author Ryan Berkheimer
  */
 public class SchemaDefinition {
 

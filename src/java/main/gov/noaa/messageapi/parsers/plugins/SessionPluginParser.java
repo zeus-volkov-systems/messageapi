@@ -16,6 +16,9 @@ import gov.noaa.messageapi.parsers.plugins.ContainerPluginParser;
 import gov.noaa.messageapi.parsers.plugins.ProtocolPluginParser;
 import gov.noaa.messageapi.parsers.plugins.SchemaPluginParser;
 
+/**
+ * @author Ryan Berkheimer
+ */
 public class SessionPluginParser extends BasePluginParser implements IPluginParser {
 
     public SessionPluginParser(String spec) throws Exception {

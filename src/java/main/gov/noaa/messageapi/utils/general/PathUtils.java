@@ -6,6 +6,10 @@ import java.util.ArrayList;
 
 import gov.noaa.messageapi.utils.general.EnvUtils;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class PathUtils {
 
     private static String replaceLast(String string, String toReplace, String replacement) {

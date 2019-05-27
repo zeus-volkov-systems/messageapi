@@ -6,6 +6,10 @@ import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
 import gov.noaa.messageapi.rejections.BaseRejection;
 
+
+/**
+ * @author Ryan Berkheimer
+ */
 public class DefaultRejection extends BaseRejection implements IRejection {
 
     public DefaultRejection(IRecord record) {
