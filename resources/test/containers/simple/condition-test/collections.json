@@ -11,7 +11,8 @@
         {
             "id": "optional-fields",
             "classifiers": {"namespace": "condition-test"},
-            "fields": ["boolean-optional", "float-optional", "double-optional", "integer-optional", "string-optional", "datetime-optional"]
+            "fields": ["boolean-optional", "float-optional", "double-optional", "integer-optional", "string-optional", "datetime-optional"],
+            "conditions": ["1", "2"]
         },
         {
             "id": "mix-and-match",

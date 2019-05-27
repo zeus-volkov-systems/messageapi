@@ -109,7 +109,11 @@ public class FieldUtils {
      * @return           whether the field value matches the specified condition value
      */
     private static boolean validateFieldCondition(ISchema schema, String type, IField field, ICondition condition) {
-        return schema.getOperator(type).compare(field, condition);
+        try {
+            return schema.getOperator(type).compare(field, condition);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**

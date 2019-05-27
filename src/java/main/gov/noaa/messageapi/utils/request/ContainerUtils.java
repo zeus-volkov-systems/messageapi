@@ -3,10 +3,11 @@ package gov.noaa.messageapi.utils.request;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import gov.noaa.messageapi.interfaces.IRecord;
+import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IContainer;
-import gov.noaa.messageapi.interfaces.IContainerRecord;
+import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.ICollection;
+import gov.noaa.messageapi.interfaces.IContainerRecord;
 
 import gov.noaa.messageapi.records.container.ContainerRecord;
 
@@ -28,10 +29,11 @@ public class ContainerUtils {
      * @param  records   The schema records to be converted to container records
      * @return           A list of container records
      */
-    public static List<IContainerRecord> convertSchemaRecords(IContainer container, List<IRecord> schemaRecords) {
+    public static List<IContainerRecord> convertSchemaRecords(ISchema schema, IContainer container, IRecord requestRecord, List<IRecord> schemaRecords) {
         IContainerRecord containerRecordTemplate = createRecordTemplate(container);
         return schemaRecords.stream().map(schemaRecord -> {
-            return CollectionUtils.setFieldValues(containerRecordTemplate.getCopy(), schemaRecord.getFields());
+            IContainerRecord containerRecord = CollectionUtils.setFieldValues(containerRecordTemplate.getCopy(), schemaRecord.getFields());
+            return CollectionUtils.validateCollectionConditions(schema, containerRecord, requestRecord);
         }).collect(Collectors.toList());
     }
 

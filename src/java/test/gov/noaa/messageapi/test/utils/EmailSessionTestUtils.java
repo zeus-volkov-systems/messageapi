@@ -103,7 +103,7 @@ public class EmailSessionTestUtils {
         setTestRecordConditions(record2, "sender5"); //record 2 must have a sender of sender5 (but this record was already removed) (fail)
         setTestRecordConditions(record3, "sender3"); //record 3 must have a sender of sender3 (success)
         setTestRecordConditions(record4, "sender4"); //record 4 must have a sender of sender4 (success)
-        //we don't add a condition for record5 (success) -> this is currently failing. we should be removing the condition for 5 because it wasn't valued
+        //we don't add a condition for record5 (success) -> we should be removing the condition for 5 because it wasn't valued
         // should end up with 3 records - 3, 4, 5
         return request;
     }

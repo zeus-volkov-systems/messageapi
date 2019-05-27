@@ -194,7 +194,7 @@ public class ConditionUtils {
      * @param  r  A record containing the conditions to process
      * @return   A map containing all current record conditions.
      */
-    private static Map<String, List<String>> getChildConditionMap(IRecord r) {
+    public static Map<String, List<String>> getChildConditionMap(IRecord r) {
         return r.getConditions().stream()
             .collect(Collectors.toMap(c -> c.getId(),
             c -> filterChildConditionMap(getChildConditions(new ArrayList<String>(), c, r),c)));

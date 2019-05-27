@@ -4,7 +4,7 @@
             "id": "testTable1",
             "classifiers": {"namespace": "/path/to/test.db"},
             "fields": ["key", "record", "filename", "type"],
-            "conditions": ["condition1", "condition2", "condition3"]
+            "conditions": ["1", "2"]
         },
         {
             "id": "testTable2",

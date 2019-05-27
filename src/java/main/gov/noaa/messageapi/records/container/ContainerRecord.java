@@ -28,6 +28,12 @@ public class ContainerRecord implements IContainerRecord {
         this.setTransformations(containerRecord.getTransformations());
     }
 
+    public ContainerRecord(List<ICollection> collections, List<ITransformation> transformations) {
+        this.generateId();
+        this.setCollections(collections);
+        this.setTransformations(transformations);
+    }
+
     public ContainerRecord getCopy() {
         return new ContainerRecord(this);
     }

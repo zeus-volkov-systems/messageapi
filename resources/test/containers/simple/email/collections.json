@@ -3,7 +3,8 @@
         {
             "id": "rab25",
             "classifiers": {"namespace": "case.edu"},
-            "fields": ["recipient", "sender", "subject", "body"]
+            "fields": ["recipient", "sender", "subject", "body"],
+            "conditions": ["senderequals"]
         },
         {
             "id": "ryan.berkheimer",

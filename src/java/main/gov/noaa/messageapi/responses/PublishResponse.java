@@ -47,7 +47,7 @@ public class PublishResponse extends BaseResponse implements IResponse {
     public PublishResponse(PublishRequest request) {
         super(request);
         this.validate(this.request.getSchema(), this.request.getRecords())
-                  .thenCompose(outgoingPacket -> this.factor(this.request.getContainer(), outgoingPacket))
+                  .thenCompose(outgoingPacket -> this.factor(this.request.getSchema(), this.request.getContainer(), this.request.getRequestRecord(), outgoingPacket))
                   .thenCompose(containerRecords -> this.prepare(this.request.getProtocol(), containerRecords))
                   .thenCompose(protocolRecords -> this.process(this.request.getProtocol().getConnections(), protocolRecords))
                   .thenCompose(incomingPacket -> this.resolve(incomingPacket))
@@ -77,9 +77,9 @@ public class PublishResponse extends BaseResponse implements IResponse {
      * @param  packet   A data packet containing records to be factored
      * @return           A CompletableFuture representing a factorization process that will eventually yield a list of container records
      */
-    CompletableFuture<List<IContainerRecord>> factor(IContainer container, IPacket packet) {
+    CompletableFuture<List<IContainerRecord>> factor(ISchema schema, IContainer container, IRecord requestRecord, IPacket packet) {
     	return CompletableFuture.supplyAsync(() -> {
-            return ContainerUtils.convertSchemaRecords(container,packet.getRecords());
+            return ContainerUtils.convertSchemaRecords(schema, container, requestRecord, packet.getRecords());
     	});
     }
 
