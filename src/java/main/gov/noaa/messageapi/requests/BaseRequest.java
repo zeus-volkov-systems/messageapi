@@ -13,6 +13,11 @@ import gov.noaa.messageapi.interfaces.IRecord;
 
 
 /**
+ * BaseRequest serves as a base class for Requests, holding common behaviors
+ * to all requests, handling the initialization and access of type, schema,
+ * container, protocol, records, and request record. Different user requests
+ * may extend this BaseRequest, implementing the IRequest, in order to
+ * modify or extend this basic behavior expected of all requests.
  * @author Ryan Berkheimer
  */
 public class BaseRequest {
@@ -26,21 +31,21 @@ public class BaseRequest {
 
     public BaseRequest(String type, ISchema schema, IContainer container,
                         IProtocol protocol) {
-        setType(type);
-        setSchema(schema);
-        setContainer(container);
-        setProtocol(protocol);
-        initializeRecords();
-        setRequestRecord(this.getSchema());
+        this.setType(type);
+        this.setSchema(schema);
+        this.setContainer(container);
+        this.setProtocol(protocol);
+        this.initializeRecords();
+        this.setRequestRecord(this.getSchema());
     }
 
     public BaseRequest(IRequest request) {
-        setType(request.getType());
-        setSchema(request.getSchema());
-        setContainer(request.getContainer());
-        setProtocol(request.getProtocol());
-        setRecords(request.getRecords());
-        setRequestRecord(request.getSchema());
+        this.setType(request.getType());
+        this.setSchema(request.getSchema());
+        this.setContainer(request.getContainer());
+        this.setProtocol(request.getProtocol());
+        this.setRecords(request.getRecords());
+        this.setRequestRecord(request.getSchema());
 
     }
 
