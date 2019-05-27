@@ -13,9 +13,27 @@ import gov.noaa.messageapi.utils.general.ListUtils;
 
 
 /**
+ * ConditionUtils is a static utility class holding methods related to condition
+ * preparation and processing. Methods in this class typically operate on
+ * IRecords or IConditions.
  * @author Ryan Berkheimer
  */
 public class ConditionUtils {
+
+
+    /**
+     * Used to nullify all conditions on the passed record. Any values that are already
+     * in place on a condition contained in the passed record will be set to null.
+     * The same record will be returned.
+     * @param  record A record containing conditions to be nullified
+     * @return        The same record that is passed in, with its conditions all holding null as values
+     */
+    public static IRecord nullifyConditions(IRecord record) {
+        record.getConditions().stream().forEach(c -> {
+            c.setValue(null);
+        });
+        return record;
+    }
 
     /**
      * Returns a list of conditions matching the condition ids for a given record.

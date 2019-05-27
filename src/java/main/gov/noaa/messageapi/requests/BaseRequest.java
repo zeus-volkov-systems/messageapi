@@ -11,6 +11,8 @@ import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IRecord;
 
+import gov.noaa.messageapi.utils.schema.ConditionUtils;
+
 
 /**
  * BaseRequest serves as a base class for Requests, holding common behaviors
@@ -55,7 +57,7 @@ public class BaseRequest {
 
     public IRecord createRecord() {
         IRecord r = this.schema.createRecord();
-        this.records.add(r);
+        this.records.add(ConditionUtils.nullifyConditions(r));
         return r;
     }
 
