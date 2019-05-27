@@ -90,6 +90,37 @@ This feature addition would add these same abilities - condition value setting, 
 - when factoring a record into collections, if a schema record does not satisfy the conditions of a collection, that collection is not created
 - that collection should be thrown as a rejection with a reason - rejected in container layer due to condition mismatch
 
+#### Baselining our Status
+
+At the time of writing, the condition engine is complete and already implemented on a per-record basis for records passed for response as part of a request submission. A complete set of methods to accomplish the parsing, determination, and evaluation of conditions exists in a ConditionUtils static class, and operates on records, which hold individual sets of conditions.
+
+In the current implementation, the engine attempts to be clever in determining which conditions apply to a given record. It does this by first removing all conditions on a record that don't have values. From the conditions that are left (those with values), top level conditions are determined (conditions not referenced in any remaining condition). For each top level condition, a condition tree is created. Each of these independent condition trees are then evaluated against the record as an 'and' condition (all condition trees must be satisfied for the record to be accepted). This process is repeated for every record that is passed in a request, in order to determine which records should be filtered out before the entire record set is passed onto the container layer for factoring into collections.
+
+#### Design Path
+
+Comparing the desired status to baseline, we see some obvious system characteristics that will have an impact on the path of change implementation. These affecting characteristics are
+
+1. The condition utility methods all operate on the IRecord. To reuse these methods, the IRequest should get an IRecord, rather than a condition list directly.
+2. Due to the clever implementation of ICondition value-checking in individual IRecord filtering, there are competing interests (between the existing behavior and the desired) in declaring values on the map up front. Because any ICondition that has a value will be used for IRecord filtering, if we want to use initial values for the entire IRequest, those conditions will also be picked up on an individual record basis, even if we only wanted the value to apply to collections against the entire record set. There are different solutions to resolving this conflict:
+    a. We can ignore values for the purpose of individual records on initialization, only using explicitly added values for that level of filtering
+    b. We can ignore values for the purpose of request wide filtering, only using explicitly added values for that level of filtering
+    c. We can remove initial values all together from the system, forcing the user to add all initial values in code
+
+    All three of these options have pros and cons. The pro of option (c) is that the system is uniform, making it easier to remember how it works. However, the con of this option is that it is the most limiting, because it moves major condition configuration behavior into the code. The principle pro of option (a) is that it would maintain the original behavior exactly. However, this option also maintains an incomplete flexibility in the most fine resolution of uses, while making the least fine resolution (request-wide) have its configuration inside code. Option (b) seems like it has a clear pro - request-wide configuration of conditions outside of code - with the smallest con - fine-grained filtering on single records must be specified in code.
+
+For our purposes in this feature addition, we choose to implement option (c). While this means we will lose some flexibility in individual record filtering, we will not lose the ability to configure request wide filtering into collections from the specification map. This will require a small change in current behavior - when creating a new record in a request, any existing values in the condition set will be wiped.
+
+To implement our change with the chosen option and for maximum reuse of existing code, our path is now straightforward:
+
+1. Update existing requests to hold a new request wide IRecord to hold IRequest wide IConditions
+2. Update existing IRecord creation in an IRequest to wipe initial values from the ICondition map
+3. Add an interface method to IRequest to access the RequestRecord
+4. Add an interface method to IRequest to set a value on a condition
+5. Add parsing logic for an optional 'conditions' keyword on collections
+6. Add initialization behavior to DefaultCollection for conditions, reusing ConditionUtils
+7. Add access methods to ICollection for condition evaluation of a passed record
+8. Update the factoring process during response processing to include condition evaluation during collection creation
+
 ## Previous Foci
 
 ### Transformations
