@@ -16,5 +16,7 @@ public interface IRequest {
     public ISchema getSchema();
     public IProtocol getProtocol();
     public List<IRecord> getRecords();
+    public IRecord getRequestRecord();
+    public void setCondition(String id, Object value);
 
 }

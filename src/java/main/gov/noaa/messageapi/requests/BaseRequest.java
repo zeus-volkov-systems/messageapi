@@ -22,6 +22,7 @@ public class BaseRequest {
     protected IContainer container;
     protected IProtocol protocol;
     protected List<IRecord> records;
+    private IRecord requestRecord;
 
     public BaseRequest(String type, ISchema schema, IContainer container,
                         IProtocol protocol) {
@@ -30,6 +31,7 @@ public class BaseRequest {
         setContainer(container);
         setProtocol(protocol);
         initializeRecords();
+        setRequestRecord(this.getSchema());
     }
 
     public BaseRequest(IRequest request) {
@@ -38,6 +40,8 @@ public class BaseRequest {
         setContainer(request.getContainer());
         setProtocol(request.getProtocol());
         setRecords(request.getRecords());
+        setRequestRecord(request.getSchema());
+
     }
 
     public List<IRecord> getRecords() {
@@ -70,6 +74,14 @@ public class BaseRequest {
         this.records = Collections.synchronizedList(new ArrayList<IRecord>());
     }
 
+    public IRecord getRequestRecord() {
+        return this.requestRecord;
+    }
+
+    public void setCondition(String conditionId, Object value) {
+        this.getRequestRecord().setCondition(conditionId, value);
+    }
+
     private void setType(String type) {
         this.type = type;
     }
@@ -88,6 +100,11 @@ public class BaseRequest {
 
     protected void setRecords(List<IRecord> records) {
         this.records = Collections.synchronizedList(records.stream().map(r -> r.getCopy()).collect(Collectors.toList()));
+    }
+
+    private void setRequestRecord(ISchema schema) {
+        IRecord r = schema.createRecord();
+        this.requestRecord = r;
     }
 
 }
