@@ -9,8 +9,7 @@
         {
             "id": "testTable2",
             "classifiers": {"namespace": "/path/to/test2.db"},
-            "fields": ["key", "type", "receipt_date", "insert_date"],
-            "conditions": ["conditionX", "condition5", "condition3"]
+            "fields": ["key", "type", "receipt_date", "insert_date"]
         }
     ]
 }

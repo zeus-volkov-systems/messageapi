@@ -57,6 +57,20 @@ public class CollectionUtils {
         return containerRecord;
     }
 
+    /**
+     * Looks at all of the collections in a container record, validating each collection against
+     * any conditions that were specified on a request-wide basis. The conditions used for
+     * collection validation are held in a request record - these conditions are applied
+     * to all collections, by first reducing the set of conditions on a per-collection basis
+     * (looking for only valued-conditions), then making sure that the collection satisfies
+     * the conditions. If the collection does satisfy the conditions, it is kept - if not,
+     * it is discarded. All kept conditions are then used to create a new ContainerRecord,
+     * and this new ContainerRecord is returned.
+     * @param  schema          The existing session schema holding the condition factory
+     * @param  containerRecord  A container record holding collections to be validated
+     * @param  requestRecord   The request record holding valued conditions
+     * @return                 Returns a new ContainerRecord that contains only validated collections
+     */
     public static IContainerRecord validateCollectionConditions(ISchema schema, IContainerRecord containerRecord, IRecord requestRecord) {
         List<ICollection> validCollections = containerRecord.getCollections().stream().map(collection -> {
             List<String> conditionIds = collection.getConditionIds();
