@@ -92,7 +92,8 @@ public class CollectionUtils {
                 return collection;
             }
         }).collect(Collectors.toList());
-        IContainerRecord validatedRecord = new ContainerRecord(ListUtils.removeAllNulls(validCollections));
+        IContainerRecord validatedRecord = new ContainerRecord(ListUtils.removeAllNulls(validCollections),
+                                                                containerRecord.getTransformations());
         return validatedRecord;
     }
 

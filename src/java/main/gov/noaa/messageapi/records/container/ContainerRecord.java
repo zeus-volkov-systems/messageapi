@@ -9,6 +9,12 @@ import gov.noaa.messageapi.interfaces.ICollection;
 import gov.noaa.messageapi.interfaces.ITransformation;
 
 /**
+ * ContainerRecord is the standard container record for the DataAPI implementation
+ * of MessageAPI. A Container record is primarily a container for collections,
+ * which are reduced versions of SchemaRecords (Simple Field Collections).
+ * ContainerRecords also hold transformations, which are implemented from the
+ * transformation spec in the overall session. ContainerRecords must implement
+ * the IContainerRecord.
  * @author Ryan Berkheimer
  */
 public class ContainerRecord implements IContainerRecord {
@@ -17,6 +23,11 @@ public class ContainerRecord implements IContainerRecord {
     private List<ICollection> collections = null;
     private List<ITransformation> transformations = null;
 
+    /**
+     * Constructor for ContainerRecord that creates a new ContainerRecord
+     * from an existing set of Collections.
+     * @param collections Collections to be used in ContainerRecord construction
+     */
     public ContainerRecord(List<ICollection> collections) {
         this.generateId();
         this.setCollections(collections);
