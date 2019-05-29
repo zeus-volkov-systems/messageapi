@@ -12,9 +12,31 @@ This work log is also useful as a supplemental documentation for end users of th
 
 ## Current Focus
 
-### Collection Conditions
+### Field Definition Enforcement on Transformations and Endpoints
+
+#### Status - In Design
 
 *Author: Ryan Berkheimer*
+
+#### Description and Goals
+
+The goal is to implement enforcement of field definitions on transformations and endpoints. This means that fields should be specified for each transformation and endpoint connection, and these fields must be defined in the schema fields map. The transformation and endpoint base classes would then be able to have a stereotyped method for creating a record that can be used inside the transformation or endpoint, and the caller/receiver will also would know what type of record to expect as emergent from the system. This also introduces the potential for future system type validation.
+
+Currently fields are specified by transformations on transformation spec maps, and read in at run-time into the created class instance. Endpoint connections currently have no similar mechanism. Neither endpoint connections nor transformations currently perform any validation or offer automatic record generation. All of these mentioned missing behaviors must be implemented for this feature to be considered successfully implemented.
+
+#### Design Path
+
+
+
+## Previous Foci
+
+### Collection Conditions
+
+#### Status - Completed Successfully
+
+*Author: Ryan Berkheimer*
+
+#### Description and Goals
 
 The goal is to implement condition behavior, similar to that currently seen at the record level, at the collection level. This involves allowing the user to optionally specify a 'conditions' property on individual collections, as a key/value pair, where the key is the word 'conditions' is the key, corresponding to a list of condition ids.
 
@@ -121,11 +143,14 @@ To implement our change with the chosen option and for maximum reuse of existing
 7. Add access methods to ICollection for condition evaluation of a passed record
 8. Update the factoring process during response processing to include condition evaluation during collection creation
 
-## Previous Foci
 
 ### Transformations
 
+#### Status - Completed Successfully
+
 *Author: Ryan Berkheimer*
+
+#### Description and Goals
 
 The goal is to make the method getRecordsByTransformation("transformationID")
 on the protocol record functional. 'Being functional' in this context means
