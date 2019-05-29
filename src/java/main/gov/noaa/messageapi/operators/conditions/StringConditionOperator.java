@@ -23,6 +23,8 @@ public class StringConditionOperator implements IConditionOperator {
                 return isEqual((String) field.getValue(), (String) condition.getValue());
             case "/=":
                 return isNotEqual((String) field.getValue(), (String) condition.getValue());
+            case "contains":
+                return contains((String) field.getValue(), (String) condition.getValue());
         }
         return false;
     }
@@ -39,6 +41,14 @@ public class StringConditionOperator implements IConditionOperator {
             return true;
         }
         return false;
+    }
+
+    private boolean contains(String fieldValue, String conditionValue) {
+        if (fieldValue.contains(conditionValue)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

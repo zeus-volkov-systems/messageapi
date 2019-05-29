@@ -4,6 +4,7 @@
             "id": "1",
             "collections": ["*"],
             "transformations": ["join-test"],
+            "fields": [],
             "constructor": {
                 "sender": "ryan.berkheimer@noaa.gov",
                 "password": "testpassword1234",
@@ -15,6 +16,7 @@
             "collections": ["*"],
             "classifiers": {"namespace": ["/path/to/test.db"]},
             "transformations": [],
+            "fields": [],
             "constructor": {
                 "sender": "jackson.pollock@cia.org",
                 "password": "passpass64",
