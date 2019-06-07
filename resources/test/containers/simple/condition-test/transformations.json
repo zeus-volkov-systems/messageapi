@@ -3,8 +3,8 @@
     {
         "id": "join-test",
         "operator": "join",
-        "constructor": {"join_field": "key",
-                        "collection_field": "mix-and-match"},
+        "constructor": {"join-field": "key",
+                        "collection-field": "mix-and-match"},
         "records": {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
                     "child":  {"TRANSFORMATION": "reduce-test"}},
         "fields": ["key", "record", "filename", "type", "mix-and-match"]

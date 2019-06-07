@@ -3,11 +3,10 @@
     {
         "id": "join-test",
         "operator": "join",
-        "constructor": {"join_field": "key",
-                        "collection_field": "mix-and-match"},
+        "constructor": {"join-field": "key",
+                        "collection-field": "mix-and-match"},
         "records": {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
-                    "child":  {"COLLECTION": "mix-and-match"},
-                    "other": "UUID"},
+                    "child":  {"COLLECTION": "mix-and-match"}},
         "fields": ["key", "record", "filename", "type", "mix-and-match"]
     },
     {

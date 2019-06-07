@@ -1,6 +1,5 @@
 package gov.noaa.messageapi.protocols;
 
-import gov.noaa.messageapi.interfaces.ITransformationFactory;
 import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +12,7 @@ import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.protocols.BaseProtocol;
 import gov.noaa.messageapi.metadata.DefaultMetadata;
 import gov.noaa.messageapi.connections.DefaultConnection;
-
+import gov.noaa.messageapi.definitions.ContainerDefinition;
 import gov.noaa.messageapi.utils.general.ListUtils;
 
 /**
@@ -83,9 +82,7 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
         try {
             this.createProtocolDefinition(this.getProperties());
             this.setMetadata(this.definition.getMetadataMap());
-            this.setConnections(this.definition.getEndpointMap(),
-                                c.getDefinition().getTransformationFactory(),
-                                c.getDefinition().getTransformationMaps());
+            this.setConnections(this.definition.getEndpointMap(),c.getDefinition());
         } catch (Exception e) {}
     }
 
@@ -136,15 +133,12 @@ public class DefaultProtocol extends BaseProtocol implements IProtocol {
      * @throws Exception   Throws an exception in the case that connections are
      * not successfully created or added to the protocol
      */
-    private void setConnections(Map<String, List<Map<String,Object>>> endpointMap,
-                                ITransformationFactory transformationFactory,
-                                List<Map<String,Object>> transformationMaps) throws Exception {
+    private void setConnections(Map<String, List<Map<String,Object>>> endpointMap, ContainerDefinition containerDefinition) throws Exception {
         this.connections = ListUtils.flatten(endpointMap.entrySet().stream().map(entry -> {
             String plugin = entry.getKey();
             return ListUtils.removeAllNulls(entry.getValue().stream().map(connectionMap -> {
                 try {
-                    return (IConnection) new DefaultConnection(plugin, (Map<String,Object>) connectionMap,
-                                                               transformationFactory, transformationMaps);
+                    return (IConnection) new DefaultConnection(plugin, (Map<String,Object>) connectionMap,containerDefinition);
                 } catch (Exception e) {
                     return null;
                 }

@@ -1,0 +1,8 @@
+{
+    "metadata": {
+        "id": "file-test",
+        "version": 1.0,
+        "classifiers": {},
+        "description": "This method reads all files found into an in-memory list of records for the given conditions"
+    }
+}

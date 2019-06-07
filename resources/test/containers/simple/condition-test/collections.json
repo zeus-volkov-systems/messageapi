@@ -4,7 +4,7 @@
             "id": "required-fields",
             "classifiers": {
                 "namespace": ["yellow"],
-                "required": true
+                "required": "true"
             },
             "fields": ["boolean-required", "float-required", "double-required", "integer-required", "string-required", "datetime-required"]
         },

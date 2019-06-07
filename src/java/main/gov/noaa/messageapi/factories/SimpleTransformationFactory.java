@@ -6,8 +6,8 @@ import java.util.List;
 import gov.noaa.messageapi.interfaces.ITransformation;
 import gov.noaa.messageapi.interfaces.ITransformationFactory;
 
-import gov.noaa.messageapi.transformations.JoinTransformation;
-import gov.noaa.messageapi.transformations.ReduceTransformation;
+import gov.noaa.messageapi.transformations.joins.StringFieldJoin;
+import gov.noaa.messageapi.transformations.reductions.ReduceTransformation;
 
 /**
  * @author Ryan Berkheimer
@@ -22,7 +22,7 @@ public class SimpleTransformationFactory implements ITransformationFactory {
     public ITransformation getTransformation(String type, List<String> fields, Map<String,Object> params) {
         switch (type) {
             case "join":
-                return new JoinTransformation(fields, params);
+                return new StringFieldJoin(fields, params);
             case "reduce":
                 return new ReduceTransformation(fields, params);
         }

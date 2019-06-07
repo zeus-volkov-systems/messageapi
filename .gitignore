@@ -11,6 +11,10 @@
 build/*
 .gradle/*
 
+#for visual-studio-code
+bin/*
+.vscode/*
+
 #for leiningen builds
 .lein*
 /.lein-*

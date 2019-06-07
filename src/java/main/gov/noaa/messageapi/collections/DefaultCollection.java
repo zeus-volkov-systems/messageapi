@@ -86,8 +86,8 @@ public class DefaultCollection implements ICollection {
             if (classifierEntry.getValue() instanceof List) {
                     this.classifiers.put(classifierEntry.getKey(), classifierEntry.getValue());
                 } else {
-                    List<Object> classifierEntryValue = new ArrayList<Object>();
-                    classifierEntryValue.add(classifierEntry.getValue());
+                    List<String> classifierEntryValue = new ArrayList<String>();
+                    classifierEntryValue.add((String)classifierEntry.getValue().toString());
                     this.classifiers.put(classifierEntry.getKey(), classifierEntryValue);
                 }
             });

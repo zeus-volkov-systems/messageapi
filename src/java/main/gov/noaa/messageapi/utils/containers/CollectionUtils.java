@@ -83,17 +83,14 @@ public class CollectionUtils {
                     collectionConditionIds.addAll(conditionEntry.getValue());
                 }
             });
-            collectionRecord.setConditions(requestRecord.getConditions().stream()
-                                        .filter(rCond -> collectionConditionIds.contains(rCond.getId()))
-                                        .collect(Collectors.toList()));
+            collectionRecord.setConditions(requestRecord.getConditions().stream().filter(rCond -> collectionConditionIds.contains(rCond.getId())).collect(Collectors.toList()));
             if (!FieldUtils.validateConditions(schema, collectionRecord, ConditionUtils.getTopLevelConditions(collectionRecord))) {
                 return null;
             } else {
                 return collection;
             }
         }).collect(Collectors.toList());
-        IContainerRecord validatedRecord = new ContainerRecord(ListUtils.removeAllNulls(validCollections),
-                                                                containerRecord.getTransformations());
+        IContainerRecord validatedRecord = new ContainerRecord(ListUtils.removeAllNulls(validCollections),containerRecord.getTransformations());
         return validatedRecord;
     }
 

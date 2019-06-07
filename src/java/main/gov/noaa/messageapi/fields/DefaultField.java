@@ -36,6 +36,14 @@ public class DefaultField implements IField {
         this.id = id;
     }
 
+    public DefaultField(String id, String type, Boolean required, Object value, Boolean valid) {
+        this.id = id;
+        this.type = type;
+        this.required = required;
+        this.value = value;
+        this.valid = valid;
+    }
+
     public DefaultField(IField field) {
         this.id = field.getId();
         this.type = field.getType();

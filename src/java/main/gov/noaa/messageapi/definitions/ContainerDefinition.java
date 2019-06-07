@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.ITransformationFactory;
 
@@ -26,6 +27,9 @@ public class ContainerDefinition {
     private List<Map<String,Object>> collectionMaps = null;
     private List<Map<String,Object>> transformationMaps = null;
     private ITransformationFactory transformationFactory = null;
+    private List<String> collections = null;
+    private List<String> transformations = null;
+    private List<Map.Entry<String,String>> classifiers = null;
 
 
     private static final String DEFAULT_TRANSFORMATION_FACTORY =
@@ -69,12 +73,15 @@ public class ContainerDefinition {
     private void parseCollectionSpec(String spec) throws Exception {
         CollectionParser parser = new CollectionParser(spec);
         this.collectionMaps = parser.getCollectionMaps();
+        this.collections = parser.getCollections();
+        this.classifiers = parser.getClassifiers();
     }
 
     private void parseTransformationSpec(Map<String,String> transformationSpec) throws Exception {
         if (transformationSpec.containsKey("map")) {
             TransformationParser parser = new TransformationParser(transformationSpec.get("map"));
             this.transformationMaps = parser.getTransformationMaps();
+            this.transformations = parser.getTransformations();
             if (transformationSpec.containsKey("factory")) {
                 this.createTransformationFactory((String) transformationSpec.get("factory"));
             } else {
@@ -91,6 +98,22 @@ public class ContainerDefinition {
 
     public List<Map<String,Object>> getCollectionMaps() {
         return this.collectionMaps;
+    }
+
+    public List<String> getCollections() {
+        return this.collections;
+    }
+
+    public List<Map.Entry<String,String>> getClassifiers() {
+        return this.classifiers;
+    }
+
+    public List<String> getClassifierKeys() {
+        return this.classifiers.stream().map(entry -> entry.getKey()).collect(Collectors.toList());
+    }
+
+    public List<String> getTransformations() {
+        return this.transformations;
     }
 
     public List<Map<String,Object>> getTransformationMaps() {

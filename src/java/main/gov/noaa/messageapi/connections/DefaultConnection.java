@@ -11,6 +11,8 @@ import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.ITransformationFactory;
 
+import gov.noaa.messageapi.definitions.ContainerDefinition;
+
 import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.general.MapUtils;
 import gov.noaa.messageapi.utils.protocol.ConnectionUtils;
@@ -27,9 +29,8 @@ public class DefaultConnection extends BaseConnection implements IConnection {
 
     @SuppressWarnings("unchecked")
     public DefaultConnection(String endpointClass, Map<String,Object> connectionMap,
-                             ITransformationFactory transformationFactory,
-                             List<Map<String,Object>> rawTransformationMaps) throws Exception {
-        super(endpointClass, (Map<String,Object>) connectionMap.get("constructor"));
+                ContainerDefinition containerDefinition) throws Exception {
+        super(endpointClass, connectionMap, containerDefinition);
         try {
             this.setId((String) connectionMap.get("id"));
             if (connectionMap.containsKey("collections")) {
@@ -43,34 +44,36 @@ public class DefaultConnection extends BaseConnection implements IConnection {
                 this.setClassifiers(new HashMap<String,List<Object>>());
             }
             if (connectionMap.containsKey("transformations")) {
-                this.integrateTransformations((List<String>) connectionMap.get("transformations"), transformationFactory, rawTransformationMaps);
+                this.integrateTransformations((List<String>) connectionMap.get("transformations"),
+                                containerDefinition.getTransformationFactory(), containerDefinition.getTransformationMaps());
             } else {
                 this.setTransformationMap(new HashMap<String, Map<String, Object>>());
             }
         } catch (Exception e) {
-            System.out.println("Error in connection instantiation.");
-            System.out.println(e.getStackTrace().toString());
+            throw new InstantiationException(String.format("Error in instantiating connection with class %s, connectionMap %s",
+                        endpointClass,connectionMap));
         }
     }
 
     public DefaultConnection(IConnection connection) throws Exception {
         super(connection);
-        this.setId(connection.getId());
-        this.setCollections(connection.getCollections());
-        this.setClassifiers(connection.getClassifiers());
-        this.setTransformationMap(connection.getTransformationMap());
+        try {
+            this.setId(connection.getId());
+            this.setCollections(connection.getCollections());
+            this.setClassifiers(connection.getClassifiers());
+            this.setTransformationMap(connection.getTransformationMap());
+        } catch (Exception e) {
+            throw new InstantiationException("Error in instantiating new connection from existing connection");
+        }
     }
 
     public DefaultConnection getCopy() {
         try {
             return new DefaultConnection(this);
         } catch (Exception e) {
-            System.out.println("Failed copying connection.");
-            e.printStackTrace();
             return null;
         }
     }
-
 
     public IPacket process(IProtocolRecord record) {
         return this.getEndpoint().process(record);
@@ -181,8 +184,10 @@ public class DefaultConnection extends BaseConnection implements IConnection {
     private void integrateTransformations(List<String> transformations,ITransformationFactory transformationFactory, List<Map<String,Object>> rawTransformationMaps) {
         List<String> allTransformationIds = ConnectionUtils.getAllTransformationIds(transformations, rawTransformationMaps);
         List<String> transformationCollections = ConnectionUtils.getTransformationCollections(allTransformationIds, rawTransformationMaps);
-        Map<String,List<Object>> transformationClassifiers = ConnectionUtils.getTransformationClassifiers(allTransformationIds, rawTransformationMaps);
-        Map<String, Map<String, Object>> transformationMap = ConnectionUtils.buildTransformationMap(allTransformationIds, rawTransformationMaps, transformationFactory);
+        Map<String,List<Object>> transformationClassifiers = ConnectionUtils.getTransformationClassifiers(allTransformationIds,
+                                                                rawTransformationMaps);
+        Map<String, Map<String, Object>> transformationMap = ConnectionUtils.buildTransformationMap(allTransformationIds,
+                                                                rawTransformationMaps, transformationFactory);
         this.addCollections(transformationCollections);
         this.addClassifiers(transformationClassifiers);
         this.setTransformationMap(transformationMap);

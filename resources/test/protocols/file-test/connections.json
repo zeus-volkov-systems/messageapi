@@ -1,0 +1,11 @@
+{
+    "connections": [
+        {
+            "id": "1",
+            "collections": "*",
+            "constructor": {
+                "file-fields": "filename"
+            }
+        }
+    ]
+}
