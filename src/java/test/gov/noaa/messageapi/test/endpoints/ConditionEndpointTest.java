@@ -23,6 +23,7 @@ public class ConditionEndpointTest extends BaseEndpoint implements IEndpoint {
     }
 
     public IPacket process(IProtocolRecord protocolRecord) {
+        System.out.println("Condition endpoint test...");
         DefaultPacket packet = new DefaultPacket();
         return packet;
     }

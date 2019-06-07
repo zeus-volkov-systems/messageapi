@@ -8,7 +8,9 @@
         },
         {
             "id": "ryan.berkheimer",
-            "classifiers": {"namespace": "noaa.gov"},
+            "classifiers": {"namespace": "noaa.gov",
+                            "test_me": ["1", "2"],
+                            "three": "five"},
             "fields": ["recipient", "sender", "subject", "body"]
         }
     ]

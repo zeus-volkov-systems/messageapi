@@ -32,12 +32,12 @@ public class CollectionParser extends BaseParser {
 
     @SuppressWarnings("unchecked")
     public List<Map.Entry<String,String>> getClassifiers() {
-        return ListUtils.removeAllNulls(ListUtils.flatten(getCollectionMaps().stream().map(cMap -> {
+        return ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(getCollectionMaps().stream().map(cMap -> {
             if (cMap.containsKey("classifiers")) {
                 return this.parseClassifierMap((Map<String,Object>) cMap.get("classifiers"));
             }
             return null;
-        }).collect(Collectors.toList())));
+        }).collect(Collectors.toList()))));
     }
 
     @SuppressWarnings("unchecked")

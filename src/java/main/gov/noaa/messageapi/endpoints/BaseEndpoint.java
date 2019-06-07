@@ -19,10 +19,10 @@ public abstract class BaseEndpoint {
     @SuppressWarnings("unchecked")
     public BaseEndpoint(Map<String,Object> parameters) {
         Map<String,Object> internalParameters = (Map<String,Object>)parameters.get("__internal__");
-        setFields((List<String>)internalParameters.get("fields"), this.getDefaultFields());
-        setCollectionIds((List<String>)internalParameters.get("collections"));
-        setClassifierIds((List<Map.Entry<String,String>>)internalParameters.get("classifiers"));
-        setTransformationIds((List<String>)internalParameters.get("transformations"));
+        this.setFields((List<String>)internalParameters.get("fields"), this.getDefaultFields());
+        this.setCollectionIds((List<String>)internalParameters.get("collections"));
+        this.setClassifierIds((List<Map.Entry<String,String>>)internalParameters.get("classifiers"));
+        this.setTransformationIds((List<String>)internalParameters.get("transformations"));
     }
 
     public abstract List<IField> getDefaultFields();
@@ -31,12 +31,24 @@ public abstract class BaseEndpoint {
         return new SchemaRecord(this.getFields());
     }
 
+    public List<String> getCollections() {
+        return this.collectionIds;
+    }
+
+    public List<Map.Entry<String,String>> getClassfiers() {
+        return this.classifierIds;
+    }
+
+    public List<String> getTransformations() {
+        return this.transformationIds;
+    }
+
     private List<IField> getFields() {
         return this.fields;
     }
 
     private void setFields(List<String> userFields, List<IField> defaultFields) {
-        this.fields = buildFields(userFields, defaultFields);
+        this.fields = this.buildFields(userFields, defaultFields);
     }
 
     private void setCollectionIds(List<String> collectionIds) {

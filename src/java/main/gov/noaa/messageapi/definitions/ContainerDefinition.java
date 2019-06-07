@@ -58,6 +58,9 @@ public class ContainerDefinition {
     public ContainerDefinition(ContainerDefinition definition) {
         this.metadataMap = new HashMap<String,Object>(definition.getMetadataMap());
         this.collectionMaps = new ArrayList<Map<String,Object>>(definition.getCollectionMaps());
+        this.collections = new ArrayList<String>(definition.getCollections());
+        this.classifiers = new ArrayList<Map.Entry<String,String>>(definition.getClassifiers());
+        this.transformations = new ArrayList<String>(definition.getTransformations());
         this.transformationMaps = new ArrayList<Map<String,Object>>(definition.getTransformationMaps());
     }
 

@@ -62,24 +62,24 @@ public class BaseConnection {
                                         ContainerDefinition containerDefinition) throws Exception {
         Map<String,Object> parameterMap = new HashMap<String,Object>();
         if (connectionMap.containsKey("fields")) {
-            parameterMap.put("fields", parseFields(connectionMap.get("fields")));
+            parameterMap.put("fields", this.parseFields(connectionMap.get("fields")));
         } else {
             parameterMap.put("fields", new ArrayList<String>());
         }
         if (connectionMap.containsKey("collections")) {
-            parameterMap.put("collections", parseCollections(connectionMap.get("collections"), containerDefinition.getCollections()));
+            parameterMap.put("collections", this.parseCollections(connectionMap.get("collections"), containerDefinition.getCollections()));
         } else {
             parameterMap.put("collections", new ArrayList<String>());
         }
         if (connectionMap.containsKey("classifiers")) {
-            parameterMap.put("classifiers", parseClassifiers(connectionMap.get("classifiers"),containerDefinition.getClassifiers()));
+            parameterMap.put("classifiers", this.parseClassifiers(connectionMap.get("classifiers"),containerDefinition.getClassifiers()));
         } else {
             parameterMap.put("classifiers", new ArrayList<Map.Entry<String,String>>());
         }
         if (connectionMap.containsKey("transformations")) {
-            parameterMap.put("transformations", parseTransformations(connectionMap.get("transformations"), containerDefinition.getTransformations()));
+            parameterMap.put("transformations", this.parseTransformations(connectionMap.get("transformations"), containerDefinition.getTransformations()));
         } else {
-            parameterMap.put("classifiers", new ArrayList<Map<String, Object>>());
+            parameterMap.put("transformations", new ArrayList<Map<String, Object>>());
         }
         constructorMap.put("__internal__", parameterMap);
     }
@@ -94,20 +94,24 @@ public class BaseConnection {
     }
 
     @SuppressWarnings("unchecked")
-    private List<String> parseCollections(Object rawCollections, List<String> allCollectionIds) throws Exception {
+    private List<String> parseCollections(Object rawCollections, List<String> allCollections) throws Exception {
         try {
             if (rawCollections instanceof String) {
                 if (((String) rawCollections).equals("*")) {
-                    return allCollectionIds;
+                    return new ArrayList<String>(allCollections);
                 } else {
                     List<String> collections = new ArrayList<String>();
-                    if (allCollectionIds.contains((String) rawCollections)) {
+                    if (allCollections.contains((String) rawCollections)) {
                         collections.add((String) rawCollections);
                     }
                     return collections;
                 }
             } else if (rawCollections instanceof List) {
-                return ((List<String>) rawCollections).stream().filter(rC -> allCollectionIds.contains(rC)).collect(Collectors.toList());
+                if (((List<String>) rawCollections).contains("*")) {
+                    return new ArrayList<String>(allCollections);
+                } else {
+                    return ((List<String>) rawCollections).stream().filter(rC -> allCollections.contains(rC)).collect(Collectors.toList());
+                }
             }
             return new ArrayList<String>();
         } catch (Exception e) {
@@ -160,8 +164,12 @@ public class BaseConnection {
                     return transformations;
                 }
             } else if (rawTransformations instanceof List) {
-                return ((List<String>) rawTransformations).stream().filter(rT -> allTransformations.contains(rT))
-                        .collect(Collectors.toList());
+                if (((List<String>) rawTransformations).contains("*")) {
+                    return new ArrayList<String>(allTransformations);
+                } else {
+                    return ((List<String>) rawTransformations).stream().filter(rT -> allTransformations.contains(rT))
+                            .collect(Collectors.toList());
+                }
             }
             return new ArrayList<String>();
         } catch (Exception e) {
