@@ -25,21 +25,21 @@ public abstract class BaseEndpoint {
         this.setTransformationIds((List<String>)internalParameters.get("transformations"));
     }
 
-    public abstract List<IField> getDefaultFields();
+    protected abstract List<IField> getDefaultFields();
 
     public IRecord createRecord() {
         return new SchemaRecord(this.getFields());
     }
 
-    public List<String> getCollections() {
+    protected List<String> getCollections() {
         return this.collectionIds;
     }
 
-    public List<Map.Entry<String,String>> getClassfiers() {
+    protected List<Map.Entry<String,String>> getClassfiers() {
         return this.classifierIds;
     }
 
-    public List<String> getTransformations() {
+    protected List<String> getTransformations() {
         return this.transformationIds;
     }
 

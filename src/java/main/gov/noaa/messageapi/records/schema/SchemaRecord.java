@@ -139,6 +139,11 @@ public class SchemaRecord implements IRecord {
         }
     }
 
+    public Boolean hasField(String fieldName) {
+        return this.fields.stream().filter(field -> field.getName().equals(fieldName))
+                                .findFirst().isPresent();
+    }
+
     public ICondition getCondition(String conditionId) {
         try {
             return this.conditions.stream().filter(condition -> condition.getId().equals(conditionId))

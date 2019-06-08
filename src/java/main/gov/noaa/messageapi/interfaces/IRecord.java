@@ -17,6 +17,7 @@ public interface IRecord {
     public void setField(Object field, Object value);
     public IField getField(String name);
     public void setFields(List<IField> fields);
+    public Boolean hasField(String fieldName);
 
     public void setCondition(Object condition, Object value);
     public ICondition getCondition(String id);

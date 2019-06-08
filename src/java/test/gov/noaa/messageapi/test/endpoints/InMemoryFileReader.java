@@ -103,6 +103,9 @@ public class InMemoryFileReader extends BaseEndpoint implements IEndpoint {
 
     public IPacket process(IProtocolRecord protocolRecord) {
         DefaultPacket packet = new DefaultPacket();
+        //processCollections(protocolRecord);
+        //processClassifiers(protocolRecord);
+        //processTransformations(protocolRecord);
         packet.addRecords(protocolRecord.getRecords());
         return packet;
     }
