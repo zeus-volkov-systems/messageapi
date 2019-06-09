@@ -5,12 +5,17 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import gov.noaa.messageapi.interfaces.IEndpoint;
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
-
+import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.packets.DefaultPacket;
+import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.endpoints.BaseEndpoint;
 import gov.noaa.messageapi.fields.DefaultField;
 
@@ -45,7 +50,7 @@ import gov.noaa.messageapi.fields.DefaultField;
  * Record creation. Extra fields listed that are not contained in those listed
  * below will be ignored.
  * <p>
- * <b>line</b> (integer): The zero-indexed line number that the record
+ * <b>number</b> (integer): The zero-indexed line number that the record
  * was found of the given file.
  * <p>
  * <b>value</b> (string): The contents of the line.
@@ -103,30 +108,116 @@ public class InMemoryFileReader extends BaseEndpoint implements IEndpoint {
 
     public IPacket process(IProtocolRecord protocolRecord) {
         DefaultPacket packet = new DefaultPacket();
-        //processCollections(protocolRecord);
-        //processClassifiers(protocolRecord);
-        //processTransformations(protocolRecord);
-        packet.addRecords(protocolRecord.getRecords());
+        try {
+            List<IRecord> collectionRecords = this.processCollections(protocolRecord);
+            packet.addRecords(collectionRecords);
+            List<IRecord> classifierRecords = this.processClassifiers(protocolRecord);
+            packet.addRecords(classifierRecords);
+            List<IRecord> transformationRecords = this.processTransformations(protocolRecord);
+            packet.addRecords(transformationRecords);
+        } catch (Exception e) {
+            return null;
+        }
         return packet;
+    }
+
+    private List<IRecord> processCollections(IProtocolRecord protocolRecord) throws IOException {
+        return ListUtils.removeAllNulls(ListUtils.flatten(
+            this.getCollections().stream().map(collection -> {
+                return ListUtils.flatten(protocolRecord.getRecordsByCollection(collection).stream().map(record -> {
+                    return ListUtils.flatten(this.getFileFields().stream().map(fileField -> {
+                        if (record.hasField(fileField)) {
+                            try {
+                                return this.createFileRecords("collection", collection, (String)record.getField(fileField).getValue());
+                            } catch (Exception e) {
+                                return null;
+                            }
+                        }
+                        return null;
+                    }).collect(Collectors.toList()));
+                }).collect(Collectors.toList()));
+            }).collect(Collectors.toList())));
+    }
+
+    private List<IRecord> processClassifiers(IProtocolRecord protocolRecord) throws IOException {
+        return ListUtils.removeAllNulls(ListUtils.flatten(this.getClassfiers().stream().map(classifier -> {
+            return ListUtils.flatten(protocolRecord.getRecordsByClassifier(classifier.getKey(), classifier.getValue()).stream().map(record -> {
+                return ListUtils.flatten(this.getFileFields().stream().map(fileField -> {
+                    if (record.hasField(fileField)) {
+                        try {
+                            return this.createFileRecords("classifier", String.format("%s.%s",classifier.getKey(), classifier.getValue()),
+                                    (String) record.getField(fileField).getValue());
+                        } catch (Exception e) {
+                            return null;
+                        }
+                    }
+                    return null;
+                }).collect(Collectors.toList()));
+            }).collect(Collectors.toList()));
+        }).collect(Collectors.toList())));
+    }
+
+    private List<IRecord> processTransformations(IProtocolRecord protocolRecord) throws IOException {
+        return ListUtils.removeAllNulls(ListUtils.flatten(this.getTransformations().stream().map(transformation -> {
+            return ListUtils.flatten(protocolRecord.getRecordsByTransformation(transformation).stream().map(record -> {
+                return ListUtils.flatten(this.getFileFields().stream().map(fileField -> {
+                    if (record.hasField(fileField)) {
+                        try {
+                            return this.createFileRecords("transformation", transformation,
+                                    (String) record.getField(fileField).getValue());
+                        } catch (Exception e) {
+                            return null;
+                        }
+                    }
+                    return null;
+                }).collect(Collectors.toList()));
+            }).collect(Collectors.toList()));
+        }).collect(Collectors.toList())));
     }
 
     /**
      * Returns the default fields for this endpoint. The default fields are
-     * number, value, length, file, source-type, source-name
+     * number, value, length, file, container-type, container-name
      */
     public List<IField> getDefaultFields() {
         List<IField> fields = new ArrayList<IField>();
-        fields.add(new DefaultField("line", "integer", true, null, true));
-        fields.add(new DefaultField("length", "integer", true, null, true));
         fields.add(new DefaultField("value", "string", true, null, true));
+        fields.add(new DefaultField("length", "integer", true, null, true));
         fields.add(new DefaultField("file", "string", true, null, true));
         fields.add(new DefaultField("container-type", "string", true, null, true));
         fields.add(new DefaultField("container-id", "string", true, null, true));
+        fields.add(new DefaultField("number", "integer", true, null, true));
         return fields;
     }
 
     public List<String> getFileFields() {
         return this.fileFields;
+    }
+
+    private List<IRecord> createFileRecords(String containerType, String containerId, String fileName) throws IOException {
+        List<IRecord> records = Files.lines(Paths.get(fileName)).map(line -> {
+            IRecord r = this.createRecord();
+            if (r.hasField("value")) {
+                r.setField("value", line);
+            }
+            if (r.hasField("length")) {
+                r.setField("length", line.length());
+            }
+            if (r.hasField("file")) {
+                r.setField("file", fileName);
+            }
+            if (r.hasField("container-type")) {
+                r.setField("container-type", containerType);
+            }
+            if (r.hasField("container-id")) {
+                r.setField("container-id", containerId);
+            }
+            return r;
+        }).collect(Collectors.toList());
+        if (this.createRecord().hasField("length")) {
+            records.stream().forEach(r -> r.setField("line", records.indexOf(r)));
+        }
+        return records;
     }
 
     @SuppressWarnings("unchecked")
