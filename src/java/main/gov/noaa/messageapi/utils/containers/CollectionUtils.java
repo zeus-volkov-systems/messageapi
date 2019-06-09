@@ -50,6 +50,8 @@ public class CollectionUtils {
                 collection.getFields().stream().forEach(collectionField -> {
                     if (schemaField.getName().equals(collectionField.getName())) {
                         collectionField.setValue(schemaField.getValue());
+                        collectionField.setType(schemaField.getType());
+                        collectionField.setValid(schemaField.isValid());
                     }
                 });
             });
