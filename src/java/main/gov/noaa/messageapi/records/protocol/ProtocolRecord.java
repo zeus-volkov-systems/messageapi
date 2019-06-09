@@ -88,7 +88,7 @@ public class ProtocolRecord implements IProtocolRecord {
     public List<IRecord> getRecordsByClassifier(String key, Object value) {
         List<IRecord> classRecords = this.recordMap.entrySet().stream().filter(e -> {
             if (((Map<String,Object>)e.getValue().get("CLASSIFIERS")).keySet().contains(key)) {
-                if (((List<Object>)((Map<String,Object>)e.getValue().get("CLASSIFIERS")).get(key)).contains(value)) {
+                if (((List<String>)((Map<String,Object>)e.getValue().get("CLASSIFIERS")).get(key)).contains(value)) {
                     return true;
                 }
             }
