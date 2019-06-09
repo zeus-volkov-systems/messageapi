@@ -1,0 +1,10 @@
+{
+    "connections": [
+        {
+            "id": "1",
+            "transformations": ["qualify-fieldnames"],
+            "constructor": {
+            }
+        }
+    ]
+}

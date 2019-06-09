@@ -1,0 +1,22 @@
+{
+    "fields": [{"id": "file-path",
+                "type": "string",
+                "required": true}],
+    "conditions": [{"id": "is-relative-path",
+                    "type": "comparison",
+                    "operator": "contains",
+                    "field": "file-path",
+                    "value": "{}"}],
+    "collections": [{"id": "coll-1",
+                     "classifiers": {},
+                     "fields": ["file-path"],
+                     "conditions": ["is-relative-path"]}],
+    "transformations": [{"id": "trans-1",
+                         "operator": "fix-relative-paths",
+                         "constructor": {"transform-key": "file-collection"},
+                         "records": {"file-collection": {"COLLECTION": "coll-1"}},
+                         "fields": ["file-path"]}],
+    "connections": [{"id": "conn-1",
+                     "transformations": ["trans-1"],
+                     "constructor": {"file-fields": "file-path"}}]
+}

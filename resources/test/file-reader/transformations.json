@@ -1,0 +1,10 @@
+{
+    "transformations": [
+    {
+        "id": "qualify-fieldnames",
+        "operator": "fix-relative-paths",
+        "constructor": {"transform-key": "file-collection"},
+        "records": {"file-collection": {"COLLECTION":"default"}},
+        "fields": ["file-path"]
+    }]
+}
