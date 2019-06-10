@@ -3,57 +3,158 @@
 
 ## Overview
 
-MessageAPI is a completely pluggable and simple message transport layer that provides
-an information model and code-level API for consumption and/or production of arbitrary
-content to/from arbitrary endpoints.
+MessageAPI is a structured-data-processing specification designed to allow the development of decomplected, transparent, easily understood, evolutionary, and highly configurable systems. MessageAPI does this by drawing a domain distinction between process structure (the 'Message' of MessageAPI) and data (the 'API' part) and then providing complimentary orthonormal basis sets to define each domain. The structure and data domain definitions of MessageAPI are based on the principles of generic programming and designed using the language of Communicating Sequential Processes (CSP) in order to be easily picked up and understood by different audiences and users.
 
-Apart from a set of basic plugins, this is all that MessageAPI provides. This makes MessageAPI capable of passing any message content - code objects, database entries, emails, etc., to anywhere - database tables, inboxes, s3 buckets, etc. - through any protocol - ftp, smtp, kafka, etc.
+MessageAPI is ultimately a specification, but for practical purposes it's also an implementation that consists of two Sessions (Publisher and Consumer) that set themselves up using declarative JSON specifications of the MessageAPI structural model (through a manifest), and then allow data to be formulated using the Request and Response APIs to process batch and/or streaming Requests asynchronously. In the provided session implementations, Transformations and Endpoints are provided Abstract Base Classes. There are tests included in the package (including example Transformations and Endpoints) that demonstrate the use of these for simple but ubiquitous use cases (like grabbing records from a File endpoint).
+
+## Motivation
+
+The Scientific Software Reengineering/Rearchitecting Group (SSRG) at NOAA NCEI is tasked with taking large, long-lived, evolutionary, polyglot, mission-critical, scientific research projects and/or systems, analyzing them through a lens of long term sustainability and security, and then reorienting them toward those general goals, while rejuvenating them to integrate with up to date and/or future organizational trends.
+
+This process usually involves integrating with existing development teams, defining the project surface, performing an overall maturity assessment, performing individual process assessments on project subsystems (according to general principles of CMMI), and then (based on the assessment results) iteratively improving the overall system (this process is called 'Rejuvenation' at NCEI) - generally in order of testability, reliability, changeability, efficiency, security, maintainability, portability, and reusability (the SQALE method).
+
+As the SSRG Rejuvenation program itself has matured, organizational patterns in the program's constraint parameters (character of systems under study, NCEI infrastructure and trends) have emerged. Based on these patterns, SSRG has endeavored to create and maintain an 'SSRG Toolbox' - a collection of generalized tools that standardize one or more aspects of the Rejuvenation process (assessment, testing, development, deployment). Some tools in the toolbox are commercial and/or organizational tools like Docker, Git, Jenkins, Slack, Understand, valgrind, gdb, JIRA, Google Docs - and some are custom tools like the FortranCommons (comprised of fortran language unit tests and properties, written in fortran), Harness (a data-oriented testing framework, written in python), and TaskAPI (a polyglot declarative workflow abstraction, written in java).
+
+The TaskAPI tool was initially developed to replace Bash as the 'glue' for ASOS Ingest jobs, and was subsequently split from that project and made generic enough for any distributed computation project. TaskAPI provides distributed workflow parallelization capabilities, job control, declarative task definition, and logging standardization for the 3 language (fortran, java, c) ASOS Ingest system. It was also designed to promote iterative system improvement - allowing a quick load of existing project code into TaskAPI, and then allowing monolithic job tasks to be broken up into smaller tasks (and corresponding TaskAPI tasks) by factoring code over time. This iterative improvement and the end goal is still an ideal, but there is often a need for intraprocess tasks (e.g., a deeply nested x = system('ls -l'), or system('mail -s 'missing data!' bigArrayContents')) to be replaced first, or instead of, whole scale task splitting. 
+
+TaskAPI does allow for arbitrary data to be passed between fortran, c, and java through a map structure, but the map changes are only communicated during native method invocation or return. In the case of ASOS Ingest it was also discovered that there was widespread use of a binary Fortran Direct Access file storage package throughout. This Direct Access storage turned out to be the primary storage container for the intermediary Low Resolution data format (CLISAM) which serves as the basis for almost all LowRes derived products - including ISD, SODGraph, HPD, and US-CLIMAT, among others. Removal of the direct access storage media of CLISAM is a major priority for several reasons, including - the format was shown to be brittle during operating system port; the data would be much more useful and easier to use organizationally if it were stored in something like a Kafka topic.
+
+All of these use cases added up to the need for a new tool to provide generalized intraprocess communication. This is what MessageAPI was primarily designed to do - replace targeted intraprocess communication in native languages with a standardized, stable, general, flexible, and portable mechanism. Due to type system differences across languages, the system would have to 
+
+- have a small, static API (any message would need to be transferred through a small set of API methods)
+- able to handle inward or outward directed messages
+- be able to work in a non-blocking or blocking fashion
+
+Due to the nature of the Rejuvenation work of SSRG, the tool would also have to conform to and promote SQALE standards. These requirements were interpreted to mean the system should
+
+- be highly configurable outside of code
+- be integratable in a potentially multi-threaded and/or multiprocess environment
+- be generic enough to handle unknown use cases
+- allow easy testing without complicated mocking
+- be stable enough to be reliable for decades or more
+- be extensible/changeable enough to be replaced if organizational standards changed
+- be efficient in processing
+- conform to organizational security standards
+- be reusable
+- be understandable to current system developers and future maintainers
+
+All of these requirements added up to creating a specification first, and then writing a couple of implementations. Once the specification was designed and written, it became apparent that MessageAPI could handle the type of messages it was designed for, and potentially be extended for other use cases - distributed computation, system deployments, requirements management, versioning, etc.
+
+## Philosophy
+
+MessageAPI is designed with the belief that all processes are fundamentally simple, similar, and understandable. MessageAPI was designed to expose these process characterists by the use of a simple (in the decomplected sense) information model. 
+
+Every part of how a MessageAPI defined process will play out, down to the implementation classes, is laid bare in a single text based manifest map. This manifest makes trivial work out of reasoning about how a program is structured and will run before it is ever run - from a single location. 
+
+A schema holds a flat map of all fields and conditions a user will interact with; a container defines how fields will be factored and held in collections, classifications, and transformations; and endpoints define where containers of records will go. All of these parts of a Message are viewable and configurable without touching code. Users write and share their own custom endpoints and transformations, which are then specified in the map. 
+
+Everything that passes data in MessageAPI consumes and produces the same object type - the record. The manifests are used in code by creating a session based on them - and then using a stable API to create a request, add records, set field and/or condition values, and then submit, which immediately returns an async response. The response will hold its own records and rejections, and eventually get an 'isComplete' flag. That's the entirety of the API surface. Everything else depends on the Manifest.
+
+MessageAPI is designed to be capable of passing any message content - objects, database entries, emails, etc., to/through anywhere - database tables, inboxes, s3 buckets, ftp, smtp, kafka, files, directories etc.
 
 The benefits of using MessageAPI are its extreme schema flexibility, potential for tool decoupling and transport optimization, API standardization across all messaging, and self documentation through an information model.
 
-It's important to point out that MessageAPI does not replace traditional load balancing brokers (ActiveMQ, RabbitMQ)
-or streaming platforms (Kafka, Storm). These other messaging systems are appropriate as protocol or container layer plugins in MessageAPI, depending on how the implementation models the system. MessageAPI adds additional desired behaviors to these tools - including the ability to switch them out at will as streaming technologies evolve, and adding a declarative model to them.
+It's important to point out that even though it's called MessageAPI, the provided implementations do not replace message tools like ActiveMQ, RabbitMQ, Spark, or Storm. MessageAPI is fundamentally a specification, and the provided implementations are small (3MB total package size) self contained standalone things. These other messaging systems could of course be used with MessageAPI - linking response steps, serving as input or output queues, or transformation steps. 
+
+## Package Contents
+
+This package includes the MessageAPI specification as a set of interfaces, useful implementations that can perform batch and stream publication/consumption, and several tests that demonstrate common data processing tasks to provide an idea on how to build systems. The Java part of the core MessageAPI implementation is written almost entirely in Java8/9+ core, taking advantage of the Java Streams and Flow packages, with only one external dependency - a JSON parser - due to the lack of a core Java version. Similarly, APIs provided for any other languages found in this package (currently planned are C, Fortran, and CPython) - are written in their respective core languages. Endpoints and Transformations are the responsibility of the user.
+
 
 ### Description
 
-At a minimum, using MessageAPI means writing an information model specification
-and incorporating the provided API methods in code to read it.
+At a minimum, using MessageAPI means writing an information model specification/manifest and incorporating the provided API methods in code to read it.
 
-MessageAPI information model specs are completely pluggable and are read when specifically
-referenced at runtime in code. Because specs are completely pluggable, there is no
-'right way' to write a MessageAPI spec - as long as the backing classes are available
-on the classpath at runtime that understand the spec, anything can be written in one.
+MessageAPI information model manifests are completely pluggable and are read when specifically referenced at runtime in code.
 
-However, that wouldn't be very useful in practice, so MessageAPI provides a standard
-topology that will suit most messaging tasks, along with providing a matching set of basic plugins.
-This set of default classes can then serve as a reference for writing better versions of those which are provided and/or customized plugins for different containers or protocols.
+MessageAPI provides a standard topology that will suit many messaging tasks (either publishing or consuming oriented), along with providing a matching set of basic plugins. The provided implementations are well suited for individual or distributed use. For example, a single MessageAPI manifest could be written as a Kafka consumer - then could be deployed in a Docker container, used in a Consumer group pattern in a Kafka Cluster or K8s Pod Deployment, and then fed records coming from a service. Or a manifest could be used intra-process to send emails to different groups based on different conditions. There are a lot of uses.
 
-In the provided model, the spec looks like the following:
+The provided implementations could also be replaced wholesale or improved incrementally.
+
+In the provided implementation, the manifest looks like the following:
 
 ```
-{"plugin": "gov.noaa.messageapi.sessions.PublisherSession",
- "constructor": {"schema": {"plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
-                            "constructor": {"metadata": "{}/resources/test/schemas/simple/email/metadata.json",
-                                            "fields": "{}/resources/test/schemas/simple/email/fields.json",
-                                            "conditions": {"map": "{}/resources/test/schemas/simple/email/conditions.json",
-                                                           "factory": "gov.noaa.messageapi.factories.SimpleConditionFactory"}}},
-                 "container": {"plugin": "gov.noaa.messageapi.containers.DefaultContainer",
-                               "constructor": {"metadata": "{}/resources/test/containers/simple/email/metadata.json",
-                                               "collections": "{}/resources/test/containers/simple/email/collections.json",
-                                               "transformations": {"map": "{}/resources/test/containers/simple/email/transformations.json",
-                                                                   "factory": "gov.noaa.messageapi.factories.SimpleTransformationFactory"}}},
-                 "protocol": {"plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
-                              "constructor": {"metadata": "{}/resources/test/protocols/email/simple/metadata.json",
-                                              "endpoints": [{"plugin": "gov.noaa.messageapi.test.endpoints.EmailEndpointTest",
-                                                             "connections": "{}/resources/test/protocols/email/simple/connections.json"}]}}}}
-
+{
+    "plugin": "gov.noaa.messageapi.sessions.PublisherSession",
+    "constructor": {
+        "schema": {
+            "plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
+            "constructor": {
+                "metadata": "{}/resources/test/metadata/file-reader/schema.json",
+                "fields": "{}/resources/test/file-reader/parameters.json",
+                "conditions": {
+                    "map": "{}/resources/test/file-reader/parameters.json",
+                    "factory": "gov.noaa.messageapi.factories.SimpleConditionFactory"
+                }
+            }
+        },
+        "container": {
+            "plugin": "gov.noaa.messageapi.containers.DefaultContainer",
+            "constructor": {
+                "metadata": "{}/resources/test/metadata/file-reader/container.json",
+                "collections": "{}/resources/test/file-reader/parameters.json",
+                "transformations": {
+                    "map": "{}/resources/test/file-reader/parameters.json",
+                    "factory": "gov.noaa.messageapi.test.factories.transformations.FileReaderFactory"
+                }
+            }
+        },
+        "protocol": {
+            "plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
+            "constructor": {
+                "metadata": "{}/resources/test/metadata/file-reader/protocol.json",
+                "endpoints": [{
+                        "plugin": "gov.noaa.messageapi.test.endpoints.InMemoryFileReader",
+                        "connections": "{}/resources/test/file-reader/parameters.json"
+                    }]
+            }
+        }
+    }
+}
 ```
 
-In the default MessageAPI topology, sessions are the primary abstraction. Sessions in turn consist of schema, container, and protocol abstractions, and each of these has its own set of properties that must/can be specified. Notice that in the example spec, any key labeled "plugin" points to a class. These classes are what are read at runtime (when the spec itself is referenced in the code). Anything found within the "constructor" map is then used by the class to build itself.
+The general pattern in a manifest is to declare a key with the class as the plugin, and then provide another map that holds constructor parameters. The specification for MessageAPI consists of 
+
+- A **Session**, which holds the primary **Schema**, **Container**, and **Protocol** dimensions
+- A **Schema**, which defines all the conditions and fields a user will interact with for a record
+- A **Container**, which defines any way a **Field** set will be contained - **Records** (**Field** and **Condition** sets) are each factored into **Collections**, **Collections** hold arbitrary **Classifiers**, and **Transformations** can refer to **Collections**, **Classifiers**, **Transformations**, or entire **Records** (every **Collection** that a specific **Record** was factored into).
+- A **Protocol**, which defines the Endpoints that record containers are sent to for processing. There can be multiple Endpoints
+
+In more descriptive detail, Sessions are the primary abstraction in MessageAPI. Sessions in turn consist of Schema, Container, and Protocol abstractions, and each of these has its own set of properties that must/can be specified. Notice that in the example spec, any key labeled "plugin" points to a class. These classes are what are read at runtime (when the spec itself is referenced in the code). Anything found within the "constructor" map is then used by the class to build itself.
 
 So, for example, if the above spec is taken literally, when it is used in the code, an instance of the "class.namespace.SessionPluginClass" class is loaded with the corresponding "constructor" map passed in as the constructor argument. This in turn kicks off the system to read the schema, container, and protocol classes and create those using their own constructor maps. The information found in the associated key-values (usually referencing an underlying JSON map, with the exception being the "operators" key in the schema constructor) will be read and parsed at that time to build the component and ultimately the session.
 
-Once built, this session is then in memory and can be reused as often as necessary. MessageAPI trades initial speed of compile-time class construction for the flexibility and declarative nature of doing it at runtime  (although the initial bootstrapping is generally very fast anyway), and then allows already created session objects to be reused. Additionally, individual parts of already created session objects can be used to create new objects (for example, using an existing in-memory schema instance, that's part of an existing, in-memory session, for use in creating a different, new session object).
+*Notice that in this map, the **Fields, Conditions, Collections, Transformations,** and **Connections** all refer to the same 'parameters' map:*
+```
+{
+    "fields": [{"id": "file-path",
+                "type": "string",
+                "required": true}],
+    "conditions": [{"id": "is-relative-path",
+                    "type": "comparison",
+                    "operator": "contains",
+                    "field": "file-path",
+                    "value": "{}"}],
+    "collections": [{"id": "coll-1",
+                     "classifiers": {},
+                     "fields": ["file-path"],
+                     "conditions": ["is-relative-path"]}],
+    "transformations": [{"id": "trans-1",
+                         "operator": "fix-relative-paths",
+                         "constructor": {"transform-key": "file-collection"},
+                         "records": {"file-collection": {"COLLECTION": "coll-1"}},
+                         "fields": ["file-path"]}],
+    "connections": [{"id": "conn-1",
+                     "transformations": ["trans-1"],
+                     "constructor": {"file-fields": "file-path"},
+                     "fields" : ["value","number", "length"]}]
+}
+
+```
+
+*These parameters can be split up or held together. Each of these domain concepts will be explored in more depth further down* 
+
+Once built, this session is then in memory and can be reused as often as necessary. MessageAPI trades initial speed of compile-time class construction for the flexibility and declarative nature of doing it at runtime  (although the initial bootstrapping is generally very fast anyway), and then allows already created session objects to be reused. Additionally, individual parts of already created session objects can be used to create new objects (for example, using an existing in-memory schema instance, that's part of an existing, in-memory session, for use in creating a different, new session object). This could be useful in at-a-distance construction of sessions.
 
 Each session component is considered a fundamental and loosely orthogonal dimension of its parent. Every message session, no matter what the type, can be created by specifying these three dimensions, and this concept is what allows MessageAPI to provide a powerful abstract framework on top of arbitrary messages. Each of these dimensions has its own particular properties which define it. All also include a catchall 'metadata' property for storage of other useful self-documenting information, such as version or identifying labels.
 
@@ -61,129 +162,138 @@ Each session component is considered a fundamental and loosely orthogonal dimens
 
 Here we describe the three dimensions of a MessageAPI session:
 
- ##### Schemas
+##### Schemas
 
 Schemas are what define records as seen by the session holder. This is the part of the topology which defines what fields a record will have, any conditions on those fields, and an operator factory class that provides methods on evaluating fields against conditions (conditions may contain arbitrary logic).
 
-A schema field set is a flat set of field definitions - for example, software that wants to pass email messages through MessageAPI could have a field set of 'email, subject, body'.
+Schemas contain **Fields**, **Conditions**, and **MetaData**. 
+
+###### Metadata
+
+The MetaData becomes part of the definition when the manifest is loaded, and can be accessed from the endpoint layer this allows for interaction with mutable endpoint schemas when field sets change over time (for example, Avro storage in Kafka).
+
+```
+{
+    "metadata": {
+        "id": "the-schema-id",
+        "version": 1.0,
+        "classifiers": {},
+        "description": null
+    }
+}
+```
+
+###### Field Sets
+
+A schema field set is a flat set of field definitions - for example, software that wants to pass email messages through MessageAPI could have a field set of 'email, subject, body'. Schema Field Sets should hold every field in any collection that the user will use. So if there are two lists feeding into a MessageAPI process, with different domains, fields from both should be declared up front - individual fields can be specified at the container level. This pattern allows a clearly defined global field set while allowing multiple record types to be part of some processing action.
 
 In the provided schema class, fields need to be provided with a 'name', 'type', and 'required' properties.
 
-The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. Conditions can be set on these fields that qualify records when passed in, serving as a potentially powerful filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator.
+The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. If a field is required but not provided, that record will be immediately rejected on request submission.
 
-There are two provided types in the default - composite and comparison.
+```
+{
+    "fields": [
+        {
+            "name": "id",
+            "type": "integer",
+            "required": false
+        },
+        {
+            "name": "key",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "record",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "filename",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "type",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "receipt_date",
+            "type": "datetime",
+            "required": true
+        },
+        {
+            "name": "insert_date",
+            "type": "datetime",
+            "required": true
+        }
+    ]
+}
+```
 
-Comparison type conditions are direct comparisons (things like equivalency, greater than, etc.) while composite conditions reference other conditions and specify either an 'and' or an 'or' operator. This allows multiple conditions to be nested, referenced by their IDs.
 
-Composite conditions can also include other composite conditions and will be unpacked and applied recursively. The only restriction on conditions is that no infinite loops are permitted. Conditions are applied on both 'get' and 'put' type operations, which provide a SQL type selection for records in arbitrary containers.
+###### Condition Sets
 
-- A schema 'metadata' json specification file (metadata.json)
+Conditions can be set on fields that qualify records when passed in, serving as a potentially powerful filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator. Conditions that are to be used in filtering must be valued on individual records. Conditions are also provided on a whole-request basis - to be used in containerization of records. In this case, conditions can be given values when 
 
-      ```
-      {
-          "metadata": {
-              "id": "some-unique-id-for-yourself-to-know-what-schema-your-data-was-in",
-              "version": 1.0,
-              "classifiers": {},
-              "description": null
-          }
-      }
-      ```
+There are two condition types in the provided implementation  - composite and comparison.
 
-- A schema 'fields' json specification file (fields.json)
+Comparison type conditions are direct comparisons (things like equivalency, greater than, contains, etc.) while composite conditions reference other conditions and specify either an 'and' or an 'or' operator. This allows multiple conditions to be nested, referenced by their IDs.
 
-     ```
-     {
-         "fields": [
-             {
-                 "name": "id",
-                 "type": "integer",
-                 "required": false
-             },
-             {
-                 "name": "key",
-                 "type": "string",
-                 "required": true
-             },
-             {
-                 "name": "record",
-                 "type": "string",
-                 "required": true
-             },
-             {
-                 "name": "filename",
-                 "type": "string",
-                 "required": true
-             },
-             {
-                 "name": "type",
-                 "type": "string",
-                 "required": true
-             },
-             {
-                 "name": "receipt_date",
-                 "type": "datetime",
-                 "required": true
-             },
-             {
-                 "name": "insert_date",
-                 "type": "datetime",
-                 "required": true
-             }
-         ]
-     }
-     ```
+Composite conditions can also include other composite conditions and will be unpacked and applied recursively, in whatever context is specified by the session type in the manifest. The only global restriction for the given implementation is that conditions cannot be self referential (no infinite loops).
 
-- A schema 'conditions' json specification file (conditions.json)
 
-     ```
-     {
-         "conditions": [
-             {
-                 "id": "1",
-                 "type": "comparison",
-                 "operator": ">=",
-                 "field": "key",
-                 "value": null
-             },
-             {
-                 "id": "2",
-                 "type": "comparison",
-                 "operator": "<",
-                 "field": "key",
-                 "value": null
-             },
-             {
-                 "id": "three",
-                 "type": "composite",
-                 "operator": "or",
-                 "conditions": ["1","2","hi"]
-             },
-             {
-                 "id": "hi",
-                 "type": "comparison",
-                 "operator": "=",
-                 "field": "type",
-                 "value": null
-             },
-             {
-                 "id": "dummy",
-                 "type": "comparison",
-                 "operator": "=",
-                 "field": "type",
-                 "value": null
-             },
-             {
-                 "id": "nested_join",
-                 "type": "composite",
-                 "operator": "and",
-                 "conditions": ["dummy", "three"]
-             }
-         ]
-     }
-     ```
+```
+{
+    "conditions": [
+        {
+            "id": "1",
+            "type": "comparison",
+            "operator": ">=",
+            "field": "key",
+            "value": null
+        },
+        {
+            "id": "2",
+            "type": "comparison",
+            "operator": "<",
+            "field": "key",
+            "value": null
+        },
+        {
+            "id": "three",
+            "type": "composite",
+            "operator": "or",
+            "conditions": ["1","2","hi"]
+        },
+        {
+            "id": "hi",
+            "type": "comparison",
+            "operator": "=",
+            "field": "type",
+            "value": null
+        },
+        {
+            "id": "relative-path",
+            "type": "comparison",
+            "operator": "contains"
+            "field": "filename",
+            "value": "{}"
+        },
+        {
+            "id": "nested_join",
+            "type": "composite",
+            "operator": "and",
+            "conditions": ["relative-path", "three"]
+        }
+    ]
+}
+```
 
 ##### Containers
+
 Containers are what define records as seen by the session target(s), either as the source (for gets) or destination (for puts) of some data (or both, for situations where there is two-way data flow). There can be multiple containers per session and fields defined in the schema can exist on more than one container.
 
 Containers conceptually represent different endpoints - e.g., different tables in a database, different databases, an email address, a directory, a file, a Kafka topic, etc. Because records passed in a session can be parsed into multiple containers, records or parts of records can be passed to multiple endpoints concurrently in a single request.
