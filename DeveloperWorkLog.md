@@ -9,8 +9,23 @@ with current development, and should be supplemental to the repository record.
 
 This work log is also useful as a supplemental documentation for end users of the package - features are described and contextualized with as much detail as possible.
 
+## Future Work
+
+- C API
+- Fortran API
+- Python API
+- Consumer Session
+- Example Endpoints (Email, Directory, Kafka)
 
 ## Current Focus
+
+### README Updating
+
+#### Status - In Progress
+
+#### Description and Goals
+
+The README should be updated to match the current state of the package. It should be correct, comprehensive enough to serve as a complete guide for getting the system running, and contain enough information for external review. It should form the basis of a MessageAPI white paper.
 
 ## Previous Foci
 

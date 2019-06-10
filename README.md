@@ -116,7 +116,7 @@ In the provided implementation, the manifest looks like the following:
 The general pattern in a manifest is to declare a key with the class as the plugin, and then provide another map that holds constructor parameters. The specification for MessageAPI consists of 
 
 - A **Session**, which holds the primary **Schema**, **Container**, and **Protocol** dimensions
-- A **Schema**, which defines all the conditions and fields a user will interact with for a record
+- A **Schema**, which defines all the **Fields** and **Conditions** a user will interact with for each **Record**
 - A **Container**, which defines any way a **Field** set will be contained - **Records** (**Field** and **Condition** sets) are each factored into **Collections**, **Collections** hold arbitrary **Classifiers**, and **Transformations** can refer to **Collections**, **Classifiers**, **Transformations**, or entire **Records** (every **Collection** that a specific **Record** was factored into).
 - A **Protocol**, which defines the Endpoints that record containers are sent to for processing. There can be multiple Endpoints
 
