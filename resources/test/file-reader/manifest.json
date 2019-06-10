@@ -27,12 +27,10 @@
             "plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
             "constructor": {
                 "metadata": "{}/resources/test/metadata/file-reader/protocol.json",
-                "endpoints": [
-                    {
+                "endpoints": [{
                         "plugin": "gov.noaa.messageapi.test.endpoints.InMemoryFileReader",
                         "connections": "{}/resources/test/file-reader/parameters.json"
-                    }
-                ]
+                    }]
             }
         }
     }

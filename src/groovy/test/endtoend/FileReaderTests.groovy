@@ -28,6 +28,20 @@ def "Tests submission of a full file reader task with 1 small input."() {
         response.getRejections().size() == 0
         response.getRecords().size() == 7
     }
+    
+def "Tests submission of a full file reader task with 1 large input."() {
+    given: "A standard condition test request"
+        ISession session = new PublisherSession("{}/resources/test/file-reader/manifest.json")
+        IRequest request = session.createRequest();
+        IRecord record = request.createRecord();
+        record.setField("file-path", "{}/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt");
+    when: "We submit the test session and wait for completion"
+        IResponse response = request.submit();
+        while (!response.getComplete()) {}
+    then: "We should have no rejections and there should be 79794 records in the return set."
+        response.getRejections().size() == 0
+        response.getRecords().size() == 79794
+    }
 
 
 }

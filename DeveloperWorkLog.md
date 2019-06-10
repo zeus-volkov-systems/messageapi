@@ -12,9 +12,14 @@ This work log is also useful as a supplemental documentation for end users of th
 
 ## Current Focus
 
+## Previous Foci
+
 ### Field Definition Enforcement on Transformations and Endpoints
 
-#### Status - In Design
+#### Status - Completed Successfully With Design Change
+
+
+Resolution - after an analysis of the initial design specifications WRT patterns found in communicating sequential processes, it was determined that the process both Transformation and Endpoint alphabets had an unknown potential for collision when intersected with the Schema alphabet. Due to this potential for collision and inability to make guarantees that fields which are part of the global alphabet are uniquely typed, a solution was implemented that provides configurable control and as many guarantees about endpoint fields as possible. This was done by creating an abstract base class that requires extending endpoints to define their own default fields. Then which of these fields returned is configurable by the session that uses the endpoint (on the connection map). In other words, the endpoint defines its maximal/default return field set, but that is a maximum bound that can be reduced by sessions, by specifying a subset on the connection map.
 
 *Author: Ryan Berkheimer*
 
@@ -26,13 +31,14 @@ Currently fields are specified by transformations on transformation spec maps, a
 
 #### Design Path
 
+Ultimately it was decided that the best that could be done with endpoint fields without breaking some mathematical domain guarantees was to create a BaseEndpoint abstract class, which other endpoints could extend, that would parse default fields (to be specified on the endpoint itself). This design allows consumers of endpoints to have a guarantee of what fields they will expect to originate out of an endpoint. In the specification, a subset of those fields can be specified to restrict what endpoints return. This design compromise was due to the uncertainty in the field domain of reusable endpoints - i.e., the possibility for endpoints to define fields with the same name but different types. This could either be controlled via 
 
-
-## Previous Foci
 
 ### Collection Conditions
 
 #### Status - Completed Successfully
+
+Resolution - This feature was implemented as described below. All conditions originate from the global conditions map. In publisher sessions, the request now gets a complete copy of the conditions, as well as each record. If initial conditions are set, they are kept in the request set of conditions. Any initial conditions that are set are wiped from individual records - if the values are set independently, they will be honored for that record. When a request is submitted, conditions valued on individual records will filter records as before - in new behavior, request-wide records are  applied to all records being parsed/factored into different containers - ie, records must satistfy the conditions specified on a contained to be added to that container. Currently, only collection containers allow specified conditions. This is due to the ability of transformations for arbitrary fieldset modification, including addition of fields that are not specified on the global fieldset schema. 
 
 *Author: Ryan Berkheimer*
 
@@ -147,6 +153,8 @@ To implement our change with the chosen option and for maximum reuse of existing
 ### Transformations
 
 #### Status - Completed Successfully
+
+Resolution - Transformations are fully implemented and functional. Transformations get their own copies of records, so they are completely functional. They can accept an arbitrary number of any container type as inputs - i.e., collections, classifiers, or other transformations, as well as UUID sets. Because they can accept other transformations, they can be recursive. Transformations are also lazy, in the sense that they are containers. They hold definitions until they are used inside an endpoint, at which point they are evaluated. In the case that the UUID keyword is used as an input to a transformation, the transformation will be applied to every UUID set individually, and then the transformation will return an aggregate of all evaluations.
 
 *Author: Ryan Berkheimer*
 

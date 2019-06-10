@@ -1,9 +1,0 @@
-{
-    "collections": [
-        {
-            "id": "default",
-            "classifiers": {},
-            "fields": ["file-path"]
-        }
-    ]
-}

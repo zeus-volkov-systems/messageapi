@@ -1,9 +1,0 @@
-{
-    "fields": [
-        {
-            "id": "file-path",
-            "type": "string",
-            "required": true
-        }
-    ]
-}

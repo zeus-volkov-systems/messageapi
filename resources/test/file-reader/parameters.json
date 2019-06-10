@@ -18,5 +18,6 @@
                          "fields": ["file-path"]}],
     "connections": [{"id": "conn-1",
                      "transformations": ["trans-1"],
-                     "constructor": {"file-fields": "file-path"}}]
+                     "constructor": {"file-fields": "file-path"},
+                     "fields" : ["value"]}]
 }
