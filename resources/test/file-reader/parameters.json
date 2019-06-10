@@ -19,5 +19,5 @@
     "connections": [{"id": "conn-1",
                      "transformations": ["trans-1"],
                      "constructor": {"file-fields": "file-path"},
-                     "fields" : ["value"]}]
+                     "fields" : ["value","number", "length"]}]
 }
