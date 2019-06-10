@@ -52,16 +52,11 @@ public class DefaultPacket implements IPacket {
     }
 
     public void addRecords(List<IRecord> records) {
-        List<IRecord> newRecords = new ArrayList<IRecord>();
-        newRecords.addAll(this.records);
-        newRecords.addAll(records);
-        this.records = newRecords;
+        this.records.addAll(records);
     }
 
     public void addRejections(List<IRejection> rejections) {
-        List<IRejection> newRejections = new ArrayList<IRejection>();
-        newRejections.addAll(this.rejections);
-        newRejections.addAll(rejections);
+        this.rejections.addAll(rejections);
     }
 
 
