@@ -4,10 +4,10 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.Reader;
 
 import gov.noaa.messageapi.interfaces.IEndpoint;
 import gov.noaa.messageapi.interfaces.IField;
@@ -175,9 +175,50 @@ public class InMemoryFileReader extends BaseEndpoint implements IEndpoint {
         }).collect(Collectors.toList())));
     }
 
+    public List<String> getFileFields() {
+        return this.fileFields;
+    }
+
+    private List<IRecord> createFileRecords(String containerType, String containerId, String fileName) throws IOException {
+        List<IRecord> records = new ArrayList<IRecord>();
+        try (Reader reader = new FileReader(fileName); BufferedReader buffered = new BufferedReader(reader)) {
+            String line;
+            int i = 0;
+            while ((line = buffered.readLine()) != null) {
+                records.add(this.setRecord(this.createRecord(), line, i, containerType, containerId, fileName));
+                i += 1;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return records;
+    }
+
+    private IRecord setRecord(IRecord record, String line, Integer count, String containerType, String containerId, String fileName) {
+        if (record.hasField("value")) {
+            record.setField("value", line);
+        }
+        if (record.hasField("number")) {
+            record.setField("number", count);
+        }
+        if (record.hasField("length")) {
+            record.setField("length", line.length());
+        }
+        if (record.hasField("file")) {
+            record.setField("file", fileName);
+        }
+        if (record.hasField("container-type")) {
+            record.setField("container-type", containerType);
+        }
+        if (record.hasField("container-id")) {
+            record.setField("container-id", containerId);
+        }
+        return record;
+    }
+
     /**
-     * Returns the default fields for this endpoint. The default fields are
-     * number, value, length, file, container-type, container-name
+     * Returns the default fields for this endpoint. The default fields are number,
+     * value, length, file, container-type, container-name
      */
     public List<IField> getDefaultFields() {
         List<IField> fields = new ArrayList<IField>();
@@ -190,45 +231,14 @@ public class InMemoryFileReader extends BaseEndpoint implements IEndpoint {
         return fields;
     }
 
-    public List<String> getFileFields() {
-        return this.fileFields;
-    }
-
-    private List<IRecord> createFileRecords(String containerType, String containerId, String fileName) throws IOException {
-        List<IRecord> records = Files.lines(Paths.get(fileName)).map(line -> {
-            IRecord r = this.createRecord();
-            if (r.hasField("value")) {
-                r.setField("value", line);
-            }
-            if (r.hasField("length")) {
-                r.setField("length", line.length());
-            }
-            if (r.hasField("file")) {
-                r.setField("file", fileName);
-            }
-            if (r.hasField("container-type")) {
-                r.setField("container-type", containerType);
-            }
-            if (r.hasField("container-id")) {
-                r.setField("container-id", containerId);
-            }
-            return r;
-        }).collect(Collectors.toList());
-        if (this.createRecord().hasField("length")) {
-            records.stream().forEach(r -> r.setField("line", records.indexOf(r)));
-        }
-        return records;
-    }
-
     @SuppressWarnings("unchecked")
     private void setFileFields(Object fileFields) {
         if (fileFields instanceof String) {
             this.fileFields = new ArrayList<String>();
             this.fileFields.add((String) fileFields);
         } else if (fileFields instanceof List) {
-            this.fileFields = ((List<Object>)fileFields).stream().map(ff -> (String) ff)
-                    .collect(Collectors.toList());
-            }
+            this.fileFields = ((List<Object>) fileFields).stream().map(ff -> (String) ff).collect(Collectors.toList());
+        }
     }
 
 }
