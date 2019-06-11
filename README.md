@@ -3,9 +3,15 @@
 
 ## Overview
 
-MessageAPI is a structured-data-processing specification designed to allow the development of decomplected, transparent, easily understood, evolutionary, and highly configurable systems. MessageAPI does this by drawing a domain distinction between process structure (the 'Message' of MessageAPI) and data (the 'API' part) and then providing complimentary orthonormal basis sets to define each domain. The structure and data domain definitions of MessageAPI are based on the principles of generic programming and designed using the language of Communicating Sequential Processes (CSP) in order to be easily picked up and understood by different audiences and users.
+MessageAPI is a structured-data-processing specification designed to allow the development of decomplected, transparent, easily understood, evolutionary, and highly configurable systems. MessageAPI does this by drawing a domain distinction between process structure (the 'Message' of MessageAPI) and data (the 'API' part) and then providing complimentary orthonormal bases to define each domain. The structure and data domain definitions of MessageAPI are based on the principles of generic programming and designed using the language of Communicating Sequential Processes (CSP) in order to be easily picked up and understood by different audiences and users.
 
-MessageAPI is ultimately a specification, but for practical purposes it's also an implementation that consists of a DefaultSession that sets itself up using a declarative JSON specification of the MessageAPI structural model (through a manifest), and then allows data to be formulated using the Request and Response APIs to process batch and/or streaming Requests asynchronously. In the provided session implementation, Transformations and Endpoints are provided Abstract Base Classes. There are tests included in the package (including example Transformations and Endpoints) that demonstrate the use of these for simple but ubiquitous use cases (like grabbing records from a File endpoint).
+MessageAPI is ultimately a specification for data-process pipelines, but for practical purposes it is also an implementation that consists of a default **Session** that sets itself up using a declarative JSON specification of the MessageAPI structural model (through a manifest and parameter map), and then allows data to be formulated using the **Request** and **Response** APIs to process batch and/or streaming Requests asynchronously. In the provided session implementation, requests terminate on **Endpoints** which can be thought of as defining the terminus of a given computation. Endpoints are provided an interface and an abstract base class to extend. Endpoints have access to the data passed through MessageAPI as **Records**, which can be held in any number of *containers* - such as **Collections**, **Classifiers**, and **Transformations**. 
+
+Collections are record set containers, Classfiers are potentially cross-collection record containers, and Transformations are containers of records which apply some manipulation on other containers (including other Transformations). In contrast with Endpoints, Transformations are more open ended, providing an interface to implement. Transformations exhibit lazy processing behavior that is only executed when they are referred to in an **Endpoint**. In MessageAPI, Transformations always get their own copies of inputs, making them easy to use without worrying about shared system state.
+
+By providing a shared mechanism for batch and stream operation, the default session of MessageAPI is extremely flexible and allows code reuse for both modes. In the Default MessageAPI Session, streaming behavior can be accomplished by submitting a request, updating its record with a new value, and resubmitting the same request - a new response is generated for every request, but they return asynchronously, so no blocking occurs. As Endpoints only initialize per-request, endpoints also share state in this operation - this makes it possible to have long running endpoints (like other MessageAPI sessions). Batch mode can be accomplished by creating a new request for every new set of data - in this mode, endpoints are reinitialized based on Session parameters, and hold independent state.
+
+There are tests included in the package (including example Transformations and Endpoints) that demonstrate the use of MessageAPI for simple but ubiquitous use cases (like grabbing records from a File endpoint). In one of the included tests, a ~80k line variable-byte file is read in as individual line records, each then holding the line number, value, container source, container type, and originating file name - in around 3/10ths of a second. Fields can be dropped through configuration to improve speed. While not 'free' (i.e., we can't compete with a straight buffer read) in our opinion this test demonstarates that the benefits of MessageAPI - extreme flexibility, code reuse, configurable control, and large potential for metadata - outweigh the slight performance overhead.
 
 ## Motivation
 
@@ -21,7 +27,7 @@ TaskAPI does allow for arbitrary data to be passed between fortran, c, and java 
 
 All of these use cases added up to the need for a new tool to provide generalized intraprocess communication. This is what MessageAPI was primarily designed to do - replace targeted intraprocess communication in native languages with a standardized, stable, general, flexible, and portable mechanism. Due to type system differences across languages, the system would have to 
 
-- have a small, static API (any message would need to be transferred through a small set of API methods)
+- have a small, static API (any message would need to be transferred through a small set of bounded API methods)
 - able to handle inward or outward directed messages
 - be able to work in a non-blocking or blocking fashion
 
@@ -42,11 +48,11 @@ All of these requirements added up to creating a specification first, and then w
 
 ## Philosophy
 
-MessageAPI is designed with the belief that all processes are fundamentally simple, similar, and understandable. MessageAPI was designed to expose these process characterists by the use of a simple (in the decomplected sense) information model. 
+MessageAPI is designed with the belief that all processes are fundamentally simple, similar, and understandable. MessageAPI was designed to expose these process characteristics by the use of a simple (in the decomplected sense) information model. 
 
-Every part of how a MessageAPI defined process will play out, down to the implementation classes, is laid bare in a single text based manifest map. This manifest makes trivial work out of reasoning about how a program is structured and will run before it is ever run - from a single location. 
+Every part of how a MessageAPI defined process will play out, down to the implementation classes, is laid bare in a pair of text based maps - one for the manifest, and one for the parameters. These maps makes trivial work out of reasoning about how a program is structured and will run before it is ever executed. 
 
-A schema holds a flat map of all fields and conditions a user will interact with; a container defines how fields will be factored and held in collections, classifications, and transformations; and endpoints define where containers of records will go. All of these parts of a Message are viewable and configurable without touching code. Users write and share their own custom endpoints and transformations, which are then specified in the map. 
+The primary dimensions of MessageAPI are held to three - A **Schema** holds a flat map of all fields and conditions a user will interact with; a **Container** defines how fields will be factored and held in collections, classifications, and transformations; and a **Protocol** defines Endpoints and connections to them, which define where containers of records will go. All of these parts of a Message are viewable and configurable without touching code. Users write and share their own custom Endpoints and Transformations, which are then specified in the map. 
 
 Everything that passes data in MessageAPI consumes and produces the same object type - the record. The manifests are used in code by creating a session based on them - and then using a stable API to create a request, add records, set field and/or condition values, and then submit, which immediately returns an async response. The response will hold its own records and rejections, and eventually get an 'isComplete' flag. That's the entirety of the API surface. Everything else depends on the Manifest.
 
@@ -54,26 +60,26 @@ MessageAPI is designed to be capable of passing any message content - objects, d
 
 The benefits of using MessageAPI are its extreme schema flexibility, potential for tool decoupling and transport optimization, API standardization across all messaging, and self documentation through an information model.
 
-It's important to point out that even though it's called MessageAPI, the provided implementations do not replace message tools like ActiveMQ, RabbitMQ, Spark, or Storm. MessageAPI is fundamentally a specification, and the provided implementations are small (3MB total package size) self contained standalone things. These other messaging systems could of course be used with MessageAPI - linking response steps, serving as input or output queues, or transformation steps. 
+It's important to point out that even though it's called MessageAPI, the provided implementations do not replace message tools like ActiveMQ, RabbitMQ, Spark, or Storm. Really, no tools are 'replaced' by this one. MessageAPI is fundamentally a process specification, and the provided implementation is a small (3MB total package size) universal connector. This means that other messaging systems could of course be used with MessageAPI - linking response steps, serving as input or output queues, or transformation steps. Even MessageAPI sessions can be endpoints for MessageAPI sessions.
 
 ## Package Contents
 
-This package includes the MessageAPI specification as a set of interfaces, useful implementations that can perform batch and stream publication/consumption, and several tests that demonstrate common data processing tasks to provide an idea on how to build systems. The Java part of the core MessageAPI implementation is written almost entirely in Java8/9+ core, taking advantage of the Java Streams and Flow packages, with only one external dependency - a JSON parser - due to the lack of a core Java version. Similarly, APIs provided for any other languages found in this package (currently planned are C, Fortran, and CPython) - are written in their respective core languages. Endpoints and Transformations are the responsibility of the user.
+This package includes the MessageAPI specification as a set of interfaces, useful implementations that can perform batch and stream publication/consumption, and several tests that demonstrate common data processing tasks to provide an idea on how to build systems. The Java part of the core MessageAPI implementation is written almost entirely in Java8/9+ core, taking advantage of the Java Streams and Flow packages, with only one external dependency - a JSON parser - due to the lack of a core Java version. Similarly, APIs provided for any other languages found in this package (currently planned are C, Fortran, and CPython) - are written in their respective core languages. Endpoints and Transformations are left to the joy of the user and their domain.
 
 
 ### Description
 
-Using MessageAPI means taking a data-messaging process, defining the process alphabet in terms of fields and conditions, determining how those fields are contained as different record permutations (including any transformations or conditions that affect that containment), and determining what to do with the records. All this information is then laid out in the session manifest and parameter map, and then data is moved through the initialized session by submitting records as discrete requests.
+Using MessageAPI means taking a data-messaging process, defining the process alphabet in terms of fields and conditions, determining how those fields are contained as different record permutations (including any transformations or conditions that affect that containment), and determining what to do with the records. All this information is then laid out in the session manifest and parameter map, and then data is moved through the initialized session by submitting records as either discrete requests, or resubmitting new records as a stream on the same request.
 
-In the provided implementation of the DefaultSession, records can be moved through the system in batch
+As previously described, in the provided implementation of the DefaultSession, records can be moved through the system in batch by using separate requests, or in stream by reusing the same request. When streaming over the same request, endpoints have a shared state over submissions.
 
-MessageAPI information model manifests are completely pluggable and are read when specifically referenced at runtime in code.
+The MessageAPI information model manifest is completely pluggable and is read when specifically referenced at runtime in code (i.e., ISession s = new Session('manifest.json')). This allows targeted improvements or modifications of the standard. Want to change the containers to ship somewhere else? Build Docker containers? Make Requests enforce always-batch behavior? Change the container plugin, or another plugin, and reuse the rest.
 
-MessageAPI provides a standard topology that will suit many messaging tasks (either publishing or consuming oriented), along with providing a matching set of basic plugins. The provided implementations are well suited for individual or distributed use. For example, a MessageAPI session could be wrapped as a Kafka consumer, deployed as a single runtime pod in Kubernetes as a consumer group, started up, and then fed records coming from a service. Or a session could be used intra-process to send emails to different groups based on different conditions. There are a lot of varied uses.
+The complete pluggability of MessageAPI also provides another powerful potential - creation of Sessions at-a-distance. This opens the MessageAPI system up for complete and total automation by things like REST services, driver programs, GUI's, etc.
 
-The provided implementations could also be replaced wholesale or improved incrementally.
+The default MessageAPI session provides a standard topology that will suit many messaging tasks (either publishing or consuming oriented, batch or stream oriented), along with providing a matching set of basic plugins. The provided implementations are well suited for individual or distributed use. For example, a MessageAPI session could be wrapped as a Kafka consumer, deployed as a single runtime pod in Kubernetes as a consumer group, started up, and then fed records coming from a service. Or a session could be used intra-process to send emails to different groups based on different conditions. There are a lot of varied uses.
 
-In the provided implementation, the manifest looks like the following:
+The following is an example of a DefaultSession manifest:
 
 ```
 {
@@ -154,11 +160,11 @@ So, for example, if the above spec is taken literally, when it is used in the co
 
 ```
 
-*These parameters can be split up or held together. Each of these domain concepts will be explored in more depth further down* 
+*These parameters can be split up into separate files or held together like they are here. Each of these domain concepts will be explored in more depth further down.* 
 
-Once built, this session is then in memory and can be reused as often as necessary. MessageAPI trades initial speed of compile-time class construction for the flexibility and declarative nature of doing it at runtime  (although the initial bootstrapping is generally very fast anyway), and then allows already created session objects to be reused. Additionally, individual parts of already created session objects can be used to create new objects (for example, using an existing in-memory schema instance, that's part of an existing, in-memory session, for use in creating a different, new session object). This could be useful in at-a-distance construction of sessions.
+Once built, this session is then in memory and can be reused as often as necessary (subsequent requests do deep-copies of loaded session components). MessageAPI trades initial speed of compile-time class construction for the flexibility and declarative nature of doing it at runtime (although the initial bootstrapping is generally very fast, as the provided MessageAPI implementation footprint is small).
 
-Each session component is considered a fundamental and loosely orthogonal dimension of its parent. Every message session, no matter what the type, can be created by specifying these three dimensions, and this concept is what allows MessageAPI to provide a powerful abstract framework on top of arbitrary messages. Each of these dimensions has its own particular properties which define it. All also include a catchall 'metadata' property for storage of other useful self-documenting information, such as version or identifying labels.
+Each session component is considered a fundamental and loosely orthogonal dimension of its parent. Every message session, no matter what the type, can be created by specifying the three primary dimensions (Schema, Container, and Protocol), and this concept is what allows MessageAPI to provide a powerful and lightweight abstraction on top of arbitrary messages. Each of these dimensions has its own particular properties which define it. All also include a catchall 'metadata' property for storage of other useful self-documenting information, such as version or identifying labels.
 
 #### MessageAPI Session Topology
 
