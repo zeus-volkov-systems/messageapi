@@ -15,7 +15,7 @@ import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.IContainerRecord;
 
 import gov.noaa.messageapi.responses.BaseResponse;
-import gov.noaa.messageapi.requests.PublishRequest;
+import gov.noaa.messageapi.requests.DefaultRequest;
 
 import gov.noaa.messageapi.utils.protocol.ConnectionUtils;
 import gov.noaa.messageapi.utils.request.ContainerUtils;
@@ -25,17 +25,17 @@ import gov.noaa.messageapi.utils.general.ListUtils;
 
 
 /**
- * A PublishResponse is the main processing unit of Default System Publishing.
+ * A DefaultResponse is the main processing unit of Default System Publishing.
  * Publishing Responses operate on Publish Requests, which are the fundamental
  * containers and work specifications of Default System Publishing.
- * PublishResponses work in a procedurally stereotyped manner - requests are
+ * DefaultResponses work in a procedurally stereotyped manner - requests are
  * validated, factored, prepared, processed, resolved, and then marked as completed,
  * in that order. Each of these stages is run in an internally-asynchronous manner,
  * which allows for parallelization on an intra-stage level. On an inter-stage level,
  * they are dependent on each other in a procedural manner.
  * @author Ryan Berkheimer
  */
-public class PublishResponse extends BaseResponse implements IResponse {
+public class DefaultResponse extends BaseResponse implements IResponse {
 
     /**
      * The default constructor for a publish response. When a response is created
@@ -44,7 +44,7 @@ public class PublishResponse extends BaseResponse implements IResponse {
      * and resolution.
      * @param request A request containing records to process and resolve in the response.
      */
-    public PublishResponse(PublishRequest request) {
+    public DefaultResponse(DefaultRequest request) {
         super(request);
         this.validate(this.request.getSchema(), this.request.getRecords())
                   .thenCompose(outgoingPacket -> this.factor(this.request.getSchema(), this.request.getContainer(), this.request.getRequestRecord(), outgoingPacket))

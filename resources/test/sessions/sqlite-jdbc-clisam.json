@@ -1,4 +1,4 @@
-{"plugin": "gov.noaa.messageapi.sessions.PublisherSession",
+{"plugin": "gov.noaa.messageapi.sessions.DefaultSession",
  "constructor": {"schema": {"plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
                             "constructor": {"metadata": "{}/resources/test/schemas/simple/clisam/metadata.json",
                                             "fields": "{}/resources/test/schemas/simple/clisam/fields.json",

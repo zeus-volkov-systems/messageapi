@@ -4,7 +4,7 @@
  */
 
 import gov.noaa.messageapi.factories.SessionFactory;
-import gov.noaa.messageapi.sessions.PublisherSession;
+import gov.noaa.messageapi.sessions.DefaultSession;
 import gov.noaa.messageapi.interfaces.ISession;
 import gov.noaa.messageapi.interfaces.IRequest;
 import gov.noaa.messageapi.interfaces.IRecord;
@@ -15,7 +15,7 @@ class FieldUnitTests extends spock.lang.Specification {
     def "Tests that fields in a record are named as expected and in the proper order."() {
         given:
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
-            ISession session = new PublisherSession(sessionSpec)
+            ISession session = new DefaultSession(sessionSpec)
             IRequest request = session.createRequest()
             IRecord record = request.createRecord()
 

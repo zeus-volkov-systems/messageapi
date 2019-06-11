@@ -5,7 +5,7 @@
 
 MessageAPI is a structured-data-processing specification designed to allow the development of decomplected, transparent, easily understood, evolutionary, and highly configurable systems. MessageAPI does this by drawing a domain distinction between process structure (the 'Message' of MessageAPI) and data (the 'API' part) and then providing complimentary orthonormal basis sets to define each domain. The structure and data domain definitions of MessageAPI are based on the principles of generic programming and designed using the language of Communicating Sequential Processes (CSP) in order to be easily picked up and understood by different audiences and users.
 
-MessageAPI is ultimately a specification, but for practical purposes it's also an implementation that consists of two Sessions (Publisher and Consumer) that set themselves up using declarative JSON specifications of the MessageAPI structural model (through a manifest), and then allow data to be formulated using the Request and Response APIs to process batch and/or streaming Requests asynchronously. In the provided session implementations, Transformations and Endpoints are provided Abstract Base Classes. There are tests included in the package (including example Transformations and Endpoints) that demonstrate the use of these for simple but ubiquitous use cases (like grabbing records from a File endpoint).
+MessageAPI is ultimately a specification, but for practical purposes it's also an implementation that consists of a DefaultSession that sets itself up using a declarative JSON specification of the MessageAPI structural model (through a manifest), and then allows data to be formulated using the Request and Response APIs to process batch and/or streaming Requests asynchronously. In the provided session implementation, Transformations and Endpoints are provided Abstract Base Classes. There are tests included in the package (including example Transformations and Endpoints) that demonstrate the use of these for simple but ubiquitous use cases (like grabbing records from a File endpoint).
 
 ## Motivation
 
@@ -67,7 +67,7 @@ At a minimum, using MessageAPI means writing an information model specification/
 
 MessageAPI information model manifests are completely pluggable and are read when specifically referenced at runtime in code.
 
-MessageAPI provides a standard topology that will suit many messaging tasks (either publishing or consuming oriented), along with providing a matching set of basic plugins. The provided implementations are well suited for individual or distributed use. For example, a single MessageAPI manifest could be written as a Kafka consumer - then could be deployed in a Docker container, used in a Consumer group pattern in a Kafka Cluster or K8s Pod Deployment, and then fed records coming from a service. Or a manifest could be used intra-process to send emails to different groups based on different conditions. There are a lot of uses.
+MessageAPI provides a standard topology that will suit many messaging tasks (either publishing or consuming oriented), along with providing a matching set of basic plugins. The provided implementations are well suited for individual or distributed use. For example, a MessageAPI session could be wrapped as a Kafka consumer, deployed as a single runtime pod in Kubernetes as a consumer group, started up, and then fed records coming from a service. Or a session could be used intra-process to send emails to different groups based on different conditions. There are a lot of varied uses.
 
 The provided implementations could also be replaced wholesale or improved incrementally.
 
@@ -75,7 +75,7 @@ In the provided implementation, the manifest looks like the following:
 
 ```
 {
-    "plugin": "gov.noaa.messageapi.sessions.PublisherSession",
+    "plugin": "gov.noaa.messageapi.sessions.DefaultSession",
     "constructor": {
         "schema": {
             "plugin": "gov.noaa.messageapi.schemas.DefaultSchema",

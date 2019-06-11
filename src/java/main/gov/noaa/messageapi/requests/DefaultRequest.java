@@ -7,28 +7,28 @@ import gov.noaa.messageapi.interfaces.IRequest;
 import gov.noaa.messageapi.interfaces.IResponse;
 
 import gov.noaa.messageapi.requests.BaseRequest;
-import gov.noaa.messageapi.responses.PublishResponse;
+import gov.noaa.messageapi.responses.DefaultResponse;
 
 
 /**
  * @author Ryan Berkheimer
  */
-public class PublishRequest extends BaseRequest implements IRequest {
+public class DefaultRequest extends BaseRequest implements IRequest {
 
-    public PublishRequest(ISchema schema, IContainer container, IProtocol protocol) {
-        super("publisher", schema, container, protocol);
+    public DefaultRequest(ISchema schema, IContainer container, IProtocol protocol) {
+        super("default", schema, container, protocol);
     }
 
-    public PublishRequest(IRequest request) {
+    public DefaultRequest(IRequest request) {
         super(request);
     }
 
-    public PublishRequest getCopy() {
-        return new PublishRequest(this);
+    public DefaultRequest getCopy() {
+        return new DefaultRequest(this);
     }
 
     public IResponse submit() {
-        return new PublishResponse(this);
+        return new DefaultResponse(this);
     }
 
 }

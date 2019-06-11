@@ -10,14 +10,14 @@ import gov.noaa.messageapi.interfaces.IRejection;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IField;
 
-import gov.noaa.messageapi.sessions.PublisherSession;
+import gov.noaa.messageapi.sessions.DefaultSession;
 
 class FileReaderTests extends spock.lang.Specification {
 
 
 def "Tests submission of a full file reader task with 1 small input."() {
     given: "A standard condition test request"
-        ISession session = new PublisherSession("{}/resources/test/file-reader/manifest.json")
+        ISession session = new DefaultSession("{}/resources/test/file-reader/manifest.json")
         IRequest request = session.createRequest();
         IRecord record = request.createRecord();
         record.setField("file-path", "{}/resources/test/inputs/file-reader/simpletextfile");
@@ -31,7 +31,7 @@ def "Tests submission of a full file reader task with 1 small input."() {
     
 def "Tests submission of a full file reader task with 1 large input."() {
     given: "A standard condition test request"
-        ISession session = new PublisherSession("{}/resources/test/file-reader/manifest.json")
+        ISession session = new DefaultSession("{}/resources/test/file-reader/manifest.json")
         IRequest request = session.createRequest();
         IRecord record = request.createRecord();
         record.setField("file-path", "{}/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt");

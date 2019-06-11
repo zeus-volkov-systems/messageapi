@@ -16,14 +16,14 @@ import gov.noaa.messageapi.interfaces.IField;
 
 class RequestUnitTests extends spock.lang.Specification {
 
-    def "Test creating a publisher request."() {
+    def "Test creating a default request."() {
         given:
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
             ISession session = SessionFactory.create(sessionSpec)
         when: "We create an add request"
             IRequest request = session.createRequest()
         then: "Add request is created and of the proper type"
-            request.getType() == "publisher"
+            request.getType() == "default"
             request in gov.noaa.messageapi.interfaces.IRequest
     }
 

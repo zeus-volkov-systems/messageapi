@@ -14,7 +14,7 @@ This work log is also useful as a supplemental documentation for end users of th
 - C API
 - Fortran API
 - Python API
-- Consumer Session
+- Split Publish/Consumer Sessions
 - Example Endpoints (Email, Directory, Kafka)
 
 ## Current Focus
@@ -53,7 +53,7 @@ Ultimately it was decided that the best that could be done with endpoint fields 
 
 #### Status - Completed Successfully
 
-Resolution - This feature was implemented as described below. All conditions originate from the global conditions map. In publisher sessions, the request now gets a complete copy of the conditions, as well as each record. If initial conditions are set, they are kept in the request set of conditions. Any initial conditions that are set are wiped from individual records - if the values are set independently, they will be honored for that record. When a request is submitted, conditions valued on individual records will filter records as before - in new behavior, request-wide records are  applied to all records being parsed/factored into different containers - ie, records must satistfy the conditions specified on a contained to be added to that container. Currently, only collection containers allow specified conditions. This is due to the ability of transformations for arbitrary fieldset modification, including addition of fields that are not specified on the global fieldset schema. 
+Resolution - This feature was implemented as described below. All conditions originate from the global conditions map. In default sessions, the request now gets a complete copy of the conditions, as well as each record. If initial conditions are set, they are kept in the request set of conditions. Any initial conditions that are set are wiped from individual records - if the values are set independently, they will be honored for that record. When a request is submitted, conditions valued on individual records will filter records as before - in new behavior, request-wide records are  applied to all records being parsed/factored into different containers - ie, records must satistfy the conditions specified on a contained to be added to that container. Currently, only collection containers allow specified conditions. This is due to the ability of transformations for arbitrary fieldset modification, including addition of fields that are not specified on the global fieldset schema. 
 
 *Author: Ryan Berkheimer*
 
