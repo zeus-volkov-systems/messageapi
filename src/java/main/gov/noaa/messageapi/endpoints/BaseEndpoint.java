@@ -9,6 +9,14 @@ import gov.noaa.messageapi.interfaces.IRecord;
 
 import gov.noaa.messageapi.records.schema.SchemaRecord;
 
+/**
+ * The abstract base class for user endpoints. This class provides extending user
+ * endpoints the convenience of parsing and making available the fields,
+ * collections, classifiers, and transformations specified on the connection map
+ * used to instantiate this endpoint. This class also provides the
+ * mechanism for determining which fields a user wants to return.
+ * @author Ryan Berkheimer
+ */
 public abstract class BaseEndpoint {
 
     public List<IField> fields = null;

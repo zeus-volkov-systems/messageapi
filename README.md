@@ -63,7 +63,9 @@ This package includes the MessageAPI specification as a set of interfaces, usefu
 
 ### Description
 
-At a minimum, using MessageAPI means writing an information model specification/manifest and incorporating the provided API methods in code to read it.
+Using MessageAPI means taking a data-messaging process, defining the process alphabet in terms of fields and conditions, determining how those fields are contained as different record permutations (including any transformations or conditions that affect that containment), and determining what to do with the records. All this information is then laid out in the session manifest and parameter map, and then data is moved through the initialized session by submitting records as discrete requests.
+
+In the provided implementation of the DefaultSession, records can be moved through the system in batch
 
 MessageAPI information model manifests are completely pluggable and are read when specifically referenced at runtime in code.
 
