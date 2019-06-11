@@ -11,6 +11,7 @@ public interface IRequest {
 
     public IRecord createRecord();
     public IRequest getCopy();
+    public IRequest getCopy(List<String> copyComponents);
     public String getType();
     public IContainer getContainer();
     public ISchema getSchema();
@@ -18,5 +19,6 @@ public interface IRequest {
     public List<IRecord> getRecords();
     public IRecord getRequestRecord();
     public void setCondition(String id, Object value);
+    public void setRecords(List<IRecord> records);
 
 }

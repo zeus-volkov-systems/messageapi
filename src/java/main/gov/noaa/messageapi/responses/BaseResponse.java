@@ -1,5 +1,6 @@
 package gov.noaa.messageapi.responses;
 
+import java.util.Arrays;
 import java.util.List;
 
 import gov.noaa.messageapi.interfaces.IRequest;
@@ -51,7 +52,7 @@ public class BaseResponse {
     }
 
     private void setRequest(IRequest request) {
-        this.request = request.getCopy();
+        this.request = request.getCopy(Arrays.asList("records"));
     }
 
 }

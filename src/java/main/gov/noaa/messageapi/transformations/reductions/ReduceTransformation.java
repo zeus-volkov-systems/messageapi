@@ -12,13 +12,9 @@ import gov.noaa.messageapi.interfaces.ITransformation;
  */
 public class ReduceTransformation implements ITransformation {
 
-    public ReduceTransformation(List<String> fields, Map<String,Object> params) {
-        System.out.println("Reduce Transformation constuctor");
-    }
+    public ReduceTransformation(List<String> fields, Map<String,Object> params) {}
 
     public List<IRecord> process(Map<String,List<IRecord>> transformationMap) {
-        System.out.println("Reduction processing");
-        System.out.println(transformationMap);
         return transformationMap.get("reduce-list");
     }
 

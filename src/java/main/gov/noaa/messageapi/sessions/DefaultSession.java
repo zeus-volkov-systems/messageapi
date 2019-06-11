@@ -40,7 +40,7 @@ public class DefaultSession extends BaseSession implements ISession {
     }
 
     /**
-     * Creates a clean publish request, using the session parameters for the
+     * Creates a clean publish request (deep copy), using the session parameters for the
      * request constructor
      * @return returns the created request
      */

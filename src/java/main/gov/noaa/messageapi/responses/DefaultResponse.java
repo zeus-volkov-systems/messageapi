@@ -26,7 +26,7 @@ import gov.noaa.messageapi.utils.general.ListUtils;
 
 /**
  * A DefaultResponse is the main processing unit of Default System Publishing.
- * Publishing Responses operate on Publish Requests, which are the fundamental
+ * Default Responses operate on Default Requests, which are the fundamental
  * containers and work specifications of Default System Publishing.
  * DefaultResponses work in a procedurally stereotyped manner - requests are
  * validated, factored, prepared, processed, resolved, and then marked as completed,
