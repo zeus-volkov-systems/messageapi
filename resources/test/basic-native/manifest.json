@@ -1,0 +1,29 @@
+{
+    "plugin": "gov.noaa.messageapi.sessions.DefaultSession",
+    "constructor": {
+        "schema": {
+            "plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
+            "constructor": {
+                "metadata": "{}/resources/test/metadata/basic-native/schema.json",
+                "fields": "{}/resources/test/basic-native/parameters.json"
+            }
+        },
+        "container": {
+            "plugin": "gov.noaa.messageapi.containers.DefaultContainer",
+            "constructor": {
+                "metadata": "{}/resources/test/metadata/basic-native/container.json",
+                "collections": "{}/resources/test/basic-native/parameters.json"
+            }
+        },
+        "protocol": {
+            "plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
+            "constructor": {
+                "metadata": "{}/resources/test/metadata/basic-native/protocol.json",
+                "endpoints": [{
+                        "plugin": "gov.noaa.messageapi.test.endpoints.InMemoryFileReader",
+                        "connections": "{}/resources/test/basic-native/parameters.json"
+                    }]
+            }
+        }
+    }
+}

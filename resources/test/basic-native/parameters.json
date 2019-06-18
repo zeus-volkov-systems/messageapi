@@ -1,0 +1,10 @@
+{
+    "fields": [{"id": "initial-value",
+                "type": "integer",
+                "required": true}],
+    "collections": [{"id": "1",
+                     "fields": ["initial-value"]}],
+    "connections": [{"id": "1",
+                     "collections": "*",
+                     "constructor": {"native-library": "/"}}]
+}
