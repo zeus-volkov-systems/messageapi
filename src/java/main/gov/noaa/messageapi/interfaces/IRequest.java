@@ -2,6 +2,7 @@ package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
 
+import gov.noaa.messageapi.interfaces.IResponse;
 import gov.noaa.messageapi.interfaces.IRecord;
 
 /**
@@ -20,5 +21,6 @@ public interface IRequest {
     public IRecord getRequestRecord();
     public void setCondition(String id, Object value);
     public void setRecords(List<IRecord> records);
+    public IResponse submit();
 
 }

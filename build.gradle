@@ -63,7 +63,7 @@ jar {
 
 sourceSets {
     main {
-        java.srcDirs = ['src/java/main']
+        java.srcDirs = ['src/java/main', 'src/java/test']
         groovy.srcDirs = ['src/java/main']
         resources.srcDirs = ['resources/main']
     }
