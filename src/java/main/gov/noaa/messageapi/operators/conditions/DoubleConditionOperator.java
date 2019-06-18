@@ -15,8 +15,10 @@ public class DoubleConditionOperator extends SimpleConditionOperator implements 
     }
 
     protected Integer getCompareValue(IField field, ICondition condition) {
-        Double d1 = new Double((Double) field.getValue());
-        Double d2 = new Double((Double) condition.getValue());
+        //Double d1 = new Double((Double) field.getValue());
+        Double d1 = Double.valueOf((Double) field.getValue());
+        //Double d2 = new Double((Double) condition.getValue());
+        Double d2 = Double.valueOf((Double) condition.getValue());
         return Double.compare(d1, d2);
     }
 

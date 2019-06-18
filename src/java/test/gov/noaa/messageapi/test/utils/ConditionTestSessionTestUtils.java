@@ -43,7 +43,8 @@ public class ConditionTestSessionTestUtils {
     public static IRequest getTestAddRequest1() throws Exception {
         IRequest request = getAddRequest();
         IRecord r1 = request.createRecord();
-        setTestRecordFields(r1, true, new Float(3.14159), new Double(5.234232342), 42, "test-string-value", new Date());
+        setTestRecordFields(r1, true, Float.valueOf((float) 3.14159), Double.valueOf(5.234232342), 42, "test-string-value",
+                new Date());
         setTestRecordConditions(r1, "test-string-value1", "test-string-value", 50);
         return request;
     }

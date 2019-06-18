@@ -15,8 +15,10 @@ public class BooleanConditionOperator extends SimpleConditionOperator implements
     }
 
     protected Integer getCompareValue(IField field, ICondition condition) {
-        Boolean b1 = new Boolean((Boolean) field.getValue());
-        Boolean b2 = new Boolean((Boolean) condition.getValue());
+        //Boolean b1 = new Boolean((Boolean) field.getValue());
+        Boolean b1 = Boolean.valueOf((Boolean) field.getValue());
+        //Boolean b2 = new Boolean((Boolean) condition.getValue());
+        Boolean b2 = Boolean.valueOf((Boolean) condition.getValue());
         return Boolean.compare(b1, b2);
     }
 }

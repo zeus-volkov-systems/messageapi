@@ -15,8 +15,10 @@ public class FloatConditionOperator extends SimpleConditionOperator implements I
     }
 
     protected Integer getCompareValue(IField field, ICondition condition) {
-        Float f1 = new Float((Float) field.getValue());
-        Float f2 = new Float((Float) condition.getValue());
+        //Float f1 = new Float((Float) field.getValue());
+        Float f1 = Float.valueOf((Float) field.getValue());
+        //Float f2 = new Float((Float) condition.getValue());
+        Float f2 = Float.valueOf((Float) condition.getValue());
         return Float.compare(f1, f2);
     }
 

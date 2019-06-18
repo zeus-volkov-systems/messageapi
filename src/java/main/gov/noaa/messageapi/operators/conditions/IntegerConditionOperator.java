@@ -15,8 +15,10 @@ public class IntegerConditionOperator extends SimpleConditionOperator implements
     }
 
     protected Integer getCompareValue(IField field, ICondition condition) {
-        Integer i1 = new Integer((Integer) field.getValue());
-        Integer i2 = new Integer((Integer) condition.getValue());
+        //Integer i1 = new Integer((Integer) field.getValue());
+        Integer i1 = Integer.valueOf((Integer) field.getValue());
+        //Integer i2 = new Integer((Integer) condition.getValue());
+        Integer i2 = Integer.valueOf((Integer) condition.getValue());
         return Integer.compare(i1, i2);
     }
 }
