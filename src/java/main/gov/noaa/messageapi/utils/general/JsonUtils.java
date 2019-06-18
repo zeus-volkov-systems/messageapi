@@ -99,7 +99,6 @@ public class JsonUtils {
             while (it.hasNext()) {
                 String currKey = it.next();
                 Object currObj = JsonUtils.get(jsonObject, currKey);
-                //String objType = currObj.getClass().getName();
                 if (currObj instanceof JSONArray) {
                     objMap.put(currKey, (Object) convertArray((JSONArray) currObj));
                 } else if (currObj instanceof JSONObject){
@@ -122,7 +121,6 @@ public class JsonUtils {
             Iterator<Object> it = jsonArray.iterator();
             while (it.hasNext()) {
                 Object currObj = it.next();
-                //String objType = currObj.getClass().getName();
                 if (currObj instanceof JSONArray) {
                     arrays.add((Object) convertArray((JSONArray) currObj));
                 } else if (currObj instanceof JSONObject){
