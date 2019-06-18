@@ -461,19 +461,27 @@ public class addRecordsTest {
     }
 
     public void addRecords(List<List<String>> recordsToAdd) {
+
         IRequest request = this.session.createRequest();
-        for (List<String> recordToAdd: recordsToAdd) {
-            IRecord record = request.createRecord();
+
+        recordsToAdd.stream().forEach(recordToAdd -> {
             for (int i = 0; i < record.getFields().size(); i++) {
                 record.setField(i, recordToAdd.get(i));
             }
-        }
+        });
+
         IResponse response = request.submit();
+
         while (!response.isComplete()) {}
+
         if (response.getRejections().size() > 0) {
             for (int j = 0; j < response.getRejections().size(); j++) {
                 System.err.println("Rejected record because " + response.getRejections().get(j).getReasons());
             }
+        } else {
+            response.getRecords().stream().forEach(record -> {
+                System.out.println(record.getFields());
+            });
         }
     }
 }
@@ -500,16 +508,24 @@ Because requests contain a copy of the session variables which created them, the
 
 ## Installation and Deployment
 
-Building MessageAPI from source requires the gradle build tool. With gradle
-installed, MessageAPI may be built and installed by navigating to the cloned directory and running
+At the time of this writing, MessageAPI (0.0.10-PRERELEASE) was built using OpenJDK 11.0.3 with gradle 5.4.1.
+
+There was a breaking change between older versions of gradle and the 5 series, and a relative path resolution
+method was updated to accommodate this change. If building from scratch, the gradle version must be upgraded to 5.4.1+.
+
+Older versions of the JDK, down to 1.8, still work for this build, although that isn't guaranteed going forward.
+
+Once these two system dependencies are met, this package can be run with tests by running 'gradle' from the package root.
+
 
 ```
 gradle
 ```
 
-This will install MessageAPI to the local repository on disk.
-The main MessageAPI package will only pull Log4J and SimpleJSON for use as dependencies
-from public artifact repositories. The testing suite will also pull Spock.
+This will install MessageAPI to the local repository as an UberJAR on disk (usually in ~/.m2).
+Beyond the core Java library, the main MessageAPI package uses only SimpleJSON as a dependency.
+
+Other dependencies are installed for the purposes of running tests, including Groovy, Spock, SLF4J, and SpockReports.
 
 ## Developer Guide
 
