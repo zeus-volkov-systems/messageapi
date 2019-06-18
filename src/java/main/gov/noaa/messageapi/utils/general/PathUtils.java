@@ -28,6 +28,9 @@ public class PathUtils {
      * This method is not durable but it works on current OSX Darwin and both Redhat and Ubuntu Linuxes.
      * If there is a better, more general way of finding the root project directory, the method business logic should
      * be replaced by that.
+     * Note - gradle updated their build in the 5 series so that Linux and Unix have the same structure for their 'build' directory.
+     * This method has changed to accommodate that. As it is gradle dependent, if the build system changes,
+     * this method should be reverified and/or replaced.
      * @param  path The path containing a {} character to be replaced by the relative package path.
      * @return      Returns the path with {} replaced by the package path.
      */
@@ -43,13 +46,13 @@ public class PathUtils {
                 returnPath = path.replace("{}", replaceMain);
                 return returnPath;
             case "unix":
-                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/test", "");
-                replaceMain = replaceLast(replaceTest, "/classes/main", "");
+                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                replaceMain = replaceLast(replaceTest, "/classes/java/main", "");
                 returnPath = path.replace("{}", replaceMain);
                 return returnPath;
             default:
-                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/test", "");
-                replaceMain = replaceLast(replaceTest, "/classes/main", "");
+                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                replaceMain = replaceLast(replaceTest, "/classes/java/main", "");
                 returnPath = path.replace("{}", replaceMain);
                 return returnPath;
         }
