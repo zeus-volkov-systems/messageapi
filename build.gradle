@@ -65,6 +65,6 @@ test {
 
 task rebuild(dependsOn: [build, test]) {
     doLast {
-        println "MessageAPI rebuilt successfully."
+        println "MessageAPI Version ${messageApiVersion} built successfully."
     }
 }
