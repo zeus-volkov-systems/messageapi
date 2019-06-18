@@ -35,11 +35,12 @@ public class PathUtils {
      * @return      Returns the path with {} replaced by the package path.
      */
     public static String reconcileKeywords(String path) {
-        File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
-        String replaceTest;
-        String replaceMain;
-        String returnPath;
-        switch (EnvUtils.getOS()) {
+        if (path.contains("{}")) {
+            File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+            String replaceTest;
+            String replaceMain;
+            String returnPath;
+            switch (EnvUtils.getOS()) {
             case "osx":
                 replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
                 replaceMain = replaceLast(replaceTest, "/classes/java/main", "");
@@ -55,6 +56,9 @@ public class PathUtils {
                 replaceMain = replaceLast(replaceTest, "/classes/java/main", "");
                 returnPath = path.replace("{}", replaceMain);
                 return returnPath;
+            }
+        } else {
+            return path;
         }
     }
 

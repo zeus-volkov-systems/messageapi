@@ -2,29 +2,48 @@ plugins {
     id 'groovy'
     id 'maven-publish'
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+shadowJar {
+    baseName = 'messageapi'
+    classifier = 'all'
+    version = "${messageApiVersion}"
+    manifest {
+        attributes 'Implementation-Title': 'messageapi-all',
+                   'Implementation-Version': "${messageApiVersion}"
+    }
 }
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'gov.noaa'
-            artifactId 'messageapi'
-            version "${messageApiVersion}"
-
-            from components.java
-        }
+  publications {
+    maven(MavenPublication) {
+       groupId 'gov.noaa'
+       artifactId 'messageapi'
+       version "${messageApiVersion}"
+       from components.java
     }
+    shadow(MavenPublication) { publication ->
+       groupId 'gov.noaa'
+       artifactId 'messageapi'
+       version "${messageApiVersion}"
+       project.shadow.component(publication)
+    }
+  }
+  repositories {
+    mavenLocal()
+  }
 }
+
 
 sourceCompatibility = "${javaVersion}"
 targetCompatibility = "${javaVersion}"
 
-defaultTasks 'clean', 'rebuild', 'publishToMavenLocal'
+defaultTasks 'clean', 'rebuild','uploadShadow', 'publishToMavenLocal', 'groovydoc'
 
 repositories {
     mavenCentral()
     jcenter()
-    //mavenLocal()
 }
 
 dependencies {
