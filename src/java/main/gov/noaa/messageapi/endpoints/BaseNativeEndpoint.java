@@ -1,9 +1,12 @@
 package gov.noaa.messageapi.endpoints;
 
+import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 
 import gov.noaa.messageapi.interfaces.IPacket;
+import gov.noaa.messageapi.interfaces.IProtocolRecord;
+import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.endpoints.BaseEndpoint;
 
 /**
@@ -68,8 +71,9 @@ import gov.noaa.messageapi.endpoints.BaseEndpoint;
  */
 public abstract class BaseNativeEndpoint extends BaseEndpoint implements AutoCloseable {
 
-    public String nativeLibrary;
+    private String nativeLibrary;
     private Long nativeInstance;
+    private IProtocolRecord protocolRecord;
 
     private native IPacket nativeProcess(long nativeInstance);
     private native void releaseNativeLibInstance(long instanceId);
@@ -97,8 +101,9 @@ public abstract class BaseNativeEndpoint extends BaseEndpoint implements AutoClo
         this.releaseNativeLibInstance(this.getNativeInstance());
     }
 
-    private IPacket process() {
+    private IPacket process(IProtocolRecord protocolRecord) {
         System.out.println("Processing!!!");
+        this.setProtocolRecord(protocolRecord);
         return this.nativeProcess(this.getNativeInstance());
     }
 
@@ -117,5 +122,27 @@ public abstract class BaseNativeEndpoint extends BaseEndpoint implements AutoClo
     private Long getNativeInstance() {
         return this.nativeInstance;
     }
+
+    private void setProtocolRecord(IProtocolRecord protocolRecord) {
+        this.protocolRecord = protocolRecord;
+    }
+
+    private IProtocolRecord getProtocolRecord() {
+        return this.protocolRecord;
+    }
+
+    private List<IRecord> getRecordsByTransformation(String transformationId){ 
+        return this.getProtocolRecord().getRecordsByTransformation(transformationId);
+    }
+
+    private List<IRecord> getRecordsByCollection(String collectionId) {
+        return this.getProtocolRecord().getRecordsByTransformation(collectionId);
+    }
+
+    private List<IRecord> getRecordsByClassifier(String classifierKey, String classifierValue) {
+        return this.getProtocolRecord().getRecordsByClassifier(classifierKey, classifierValue);
+    }
+
+
     
 }
