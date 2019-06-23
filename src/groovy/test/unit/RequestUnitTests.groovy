@@ -43,7 +43,7 @@ class RequestUnitTests extends spock.lang.Specification {
             IRequest testRequest = EmailSessionTestUtils.getTestAddRequest5()
         when: "We call prepare on the test request"
             IResponse response = testRequest.submit()
-            while (!response.getComplete()) {}
+            while (!response.isComplete()) {}
             List<IRejection> rejections = response.getRejections()
         then: "We should have the proper number of rejections due to the overall running process"
             rejections.size() == 2
@@ -60,7 +60,7 @@ class RequestUnitTests extends spock.lang.Specification {
             IRequest testRequest = ConditionTestSessionTestUtils.getTestAddRequest1()
         when: "We submit the request"
             IResponse response = testRequest.submit()
-            while (!response.getComplete()) {}
+            while (!response.isComplete()) {}
         then: "We should have no rejections"
             response.getRejections().size() == 0
         }

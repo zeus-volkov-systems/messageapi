@@ -22,7 +22,7 @@ class NativeEndpointTests extends spock.lang.Specification {
         record.setField("initial-value", 0);
     when: "We submit the test session with a single endpoint, let it call into C, increment a counter, add it to a new record, and return"
         IResponse response = request.submit();
-        while (!response.getComplete()) {}
+        while (!response.isComplete()) {}
     then: "We should have no rejections, there should be one return record, and when we grab the 'counter-value' field, we should get 1."
         response.getRejections().size() == 0
         response.getRecords().size() == 1

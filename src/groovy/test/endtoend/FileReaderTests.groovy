@@ -23,7 +23,7 @@ def "Tests submission of a full file reader task with 1 small input."() {
         record.setField("file-path", "{}/resources/test/inputs/file-reader/simpletextfile");
     when: "We submit the test session and wait for completion"
         IResponse response = request.submit();
-        while (!response.getComplete()) {}
+        while (!response.isComplete()) {}
     then: "We should have no rejections and there should be 7 records in the return set."
         response.getRejections().size() == 0
         response.getRecords().size() == 7
@@ -37,7 +37,7 @@ def "Tests submission of a full file reader task with 1 large input."() {
         record.setField("file-path", "{}/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt");
     when: "We submit the test session and wait for completion"
         IResponse response = request.submit();
-        while (!response.getComplete()) {}
+        while (!response.isComplete()) {}
     then: "We should have no rejections and there should be 79794 records in the return set."
         response.getRejections().size() == 0
         response.getRecords().size() == 79794
