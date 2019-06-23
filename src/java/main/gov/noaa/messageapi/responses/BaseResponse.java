@@ -35,7 +35,7 @@ public class BaseResponse {
         return this.request;
     }
 
-    public boolean getComplete() {
+    public boolean isComplete() {
         return this.complete;
     }
 
