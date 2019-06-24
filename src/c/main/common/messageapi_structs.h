@@ -172,7 +172,10 @@ and rejections are available for consumption.
 
 Library methods that relate to responses include:
 
-
+request* messageapi_response_getRequest(response* r);
+bool messageapi_response_isComplete(response* r);
+record** messageapi_response_getRecords(response* r);
+rejection** messageapi_response_getRejections(response* r);
  */
 struct response
 {
@@ -186,6 +189,19 @@ struct response
 The packet struct holds a list of records
 and a list of rejections. It is used as a
 return for all endpoint connections.
+
+Library methods that relate to packets include:
+
+void messageapi_packet_setRecords(packet* p, records** rs);
+void messageapi_packet_addRecord(packet* p, record* r);
+void messageapi_packet_addRecords(packet* p, record** rs);
+record** messageapi_packet_getRecords(packet* p);
+
+void messageapi_packet_setRejections(packet* p, rejections** rs);
+void messageapi_packet_addRejection(packet* p, rejection* r);
+void messageapi_packet_addRejections(packet* p, rejections** rs);
+record** messageapi_packet_getRejections(packet* p);
+
  */
 struct packet
 {
@@ -193,9 +209,14 @@ struct packet
     rejection** rejections;
 };
 
-
 /**
+The session struct holds the ability to create
+requests. It creates these requests using a definition
+of a schema, container, and protocol.
 
+Library methods that relate to packets include:
+
+request* messageapi_create_request(const char* sessionManifest);
  */
 struct session
 {
