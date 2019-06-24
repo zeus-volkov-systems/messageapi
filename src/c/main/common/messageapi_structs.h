@@ -18,7 +18,6 @@ The struct surface consists of:
 -request
 -response
 -packet
--endpoint
 -session
 
 @author Ryan Berkheimer
@@ -190,21 +189,15 @@ return for all endpoint connections.
  */
 struct packet
 {
-    record **records;
-    rejection **rejections;
+    record** records;
+    rejection** rejections;
 };
 
 
 /**
 
  */
-struct endpoint {
-    protocolRecord *protocolRecord;
-};
-
-/**
-
- */
-struct session {
+struct session
+{
 
 };
