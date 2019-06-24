@@ -20,10 +20,20 @@ public class DefaultMetadata implements IMetadata {
 
     @SuppressWarnings("unchecked")
     public DefaultMetadata(Map<String, Object> metadataMap) {
-        setId((String) metadataMap.get("id"));
-        setVersion(metadataMap.get("version"));
-        setClassifiers((Map<String,Object>) metadataMap.get("classifiers"));
-        setDescription((String) metadataMap.get("description"));
+        try {
+            if (metadataMap.containsKey("id")) {
+                this.setId((String) metadataMap.get("id"));
+            }
+            if (metadataMap.containsKey("version")) {
+                this.setVersion(metadataMap.get("version"));
+            }
+            if (metadataMap.containsKey("classifiers")) {
+                this.setClassifiers((Map<String, Object>) metadataMap.get("classifiers"));
+            }
+            if (metadataMap.containsKey("description")) {
+                this.setDescription((String) metadataMap.get("description"));
+            }
+        } catch (Exception e) {}
     }
 
     public String getId(){
