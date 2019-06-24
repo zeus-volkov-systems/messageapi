@@ -50,7 +50,7 @@ public class SchemaDefinition {
         if (properties.containsKey("metadata")) {
             this.parseMetadataSpec((String) properties.get("metadata"));
         } else {
-            throw new Exception("Missing necessary 'metadata' key when parsing schema definition.");
+            this.setEmptyMetadata();
         }
         if (properties.containsKey("fields")) {
             this.parseFieldSpec((String) properties.get("fields"));
@@ -178,11 +178,18 @@ public class SchemaDefinition {
     }
 
     /**
-     * sets empty conditions on the definition.
+     * sets empty conditions on the definition, in the case that we aren't using conditions.
      */
     private void setEmptyConditions() throws Exception {
         this.conditionMaps = new ArrayList<Map<String,Object>>();
         this.createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
+    }
+
+    /**
+     * sets empty metadata on the definition, in the case that we aren't using metadata.
+     */
+    private void setEmptyMetadata() throws Exception {
+        this.metadataMap = new HashMap<String,Object>();
     }
 
 }

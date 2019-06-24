@@ -41,7 +41,7 @@ public class ContainerDefinition {
         if (properties.containsKey("metadata")) {
             this.parseMetadataSpec((String) properties.get("metadata"));
         } else {
-            throw new Exception("Missing necessary 'metadata' key when parsing container definition.");
+            this.setEmptyMetadata();
         }
         if (properties.containsKey("collections")) {
             this.parseCollectionSpec((String) properties.get("collections"));
@@ -51,7 +51,7 @@ public class ContainerDefinition {
         if (properties.containsKey("transformations")) {
             this.parseTransformationSpec((Map<String,String>) properties.get("transformations"));
         } else {
-            throw new Exception("Missing necessary 'transformations' key when parsing container definition.");
+            this.setEmptyTransformationMaps();
         }
     }
 
@@ -134,6 +134,14 @@ public class ContainerDefinition {
     private void setEmptyTransformationMaps() throws Exception {
         this.transformationMaps = new ArrayList<Map<String,Object>>();
         this.createTransformationFactory(DEFAULT_TRANSFORMATION_FACTORY);
+    }
+
+    /**
+     * sets empty metadata on the definition, in the case that we aren't using
+     * metadata.
+     */
+    private void setEmptyMetadata() throws Exception {
+        this.metadataMap = new HashMap<String, Object>();
     }
 
 }

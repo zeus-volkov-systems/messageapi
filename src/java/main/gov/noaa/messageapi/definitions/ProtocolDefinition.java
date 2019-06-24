@@ -31,7 +31,7 @@ public class ProtocolDefinition {
         if (properties.containsKey("metadata")) {
             this.parseMetadataSpec((String) properties.get("metadata"));
         } else {
-            throw new Exception("Missing necessary 'metadata' key when parsing protocol definition.");
+            this.setEmptyMetadata();
         }
         if (properties.containsKey("endpoints")) {
             this.parseEndpoints((List<Map<String,String>>) properties.get("endpoints"));
@@ -85,6 +85,14 @@ public class ProtocolDefinition {
 
     public Map<String,List<Map<String,Object>>> getEndpointMap() {
         return this.endpointMap;
+    }
+
+    /**
+     * sets empty metadata on the definition, in the case that we aren't using
+     * metadata.
+     */
+    private void setEmptyMetadata() throws Exception {
+        this.metadataMap = new HashMap<String, Object>();
     }
 
 }
