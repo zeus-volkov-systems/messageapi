@@ -43,7 +43,7 @@ public abstract class BaseEndpoint {
         return this.collectionIds;
     }
 
-    protected List<Map.Entry<String,String>> getClassfiers() {
+    protected List<Map.Entry<String,String>> getClassifiers() {
         return this.classifierIds;
     }
 

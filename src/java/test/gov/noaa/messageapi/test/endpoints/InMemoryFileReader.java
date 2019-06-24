@@ -140,7 +140,7 @@ public class InMemoryFileReader extends BaseEndpoint implements IEndpoint {
     }
 
     private List<IRecord> processClassifiers(IProtocolRecord protocolRecord) throws IOException {
-        return ListUtils.removeAllNulls(ListUtils.flatten(this.getClassfiers().stream().map(classifier -> {
+        return ListUtils.removeAllNulls(ListUtils.flatten(this.getClassifiers().stream().map(classifier -> {
             return ListUtils.flatten(protocolRecord.getRecordsByClassifier(classifier.getKey(), classifier.getValue()).stream().map(record -> {
                 return ListUtils.flatten(this.getFileFields().stream().map(fileField -> {
                     if (record.hasField(fileField)) {
