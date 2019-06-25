@@ -78,7 +78,6 @@ struct condition
     char *type;
     char *oprtr;
     void *value;
-
 };
 
 /**
