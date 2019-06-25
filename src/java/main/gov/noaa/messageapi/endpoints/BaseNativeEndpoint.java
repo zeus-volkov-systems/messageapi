@@ -1,12 +1,9 @@
 package gov.noaa.messageapi.endpoints;
 
-import java.util.List;
 import java.util.Map;
-import java.util.MissingResourceException;
 
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
-import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.endpoints.BaseEndpoint;
 
 /**
@@ -69,80 +66,29 @@ import gov.noaa.messageapi.endpoints.BaseEndpoint;
  * 
  * @author Ryan Berkheimer
  */
-public abstract class BaseNativeEndpoint extends BaseEndpoint implements AutoCloseable {
+public abstract class BaseNativeEndpoint extends BaseEndpoint {
 
-    private String nativeLibrary;
-    private Long nativeInstance;
-    private IProtocolRecord protocolRecord;
-
-    private native IPacket nativeProcess(long nativeInstance);
-    private native void releaseNativeLibInstance(long instanceId);
+    private native IPacket processNativeInstance(long nativeInstance);
+    private synchronized native long createNativeInstance(IProtocolRecord protocolRecord);
+    private synchronized native void releaseNativeInstance(long instanceId);
 
     public BaseNativeEndpoint(Map<String, Object> parameters) {
         super(parameters);
-        this.setNativeLibrary(parameters.get("native-library"));
-        this.loadNativeResources(this.getNativeLibrary());
+        this.loadNativeLib((String)parameters.get("native-library"));
     }
 
-    public void loadNativeResources(String nativeLibrary) {
+    public void loadNativeLib(String nativeLibrary) {
         try {
             System.load(nativeLibrary);
-        } catch (Exception e) {
-            System.out.println(String.format("%s library was already loaded.", this.getNativeLibrary()));
-        }
-    }
-
-    public void close() throws Exception {
-        System.out.println(String.format("Closing %s", this.getNativeLibrary()));
-        this.unloadNativeResources();
-    }
-
-    private void unloadNativeResources() {
-        this.releaseNativeLibInstance(this.getNativeInstance());
+        } catch (Exception e) {}
     }
 
     private IPacket process(IProtocolRecord protocolRecord) {
         System.out.println("Processing!!!");
-        this.setProtocolRecord(protocolRecord);
-        return this.nativeProcess(this.getNativeInstance());
+        Long nativeInstance = this.createNativeInstance(protocolRecord);
+        IPacket nativePacket =  this.processNativeInstance(nativeInstance);
+        this.releaseNativeInstance(nativeInstance);
+        return nativePacket;
     }
-
-    private void setNativeLibrary(Object nativeLibrary) {
-        try {
-            this.nativeLibrary = (String) nativeLibrary;
-        } catch (Exception e) {
-            throw new MissingResourceException("The native library was missing.", "NativeLibrary", "native-library");
-        }
-    }
-
-    private String getNativeLibrary() {
-        return this.nativeLibrary;
-    }
-
-    private Long getNativeInstance() {
-        return this.nativeInstance;
-    }
-
-    private void setProtocolRecord(IProtocolRecord protocolRecord) {
-        this.protocolRecord = protocolRecord;
-    }
-
-    private IProtocolRecord getProtocolRecord() {
-        return this.protocolRecord;
-    }
-
-    private List<IRecord> getRecordsByTransformation(String transformationId){ 
-        return this.getProtocolRecord().getRecordsByTransformation(transformationId);
-    }
-
-    private List<IRecord> getRecordsByCollection(String collectionId) {
-        return this.getProtocolRecord().getRecordsByTransformation(collectionId);
-    }
-
-    private List<IRecord> getRecordsByClassifier(String classifierKey, String classifierValue) {
-        return this.getProtocolRecord().getRecordsByClassifier(classifierKey, classifierValue);
-    }
-
-
     
 }
