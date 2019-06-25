@@ -11,7 +11,6 @@ This work log is also useful as a supplemental documentation for end users of th
 
 ## Future Work
 
-- C API
 - Fortran API
 - Python API
 - Split Publish/Consumer Sessions
@@ -19,15 +18,28 @@ This work log is also useful as a supplemental documentation for end users of th
 
 ## Current Focus
 
-### README Updating
+### C API
 
 #### Status - In Progress
+
+We are currently working on the linkage between C++ and the NativeEndpoint class. The NativeEndpoint class has been established and the majority of C structs have been created. The next challenge is to create C/C++ methods that work on these C structs, and then methods that bind to Java methods.
+
+#### Description and Goals
+
+A C API should be provided that allows use of MessageAPI in native code. This API should both allow Endpoint use (i.e., grabbing Container Records, parsing Field values, creating Endpoint Records, setting Field values, creating Endpoint Rejections, and returning a Data Packet), and Session use (i.e., creating a new Session, creating a new Request, adding Records to the Request, submitting the Request, retrieving a Response, and parsing Responses by retriving Rejections/reasons and Records/fields). This API should be as seamless as possible - i.e., being a native library, should feel as much like a native library as possible -  it should be well behaved WRT state, i.e., if we require isolated state it should satisfy that requirement - and it should provide a simple mechanism for extension to Fortran support.
+
+## Previous Foci
+
+### README Updating
+
+#### Status - Complete up to Current Status
+
+Resolution - The README was updated to the final architectural state, removing incorrect information, updating incomplete information, and adding basic system diagrams. There is still work to be done - README must be updated with Polyglot API discussion when that's done.
 
 #### Description and Goals
 
 The README should be updated to match the current state of the package. It should be correct, comprehensive enough to serve as a complete guide for getting the system running, and contain enough information for external review. It should form the basis of a MessageAPI white paper.
 
-## Previous Foci
 
 ### Field Definition Enforcement on Transformations and Endpoints
 
