@@ -534,19 +534,88 @@ Now that we've described the general topology, we will describe how a typical pr
 
 All user-interactive parts of the MessageAPI model can be imported as interfaces. By convention, interfaces in MessageAPI begin with a capital I, followed by the word for the model component that the interface represents (no space). The most important interfaces of MessageAPI  that users will interact with are the ISession, IRequest, IRecord, and IResponse interfaces. Other user-useful interfaces are the IRejection, IField, IRelationship, and ICondition interfaces.
 
-The overall strategy for using MessageAPI is simple:
+The overall strategy for using MessageAPI is straightforward:
 
-Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples) - *alternatively, import and use the desired Session type directly*. Using the created Session object, create a request - the request type was baked into the session on session creation, so it's already set in memory (for example , a publish request in a publish session, or consume request in a consume session). On the request, create record(s) that will be sent to the endpoint.
+Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples) - *alternatively, import and use the desired Session type directly*. 
+
+```
+import gov.noaa.messageapi.factories.SessionFactory;
+import gov.noaa.messageapi.interfaces.ISession;
+
+ISession session = SessionFactory.create("/path/to/session_manifest.json");
+```
+
+or
+
+```
+import gov.noaa.messageapi.interfaces.ISession;
+
+ISession session = new DefaultSession("/path/to/session_manifest.json");
+```
+
+
+Using the created Session object, create a Request - the Request type was baked into the session on session creation. All fields and conditions that define the Request Record template will be available from the same Record.
+
+```
+import gov.noaa.messageapi.interfaces.IRequest;
+
+IRequest request = session.createRequest();
+```
+
+Using the request, create as many records as needed directly on the request. For each record, set field values and/or condition values as needed. Every created record is automatically part of the request.
+
+```
+import gov.noaa.messageapi.interfaces.IRecord;
+
+IRecord record = request.createRecord();
+
+record.setField("field-id", "value");
+record.setCondition("condition-id", "condition-value");
+```
+In the provided MessageAPI implementation, all Conditions are nullified
+We can also set Conditions directly on the Request if there are collection conditions specified in the Session Container.
+
+```
+
+
+```
 
 Once the records are set, call submit on the request. This submission immediately creates a duplicate of the entire request inside a response object, and then returns. All logic is processed against that request copy and its parent response asynchronously. Inside a response, protocols can produce response records and response rejections.
 
-This design is thread safe, because when submitted, a copy is operated on, and the original request is immutable. This design is also flexible, being able to handle throwaway results (just don't consume the IResponse), all-at-once-returns (like sql calls that return a bunch of data), or over-time-returns (subscription type returns). For example, to wait for all the data, just put a while(!response.isComplete()){}; before any further logic in the program. Or keep the response inline, and continue to pull records down the line over time, if it's a dynamic/streaming endpoint.
+```
+import gov.noaa.messageapi.interfaces.IResponse;
+
+IResponse response = request.submit(); \\asynchronous, returns immediately
+
+System.out.println(response.isComplete()); \\would initially return 'False'
+```
+
+When complete, the IResponse will flip isComplete() to true, and will have available IRecords and IRejections.
+
+```
+import gov.noaa.messageapi.interfaces.IRejection;
+
+if (response.isComplete()) {
+    List<IRecord> responseRecords = response.getRecords();
+    List<IRejection> responseRejections = response.getRejections();
+}
+
+responseRecords.stream().forEach(rr -> System.out.println(rr.getFields()));
+responseRejections.stream().forEach(rr -> System.out.println(rr.getRecord() + ", " + rr.getReasons()));
+
+```
+
+The provided MessageAPI implementation is designed to be thread-safe in Requests across Sessions, and Responses across Requests ***with respect to Records***. This means that when a Request is submitted, the submitted Record set is deep copied to the Response. The Response will use the Endpoint Connection instances that were created when the Request was created. This means that the Endpoints across a given Request are potentially Stateful. Separate Requests are guaranteed to be isolated and thread-safe with respect to state.
+
+This has important implications for use. If a stateful Endpoint is required, for example, some counting mechanism, or some situation where newer records depend on older, the same Request can be submitted multiple times (i.e., by calling request.submit()), with potentially different record sets (i.e., before calling request.submit() the second time, first call request.setRecords(List<IRecord> newRecords));
+
+If isolated state is required, just create a new Request on the Session. All Endpoints and other stateful machinery will be re-instantiated for each Request. 
+
+In each case, Transformations are always stateless WRT Requests or Responses, because they are always recreated when called from an endpoint.
 
 ##### API Examples
-To illustrate a typical use case, we will give a couple of examples - the first is adding some records, the second is getting some records.
 
-###### Adding Records
-Here is how a class would add records with conditions from a list of program records according to a message api spec.
+To illustrate a typical use case, we provide a simple example class that creates a new Session from manifest, creates a Request, Creates many Records on the Request for an arraylist of strings, submits the Request, and parses/prints out the Response Records and Rejections.
 
 ```
 package gov.noaa.messageapi.test;
@@ -565,8 +634,8 @@ public class addRecordsTest {
 
     private ISession session;
 
-    public addRecordsTest(sessionSpec) {
-        this.session = SessionFactory.create(sessionSpec);
+    public addRecordsTest(sessionManifest) {
+        this.session = SessionFactory.create(sessionManifest);
     }
 
     public void addRecords(List<List<String>> recordsToAdd) {
@@ -590,17 +659,16 @@ public class addRecordsTest {
         } else {
             response.getRecords().stream().forEach(record -> {
                 System.out.println(record.getFields());
+                record.getFields().stream().forEach(f -> System.out.println(f.getId()));
             });
         }
     }
 }
 ```
 
-There is a lot going on in the above example, but it's all straightforward.
+To provide a brief explanation - we first create a persistent session object based on a given spec when the example class is instantiated somewhere else. This session that is created then immediately has a concretely-defined schema, container set, and protocol which were all based on some runtime loaded text files. These are now in memory, and can be quickly grabbed and reused on any children requests based on this session.
 
-We first create a persistent session object based on a given spec when the example class is instantiated somewhere else. This session that is created then immediately has a concretely-defined schema, container set, and protocol which were all based on some runtime loaded text files. These are now in memory, and can be quickly grabbed and reused on any children requests based on this session.
-
-When the addRecords method above is called with a list of string based records, a request is created from the session. The request is then populated with records (using createRecord on the request) for every record that the user has. This is done by setting field values for the record - again, these fields are all in the declarative spec that was loaded when the session was loaded.
+When the addRecords method in the above class is called with a list of strings, a request is first created from the session and then that request is  populated with records (using createRecord on the request) for every record that the user has. This is done by setting field values for the record - again, these fields are all in the declarative spec that was loaded when the session was loaded.
 
 In this case, record field values are set by index. It is also valid to set record field values by named fields - there are use cases for both approaches. In this case we are not setting any record conditions, but those are done the same way as fields (record.setCondition(conditionID, conditionValue)).
 
@@ -608,7 +676,13 @@ Once we've finished populating our response with all of the records, we submit t
 
 When the response finally finishes, it will contain a set of final rejections (if any) based on conditions or based on a failed protocol action and final records. The rejections can be inspected individually for the record as well as reasons for the rejection, and the records can be consumed according to the original defined schema.
 
-Because requests contain a copy of the session variables which created them, they can always be the source of truth for any properties that might be inspected later. Schema, Container, Protocol information can always be inspected later, and the user should be confident in knowing that this COC for this data remained immutable since session-birth.
+Because requests contain a copy of the session variables which created them, they can always be the source of truth for any properties that might be inspected later. Schema, Container, Protocol information can always be inspected later, and the user should be confident in knowing that the chain of custody for this data remained immutable since session creation.
+
+##### Package Use
+
+When installed from source or acquired through repository, the MessageAPI-all.jar contains all dependencies required to run standalone. Because of the way MessageAPI handles Session bootstrapping, it is not required to bundle the MessageAPI core with user ConditionFactories, TransformationFactories, or Endpoints. As long as these are made available to MessageAPI on the Java classpath at Session creation, Sessions will be able to use them. This design makes it easier to automate things like creating K8s pods of certain session types. 
+
+If desired or needed, MessageAPI can be bundled into other JARS or packages containing user Factories and Endpoints for portability, performance, security, or other reasons.
 
 ### Configurations
 
@@ -617,12 +691,10 @@ Because requests contain a copy of the session variables which created them, the
 
 ## Installation and Deployment
 
-At the time of this writing, MessageAPI (0.0.10-PRERELEASE) was built using OpenJDK 11.0.3 with gradle 5.4.1.
+At the time of this writing, MessageAPI (0.0.10-PRERELEASE) was built using OpenJDK 11.0.3 with gradle 5.4.1. Older JDK versions are not guaranteed to work.
 
 There was a breaking change between older versions of gradle and the 5 series, and a relative path resolution
 method was updated to accommodate this change. If building from scratch, the gradle version must be upgraded to 5.4.1+.
-
-Older versions of the JDK, down to 1.8, still work for this build, although that isn't guaranteed going forward.
 
 Once these two system dependencies are met, this package can be run with tests by running 'gradle' from the package root.
 
@@ -631,10 +703,12 @@ Once these two system dependencies are met, this package can be run with tests b
 gradle
 ```
 
-This will install MessageAPI to the local repository as an UberJAR on disk (usually in ~/.m2).
-Beyond the core Java library, the main MessageAPI package uses only SimpleJSON as a dependency.
+If tests complete successfully, gradle will install MessageAPI to the local repository as an UberJAR on disk (usually in ~/.m2). UberJARs contain all of their dependencies, so the package can be run, for example, in a Java-enabled JupyterNotebook Kernel. Gradle will also create the javadocs (groovydocs) in the build directory ($PACKAGE/build/docs/groovydoc/index.html).
 
-Other dependencies are installed for the purposes of running tests, including Groovy, Spock, SLF4J, and SpockReports.
+## Package Dependencies
+
+Beyond the core Java library, the main MessageAPI package uses only SimpleJSON as a dependency - this will be pulled during build.
+Other dependencies are installed for the purposes of running tests, including Groovy, Spock, SLF4J, and SpockReports. These are also pulled in during build.
 
 ## Developer Guide
 
