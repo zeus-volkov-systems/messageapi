@@ -60,7 +60,11 @@ MessageAPI is designed with the belief that all processes are fundamentally simp
 
 Every part of how a MessageAPI defined process will play out, down to the implementation classes, is laid bare in a pair of text based maps - one for the manifest, and one for the parameters. These maps makes trivial work out of reasoning about how a program is structured and will run before it is ever executed. 
 
-The primary dimensions of MessageAPI are held to three - A **Schema** holds a flat map of all fields and conditions a user will interact with; a **Container** defines how fields will be factored and held in collections, classifications, and transformations; and a **Protocol** defines Endpoints and connections to them, which define where containers of records will go. All of these parts of a Message are viewable and configurable without touching code. Users write and share their own custom Endpoints and Transformations, which are then specified in the map. 
+The primary dimensions of MessageAPI are held to three - A **Schema** holds a flat map of all fields and conditions a user will interact with; a **Container** defines how fields will be factored and held in collections, classifications, and transformations; and a **Protocol** defines Endpoints and connections to them, which define where containers of records will go. All of these parts of a Message are viewable and configurable without touching code. Users write and share their own custom Endpoints and Transformations, which are then specified in the map.
+
+![Session Topology](./resources/docs/images/Figure1_SessionTopology.jpg "Session Topology")
+
+![Session Flow](./resources/docs/images/Figure2_SessionFlow.jpg "Session Flow")
 
 Everything that passes data in MessageAPI consumes and produces the same object type - the record. The manifests are used in code by creating a session based on them - and then using a stable API to create a request, add records, set field and/or condition values, and then submit, which immediately returns an async response. The response will hold its own records and rejections, and eventually get an 'isComplete' flag. That's the entirety of the API surface. Everything else depends on the Manifest.
 
@@ -572,13 +576,18 @@ IRecord record = request.createRecord();
 record.setField("field-id", "value");
 record.setCondition("condition-id", "condition-value");
 ```
-In the provided MessageAPI implementation, all Conditions are nullified
-We can also set Conditions directly on the Request if there are collection conditions specified in the Session Container.
+In the provided MessageAPI implementation, all Conditions are nullified for individual Records (any values set in the parameter manifest are removed). Values must be explicitly set for individual records to filter them. MessageAPI checks every record individually for valid (valued) condition branches and then validates each record against only those valued paths. 
+
+We can also set Conditions directly on the Request if there are collection conditions specified in the Session Container:
+
+```
+request.setCondition("condition-id", "condition-value");
 
 ```
 
+Initial values set in Condition maps are maintained in Requests (they are not nullified), so these can be entirely set in configuration if desired. Valued condition branches are then applied to matching Container Collections.
 
-```
+**This Condition pattern maximizes utility of the Condition mechanism, allowing a single Condition map to hold all conditional logic for a Request, both in Containerization and Filtering Contexts, while allowing as much configuration as possible outside of code.**
 
 Once the records are set, call submit on the request. This submission immediately creates a duplicate of the entire request inside a response object, and then returns. All logic is processed against that request copy and its parent response asynchronously. Inside a response, protocols can produce response records and response rejections.
 
