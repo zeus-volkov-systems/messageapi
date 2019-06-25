@@ -466,30 +466,54 @@ Additionally, like **Schemas** and **Protocols**, **Containers** may provide a m
 
 ##### Protocols
 
-The Protocol dimension of MessageAPI represents the boundary of a MessageAPI process. The Protocol holds **Endpoints** and Endpoint **Connections**. The Protocol is the part of the MessageAPI that grabs records from Containers, communicates out of process, and returns a data Packet containing its own Record and/or Rejection lists back to the original caller, to be merged with all other Records and Rejections retrieved from other Endpoints. Endpoints can do anything with Records - send emails, push to FTP or object storage, retrieve content from a Kafka topic, run unit tests, etc. 
+The Protocol dimension of MessageAPI represents the boundary of a MessageAPI process. The Protocol holds **Endpoints** and Endpoint **Connections**. The Protocol is the part of the MessageAPI that grabs records from Containers, communicates out of process, and returns a data Packet containing its own Record and/or Rejection lists back to the original caller, to be merged with all other Records and Rejections retrieved from other Endpoints. Endpoints can do anything with Records - send emails, push to FTP or object storage, retrieve content from a Kafka topic, run unit tests, etc. All processing in the Endpoint Connections runs asynchronously in the context of a Request, meaning the original caller doesn't have to wait for any processing to complete or care about what output is returned.
 
-Protocol layer can hold arbitrary Endpoints, and arbitrary Connections for every endpoint. Each Endpoint Connection has its own isolated state during computation, and the specific containers it has access to, along with any initialization parameters, are specified out of code in the configuration.
+Similarly to the Schema and Container dimensions of a Session, the Protocol key in the manifest specifies a Protocol class and a map of parameters used in the class construction. Constructor keys in a Protocol include **metadata**(optional) and **endpoints**(required). Endpoints are specified as classes that must be available on the classpath at runtime - each Endpoint must at least have one Connection. Each Endpoint specifies its own Connection map.
 
 
+```
+"protocol": {
+    "plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
+    "constructor": {
+        "metadata": "{}/resources/test/metadata/file-reader/protocol.json",
+        "endpoints": [{
+                "plugin": "gov.noaa.messageapi.test.endpoints.InMemoryFileReader",
+                "connections": "{}/resources/test/file-reader/parameters.json"
+            }]
+    }
+}
+```
 
-Here is an example of a connections map used by an email type endpoint:
+
+###### Endpoints
+
+The Protocol layer can hold arbitrary Endpoints, and arbitrary Connections for every endpoint. Each Endpoint Connection has its own isolated state during computation, and the specific containers it has access to, along with any initialization parameters, are specified out of code in the configuration. Endpoints generally extend the provided AbstractEndpoint class, which requires Endpoints to provide a list of default fields that will be used in creation of an Endpoint Record. Similar to Java Runnables, Endpoints all have a single method that gets called when the endpoint connection is encountered during Request submission. Within this method, Endpoints can access the records in whatever containers are available to them as specified on the connection map.
+
+###### Connections
+
+Endpoints are written as classes and initialized using configurable Connection maps. Every Connection represents an 'instance' of the Endpoint. Here is an example of a connections map used by an email type endpoint:
 
 ```
 {
     "connections": [
         {
             "id": "1",
-            "bins": ["*"],
-            "parameters": {
-                "sender": "me@test.com",
+            "collections": "*",
+            "transformations": ["join-test"],
+            "fields": [],
+            "constructor": {
+                "sender": "ryan.berkheimer@noaa.gov",
                 "password": "testpassword1234",
-                "receivers": ["recipient1@me.gov", "recipient2@me.edu"]
+                "receivers": ["rab25@case.edu", "ryan.berkheimer@noaa.gov"]
             }
         },
         {
             "id": "2",
-            "bins": ["only_secret_bins1"],
-            "parameters": {
+            "collections": ["*"],
+            "classifiers": {"namespace": ["/path/to/test.db"]},
+            "transformations": [],
+            "fields": [],
+            "constructor": {
                 "sender": "jackson.pollock@cia.org",
                 "password": "passpass64",
                 "receivers": ["template1@org.org", "template2@org.org"]
@@ -501,6 +525,7 @@ Here is an example of a connections map used by an email type endpoint:
 
 Note that there's a special character "*" that allows specification of all bins from the container layer.
 
+
 #### MessageAPI API and Examples
 
 Now that we've described the general topology, we will describe how a typical program will use this system using the API available.
@@ -509,7 +534,7 @@ All important parts of the MessageAPI model can be imported as interfaces. By co
 
 The overall strategy for using MessageAPI is simple:
 
-Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples). Using the session object, create a request - the request type was baked into the session on session creation, so it's already set in memory (for example , a publish request in a publish session, or consume request in a consume session). On the request, create record(s) that will be sent to the endpoint.
+Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples) - *alternatively, just import and use the desired Session type directly*. Using the Session object, create a request - the request type was baked into the session on session creation, so it's already set in memory (for example , a publish request in a publish session, or consume request in a consume session). On the request, create record(s) that will be sent to the endpoint.
 
 Once the records are set, call submit on the request. This submission immediately creates a duplicate of the entire request inside a response object, and then returns. All logic is processed against that request copy and its parent response asynchronously. Inside a response, protocols can produce response records and response rejections.
 
