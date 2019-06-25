@@ -491,7 +491,7 @@ The Protocol layer can hold arbitrary Endpoints, and arbitrary Connections for e
 
 ###### Connections
 
-Endpoints are written as classes and initialized using configurable Connection maps. Every Connection represents an 'instance' of the Endpoint. Here is an example of a connections map used by an email type endpoint:
+Endpoints are written as classes and initialized using configurable Connection maps. Every Connection represents an 'instance' of a specific Endpoint. Here is an example of a connections map used by an email type endpoint:
 
 ```
 {
@@ -523,18 +523,20 @@ Endpoints are written as classes and initialized using configurable Connection m
 }
 ```
 
-Note that there's a special character "*" that allows specification of all bins from the container layer.
+Each Connection specifies a unique id (required), a constructor used to build the Endpoint instance (required), a list of collections (optional), map of classifiers (optional), list of transformations (optional), and list of fields (optional). General convention is that the list of fields determines what field set will be returned in each Endpoint Record in the returned Packet, although this isn't a hard requirement. The specified containers (i.e., collections, classifiers, and/or transformations) provided will alwasy be the containers that are associated with that connection map when that endpoint connection is processed.
+
+*Note that there's a special character "\*" that allows specification of all containers of a certain type from the container layer.*
 
 
 #### MessageAPI API and Examples
 
 Now that we've described the general topology, we will describe how a typical program will use this system using the API available.
 
-All important parts of the MessageAPI model can be imported as interfaces. By convention, interfaces in MessageAPI begin with a capital I, followed by the word for the model component that the interface represents (no space). The most important interfaces of MessageAPI  that will probably be used are the ISession, IRequest, IRecord, and IResponse interfaces. Other interfaces that are useful are the IRejection, IField, IRelationship, and ICondition interfaces.
+All user-interactive parts of the MessageAPI model can be imported as interfaces. By convention, interfaces in MessageAPI begin with a capital I, followed by the word for the model component that the interface represents (no space). The most important interfaces of MessageAPI  that users will interact with are the ISession, IRequest, IRecord, and IResponse interfaces. Other user-useful interfaces are the IRejection, IField, IRelationship, and ICondition interfaces.
 
 The overall strategy for using MessageAPI is simple:
 
-Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples) - *alternatively, just import and use the desired Session type directly*. Using the Session object, create a request - the request type was baked into the session on session creation, so it's already set in memory (for example , a publish request in a publish session, or consume request in a consume session). On the request, create record(s) that will be sent to the endpoint.
+Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples) - *alternatively, import and use the desired Session type directly*. Using the created Session object, create a request - the request type was baked into the session on session creation, so it's already set in memory (for example , a publish request in a publish session, or consume request in a consume session). On the request, create record(s) that will be sent to the endpoint.
 
 Once the records are set, call submit on the request. This submission immediately creates a duplicate of the entire request inside a response object, and then returns. All logic is processed against that request copy and its parent response asynchronously. Inside a response, protocols can produce response records and response rejections.
 
