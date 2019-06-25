@@ -62,7 +62,7 @@ import gov.noaa.messageapi.endpoints.BaseEndpoint;
  * "constructor": {"native-library":
  * "/system/path/to/native/lib/libNativeLib.so"}
  * <p>
- * }
+ * } 
  * 
  * @author Ryan Berkheimer
  */
