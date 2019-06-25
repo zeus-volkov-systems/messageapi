@@ -84,7 +84,7 @@ The MessageAPI information model manifest is completely pluggable and is read wh
 
 The complete pluggability of MessageAPI also provides another powerful potential - creation of Sessions at-a-distance. This opens the MessageAPI system up for complete and total automation by things like REST services, driver programs, GUI's, etc.
 
-The default MessageAPI session provides a standard topology that will suit many messaging tasks (either publishing or consuming oriented, batch or stream oriented), along with providing a matching set of basic plugins. The provided implementations are well suited for individual or distributed use. For example, a MessageAPI session could be wrapped as a Kafka consumer, deployed as a single runtime pod in Kubernetes as a consumer group, started up, and then fed records coming from a service. Or a session could be used intra-process to send emails to different groups based on different conditions. There are a lot of varied uses.
+The default MessageAPI session provides a standard topology that will suit many messaging tasks (either publishing or consuming oriented, batch or stream oriented), along with providing a matching set of basic plugins. The provided implementations are well suited for individual or distributed use. For example, a MessageAPI session could be wrapped as a Kafka consumer, deployed as a single runtime pod in Kubernetes as a consumer group, started up, and then fed records coming from a service. Or a session could be used intra-process to send emails to different groups based on different conditions. Or, as recently discovered, MessageAPI could serve as the in-core engine for custom Apache NiFi processors. There are a lot of varied uses.
 
 The following is an example of a DefaultSession manifest:
 
@@ -131,17 +131,18 @@ The following is an example of a DefaultSession manifest:
 The general pattern in a manifest is to declare a key with the class as the plugin, and then provide another map that holds constructor parameters. The specification for MessageAPI consists of 
 
 - A **Session**, which holds the primary **Schema**, **Container**, and **Protocol** dimensions
-- A **Schema**, which defines all the **Fields** and **Conditions** a user will interact with for each **Record**
-- A **Container**, which defines any way a **Field** set will be contained - **Records** (**Field** and **Condition** sets) are each factored into **Collections**, **Collections** hold arbitrary **Classifiers**, and **Transformations** can refer to **Collections**, **Classifiers**, **Transformations**, or entire **Records** (every **Collection** that a specific **Record** was factored into).
-- A **Protocol**, which defines the Endpoints that record containers are sent to for processing. There can be multiple Endpoints
+- A **Schema**, which defines all the **Fields** and **Conditions** (optional) a user will interact with for each **Record**
+- A **Container**, which defines any way a **Field** set will be contained - **Records** (**Field** and **Condition** sets) are each factored into **Collections**, **Collections** hold arbitrary **Classifiers** (optional), and **Transformations** (optional) can refer to **Collections**, **Classifiers**, **Transformations**, or entire **Records** (every **Collection** that a specific **Record** was factored into).
+- A **Protocol**, which defines the Endpoints that record containers are sent to for processing. There can be multiple Endpoints per manifest, and multiple connections per session. Each Endpoint connection will hold and manage state independently of each other, in terms of the Request logic previously described (as far as batch vs streaming).
 
 In more descriptive detail, Sessions are the primary abstraction in MessageAPI. Sessions in turn consist of Schema, Container, and Protocol abstractions, and each of these has its own set of properties that must/can be specified. Notice that in the example spec, any key labeled "plugin" points to a class. These classes are what are read at runtime (when the spec itself is referenced in the code). Anything found within the "constructor" map is then used by the class to build itself.
 
 So, for example, if the above spec is taken literally, when it is used in the code, an instance of the "class.namespace.SessionPluginClass" class is loaded with the corresponding "constructor" map passed in as the constructor argument. This in turn kicks off the system to read the Schema, Container, and Protocol classes and create those using their own constructor maps. The information found in the associated key-values (usually referencing an underlying JSON map, with the exception being the "operators" key in the schema constructor) will be read and parsed at that time to build the component and ultimately the session.
 
-Note that both Conditions and Transformations specify 'factories'. These factories have key/value associations in switch statements that return (either a Condition or Transformation) depending on the key in the parameter map. This is done for different reasons in each context - in the case of Conditions, this was done to both prevent the parameter map from becoming too large, and provide a way for Conditions to be easily extended to arbitrary user types
+Note that both Conditions and Transformations specify 'factories'. These factories have key/value associations in switch statements that return (either a Condition or Transformation) depending on the key in the parameter map. This is done for different reasons in each context - in the case of Conditions, this was done to both prevent the parameter map from becoming too large, and provide a way for Conditions to be easily extended to arbitrary user types. In the case of Transformations, this was done to ensure a level of security in what code may be executed in performing data manipulation. Because MessageAPI uses reflection to build the system, this pattern ensures only code compiled on the classpath can be run as a transformation.
 
 *Notice that in this map, the **Fields, Conditions, Collections, Transformations,** and **Connections** all refer to the same 'parameters' map:*
+***Also note - the only 'required' things are 'fields', 'collections', and 'connections'. If the other parts aren't needed (conditions/transformations/metadata), don't reference them in the manifest and don't include them in the parameters.***
 ```
 {
     "fields": [{"id": "file-path",
@@ -171,9 +172,9 @@ Note that both Conditions and Transformations specify 'factories'. These factori
 
 *These parameters can be split up into separate files or held together like they are here. Each of these domain concepts will be explored in more depth further down.* 
 
-Once built, this session is then in memory and can be reused as often as necessary (subsequent requests do deep-copies of loaded session components). MessageAPI trades initial speed of compile-time class construction for the flexibility and declarative nature of doing it at runtime (although the initial bootstrapping is generally very fast, as the provided MessageAPI implementation footprint is small).
+Once built, this session is then in memory and can be reused as often as necessary (subsequent requests do deep-copies of loaded session components). MessageAPI trades initial speed of compile-time class construction for the flexibility and declarative nature of doing it at runtime (although the initial bootstrapping is generally very fast, as the provided MessageAPI implementation footprint is small). *Sessions can, for example, be passed as objects to different machines, different thread groups, etc. and used to construct brand new, guaranteed-isolated requests from the same template.*
 
-Each session component is considered a fundamental and loosely orthogonal dimension of its parent. Every message session, no matter what the type, can be created by specifying the three primary dimensions (Schema, Container, and Protocol), and this concept is what allows MessageAPI to provide a powerful and lightweight abstraction on top of arbitrary messages. Each of these dimensions has its own particular properties which define it. All also include a catchall 'metadata' property for storage of other useful self-documenting information, such as version or identifying labels.
+Each session component is considered a fundamental and loosely orthogonal dimension of its parent. Every message session, no matter what the type, can be created by specifying the three primary dimensions (Schema, Container, and Protocol), and this concept is what allows MessageAPI to provide a powerful and lightweight abstraction on top of arbitrary messages. Each of these dimensions has its own particular properties which define it. All also include a catchall and optional 'metadata' property for storage of other useful self-documenting information, such as version or identifying labels.
 
 #### MessageAPI Session Topology
 
@@ -181,9 +182,24 @@ Here we describe the three dimensions of a MessageAPI session:
 
 ##### Schemas
 
-Schemas are what define records as seen by the session holder. This is the part of the topology which defines what fields a record will have, any conditions on those fields, and an operator factory class that provides methods on evaluating fields against conditions (conditions may contain arbitrary logic).
+Schemas are what define records as seen by the Session holder. This is the part of the topology which defines what fields a record will have, any conditions on those fields, and an operator factory class that provides methods on evaluating fields against conditions (conditions may contain arbitrary logic).
 
-Schemas contain **Fields**, **Conditions**, and **MetaData**. 
+Here we see that Schemas refer to a plugin class, and the constructor used to create the plugin.
+
+```
+"schema": {
+    "plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
+    "constructor": {
+        "metadata": "{}/resources/test/metadata/file-reader/schema.json",
+        "fields": "{}/resources/test/file-reader/parameters.json",
+        "conditions": {
+            "map": "{}/resources/test/file-reader/parameters.json",
+            "factory": "gov.noaa.messageapi.factories.SimpleConditionFactory"
+        }
+    }
+```
+
+Schemas contain **Fields** (required), **Conditions** (optional), and **MetaData** (optional). 
 
 ###### Metadata
 
@@ -200,13 +216,17 @@ The MetaData becomes part of the definition when the manifest is loaded, and can
 }
 ```
 
+Metadata is loaded from map to a Metadata object for convenience, so that API methods can sanely get different properties. Metadata, along with every other user-available concept in MessageAPI, is also programmed against an interface, so the available methods are available in the constructed groovydocs to peruse for that particular interface.
+
 ###### Field Sets
 
-A Schema Field set is a flat set of field definitions - for example, software that wants to pass email messages through MessageAPI could have a field set of 'email, subject, body'. Schema Field sets should hold every Field in any collection that the user will use. So if there are two lists of two different record types feeding into a MessageAPI process, with different domains, fields from both lists should be declared up front (in the Schema Field map). The containment of different Field sets can be specified at the container level as Collections. This pattern allows a clearly defined global field set while allowing multiple record types to be part of some processing action.
+A Schema Field set is a flat set of field definitions - for example, software that wants to pass email messages through MessageAPI could have a field set of 'address, subject, body'. (Alternatively, the fields could just be key/value pairs of arbitrary content, and the 'target/subject' could be constructor parameters.) Schema Field sets should hold every Field in any collection that the user will use. So if there are two lists of two different record types feeding into a MessageAPI process, with different domains, fields from both lists should both be declared in the Schema Field map. The containment of different Field sets can be specified at the container level as Collections (ie, create two collections at the container level and hold fields for one set in the first container, and fields from the other in the second container). This pattern allows a clearly defined global field set while allowing an arbitrary number of record types to be part of a given processing action.
 
 In the provided schema class, fields need to be provided with a 'name', 'type', and 'required' properties.
 
-The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. If a field is required but not provided, that record will be immediately rejected on request submission.
+The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. If a field is required but not provided, that record will be immediately rejected on request submission. 
+
+In the provided implementation, the types understood by the system (for use by conditions) are 'string', 'float', 'double', 'integer', 'datetime', and 'boolean'. Without adjustment, other types can be handled without issue, although to use the condition system, additional types should be added. This can be done easily by adjusting the ConditionFactory.
 
 ```
 {
@@ -311,83 +331,146 @@ Composite conditions can also include other composite conditions and will be unp
 
 ##### Containers
 
-Containers are what define records as seen by the session target(s), either as the source (for gets) or destination (for puts) of some data (or both, for situations where there is two-way data flow). There can be multiple containers per session and fields defined in the schema can exist on more than one container.
+The **Container** dimension of a MessageAPI Session represents groupings of Schema information (Fields and/or Conditions). Because all Records are defined from a single flat schema, Containers allow records to specify how they are factored/binned, and then additionally given classifier information and computational specification. In the Session manifest, like the other two dimensions, the Container contains a plugin and a constructor. The constructor defines where to find 
 
-Containers conceptually represent different endpoints - e.g., different tables in a database, different databases, an email address, a directory, a file, a Kafka topic, etc. Because records passed in a session can be parsed into multiple containers, records or parts of records can be passed to multiple endpoints concurrently in a single request.
+- metadata (optional)
+- collections (required)
+- transformations (optional)
 
-Some containers may have transformations defined between them, and these are defined in the relationships spec attached to the containers spec. These relationships are evaluated when processing 'get' type requests in order to ensure that users always see returned records in the flat structure specified in the schema.
+Transformations, if specified, must specify both a map of connections, and a factory. The factory contains key/value pairs of transformation handles and transformation classes, each of which implement the ITransformation interface. The map property provides the location for a list of transformations, described further in this README.
 
-Relationships are completely unnecessary in many situations if data is being pushed.
-
-- A container 'metadata' json specification file (metadata.json)
-
-      ```
-      {
-          "metadata": {
-              "id": "condition-test",
-              "version": "1.0",
-              "classifiers": {},
-              "description": null
-          }
-      }
-      ```
-
-- A container 'collections' json specification file (collections.json)
-
-        ```
-        {
-            "collections": [
-                {
-                    "id": "required-fields",
-                    "classifiers": {"namespace": "condition-test"},
-                    "fields": ["boolean-required", "float-required", "double-required", "integer-required", "string-required", "datetime-required"]
-                },
-                {
-                    "id": "optional-fields",
-                    "classifiers": {"namespace": "condition-test"},
-                    "fields": ["boolean-optional", "float-optional", "double-optional", "integer-optional", "string-optional", "datetime-optional"]
-                },
-                {
-                    "id": "mix-and-match",
-                    "classifiers": {"namespace": "condition-test"},
-                    "fields": ["string-required", "string-optional", "datetime-required"]
-                }
-            ]
+```
+"container": {
+    "plugin": "gov.noaa.messageapi.containers.DefaultContainer",
+    "constructor": {
+        "metadata": "{}/resources/test/metadata/file-reader/container.json",
+        "collections": "{}/resources/test/file-reader/parameters.json",
+        "transformations": {
+            "map": "{}/resources/test/file-reader/parameters.json",
+            "factory": "gov.noaa.messageapi.test.factories.transformations.FileReaderFactory"
         }
-        ```
+    }
+}
+```
 
-- A container 'transformations' json specification file (transformations.json)
+There are three types of container groupings provided by the default MessageAPI implementation - **Collections**, **Classifiers**, and **Transformations**. 
 
-        ```
+
+
+###### Collections
+
+- **Collections** are the most basic containers, and are the only type required in a session manifest. Collections specify a session-global unique id, a list of fields that belong to them, a list of conditions that must be met before a record will build into one, and optionally, a map of classifiers (keys with arbitrary values). When a request is submitted, the list of records attached to the request at submission time is mapped to collections. Each record individually is broken into whatever collections are specified. These collections are immutable - they can overlap fields, even containing the same identical field sets, and each one will get its own independent copy. After grouping, collections derived from the same Record are still tied together by a separate UUID that is attached to each.
+
+```
+{
+    "collections": [
         {
-            "transformations": [
-            {
-                "id": "join-test",
-                "operator": "join",
-                "constructor": {"join_field": "key",
-                                "collection_field": "mix-and-match"},
-                "records": {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
-                            "child":  {"COLLECTION": "mix-and-match"},
-                            "other": "UUID"},
-                "fields": ["key", "record", "filename", "type", "mix-and-match"]
-            },
-            {
-                "id": "reduce-test",
-                "operator": "reduce-sum",
-                "constructor": {"reduce-field": "mix-and-match",
-                                "reduce-target": "mix-and-match-reduction"},
-                "records": {"reduce-list" : {"TRANSFORMATION": "join-test"}},
-                "fields": ["key", "mix-and-match-reduction"]
-            }]
+            "id": "required-fields",
+            "fields": ["boolean-required", "float-required", "double-required", "integer-required", "string-required", "datetime-required"],
+            "conditions": ["cond-1", "cond-2"]
+        },
+        {
+            "id": "optional-fields",
+            "fields": ["boolean-optional", "float-optional", "double-optional", "integer-optional", "string-optional", "datetime-optional"]
+        },
+        {
+            "id": "mix-and-match",
+            "fields": ["string-required", "string-optional", "datetime-required"]
         }
-        ```
+    ]
+}
+```
+
+
+###### Classifiers
+
+- **Classifiers** are metadata containers, in that they are not specified directly in the Session manifest, but are attached to Collections. A single Classifier can be attached to different Collections, and this mechanism provides a guarantee of the ability to arbitrarily group Records in MessageAPI. These Classifier labels are then available separately for use in Transformations and/or Endpoints - retrieving a Classifier in an Endpoint or using it as an input of a Transformation will retrieve all records from all collections labeled with that Classifier, no matter which Collection it lives in. Determination of the potential utility of this mechanism is left to the user.
+
+```
+{
+    "collections": [
+        {
+            "id": "required-fields",
+            "classifiers": {"namespace": "condition-test"},
+            "fields": ["boolean-required", "float-required", "double-required", "integer-required", "string-required", "datetime-required"],
+            "conditions": ["cond-1", "cond-2"]
+        },
+        {
+            "id": "optional-fields",
+            "classifiers": {"namespace": "condition-test"},
+            "fields": ["boolean-optional", "float-optional", "double-optional", "integer-optional", "string-optional", "datetime-optional"]
+        },
+        {
+            "id": "mix-and-match",
+            "classifiers": {"namespace": "condition-test"},
+            "fields": ["string-required", "string-optional", "datetime-required"]
+        }
+    ]
+}
+```
+
+
+###### Transformations
+
+- **Transformations** are computational containers. They are an optional component of MessageAPI. Transformations act as instances of immutable functions that can hold global, configurable constructor/initialization parameters, use other arbitrary named containers as arguments in a process function, return a list of records, and list the fields that each record will provide in a 'fields' map entry. Transformations are always immutable, executed lazily (only when called in an Endpoint), and always operate on and produce lists of records. 
+
+The 'records' entry on the Transformation map itself holds a map of named parameter keys that correspond to values describing what type of container and the id of that container to use as that particular input. For example, in the following Transformation map, the first Transformation is called 'join-test'. The Transformation has an operator of 'join', which corresponds to a java class in the TransformationFactory listed in the Session manifest. This Transformation provides a constructor map containing two keys, 'join_field' and 'collection_field', both which specify constants that are set in the Transformation when it is initialized. 
+
+The 'join-test' Transformation defines three parameters in its process method map - 'parent', 'child', and 'other'. Each of these corresponds to a different container - when used in the Transformation, the 'parent' parameter will provide a list of all records contained by the 'namespace=condition-test' classifier; the 'child' parameter will provide a list of records contained by the 'mix-and-match' collection; and the 'other' parameter contains a special case - the UUID - which will provide every collection for a given UUID, and map the Transformation to every UUID, and all returned records for every UUID in this Transformation will be merged on return. The use of UUID as a Transformation record parameter is a special case, and due to its mapping ability, limits its use to once per Transformation.
+
+The 'join-test' Transformation also specifies that it will return the 'key', 'record', filename', 'type', and 'mix-and-match' fields. This is useful for knowing in a configurable way what fields to expect for use in other Transformations or Endpoints. However, at this time, there is no restriction on what fields a Transformation can return.
+
+In the second Transformation, the 'reduce-list' record parameter will provide all records contained by the 'join-test' Transformation. In practice, for the provided default MessageAPI implementation, when the 'reduce-test' Transformation is invoked, it will first invoke the 'join-test' transformation and used those returned records as input for its 'reduce-list' parameter. Transformations are always evaluated lazily in this manner, whereby they are only invoked when called, and chained/referenced transformations are similarly only invoked to provide an input to their parent when invoked.
+
+It is the view of the package authors that Transformations hold computational tasks and List manipulations - Transformations are good places for things like Joins, Unions, Filters, etc. Any type of computation is technically allowed in a Transformation, but external behavior is better suited for taking place in Endpoints, which are specifically designed with external communication in mind.
+
+```
+{
+    "transformations": [
+    {
+        "id": "join-test",
+        "operator": "join",
+        "constructor": {"join_field": "key",
+                        "collection_field": "mix-and-match"},
+        "records": {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
+                    "child":  {"COLLECTION": "mix-and-match"},
+                    "other": "UUID"},
+        "fields": ["key", "record", "filename", "type", "mix-and-match"]
+    },
+    {
+        "id": "reduce-test",
+        "operator": "reduce-sum",
+        "constructor": {"reduce-field": "mix-and-match",
+                        "reduce-target": "mix-and-match-reduction"},
+        "records": {"reduce-list" : {"TRANSFORMATION": "join-test"}},
+        "fields": ["key", "mix-and-match-reduction"]
+    }]
+}
+```
+
+
+###### Metadata
+
+Additionally, like **Schemas** and **Protocols**, **Containers** may provide a metadata map in the Session manifest. This metadata map is formed identically to the other metadata maps.
+
+```
+{
+    "metadata": {
+        "id": "condition-test",
+        "version": "1.0",
+        "classifiers": {},
+        "description": null
+    }
+}
+```
 
 ##### Protocols
-Protocols are specialized, library specific implementations that translate between container record sets and some external system. These protocols are the parts of the system that call out to the external world, such as FTP servers, email clients, Kafka topics, an Aeron message transport layer, or similar things. They can return immediately, or be long lived.
 
-The default protocol class provided by MessageAPI requires users to provide a protocol Endpoint class in the constructor map, and a set of connections to that endpoint class which will be used in instances. Each connection map should hold an id to identify the connection on return, a list of bins that the connection map should process, and a map of constructor parameters that can be used during instance connection.
+The Protocol dimension of MessageAPI represents the boundary of a MessageAPI process. The Protocol holds **Endpoints** and Endpoint **Connections**. The Protocol is the part of the MessageAPI that grabs records from Containers, communicates out of process, and returns a data Packet containing its own Record and/or Rejection lists back to the original caller, to be merged with all other Records and Rejections retrieved from other Endpoints. Endpoints can do anything with Records - send emails, push to FTP or object storage, retrieve content from a Kafka topic, run unit tests, etc. 
 
-The default protocol also holds metadata map, similar to the other two parts of a standard ISession.
+Protocol layer can hold arbitrary Endpoints, and arbitrary Connections for every endpoint. Each Endpoint Connection has its own isolated state during computation, and the specific containers it has access to, along with any initialization parameters, are specified out of code in the configuration.
+
+
 
 Here is an example of a connections map used by an email type endpoint:
 
