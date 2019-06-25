@@ -62,11 +62,14 @@ Every part of how a MessageAPI defined process will play out, down to the implem
 
 The primary dimensions of MessageAPI are held to three - A **Schema** holds a flat map of all fields and conditions a user will interact with; a **Container** defines how fields will be factored and held in collections, classifications, and transformations; and a **Protocol** defines Endpoints and connections to them, which define where containers of records will go. All of these parts of a Message are viewable and configurable without touching code. Users write and share their own custom Endpoints and Transformations, which are then specified in the map.
 
+Figure 1 below illustrates the layout of a Session - how MessageAPI structures all Processes.
+
 ![Session Topology](./resources/docs/images/Figure1_SessionTopology.jpg "Session Topology")
 
-![Session Flow](./resources/docs/images/Figure2_SessionFlow.jpg "Session Flow")
 
 Everything that passes data in MessageAPI consumes and produces the same object type - the record. The manifests are used in code by creating a session based on them - and then using a stable API to create a request, add records, set field and/or condition values, and then submit, which immediately returns an async response. The response will hold its own records and rejections, and eventually get an 'isComplete' flag. That's the entirety of the API surface. Everything else depends on the Manifest.
+
+All of these actions are
 
 MessageAPI is designed to be capable of passing any message content - objects, database entries, emails, etc., to/through anywhere - database tables, inboxes, s3 buckets, ftp, smtp, kafka, files, directories etc.
 
@@ -182,7 +185,17 @@ Each session component is considered a fundamental and loosely orthogonal dimens
 
 #### MessageAPI Session Topology
 
-Here we describe the three dimensions of a MessageAPI session:
+We saw earlier that MessageAPI works by separating out structural and dataflow concerns. Figure 2 illustrates how data typically flows between structural dimensions:
+
+![Session Flow](./resources/docs/images/Figure2_SessionFlow.jpg "Session Flow")
+
+
+
+Figure 3 illustrates the Hierarchy of all Structural Components. We will delve into each below.
+
+![Session Hierarchy](./resources/docs/images/Figure3_SessionHierarchy.jpg "Session Hierarchy")
+
+
 
 ##### Schemas
 
@@ -534,7 +547,11 @@ Each Connection specifies a unique id (required), a constructor used to build th
 
 #### MessageAPI API and Examples
 
-Now that we've described the general topology, we will describe how a typical program will use this system using the API available.
+Now that we've described the general architecture, we will describe how a typical program will use this system using the API available.
+
+Figure 4 demonstrates the entire topological surface of User-interactive parts of the MessageAPI system, the parts that structure the plumbing of how data will flow in a MessageAPI process.
+
+![API Flow](./resources/docs/images/Figure4_APITopology.jpg "API Flow")
 
 All user-interactive parts of the MessageAPI model can be imported as interfaces. By convention, interfaces in MessageAPI begin with a capital I, followed by the word for the model component that the interface represents (no space). The most important interfaces of MessageAPI  that users will interact with are the ISession, IRequest, IRecord, and IResponse interfaces. Other user-useful interfaces are the IRejection, IField, IRelationship, and ICondition interfaces.
 
@@ -614,6 +631,21 @@ responseRejections.stream().forEach(rr -> System.out.println(rr.getRecord() + ",
 
 ```
 
+Figure 5 demonstrates how data typically flows through the Request structure illustrated above.
+
+![Request Flow](./resources/docs/images/Figure5_RequestFlow.jpg "Request Flow")
+
+
+Figure 6 provides more insight into the internal parts of a Request.
+
+![Request Structure](./resources/docs/images/Figure6_RequestTopology.jpg "Request Structure")
+
+
+Figure 7 provides more insight into the internal parts of a Record, which parts can be set, etc..
+
+![Record Structure](./resources/docs/images/Figure7_RecordTopology.png "Record Structure")
+
+
 The provided MessageAPI implementation is designed to be thread-safe in Requests across Sessions, and Responses across Requests ***with respect to Records***. This means that when a Request is submitted, the submitted Record set is deep copied to the Response. The Response will use the Endpoint Connection instances that were created when the Request was created. This means that the Endpoints across a given Request are potentially Stateful. Separate Requests are guaranteed to be isolated and thread-safe with respect to state.
 
 This has important implications for use. If a stateful Endpoint is required, for example, some counting mechanism, or some situation where newer records depend on older, the same Request can be submitted multiple times (i.e., by calling request.submit()), with potentially different record sets (i.e., before calling request.submit() the second time, first call request.setRecords(List<IRecord> newRecords));
@@ -621,6 +653,13 @@ This has important implications for use. If a stateful Endpoint is required, for
 If isolated state is required, just create a new Request on the Session. All Endpoints and other stateful machinery will be re-instantiated for each Request. 
 
 In each case, Transformations are always stateless WRT Requests or Responses, because they are always recreated when called from an endpoint.
+
+
+
+Figure 8 provides an entire, top down view of a Request Lifecycle.
+
+![Request Lifecycle](./resources/docs/images/Figure8_RequestLifecycle.jpeg "Request Lifecycle")
+
 
 ##### API Examples
 
