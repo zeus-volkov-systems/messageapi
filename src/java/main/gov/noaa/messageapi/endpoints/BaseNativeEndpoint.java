@@ -10,7 +10,7 @@ import gov.noaa.messageapi.endpoints.BaseEndpoint;
  * <h1>BaseNativeEndpoint</h1> This is essentially a <b>convenience base
  * class</b> for endpoints that call into native code held as binary libs
  * through the <b>JNI (Java Native Interface).</b>
- * <p> 
+ * <p>
  * To make use of this endpoint, extending classes should provide a fully
  * qualified path to the native resource as a string value corresponding to the
  * 'native-library' key.
