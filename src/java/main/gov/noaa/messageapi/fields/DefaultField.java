@@ -30,6 +30,9 @@ public class DefaultField implements IField {
         if (fieldMap.containsKey("required")) {
             this.required = (boolean) fieldMap.get("required");
         }
+        if (fieldMap.containsKey("value")) {
+            this.value = fieldMap.get("value");
+        }
     }
 
     public DefaultField(String id) {
