@@ -59,6 +59,12 @@ public abstract class BaseEndpoint {
         this.fields = this.buildFields(userFields, defaultFields);
     }
 
+    @SuppressWarnings("unchecked")
+    protected void updateFields(Map<String, Object> parameters) {
+        Map<String, Object> internalParameters = (Map<String, Object>) parameters.get("__internal__");
+        this.setFields((List<String>) internalParameters.get("fields"), this.getDefaultFields());
+    }
+
     private void setCollectionIds(List<String> collectionIds) {
         this.collectionIds = collectionIds;
     }
