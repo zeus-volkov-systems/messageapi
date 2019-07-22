@@ -32,7 +32,11 @@ public class DefaultCollection implements ICollection {
     @SuppressWarnings("unchecked")
     public DefaultCollection(Map<String,Object> collectionMap) {
         this.setId((String) collectionMap.get("id"));
-        this.setClassifiers((Map<String,Object>) collectionMap.get("classifiers"));
+        if (collectionMap.containsKey("classifiers")) {
+            this.setClassifiers((Map<String, Object>) collectionMap.get("classifiers"));
+        } else {
+            this.setClassifiers(new HashMap<String,Object>());
+        }
         this.initializeFields((List<String>) collectionMap.get("fields"));
         if (collectionMap.containsKey("conditions")) {
             this.setConditionIds((List<String>) collectionMap.get("conditions"));
