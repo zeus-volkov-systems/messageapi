@@ -56,8 +56,11 @@ import gov.noaa.messageapi.rejections.DefaultRejection;
  * <h3>Implementation</h3>
  * The specific API of methods in native code are dependent on the language (e.g, C, Fortran);
  * however, every native language will be initially wrapped by a JNI method in a C file that corresponds to the
- * 'processNativeInstance' method in this class, and all native processing related to use
+ * 'process' method in this class, and all native processing related to use
  * of MessageAPI will operate on the passed jlong and the provided MessageApiEndpoint Library.
+ * <p>
+ * In this package, look at the src/c/test/DemoLibrary.c for a straightforward example on how to use this
+ * library in native code.
  * <p>
  * This Endpoint works by first initializing the library during Endpoint construction, then creating
  * a C++ object using the calling instance and the passed protocolRecord during a process call,
@@ -86,9 +89,29 @@ import gov.noaa.messageapi.rejections.DefaultRejection;
  */
 public class NativeEndpoint extends BaseEndpoint {
 
-    private native IPacket processNativeInstance(long nativeInstance);
-    private synchronized native long createNativeInstance(IProtocolRecord protocolRecord);
-    private synchronized native void releaseNativeInstance(long instanceId);
+    /**
+     * Calls the process method implemented in C by the user's code. User code must
+     * be templated to be wrapped inside a JNI call.
+     * <p>
+     * See DemoEndpointLibrary.c for an example on how all user libraries must be
+     * wrapped, and what includes need to be added.
+     * <p>
+     * Generally, the following headers must be included in user native libs:
+     * <p>
+     * jni.h
+     * <p>
+     * endpoint_structs.h
+     * <p>
+     * MessageApiEndpointLib.h
+     * <p>
+     * gov_noaa_messageapi_endpoints_NativeEndpoint.h
+     * 
+     * @param nativeInstance
+     * @return IPacket
+     */
+    private native IPacket process(long nativeInstance);
+    private synchronized native long create(IProtocolRecord protocolRecord);
+    private synchronized native void release(long instanceId);
 
     private IRecord stateContainer = null;
     private List<IField> defaultFields = null;
@@ -112,9 +135,9 @@ public class NativeEndpoint extends BaseEndpoint {
     }
 
     private IPacket process(IProtocolRecord protocolRecord) {
-        long nativeInstance = this.createNativeInstance(protocolRecord);
-        IPacket nativePacket =  this.processNativeInstance(nativeInstance);
-        this.releaseNativeInstance(nativeInstance);
+        long nativeInstance = this.create(protocolRecord);
+        IPacket nativePacket =  this.process(nativeInstance);
+        this.release(nativeInstance);
         return nativePacket;
     }
 

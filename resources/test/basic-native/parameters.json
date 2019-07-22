@@ -6,5 +6,12 @@
                      "fields": ["initial-value"]}],
     "connections": [{"id": "1",
                      "collections": "*",
-                     "constructor": {"native-library": "/"}}]
+                     "constructor": {"native-library": "/",
+                                    "default-fields": [{"id": "test",
+                                                        "type": "string",
+                                                        "required": false}],
+                                    "state-container": [{"id": "counter",
+                                                         "type": "integer",
+                                                         "required": true,
+                                                         "value": 0}]}}]
 }
