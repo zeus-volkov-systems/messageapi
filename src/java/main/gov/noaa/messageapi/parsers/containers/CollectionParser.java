@@ -36,7 +36,7 @@ public class CollectionParser extends BaseParser {
             if (cMap.containsKey("classifiers")) {
                 return this.parseClassifierMap((Map<String,Object>) cMap.get("classifiers"));
             }
-            return null;
+            return new ArrayList<Map.Entry<String,String>>();
         }).collect(Collectors.toList()))));
     }
 

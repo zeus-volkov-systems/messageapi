@@ -133,6 +133,7 @@ public class ContainerDefinition {
      */
     private void setEmptyTransformationMaps() throws Exception {
         this.transformationMaps = new ArrayList<Map<String,Object>>();
+        this.transformations = new ArrayList<String>();
         this.createTransformationFactory(DEFAULT_TRANSFORMATION_FACTORY);
     }
 
