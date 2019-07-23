@@ -20,7 +20,7 @@
             "constructor": {
                 "metadata": "{}/resources/test/metadata/basic-native/protocol.json",
                 "endpoints": [{
-                        "plugin": "gov.noaa.messageapi.test.endpoints.InMemoryFileReader",
+                        "plugin": "gov.noaa.messageapi.endpoints.NativeEndpoint",
                         "connections": "{}/resources/test/basic-native/parameters.json"
                     }]
             }

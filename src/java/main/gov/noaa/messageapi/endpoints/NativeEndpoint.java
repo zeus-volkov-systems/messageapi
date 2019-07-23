@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
+import gov.noaa.messageapi.interfaces.IEndpoint;
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
@@ -87,7 +88,7 @@ import gov.noaa.messageapi.rejections.DefaultRejection;
  * 
  * @author Ryan Berkheimer
  */
-public class NativeEndpoint extends BaseEndpoint {
+public class NativeEndpoint extends BaseEndpoint implements IEndpoint {
 
     /**
      * Calls the process method implemented in C by the user's code. User code must
@@ -134,14 +135,19 @@ public class NativeEndpoint extends BaseEndpoint {
         return this.stateContainer;
     }
 
-    private IPacket process(IProtocolRecord protocolRecord) {
+    public IPacket process(IProtocolRecord protocolRecord) {
+        System.out.println("Processing native endpoint.");
         long nativeInstance = this.create(protocolRecord);
-        IPacket nativePacket =  this.process(nativeInstance);
+        System.out.println("created native instance: " + nativeInstance);
+        this.process(nativeInstance);
+        //IPacket nativePacket =  this.process(nativeInstance);
         this.release(nativeInstance);
-        return nativePacket;
+        System.out.println("released native instance.");
+        //return nativePacket;
+        return createPacket();
     }
 
-    protected List<IField> getDefaultFields() {
+    public List<IField> getDefaultFields() {
         return this.defaultFields;
     }
 
