@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <stdio.h>
+#include "endpoint_structs.h"
 #include "MessageApiEndpointLib.h"
 #include "gov_noaa_messageapi_endpoints_NativeEndpoint.h"
 
@@ -13,11 +14,11 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
   {
       printf("In our test!\n");
       printf("Hello, World\n");
-      fflush(stdout);
-      //struct records_vector records_vector = messageapi_endpoint_getrecordsvector(message);
-      //printf(records_vector.count);
+      struct records_vector* records_vector = messageapi_endpoint_getrecordsvector(message);
+      printf("Count: %d\n", records_vector->count);
       //printf(records_vector.records[0]);
       //printf("Leaving our test!");
+      fflush(stdout);
       return;
   }
 

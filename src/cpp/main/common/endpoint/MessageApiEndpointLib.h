@@ -8,7 +8,7 @@ extern "C"
 {
 #endif
 
-    struct records_vector messageapi_endpoint_getrecordsvector(jlong);
+    struct records_vector* messageapi_endpoint_getrecordsvector(jlong);
 
 #ifdef __cplusplus
 }

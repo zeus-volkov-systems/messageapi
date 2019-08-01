@@ -27,7 +27,7 @@ JNIEXPORT void JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_release
 
 extern "C"
 {
-    struct records_vector* messageapi_endpoint_getrecords(jlong message)
+    struct records_vector *messageapi_endpoint_getrecordsvector(jlong message)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords();
     }
