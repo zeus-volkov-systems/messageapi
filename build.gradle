@@ -48,6 +48,7 @@ repositories {
 
 dependencies {
     compile ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}",
+             "commons-net:commons-net:${apacheCommonsNetVersion}",
              "org.codehaus.groovy:groovy-all:${groovyVersion}")
     testCompile ("org.slf4j:slf4j-simple:${slf4jVersion}",
                 "org.spockframework:spock-core:${spockVersion}")
