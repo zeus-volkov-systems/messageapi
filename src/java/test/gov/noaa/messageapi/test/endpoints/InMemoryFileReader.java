@@ -71,7 +71,7 @@ import gov.noaa.messageapi.fields.DefaultField;
  * inability to open the file.</i>
  * <p>
  * <p>
- * <b>Constructor Parameters:</b>
+ * <b>Configuration Parameters:</b>
  * <p>
  * <i>The following are a list of currently accepted constructor parameters. In
  * the future, options for configuring this endpoint should be included in the
