@@ -124,6 +124,10 @@ public class FtpLister extends BaseEndpoint implements IEndpoint {
             try {
                 List<IRecord> collectionRecords = this.processCollections(protocolRecord);
                 packet.addRecords(collectionRecords);
+                List<IRecord> classifierRecords = this.processClassifiers(protocolRecord);
+                packet.addRecords(classifierRecords);
+                List<IRecord> transformationRecords = this.processTransformations(protocolRecord);
+                packet.addRecords(transformationRecords);
                 this.disconnectFtpClient();
             } catch (Exception e) {
                 this.disconnectFtpClient();
@@ -159,6 +163,42 @@ public class FtpLister extends BaseEndpoint implements IEndpoint {
     private List<IRecord> processCollections(IProtocolRecord protocolRecord) throws IOException {
         return ListUtils.removeAllNulls(ListUtils.flatten(this.getCollections().stream().map(collection -> {
             return ListUtils.flatten(protocolRecord.getRecordsByCollection(collection).parallelStream().map(record -> {
+                return ListUtils.flatten(this.getDirectoryFields().stream().map(directoryField -> {
+                    if (record.hasField(directoryField)) {
+                        try {
+                            return this.createResourceRecords((String) record.getField(directoryField).getValue());
+                        } catch (Exception e) {
+                            return null;
+                        }
+                    }
+                    return null;
+                }).collect(Collectors.toList()));
+            }).collect(Collectors.toList()));
+        }).collect(Collectors.toList())));
+    }
+
+
+    private List<IRecord> processClassifiers(IProtocolRecord protocolRecord) throws IOException {
+        return ListUtils.removeAllNulls(ListUtils.flatten(this.getClassifiers().stream().map(classifier -> {
+            return ListUtils.flatten(protocolRecord.getRecordsByClassifier(classifier.getKey(), classifier.getValue())
+                    .parallelStream().map(record -> {
+                        return ListUtils.flatten(this.getDirectoryFields().stream().map(directoryField -> {
+                            if (record.hasField(directoryField)) {
+                                try {
+                                    return this.createResourceRecords((String) record.getField(directoryField).getValue());
+                                } catch (Exception e) {
+                                    return null;
+                                }
+                            }
+                            return null;
+                        }).collect(Collectors.toList()));
+                    }).collect(Collectors.toList()));
+        }).collect(Collectors.toList())));
+    }
+
+    private List<IRecord> processTransformations(IProtocolRecord protocolRecord) throws IOException {
+        return ListUtils.removeAllNulls(ListUtils.flatten(this.getTransformations().stream().map(transformation -> {
+            return ListUtils.flatten(protocolRecord.getRecordsByTransformation(transformation).parallelStream().map(record -> {
                 return ListUtils.flatten(this.getDirectoryFields().stream().map(directoryField -> {
                     if (record.hasField(directoryField)) {
                         try {
