@@ -14,7 +14,7 @@ import gov.noaa.messageapi.sessions.DefaultSession;
 
 class FtpListerTests extends spock.lang.Specification {
 
-def "Tests submission of a request containing a record that contains a directory field to retrieve contents of. This tests basic functionality of the FtpLister endpoint."() {
+def "Tests submission of a request containing a record that contains a directory field to retrieve contents of.This tests basic functionality of the FtpLister endpoint."() {
     given: "A session created based on a ftp-lister manifest."
         ISession session = new DefaultSession("{}/resources/test/ftp-lister/manifest.json")
         IRequest request = session.createRequest();
@@ -23,6 +23,7 @@ def "Tests submission of a request containing a record that contains a directory
     when: "We submit the request with a single record containing a single field (directory) that has a directory to process"
         IResponse response = request.submit();
         while (!response.isComplete()) {}
+        println "Getting a response..."
         response.getRecords().each { r ->
             println r.getField("name").getValue()
             println r.getField("server").getValue()
