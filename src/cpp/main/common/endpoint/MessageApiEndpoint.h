@@ -35,8 +35,10 @@ public:
     jmethodID getMethod(jclass, const char *, const char *, bool);
     jstring toJavaString(const char *);
     const char *fromJavaString(jstring);
-
-    struct records_vector* getRecords();
+    const char* getRecordMethodSignature(const char *);
+    jobject getProtocolRecords(jobject protocolref, jmethodID methodId, const char *method, const char *key, const char *val);
+    
+    struct records_vector *getRecords(const char *method, const char *key = NULL, const char *val = NULL);
 
 private:
     JNIEnv *jvm;

@@ -29,7 +29,7 @@ extern "C"
 {
     struct records_vector *messageapi_endpoint_getrecordsvector(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords();
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecords");
     }
 
     /*const char *taskapi_getproperty(jlong libptr, const char *key)
