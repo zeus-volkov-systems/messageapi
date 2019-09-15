@@ -84,6 +84,19 @@ public class ProtocolRecord implements IProtocolRecord {
         return new ArrayList<IRecord>();
     }
 
+    public List<IRecord> getRecordsByUUID(String uuid) {
+        List<IRecord> uuidRecords = this.recordMap.entrySet().stream().filter(e -> {
+            if (((UUID) e.getValue().get("UUID")).equals(UUID.fromString(uuid))) {
+                return true;
+            }
+            return false;
+        }).map(e -> e.getKey()).collect(Collectors.toList());
+        if (uuidRecords != null && uuidRecords.size() > 0) {
+            return uuidRecords.stream().map(r -> r.getCopy()).collect(Collectors.toList());
+        }
+        return new ArrayList<IRecord>();
+    }
+
     @SuppressWarnings("unchecked")
     public List<IRecord> getRecordsByClassifier(String key, Object value) {
         List<IRecord> classRecords = this.recordMap.entrySet().stream().filter(e -> {
