@@ -7,8 +7,7 @@
                      "classifiers": {},
                      "fields": ["directory"]}],
     "connections": [{"id": "conn-1",
-                     "collections": "*",
+                     "collections": ["coll-1"],
                      "constructor": {"directory-fields": "directory",
-                                     "server": "ftp.ncdc.noaa.gov",
-                                     "recursive": true}}]
+                                     "server": "ftp.ncdc.noaa.gov"}}]
 }
