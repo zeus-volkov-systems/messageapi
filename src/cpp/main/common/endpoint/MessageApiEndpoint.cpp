@@ -83,7 +83,7 @@ jstring MessageApiEndpoint::toJavaString(const char *s)
     return jvm->NewStringUTF(s);
 }
 
-const char *MessageApiEndpoint::fromJavaString(jstring s)
+const char* MessageApiEndpoint::fromJavaString(jstring s)
 {
     const char *tempStr = jvm->GetStringUTFChars(s, NULL);
     int tempLen = strlen(tempStr);
@@ -93,7 +93,54 @@ const char *MessageApiEndpoint::fromJavaString(jstring s)
     return cStr;
 }
 
-struct records_vector* MessageApiEndpoint::getRecords()
+const char* MessageApiEndpoint::getRecordMethodSignature(const char* method)
+{
+    if (method == "getRecords")
+    {
+        return "()Ljava/util/List;";
+    }
+    else if (method == "getRecordsByCollection")
+    {
+        return "(Ljava/lang/String;)Ljava/util/List;";
+    }
+    else if (method == "getRecordsByClassifier")
+    {
+        return "(Ljava/lang/String;Ljava/lang/Object;)Ljava/util/List;";
+    }
+    else if (method == "getRecordsByTransformation")
+    {
+        return "(Ljava/lang/String;)Ljava/util/List;";
+    }
+    else if (method == "getRecordsByUUID")
+    {
+        return "(Ljava/lang/String;)Ljava/util/List;";
+    }
+    return NULL;
+}
+
+jobject MessageApiEndpoint::getProtocolRecords(jobject protocolref, jmethodID methodId, const char* method, const char* key, const char* val)
+{
+    if (method == "getRecords")
+    {
+        return jvm->CallObjectMethod(protocolref, methodId);
+    }
+    jstring javaKey = toJavaString(key);
+    jobject protocolRecords;
+    if (method == "getRecordsByCollection" || method == "getRecordsByTransformation" || method == "getRecordsByUUID")
+    {
+        protocolRecords = jvm->CallObjectMethod(protocolref, methodId, javaKey);
+    }
+    else if (method == "getRecordsByClassifier")
+    {
+        jstring javaVal = toJavaString(val);
+        protocolRecords = jvm->CallObjectMethod(protocolref, methodId, javaKey, javaVal);
+        jvm->DeleteLocalRef(javaVal);
+    }
+    jvm->DeleteLocalRef(javaKey);
+    return protocolRecords;
+}
+
+struct records_vector* MessageApiEndpoint::getRecords(const char* recordMethod, const char* key, const char* val)
 {
     static jclass java_util_List;
     jmethodID java_util_List_size;
@@ -104,13 +151,12 @@ struct records_vector* MessageApiEndpoint::getRecords()
 
     jobject protocolRecordRef = jvm->NewLocalRef(protocolRecord);
     jclass protocolRecordClass = getObjectClass(protocolRecordRef);
-    jmethodID methodId = getMethod(protocolRecordClass, "getRecords", "()Ljava/util/List;", false);
+    jmethodID methodId = getMethod(protocolRecordClass, recordMethod, getRecordMethodSignature(recordMethod), false);
 
+    jobject jprotocolRecords = getProtocolRecords(protocolRecordRef, methodId, recordMethod, key, val);
 
-    jobject jprotocolRecords = jvm->CallObjectMethod(protocolRecordRef, methodId);
     int recordCount = jvm->CallIntMethod(jprotocolRecords, java_util_List_size);
     jobject** jrecords = (jobject**)malloc(sizeof(jobject*) * recordCount);
-
     for (int i = 0; i < recordCount; i++) {
         jobject jrecord = static_cast<jobject>(jvm->CallObjectMethod(jprotocolRecords, java_util_List_get, i));
         jrecords[i] = (jobject*) jrecord;
