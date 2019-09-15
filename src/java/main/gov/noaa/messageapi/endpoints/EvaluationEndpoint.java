@@ -18,7 +18,7 @@ import gov.noaa.messageapi.utils.general.ListUtils;
  * This endpoint provides a passthrough mechanism for returning
  * any containers specified in the configuration to the caller.
  * This endpoint allows use of arbitrary collections, classifications, and/or transformations
- * to be returned as a single
+ * to be returned as a single record set.
  * <p>
  * To use this Endpoint, the user should add any Collections, Classifiers,
  * and/or Transformations to the Endpoint Connection map that are desired to be
