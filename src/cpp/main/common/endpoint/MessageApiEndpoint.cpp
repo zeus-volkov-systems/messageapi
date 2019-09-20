@@ -99,21 +99,13 @@ const char* MessageApiEndpoint::getRecordMethodSignature(const char* method)
     {
         return "()Ljava/util/List;";
     }
-    else if (method == "getRecordsByCollection")
+    else if (method == "getRecordsByCollection" || method == "getRecordsByUUID" || method == "getRecordsByTransformation")
     {
         return "(Ljava/lang/String;)Ljava/util/List;";
     }
     else if (method == "getRecordsByClassifier")
     {
         return "(Ljava/lang/String;Ljava/lang/Object;)Ljava/util/List;";
-    }
-    else if (method == "getRecordsByTransformation")
-    {
-        return "(Ljava/lang/String;)Ljava/util/List;";
-    }
-    else if (method == "getRecordsByUUID")
-    {
-        return "(Ljava/lang/String;)Ljava/util/List;";
     }
     return NULL;
 }
@@ -173,21 +165,17 @@ struct records_vector* MessageApiEndpoint::getRecords(const char* recordMethod, 
     return vector;
 }
 
-/*struct cStringVector* NativeTask::getStringVector(const char* key) {
-	static jclass java_util_ArrayList;
-	static jmethodID java_util_ArrayList_;
-	jmethodID java_util_ArrayList_size;
-	jmethodID java_util_ArrayList_get;
-	jmethodID java_util_ArrayList_add;
-	java_util_ArrayList      = static_cast<jclass>(jvm->NewGlobalRef(jvm->FindClass("java/util/ArrayList")));
-	java_util_ArrayList_     = jvm->GetMethodID(java_util_ArrayList, "<init>", "(I)V");
-	java_util_ArrayList_size = jvm->GetMethodID (java_util_ArrayList, "size", "()I");
-	java_util_ArrayList_get  = jvm->GetMethodID(java_util_ArrayList, "get", "(I)Ljava/lang/Object;");
-	java_util_ArrayList_add  = jvm->GetMethodID(java_util_ArrayList, "add", "(Ljava/lang/Object;)Z");
-
-	jobject arrayList = getObject(key);
-	int count = jvm->CallIntMethod(arrayList, java_util_ArrayList_size);
-	char **strings = (char**) malloc(sizeof(char*) * count);
+/*struct string_vector* MessageApiEndpoint::getTransformations() {
+    static jclass java_util_List;
+    jmethodID java_util_List_size;
+    jmethodID java_util_List_get;
+    java_util_List = static_cast<jclass>(jvm->NewGlobalRef(jvm->FindClass("java/util/List")));
+    java_util_List_size = jvm->GetMethodID(java_util_List, "size", "()I");
+    java_util_List_get = jvm->GetMethodID(java_util_List, "get", "(I)Ljava/lang/Object;");
+    
+    jobject arrayList = getObject(key);
+    int count = jvm->CallIntMethod(arrayList, java_util_List_size);
+    char **strings = (char**) malloc(sizeof(char*) * count);
 	int length = 0;
 	for (int i = 0; i < count; i++) {
   		jstring element = static_cast<jstring>(jvm->CallObjectMethod(arrayList, java_util_ArrayList_get, i));
@@ -201,8 +189,8 @@ struct records_vector* MessageApiEndpoint::getRecords(const char* recordMethod, 
   		jvm->ReleaseStringUTFChars(element, tempStr);
   		jvm->DeleteLocalRef(element);
 	}
-	struct cStringVector *vector = (struct cStringVector*) malloc(sizeof(struct cStringVector) + sizeof(strings));
-	vector->length = length;
+	struct string_vector *vector = (struct string_vector*) malloc(sizeof(struct string_vector) + sizeof(strings));
+	vector->max_length = length;
 	vector->count = count;
 	vector->strings = strings;
     jvm->DeleteGlobalRef(java_util_ArrayList);

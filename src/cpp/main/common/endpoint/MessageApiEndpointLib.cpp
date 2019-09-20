@@ -27,21 +27,32 @@ JNIEXPORT void JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_release
 
 extern "C"
 {
-    struct records_vector *messageapi_endpoint_getrecordsvector(jlong message)
+    struct records_vector* getRecords(jlong message)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecords");
     }
 
-    /*const char *taskapi_getproperty(jlong libptr, const char *key)
+    struct records_vector* getRecordsByCollection(jlong message, const char* collectionId)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(libptr)->getProperty(key);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByCollection", collectionId);
     }
 
-    jobject taskapi_getobject(jlong libptr, const char *key)
+    struct records_vector* getRecordsByTransformation(jlong message, const char* transformationId)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(libptr)->getObject(key);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByTransformation", transformationId);
     }
 
+    struct records_vector *getRecordsByUUID(jlong message, const char *uuid)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByTransformation", uuid);
+    }
+
+    struct records_vector* getRecordsByClassifier(jlong message, const char* classifierKey, const char* classifierValue)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByClassifier", classifierKey, classifierValue);
+    }
+
+    /*
     void taskapi_addobject(jlong libptr, const char *key, jobject value)
     {
         reinterpret_cast<MessageApiEndpoint *>(libptr)->addObject(key, value);

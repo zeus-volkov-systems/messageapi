@@ -15,3 +15,16 @@ struct records_vector
     int count;
     jobject** records;
 };
+
+struct string_vector
+{
+    int count;
+    int max_length;
+    char** strings;
+};
+
+struct classifier
+{
+    char* class_key;
+    char* class_val;
+};

@@ -14,7 +14,7 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
   {
       printf("In our test!\n");
       printf("Hello, World\n");
-      struct records_vector* records_vector = messageapi_endpoint_getrecordsvector(message);
+      struct records_vector* records_vector = getRecords(message);
       printf("Count: %d\n", records_vector->count);
       //printf(records_vector.records[0]);
       //printf("Leaving our test!");
