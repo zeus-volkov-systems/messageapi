@@ -11,7 +11,7 @@
  * other threads or endpoints using the same native library. This is used inside the Java process method.
  * The Native process method should be implemented in a separate User class wrapper.
  */
-JNIEXPORT jlong JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_create(JNIEnv *env, jobject endpoint, jobject record)
+JNIEXPORT jlong JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_create(JNIEnv* env, jobject endpoint, jobject record)
 {
     return reinterpret_cast<jlong>(new MessageApiEndpoint(env, endpoint, record));
 }
@@ -20,7 +20,7 @@ JNIEXPORT jlong JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_create
  * Deletes the C++ pointer (calls C++ destructor)) that references the object created during endpoint construction.
  * This call is made automatically by the Java process method after native processing has completed.
  */
-JNIEXPORT void JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_release(JNIEnv *, jobject task, jlong messageapilib)
+JNIEXPORT void JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_release(JNIEnv* env, jobject task, jlong messageapilib)
 {
     delete reinterpret_cast<MessageApiEndpoint *>(messageapilib);
 }
@@ -29,27 +29,27 @@ extern "C"
 {
     struct records_vector* getRecords(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecords");
+        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecords");
     }
 
     struct records_vector* getRecordsByCollection(jlong message, const char* collectionId)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByCollection", collectionId);
+        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByCollection", collectionId);
     }
 
     struct records_vector* getRecordsByTransformation(jlong message, const char* transformationId)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByTransformation", transformationId);
+        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByTransformation", transformationId);
     }
 
-    struct records_vector *getRecordsByUUID(jlong message, const char *uuid)
+    struct records_vector* getRecordsByUUID(jlong message, const char* uuid)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByTransformation", uuid);
+        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByTransformation", uuid);
     }
 
     struct records_vector* getRecordsByClassifier(jlong message, const char* classifierKey, const char* classifierValue)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByClassifier", classifierKey, classifierValue);
+        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByClassifier", classifierKey, classifierValue);
     }
 
     /*
