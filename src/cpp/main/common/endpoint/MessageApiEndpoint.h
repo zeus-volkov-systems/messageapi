@@ -24,21 +24,21 @@ class MessageApiEndpoint
 {
 
 public:
-    MessageApiEndpoint(JNIEnv *, jobject, jobject);
+    MessageApiEndpoint(JNIEnv*, jobject, jobject);
     ~MessageApiEndpoint();
 
-    void checkAndThrow(const char *);
+    void checkAndThrow(const char*);
 
     JNIEnv* getJVM();
-    jclass getNamedClass(const char *);
+    jclass getNamedClass(const char*);
     jclass getObjectClass(jobject);
-    jmethodID getMethod(jclass, const char *, const char *, bool);
-    jstring toJavaString(const char *);
+    jmethodID getMethod(jclass, const char*, const char*, bool);
+    jstring toJavaString(const char*);
     const char* fromJavaString(jstring);
-    const char* getRecordMethodSignature(const char *);
-    jobject getProtocolRecords(jobject protocolref, jmethodID methodId, const char *method, const char *key, const char *val);
+    const char* getRecordMethodSignature(const char*);
+    jobject getProtocolRecords(jobject protocolref, jmethodID methodId, const char* method, const char* key, const char* val);
     
-    struct records_vector* getRecords(const char *method, const char *key = NULL, const char *val = NULL);
+    struct records_vector* getRecords(const char* method, const char* key = NULL, const char* val = NULL);
     struct string_vector* getTransformations();
 
 private:
