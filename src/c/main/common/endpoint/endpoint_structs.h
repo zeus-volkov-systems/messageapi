@@ -25,6 +25,6 @@ struct string_vector
 
 struct classifier
 {
-    char* class_key;
-    char* class_val;
+    char* key;
+    char* val;
 };

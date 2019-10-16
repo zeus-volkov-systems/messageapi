@@ -29,20 +29,20 @@ public:
 
     void checkAndThrow(const char *);
 
-    JNIEnv *getJVM();
+    JNIEnv* getJVM();
     jclass getNamedClass(const char *);
     jclass getObjectClass(jobject);
     jmethodID getMethod(jclass, const char *, const char *, bool);
     jstring toJavaString(const char *);
-    const char *fromJavaString(jstring);
+    const char* fromJavaString(jstring);
     const char* getRecordMethodSignature(const char *);
     jobject getProtocolRecords(jobject protocolref, jmethodID methodId, const char *method, const char *key, const char *val);
     
-    struct records_vector *getRecords(const char *method, const char *key = NULL, const char *val = NULL);
-    struct string_vector *getTransformations();
+    struct records_vector* getRecords(const char *method, const char *key = NULL, const char *val = NULL);
+    struct string_vector* getTransformations();
 
 private:
-    JNIEnv *jvm;
+    JNIEnv* jvm;
     jobject endpoint;
     jobject protocolRecord;
 };
