@@ -93,6 +93,9 @@ const char* MessageApiEndpoint::fromJavaString(jstring s)
     return cStr;
 }
 
+/**
+ * 
+ */
 const char* MessageApiEndpoint::getRecordMethodSignature(const char* method)
 {
     if (method == "getRecords")
@@ -110,6 +113,15 @@ const char* MessageApiEndpoint::getRecordMethodSignature(const char* method)
     return NULL;
 }
 
+/**
+ * Factored method that handles all wrapped record retrieval methods including getRecords, getRecordsByCollection, getRecordsByTransformation,
+ * and getRecordsbyUUID.
+ * This method takes a protocol reference which refers to the instance of the ProtocolRecord container as a java object,
+ * a methodId as a java method id that refers to the particular method instance, a method name as a string (const char pointer), and additional
+ * paramters of key and value as const char strings. The key and value arguments may or may not be used depending on the particular method called
+ * (referred to by the methodId). This method returns a protocolRecords java object that represents the return from the associated java object.
+ * To be used in a native context, this return object must be unpacked.
+ */
 jobject MessageApiEndpoint::getProtocolRecords(jobject protocolref, jmethodID methodId, const char* method, const char* key, const char* val)
 {
     if (method == "getRecords")
@@ -134,6 +146,8 @@ jobject MessageApiEndpoint::getProtocolRecords(jobject protocolref, jmethodID me
 
 struct records_vector* MessageApiEndpoint::getRecords(const char* recordMethod, const char* key, const char* val)
 {
+    printf("hey there!");
+    fflush(stdout);
     static jclass java_util_List;
     jmethodID java_util_List_size;
     jmethodID java_util_List_get;
@@ -162,6 +176,8 @@ struct records_vector* MessageApiEndpoint::getRecords(const char* recordMethod, 
     jvm->DeleteLocalRef(protocolRecordRef);
     jvm->DeleteLocalRef(protocolRecordClass);
 
+    printf("see ya later!!!");
+    fflush(stdout);
     return vector;
 }
 
