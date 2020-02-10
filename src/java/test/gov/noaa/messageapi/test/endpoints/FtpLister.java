@@ -143,6 +143,7 @@ public class FtpLister extends BaseEndpoint implements IEndpoint {
                 return false;
             }
             if (ftpClient.login(this.getUser(), this.getPassword())) {
+                ftpClient.enterLocalPassiveMode();
                 return true;
             }
         } catch(Exception e) {
@@ -166,7 +167,7 @@ public class FtpLister extends BaseEndpoint implements IEndpoint {
                 return ListUtils.flatten(this.getDirectoryFields().stream().map(directoryField -> {
                     if (record.hasField(directoryField)) {
                         try {
-                            return this.createResourceRecords((String) record.getField(directoryField).getValue());
+                            return this.createResourceRecords(record, (String) record.getField(directoryField).getValue());
                         } catch (Exception e) {
                             return null;
                         }
@@ -185,7 +186,7 @@ public class FtpLister extends BaseEndpoint implements IEndpoint {
                         return ListUtils.flatten(this.getDirectoryFields().stream().map(directoryField -> {
                             if (record.hasField(directoryField)) {
                                 try {
-                                    return this.createResourceRecords((String) record.getField(directoryField).getValue());
+                                    return this.createResourceRecords(record, (String) record.getField(directoryField).getValue());
                                 } catch (Exception e) {
                                     return null;
                                 }
@@ -202,7 +203,7 @@ public class FtpLister extends BaseEndpoint implements IEndpoint {
                 return ListUtils.flatten(this.getDirectoryFields().stream().map(directoryField -> {
                     if (record.hasField(directoryField)) {
                         try {
-                            return this.createResourceRecords((String) record.getField(directoryField).getValue());
+                            return this.createResourceRecords(record, (String) record.getField(directoryField).getValue());
                         } catch (Exception e) {
                             return null;
                         }
@@ -213,7 +214,7 @@ public class FtpLister extends BaseEndpoint implements IEndpoint {
         }).collect(Collectors.toList())));
     }
 
-    private List<IRecord> createResourceRecords(String directoryName) {
+    private List<IRecord> createResourceRecords(IRecord record, String directoryName) {
         try {
             FTPFile[] resources = this.getFtpClient().listFiles(directoryName);
             if (resources != null && resources.length > 0) {
@@ -223,13 +224,15 @@ public class FtpLister extends BaseEndpoint implements IEndpoint {
                         return null;
                     }
                     if (resource.isDirectory() && this.getRecursive()) {
-                        List<IRecord> recursiveRecords = this.createResourceRecords(String.format("%s/%s", directoryName, resource.getName()));
+                        List<IRecord> recursiveRecords = this.createResourceRecords(record, String.format("%s/%s", directoryName, resource.getName()));
                         recursiveRecords.addAll(this.createResourceRecord(resource, directoryName));
                         return recursiveRecords;
                     }
                     return this.createResourceRecord(resource, directoryName);
                 }).collect(Collectors.toList());
                 return ListUtils.flatten(records);
+            } else {
+                this.createRejection(record, "There were no resources found using the associated record parameters.");
             }
         } catch (Exception e) {}
         List<IRecord> emptyRecords = new ArrayList<IRecord>();

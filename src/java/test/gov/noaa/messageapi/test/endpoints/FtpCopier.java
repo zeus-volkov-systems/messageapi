@@ -26,14 +26,14 @@ import org.apache.commons.net.ftp.FTPReply;
 
 
 /**
- * <h1>FtpRetriever</h1> <b>Description:</b>
+ * <h1>FtpCopier</h1> <b>Description:</b>
  * <p>
  * The core action of this endpoint is retrieving resources from an FTP endpoint
  * and writing them to a specified location. Which resources to retrieve are
  * specified in records that flow through the endpoint. Records can come from
  * collections, transformations, or classifiers.
  * <p>
- * Errors in FTP retreival, whether due to inaccessibility, missing parameters,
+ * Errors in FTP retrieval, whether due to inaccessibility, missing parameters,
  * incomplete retrieval, or otherwise, will be recorded as a rejection and
  * returned in the response. Incomplete retrieval will result in the endpoint
  * removing any incomplete transfer if possible. If not possible to remove
@@ -93,7 +93,7 @@ import org.apache.commons.net.ftp.FTPReply;
  * 
  * @author Ryan Berkheimer
  */
-public class FtpRetriever extends BaseEndpoint implements IEndpoint {
+public class FtpCopier extends BaseEndpoint implements IEndpoint {
 
     private String server = null;
     private Integer port = 21;
@@ -105,7 +105,7 @@ public class FtpRetriever extends BaseEndpoint implements IEndpoint {
     private DateFormat dateFormatter;
     private FTPClient ftpClient;
 
-    public FtpRetriever(Map<String,Object> parameters) {
+    public FtpCopier(Map<String,Object> parameters) {
         super(parameters);
         this.setServer(parameters);
         this.setPort(parameters);

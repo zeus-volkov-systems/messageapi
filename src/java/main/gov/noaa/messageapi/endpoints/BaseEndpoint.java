@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.IRecord;
-
+import gov.noaa.messageapi.interfaces.IRejection;
 import gov.noaa.messageapi.records.schema.SchemaRecord;
+import gov.noaa.messageapi.rejections.DefaultRejection;
 
 /**
  * The abstract base class for user endpoints. This class provides extending user
@@ -37,6 +38,10 @@ public abstract class BaseEndpoint {
 
     public IRecord createRecord() {
         return new SchemaRecord(this.getFields());
+    }
+
+    public IRejection createRejection(IRecord record, String reason) {
+        return new DefaultRejection(record, reason);
     }
 
     protected List<String> getCollections() {
