@@ -29,7 +29,7 @@ deploy_staging:
     - echo "Deploy to staging server"
   environment:
     name: staging
-    url: http://$CI_ENVIRONMENT_SLUG.localhost:812
+    url: http://staging.localhost:812
   only:
   - master
 
