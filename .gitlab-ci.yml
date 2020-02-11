@@ -29,7 +29,7 @@ deploy_staging:
     - echo "Deploy to staging server"
   environment:
     name: staging
-    url: https://staging.localhost:812
+    url: http://staging.localhost:812
   only:
   - master
 
@@ -39,7 +39,7 @@ deploy_prod:
     - echo "Deploy to production server"
   environment:
     name: production
-    url: https://localhost:812
+    url: http://localhost:812
   when: manual
   only:
   - master
