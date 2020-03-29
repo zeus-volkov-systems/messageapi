@@ -1,26 +1,38 @@
 #include <jni.h>
 
 /**
- * name: record vector
- * contents:
- * count (integer) - how many records there are
- * records (records pointer) - 
- * 
- * 
  * @author Ryan Berkheimer
  */
 
-struct records_vector
+
+struct field
 {
-    int count;
-    jobject** records;
+    jobject jfield;
 };
 
-struct string_vector
+struct field_list
+{
+    int count;
+    struct field **fields;
+};
+
+struct record
+{
+    jobject jrecord;
+};
+
+struct record_list
+{
+    int count;
+    struct record **records;
+};
+
+
+struct string_list
 {
     int count;
     int max_length;
-    char** strings;
+    char **strings;
 };
 
 struct classifier

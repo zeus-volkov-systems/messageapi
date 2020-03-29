@@ -1,8 +1,8 @@
 package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
-import gov.noaa.messageapi.interfaces.IField;
-import gov.noaa.messageapi.interfaces.ICondition;
+//import gov.noaa.messageapi.interfaces.IField;
+//import gov.noaa.messageapi.interfaces.ICondition;
 
 /**
  * IRecords are the primary data type of
@@ -24,6 +24,13 @@ public interface IRecord {
      * Returns the fields that are contained by the record
      */
     public List<IField> getFields();
+
+    /**
+     * Returns the name of the fields contained by the record.
+     * This is a convenience method.
+     * @return List<String>
+     */
+    public List<String> getFieldNames();
 
     /**
      * Returns the conditions that are contained by the record

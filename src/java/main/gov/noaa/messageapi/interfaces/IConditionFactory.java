@@ -1,6 +1,6 @@
 package gov.noaa.messageapi.interfaces;
 
-import gov.noaa.messageapi.interfaces.IConditionOperator;
+//import gov.noaa.messageapi.interfaces.IConditionOperator;
 
 /**
  * The ConditionFactory interface provides a method for returning

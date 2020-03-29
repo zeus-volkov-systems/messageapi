@@ -3,7 +3,7 @@ package gov.noaa.messageapi.interfaces;
 import java.util.Map;
 import java.util.List;
 
-import gov.noaa.messageapi.interfaces.IField;
+//import gov.noaa.messageapi.interfaces.IField;
 
 /**
  * A collection is a primary dimension of a container. It contains a field set,

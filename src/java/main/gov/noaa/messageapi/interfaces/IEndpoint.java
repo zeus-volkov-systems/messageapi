@@ -2,8 +2,8 @@ package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
 
-import gov.noaa.messageapi.interfaces.IPacket;
-import gov.noaa.messageapi.interfaces.IProtocolRecord;
+//import gov.noaa.messageapi.interfaces.IPacket;
+//import gov.noaa.messageapi.interfaces.IProtocolRecord;
 
 /**
  * An IEndpoint is a user written class that is the terminating point of a given process.

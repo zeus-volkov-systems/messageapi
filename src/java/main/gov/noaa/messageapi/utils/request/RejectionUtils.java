@@ -11,7 +11,7 @@ import gov.noaa.messageapi.rejections.DefaultRejection;
 import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.schema.FieldUtils;
 import gov.noaa.messageapi.utils.schema.ConditionUtils;
-import gov.noaa.messageapi.utils.request.ReasonUtils;
+//import gov.noaa.messageapi.utils.request.ReasonUtils;
 
 /**
  * All methods in this class should be static utility methods that can

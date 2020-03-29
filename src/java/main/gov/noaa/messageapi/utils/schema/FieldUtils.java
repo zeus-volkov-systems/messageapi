@@ -15,7 +15,7 @@ import gov.noaa.messageapi.interfaces.IComparisonCondition;
 import gov.noaa.messageapi.rejections.DefaultRejection;
 
 import gov.noaa.messageapi.utils.general.ListUtils;
-import gov.noaa.messageapi.utils.schema.ConditionUtils;
+//import gov.noaa.messageapi.utils.schema.ConditionUtils;
 
 /**
  * This static utility class holds generic and immutable methods related to

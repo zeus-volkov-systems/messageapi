@@ -1,7 +1,7 @@
 package gov.noaa.messageapi.interfaces;
 
-import gov.noaa.messageapi.interfaces.IField;
-import gov.noaa.messageapi.interfaces.ICondition;
+//import gov.noaa.messageapi.interfaces.IField;
+//import gov.noaa.messageapi.interfaces.ICondition;
 
 /**
  * A ConditionOperator provides a method for evaluating

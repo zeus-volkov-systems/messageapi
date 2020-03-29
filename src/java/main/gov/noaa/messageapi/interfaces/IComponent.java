@@ -2,7 +2,7 @@ package gov.noaa.messageapi.interfaces;
 
 import java.util.Map;
 
-import gov.noaa.messageapi.interfaces.IMetadata;
+//import gov.noaa.messageapi.interfaces.IMetadata;
 
 /**
  * @author Ryan Berkheimer

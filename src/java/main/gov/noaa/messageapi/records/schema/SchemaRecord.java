@@ -157,6 +157,10 @@ public class SchemaRecord implements IRecord {
         return this.fields;
     }
 
+    public List<String> getFieldNames() {
+        return this.fields.stream().map(field -> field.getId()).collect(Collectors.toList());
+    }
+
     public List<ICondition> getConditions() {
         return this.conditions;
     }

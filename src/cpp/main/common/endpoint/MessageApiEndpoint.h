@@ -24,27 +24,35 @@ class MessageApiEndpoint
 {
 
 public:
-    MessageApiEndpoint(JNIEnv*, jobject, jobject);
+    MessageApiEndpoint(JNIEnv* javaEnv, jobject jEndpoint, jobject jProtocolRecord);
     ~MessageApiEndpoint();
 
-    void checkAndThrow(const char*);
-
-    JNIEnv* getJVM();
-    jclass getNamedClass(const char*);
-    jclass getObjectClass(jobject);
-    jmethodID getMethod(jclass, const char*, const char*, bool);
-    jstring toJavaString(const char*);
-    const char* fromJavaString(jstring);
-    const char* getRecordMethodSignature(const char*);
     jobject getProtocolRecords(jobject protocolref, jmethodID methodId, const char* method, const char* key, const char* val);
     
-    struct records_vector* getRecords(const char* method, const char* key = NULL, const char* val = NULL);
-    struct string_vector* getTransformations();
+    struct record_list *getRecords(const char *method, const char *key = NULL, const char *val = NULL);
+    struct string_list *getFieldNames(struct record *record);
+    struct field_list *getFields(struct record *record);
+    struct field *getField(struct record *record, const char* fieldName);
 
 private:
     JNIEnv* jvm;
     jobject endpoint;
     jobject protocolRecord;
+
+    jclass java_util_List;
+    jmethodID java_util_List_size;
+    jmethodID java_util_List_get;
+
+    void checkAndThrow(const char *errorMessage);
+
+    JNIEnv *getJVM();
+    jclass getNamedClass(const char *javaClassName);
+    jclass getObjectClass(jobject javaObject);
+    jmethodID getMethod(jclass javaClass, const char *methodName, const char *methodSignature, bool isStatic);
+    jstring toJavaString(const char *charString);
+    const char *fromJavaString(jstring javaString);
+    const char *getRecordMethodSignature(const char *recordMethodName);
+    const char *getFieldMethodSignature(const char *fieldMethodName);
 };
 
 extern "C"

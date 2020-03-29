@@ -3,8 +3,8 @@ package gov.noaa.messageapi.interfaces;
 import java.util.Map;
 import java.util.List;
 
-import gov.noaa.messageapi.interfaces.IPacket;
-import gov.noaa.messageapi.interfaces.IProtocolRecord;
+//import gov.noaa.messageapi.interfaces.IPacket;
+//import gov.noaa.messageapi.interfaces.IProtocolRecord;
 
 /**
  * An IConnection is an instantiation of an IEndpoint - 

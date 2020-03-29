@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.List;
 
-import gov.noaa.messageapi.interfaces.IRecord;
 
 /**
  * ProtocolRecords are one-to-one matches with Endpoint Connections.
@@ -62,6 +61,11 @@ public interface IProtocolRecord {
      * Returns all records for the specified UUID. 
      */
     public List<IRecord> getRecordsByUUID(UUID uuid);
+
+    /**
+     * Returns all records for the specified UUID (used for uuid as string).
+     */
+    public List<IRecord> getRecordsByUUID(String uuid);
 
     /**
      * Returns all records for the specified transformation. This will apply the

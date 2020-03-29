@@ -18,8 +18,10 @@ def "Tests submission of a very simple native task with only one endpoint that c
     given: "A session created based on a native counter"
         ISession session = new DefaultSession("{}/resources/test/basic-native/manifest.json")
         IRequest request = session.createRequest();
-        IRecord record = request.createRecord();
-        record.setField("initial-value", 0);
+        IRecord record1 = request.createRecord();
+        IRecord record2 = request.createRecord();
+        record1.setField("initial-value", 0);
+        record2.setField("initial-value", 1);
     when: "We submit the test session with a single endpoint, let it call into C, increment a counter, add it to a new record, and return"
         IResponse response = request.submit();
         while (!response.isComplete()) {}

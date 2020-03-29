@@ -8,11 +8,14 @@ extern "C"
 {
 #endif
 
-    struct records_vector* getRecords(jlong);
-    struct records_vector* getRecordsByCollection(jlong, const char*);
-    struct records_vector* getRecordsByTransformation(jlong, const char*);
-    struct records_vector* getRecordsByUUID(jlong, const char*);
-    struct records_vector* getRecordsByClassifier(jlong, const char*, const char*);
+    struct record_list *getRecords(jlong message);
+    struct record_list *getRecordsByCollection(jlong message, const char *collection);
+    struct record_list *getRecordsByTransformation(jlong message, const char *transformation);
+    struct record_list *getRecordsByUUID(jlong message, const char *uuid);
+    struct record_list *getRecordsByClassifier(jlong message, const char *key, const char *value);
+
+    struct string_list *getFieldNames(jlong message, struct record *record);
+    struct field_list *getFields(jlong message, struct record *record);
 
 #ifdef __cplusplus
 }

@@ -27,36 +27,38 @@ JNIEXPORT void JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_release
 
 extern "C"
 {
-    struct records_vector* getRecords(jlong message)
+    struct record_list *getRecords(jlong message)
     {
         return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecords");
     }
 
-    struct records_vector* getRecordsByCollection(jlong message, const char* collectionId)
+    struct record_list *getRecordsByCollection(jlong message, const char *collectionId)
     {
         return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByCollection", collectionId);
     }
 
-    struct records_vector* getRecordsByTransformation(jlong message, const char* transformationId)
+    struct record_list *getRecordsByTransformation(jlong message, const char *transformationId)
     {
         return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByTransformation", transformationId);
     }
 
-    struct records_vector* getRecordsByUUID(jlong message, const char* uuid)
+    struct record_list *getRecordsByUUID(jlong message, const char *uuid)
     {
-        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByTransformation", uuid);
+        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByUUID", uuid);
     }
 
-    struct records_vector* getRecordsByClassifier(jlong message, const char* classifierKey, const char* classifierValue)
+    struct record_list *getRecordsByClassifier(jlong message, const char *classifierKey, const char *classifierValue)
     {
         return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByClassifier", classifierKey, classifierValue);
     }
 
-    /*
-    void taskapi_addobject(jlong libptr, const char *key, jobject value)
+    struct string_list *getFieldNames(jlong message, struct record *record)
     {
-        reinterpret_cast<MessageApiEndpoint *>(libptr)->addObject(key, value);
-    }*/
+        return reinterpret_cast<MessageApiEndpoint*>(message)->getFieldNames(record);
+    }
 
-
+    struct field_list *getFields(jlong message, struct record *record)
+    {
+        return reinterpret_cast<MessageApiEndpoint*>(message)->getFields(record);
+    }
 }

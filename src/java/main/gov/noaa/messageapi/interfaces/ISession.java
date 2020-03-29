@@ -1,6 +1,6 @@
 package gov.noaa.messageapi.interfaces;
 
-import gov.noaa.messageapi.interfaces.IRequest;
+//import gov.noaa.messageapi.interfaces.IRequest;
 
 /**
  * ISession is the primary container of MessageAPI.

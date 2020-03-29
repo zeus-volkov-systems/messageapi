@@ -2,8 +2,8 @@ package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
 
-import gov.noaa.messageapi.interfaces.IRecord;
-import gov.noaa.messageapi.interfaces.IRejection;
+//import gov.noaa.messageapi.interfaces.IRecord;
+//import gov.noaa.messageapi.interfaces.IRejection;
 
 /**
  * IPackets are simple wrapper containers that hold together

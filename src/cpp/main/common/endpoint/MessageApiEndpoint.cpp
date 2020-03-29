@@ -15,6 +15,10 @@ MessageApiEndpoint::MessageApiEndpoint(JNIEnv *env, jobject jendpoint, jobject j
     jvm = env;
     endpoint = jvm->NewGlobalRef(jendpoint);
     protocolRecord = jvm->NewGlobalRef(jprotocolRecord);
+
+    java_util_List = static_cast<jclass>(jvm->NewGlobalRef(jvm->FindClass("java/util/List")));
+    java_util_List_size = jvm->GetMethodID(java_util_List, "size", "()I");
+    java_util_List_get = jvm->GetMethodID(java_util_List, "get", "(I)Ljava/lang/Object;");
 }
 
 MessageApiEndpoint::~MessageApiEndpoint()
@@ -23,6 +27,7 @@ MessageApiEndpoint::~MessageApiEndpoint()
     {
         jvm->DeleteGlobalRef(endpoint);
         jvm->DeleteGlobalRef(protocolRecord);
+        jvm->DeleteGlobalRef(java_util_List);
     }
     catch (const std::exception &e)
     {
@@ -30,13 +35,13 @@ MessageApiEndpoint::~MessageApiEndpoint()
     }
 }
 
-void MessageApiEndpoint::checkAndThrow(const char *msg)
+void MessageApiEndpoint::checkAndThrow(const char *errorMessage)
 {
     if (jvm->ExceptionCheck())
     {
-        std::cout << "MessageApiEndpoint::checkAndThrow> msg=" << msg << std::endl;
+        std::cout << "MessageApiEndpoint threw the following exception:" << errorMessage << std::endl;
         jclass Exception = jvm->FindClass("java/lang/Exception");
-        jvm->ThrowNew(Exception, msg);
+        jvm->ThrowNew(Exception, errorMessage);
     }
 }
 
@@ -96,26 +101,43 @@ const char* MessageApiEndpoint::fromJavaString(jstring s)
 /**
  * 
  */
-const char* MessageApiEndpoint::getRecordMethodSignature(const char* method)
+const char* MessageApiEndpoint::getRecordMethodSignature(const char* methodName)
 {
-    if (method == "getRecords")
+    if (methodName == "getRecords")
     {
         return "()Ljava/util/List;";
     }
-    else if (method == "getRecordsByCollection" || method == "getRecordsByUUID" || method == "getRecordsByTransformation")
+    else if (methodName == "getRecordsByCollection" || methodName == "getRecordsByUUID" || methodName == "getRecordsByTransformation")
     {
         return "(Ljava/lang/String;)Ljava/util/List;";
     }
-    else if (method == "getRecordsByClassifier")
+    else if (methodName == "getRecordsByClassifier")
     {
         return "(Ljava/lang/String;Ljava/lang/Object;)Ljava/util/List;";
     }
     return NULL;
 }
 
+const char *MessageApiEndpoint::getFieldMethodSignature(const char *methodName)
+{
+    if (methodName == "getFieldNames")
+    {
+        return "()Ljava/util/List;";
+    }
+    else if (methodName == "getFields")
+    {
+        return "()Ljava/util/List;";
+    }
+    else if (methodName == "getField")
+    {
+        return "(Ljava/lang/String;)Lgov/noaa/messageapi/interfaces/IField;";
+    }
+    return NULL;
+}
+
 /**
  * Factored method that handles all wrapped record retrieval methods including getRecords, getRecordsByCollection, getRecordsByTransformation,
- * and getRecordsbyUUID.
+ * getRecordsByClassifier, and getRecordsbyUUID.
  * This method takes a protocol reference which refers to the instance of the ProtocolRecord container as a java object,
  * a methodId as a java method id that refers to the particular method instance, a method name as a string (const char pointer), and additional
  * paramters of key and value as const char strings. The key and value arguments may or may not be used depending on the particular method called
@@ -144,17 +166,8 @@ jobject MessageApiEndpoint::getProtocolRecords(jobject protocolref, jmethodID me
     return protocolRecords;
 }
 
-struct records_vector* MessageApiEndpoint::getRecords(const char* recordMethod, const char* key, const char* val)
+struct record_list *MessageApiEndpoint::getRecords(const char *recordMethod, const char *key, const char *val)
 {
-    printf("hey there!");
-    fflush(stdout);
-    static jclass java_util_List;
-    jmethodID java_util_List_size;
-    jmethodID java_util_List_get;
-    java_util_List = static_cast<jclass>(jvm->NewGlobalRef(jvm->FindClass("java/util/List")));
-    java_util_List_size = jvm->GetMethodID(java_util_List, "size", "()I");
-    java_util_List_get = jvm->GetMethodID(java_util_List, "get", "(I)Ljava/lang/Object;");
-
     jobject protocolRecordRef = jvm->NewLocalRef(protocolRecord);
     jclass protocolRecordClass = getObjectClass(protocolRecordRef);
     jmethodID methodId = getMethod(protocolRecordClass, recordMethod, getRecordMethodSignature(recordMethod), false);
@@ -162,91 +175,96 @@ struct records_vector* MessageApiEndpoint::getRecords(const char* recordMethod, 
     jobject jprotocolRecords = getProtocolRecords(protocolRecordRef, methodId, recordMethod, key, val);
 
     int recordCount = jvm->CallIntMethod(jprotocolRecords, java_util_List_size);
-    jobject** jrecords = (jobject**)malloc(sizeof(jobject*) * recordCount);
+    record** records = (record**)malloc(sizeof(record*) * recordCount);
     for (int i = 0; i < recordCount; i++) {
         jobject jrecord = static_cast<jobject>(jvm->CallObjectMethod(jprotocolRecords, java_util_List_get, i));
-        jrecords[i] = (jobject*) jrecord;
-        jvm->DeleteLocalRef(jrecord);
+        record *record = (struct record*) malloc(sizeof(struct record) + sizeof(jrecord));
+        record->jrecord = (jobject) jrecord;
+        records[i] = record;
     }
-
-    struct records_vector *vector = (struct records_vector*) malloc(sizeof(struct records_vector) + sizeof(jrecords));
-    vector->count = recordCount;
-    vector->records = jrecords;
+    struct record_list *record_list = (struct record_list*) malloc(sizeof(struct record_list) + sizeof(records));
+    record_list->count = recordCount;
+    record_list->records = records;
 
     jvm->DeleteLocalRef(protocolRecordRef);
     jvm->DeleteLocalRef(protocolRecordClass);
 
-    printf("see ya later!!!");
-    fflush(stdout);
-    return vector;
+    return record_list;
 }
 
-/*struct string_vector* MessageApiEndpoint::getTransformations() {
-    static jclass java_util_List;
-    jmethodID java_util_List_size;
-    jmethodID java_util_List_get;
-    java_util_List = static_cast<jclass>(jvm->NewGlobalRef(jvm->FindClass("java/util/List")));
-    java_util_List_size = jvm->GetMethodID(java_util_List, "size", "()I");
-    java_util_List_get = jvm->GetMethodID(java_util_List, "get", "(I)Ljava/lang/Object;");
-    
-    jobject arrayList = getObject(key);
-    int count = jvm->CallIntMethod(arrayList, java_util_List_size);
-    char **strings = (char**) malloc(sizeof(char*) * count);
-	int length = 0;
-	for (int i = 0; i < count; i++) {
-  		jstring element = static_cast<jstring>(jvm->CallObjectMethod(arrayList, java_util_ArrayList_get, i));
-  		const char* tempStr = jvm->GetStringUTFChars(element, NULL);
-		int tempLen = strlen(tempStr);
-		if (tempLen > length) {
-			length = tempLen;
-		}
-		strings[i] = (char*) malloc((tempLen+1) * sizeof(char));
-		strcpy(strings[i], tempStr);
-  		jvm->ReleaseStringUTFChars(element, tempStr);
-  		jvm->DeleteLocalRef(element);
-	}
-	struct string_vector *vector = (struct string_vector*) malloc(sizeof(struct string_vector) + sizeof(strings));
-	vector->max_length = length;
-	vector->count = count;
-	vector->strings = strings;
-    jvm->DeleteGlobalRef(java_util_ArrayList);
-	return vector;
-}*/
+struct string_list *MessageApiEndpoint::getFieldNames(struct record *record) {
+    const char *methodName = "getFieldNames";
 
-/*jobject NativeTask::getObject(const char* key) {
-	jstring javaKey = toJavaString(key);
-    jobject objRef = jvm->NewLocalRef(data);
-    jclass clazz = getObjectClass(objRef);
-    jmethodID mid = getMethod(clazz, "get", "(Ljava/lang/String;)Ljava/lang/Object;", false);
-	jobject retVal = jvm->CallObjectMethod(objRef, mid, javaKey);
-    jvm->DeleteLocalRef(javaKey);
-    jvm->DeleteLocalRef(objRef);
-    jvm->DeleteLocalRef(clazz);
-    return retVal;
-}*/
+    jobject jRecordRef = jvm->NewLocalRef(record->jrecord);
+    jclass jRecordClass = getObjectClass(jRecordRef);
+    jmethodID jFieldNameMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
+    jobject jFieldNameList = jvm->CallObjectMethod(jRecordRef, jFieldNameMethodId);
 
-/*void NativeTask::addStringArrayList(const char *key, char **strings, int length, int count)
-{
-    static jclass java_util_ArrayList;
-    static jmethodID java_util_ArrayList_;
-    jmethodID java_util_ArrayList_size;
-    jmethodID java_util_ArrayList_get;
-    jmethodID java_util_ArrayList_add;
+    int fieldCount = jvm->CallIntMethod(jFieldNameList, java_util_List_size);
+    char **fieldNames = (char**) malloc(sizeof(char*) * fieldCount);
 
-    java_util_ArrayList = static_cast<jclass>(jvm->NewGlobalRef(jvm->FindClass("java/util/ArrayList")));
-    java_util_ArrayList_ = jvm->GetMethodID(java_util_ArrayList, "<init>", "(I)V");
-    java_util_ArrayList_size = jvm->GetMethodID(java_util_ArrayList, "size", "()I");
-    java_util_ArrayList_get = jvm->GetMethodID(java_util_ArrayList, "get", "(I)Ljava/lang/Object;");
-    java_util_ArrayList_add = jvm->GetMethodID(java_util_ArrayList, "add", "(Ljava/lang/Object;)Z");
-
-    jobject result = jvm->NewObject(java_util_ArrayList, java_util_ArrayList_, count);
-    for (int i = 0; i < count; i++)
-    {
-        jstring element = toJavaString(strings[i]);
-        jvm->CallBooleanMethod(result, java_util_ArrayList_add, element);
-        jvm->DeleteLocalRef(element);
+    int maxFieldNameLength = 0;
+    for (int i = 0; i < fieldCount; i++) {
+        jstring fieldName = static_cast<jstring>(jvm->CallObjectMethod(jFieldNameList, java_util_List_get, i));
+        const char *tempFieldName = jvm->GetStringUTFChars(fieldName, NULL);
+        int tempMaxFieldNameLength = strlen(tempFieldName);
+        if (tempMaxFieldNameLength > maxFieldNameLength) {
+            maxFieldNameLength = tempMaxFieldNameLength;
+        }
+        fieldNames[i] = (char*) malloc((tempMaxFieldNameLength+1) * sizeof(char));
+        strcpy(fieldNames[i], tempFieldName);
+        jvm->ReleaseStringUTFChars(fieldName, tempFieldName);
+        jvm->DeleteLocalRef(fieldName);
     }
-    addObject(key, result);
-    jvm->DeleteLocalRef(result);
-    jvm->DeleteGlobalRef(java_util_ArrayList);
-}*/
+
+    struct string_list *field_names = (struct string_list*) malloc(sizeof(struct string_list) + sizeof(fieldNames));
+    field_names->max_length = maxFieldNameLength;
+    field_names->count = fieldCount;
+    field_names->strings = fieldNames;
+
+    jvm->DeleteLocalRef(jRecordRef);
+    jvm->DeleteLocalRef(jRecordClass);
+
+    return field_names;
+}
+
+struct field_list *MessageApiEndpoint::getFields(struct record *record) {
+    const char* methodName = "getFields";
+
+    jobject jRecordRef = jvm->NewLocalRef(record->jrecord);
+    jclass jRecordClass = getObjectClass(jRecordRef);
+    jmethodID jFieldMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
+
+    jobject jFieldList = jvm->CallObjectMethod(jRecordRef, jFieldMethodId);
+
+    int fieldCount = jvm->CallIntMethod(jFieldList, java_util_List_size);
+    struct field **fields = (struct field**)malloc(sizeof(struct field*) * fieldCount);
+
+    for (int i = 0; i < fieldCount; i++) {
+        jobject jfield = static_cast<jobject>(jvm->CallObjectMethod(jFieldList, java_util_List_get, i));
+        struct field *field = (struct field*)malloc(sizeof(field) + sizeof(jfield));
+        field->jfield = (jobject)jfield;
+        fields[i] = field;
+    }
+
+    struct field_list *field_list = (struct field_list*)malloc(sizeof(struct field_list) + sizeof(fields));
+    field_list->count = fieldCount;
+    field_list->fields = fields;
+
+    jvm->DeleteLocalRef(jRecordRef);
+    return field_list;
+
+}
+
+struct field *MessageApiEndpoint::getField(struct record *record, const char* fieldName) {
+    const char *methodName = "getField";
+
+    jobject jRecordRef = jvm->NewLocalRef(record->jrecord);
+    jclass jRecordClass = getObjectClass(jRecordRef);
+    jmethodID jFieldMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
+
+    jobject jField = jvm->CallObjectMethod(jRecordRef, jFieldMethodId);
+    struct field *field = (struct field *)malloc(sizeof(field) + sizeof(jField));
+
+    jvm->DeleteLocalRef(jRecordRef);
+}
