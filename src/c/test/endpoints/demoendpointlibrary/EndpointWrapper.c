@@ -20,7 +20,7 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       //struct record_list* transformation_record_list = getRecordsByTransformation(message, "combine-colors");
       printf("Record count: %d\n", default_record_list->count);
       fflush(stdout);
-      struct string_list* default_field_name_list = getFieldNames(message, default_record_list->records[0]);
+      struct string_list* default_field_name_list = getFieldIds(message, default_record_list->records[0]);
       printf("Field name count: %d\n", default_field_name_list->count);
       printf("Length of longest field name: %d\n", default_field_name_list->max_length);
       for (int i = 0; i < default_field_name_list->count; i++)
@@ -28,8 +28,17 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
           printf("Field name: %s\n", default_field_name_list->strings[i]);
       }
       fflush(stdout);
-      struct field_list* default_field_list = getFields(message, default_record_list->records[0]);
-      /*for (int i = 0; i < default_record_list->count; i++) {
+      //struct field_list* default_field_list = getFields(message, default_record_list->records[0]);
+      struct field * testField = getField(message, default_record_list->records[0], "initial-value");
+      const char * testFieldId = getFieldId(message, testField);
+      printf("Test field id: %s\n", testFieldId);
+      fflush(stdout);
+      const char * testFieldType = getFieldType(message, testField);
+      printf("Test field type: %s\n", testFieldType);
+      fflush(stdout);
+      void* testFieldValue = getFieldValue(message, testField);
+      printf("Field integer value is %d\n", *(int *)testFieldValue);
+      /*for (int i = 0; i < default_field_list->count; i++) {
           struct string_list* record_field_names = getRecordFieldNames(message,)
           for (int j = 0; j < )
           printf("Record Type: %s\n", getRecordType(default_record_list->records[i]));

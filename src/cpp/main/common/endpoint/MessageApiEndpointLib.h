@@ -14,8 +14,14 @@ extern "C"
     struct record_list *getRecordsByUUID(jlong message, const char *uuid);
     struct record_list *getRecordsByClassifier(jlong message, const char *key, const char *value);
 
-    struct string_list *getFieldNames(jlong message, struct record *record);
+    struct string_list *getFieldIds(jlong message, struct record *record);
     struct field_list *getFields(jlong message, struct record *record);
+    struct field *getField(jlong message, struct record *record, const char *fieldId);
+    const char *getFieldId(jlong message, struct field *field);
+    const char *getFieldType(jlong message, struct field *field);
+    void *getFieldValue(jlong message, struct field *field);
+    bool getFieldIsValid(jlong message, struct field *field);
+    bool getFieldIsRequired(jlong message, struct field *field);
 
 #ifdef __cplusplus
 }

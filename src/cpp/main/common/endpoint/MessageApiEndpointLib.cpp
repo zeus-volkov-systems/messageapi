@@ -29,36 +29,66 @@ extern "C"
 {
     struct record_list *getRecords(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecords");
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecords");
     }
 
     struct record_list *getRecordsByCollection(jlong message, const char *collectionId)
     {
-        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByCollection", collectionId);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByCollection", collectionId);
     }
 
     struct record_list *getRecordsByTransformation(jlong message, const char *transformationId)
     {
-        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByTransformation", transformationId);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByTransformation", transformationId);
     }
 
     struct record_list *getRecordsByUUID(jlong message, const char *uuid)
     {
-        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByUUID", uuid);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByUUID", uuid);
     }
 
     struct record_list *getRecordsByClassifier(jlong message, const char *classifierKey, const char *classifierValue)
     {
-        return reinterpret_cast<MessageApiEndpoint*>(message)->getRecords("getRecordsByClassifier", classifierKey, classifierValue);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByClassifier", classifierKey, classifierValue);
     }
 
-    struct string_list *getFieldNames(jlong message, struct record *record)
+    struct string_list *getFieldIds(jlong message, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint*>(message)->getFieldNames(record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIds(record);
     }
 
     struct field_list *getFields(jlong message, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint*>(message)->getFields(record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFields(record);
+    }
+
+    struct field *getField(jlong message, struct record *record, const char* fieldId)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getField(record, fieldId);
+    }
+
+    const char *getFieldId(jlong message, struct field *field)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldId(field);
+    }
+
+    const char *getFieldType(jlong message, struct field *field)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldType(field);
+    }
+
+    void *getFieldValue(jlong message, struct field *field)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldValue(field);
+    }
+
+    bool getFieldIsValid(jlong message, struct field *field)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIsValid(field);
+    }
+
+    bool getFieldIsRequired(jlong message, struct field *field)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIsRequired(field);
     }
 }

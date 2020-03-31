@@ -30,7 +30,7 @@ public interface IRecord {
      * This is a convenience method.
      * @return List<String>
      */
-    public List<String> getFieldNames();
+    public List<String> getFieldIds();
 
     /**
      * Returns the conditions that are contained by the record
