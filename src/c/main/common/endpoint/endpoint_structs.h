@@ -4,6 +4,10 @@
  * @author Ryan Berkheimer
  */
 
+struct field_value
+{
+    jobject jvalue;
+};
 
 struct field
 {

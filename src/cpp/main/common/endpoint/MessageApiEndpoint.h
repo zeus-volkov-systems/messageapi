@@ -29,13 +29,14 @@ public:
 
     jobject getProtocolRecords(jobject protocolref, jmethodID methodId, const char* method, const char* key, const char* val);
     
-    struct record_list *getRecords(const char *method, const char *key = NULL, const char *val = NULL);
+    struct record_list * getRecords(const char *method, const char *key = NULL, const char *val = NULL);
+    struct record * getRecord(struct record_list *record_list, int index);
     struct string_list *getFieldIds(struct record *record);
-    struct field_list *getFields(struct record *record);
-    struct field *getField(struct record *record, const char* fieldId);
-    const char *getFieldId(struct field *field);
-    const char *getFieldType(struct field *field);
-    void *getFieldValue(struct field *field);
+    struct field_list * getFields(struct record *record);
+    struct field * getField(struct record *record, const char* fieldId);
+    const char * getFieldId(struct field *field);
+    const char * getFieldType(struct field *field);
+    struct field_value * getFieldValue(struct field *field);
     bool getFieldIsValid(struct field *field);
     bool getFieldIsRequired(struct field *field);
 

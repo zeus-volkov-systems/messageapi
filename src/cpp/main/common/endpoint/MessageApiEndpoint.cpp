@@ -214,8 +214,13 @@ struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, co
     return record_list;
 }
 
+struct record * MessageApiEndpoint::getRecord(struct record_list * record_list, int index)
+{
+    
+}
+
 struct string_list * MessageApiEndpoint::getFieldIds(struct record *record) {
-    const char *methodName = "getFieldIds";
+    const char * methodName = "getFieldIds";
 
     jobject jRecordRef = jvm->NewLocalRef(record->jrecord);
     jclass jRecordClass = getObjectClass(jRecordRef);
@@ -252,7 +257,7 @@ struct string_list * MessageApiEndpoint::getFieldIds(struct record *record) {
 }
 
 struct field_list * MessageApiEndpoint::getFields(struct record *record) {
-    const char* methodName = "getFields";
+    const char * methodName = "getFields";
 
     jobject jRecordRef = jvm->NewLocalRef(record->jrecord);
     jclass jRecordClass = getObjectClass(jRecordRef);
@@ -282,7 +287,7 @@ struct field_list * MessageApiEndpoint::getFields(struct record *record) {
 }
 
 struct field * MessageApiEndpoint::getField(struct record *record, const char* fieldId) {
-    const char *methodName = "getField";
+    const char * methodName = "getField";
 
     jobject jRecordRef = jvm->NewLocalRef(record->jrecord);
     jclass jRecordClass = getObjectClass(jRecordRef);
@@ -301,7 +306,7 @@ struct field * MessageApiEndpoint::getField(struct record *record, const char* f
 }
 
 const char * MessageApiEndpoint::getFieldId(struct field *field) {
-    const char *methodName = "getId";
+    const char * methodName = "getId";
 
     jobject jFieldRef = jvm->NewLocalRef(field->jfield);
     jclass jRecordClass = getObjectClass(jFieldRef);
@@ -318,7 +323,7 @@ const char * MessageApiEndpoint::getFieldId(struct field *field) {
 
 const char * MessageApiEndpoint::getFieldType(struct field *field)
 {
-    const char *methodName = "getType";
+    const char * methodName = "getType";
 
     jobject jFieldRef = jvm->NewLocalRef(field->jfield);
     jclass jRecordClass = getObjectClass(jFieldRef);
@@ -333,9 +338,9 @@ const char * MessageApiEndpoint::getFieldType(struct field *field)
     return fieldType;
 }
 
-void * MessageApiEndpoint::getFieldValue(struct field *field)
+struct field_value * MessageApiEndpoint::getFieldValue(struct field *field)
 {
-    const char *methodName = "getValue";
+    const char * methodName = "getValue";
 
     jobject jFieldRef = jvm->NewLocalRef(field->jfield);
     jclass jRecordClass = getObjectClass(jFieldRef);
@@ -343,12 +348,13 @@ void * MessageApiEndpoint::getFieldValue(struct field *field)
 
     jobject jFieldValue = jvm->CallObjectMethod(jFieldRef, jFieldMethodId);
 
-    void *value = &jFieldValue;
+    struct field_value *field_value = (struct field_value *)malloc(sizeof(field_value) + sizeof(jFieldValue));
+    field_value->jvalue = jFieldValue;
 
     jvm->DeleteLocalRef(jRecordClass);
     jvm->DeleteLocalRef(jFieldRef);
 
-    return value;
+    return field_value;
 }
 
 bool MessageApiEndpoint::getFieldIsValid(struct field *field)

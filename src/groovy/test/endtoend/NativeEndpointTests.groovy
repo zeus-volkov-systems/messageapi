@@ -20,6 +20,13 @@ def "Tests submission of a very simple native task with only one endpoint that c
         IRequest request = session.createRequest();
         IRecord record1 = request.createRecord();
         IRecord record2 = request.createRecord();
+
+        //we should investigate alternatives to current implementation, whether or not we can improve the speed
+        //as is, 50,000 records takes ~1 second. 500,000 times out due to memory limitations.
+        for (int i=0; i<50; i++) {
+            IRecord r = request.createRecord();
+            r.setField("initial-value", 5);
+        }
         record1.setField("initial-value", 0);
         record2.setField("initial-value", 1);
     when: "We submit the test session with a single endpoint, let it call into C, increment a counter, add it to a new record, and return"
@@ -27,6 +34,7 @@ def "Tests submission of a very simple native task with only one endpoint that c
         while (!response.isComplete()) {}
     then: "We should have no rejections, there should be one return record, and when we grab the 'counter-value' field, we should get 1."
         response.getRejections().size() == 0
+        //println response.getRejections().size()
         //response.getRecords().size() == 1
         //response.getRecords().get(0).getField("counter-value").getValue() == 1
     }
