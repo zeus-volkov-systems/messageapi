@@ -52,6 +52,11 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByClassifier", classifierKey, classifierValue);
     }
 
+    struct record *getRecord(jlong message, struct record_list *recordList, int recordIndex)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecord(recordList, recordIndex);
+    }
+
     struct string_list *getFieldIds(jlong message, struct record *record)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIds(record);

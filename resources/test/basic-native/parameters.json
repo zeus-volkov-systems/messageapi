@@ -1,11 +1,21 @@
 {
-    "fields": [{"id": "initial-value",
+    "fields": [
+            {
+                "id": "initial-value",
                 "type": "integer",
-                "required": true}],
+                "required": true
+            },
+            {
+                "id": "string-test",
+                "type": "string",
+                "required": false
+            }],
     "collections": [{"id": "coll-1",
-                     "fields": ["initial-value"]}],
+                     "fields": ["initial-value", "string-test"]},
+                    {"id": "coll-2",
+                        "fields": ["initial-value", "string-test"]}],
     "connections": [{"id": "1",
-                     "collections": "*",
+                     "collections": ["coll-1"],
                      "constructor": {"native-library": "/Users/rberkheimer/projects/asos/ingest/libraries/messageapi/lib/test/native/demoendpointlibrary/libDemoEndpointLibrary.jnilib",
                                     "default-fields": [{"id": "test",
                                                         "type": "string",

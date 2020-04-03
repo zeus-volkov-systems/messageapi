@@ -28,7 +28,8 @@ struct record
 struct record_list
 {
     int count;
-    struct record **records;
+    //struct record **records;
+    jobject jrecords;
 };
 
 

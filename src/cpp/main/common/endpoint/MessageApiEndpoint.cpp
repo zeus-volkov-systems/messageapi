@@ -196,18 +196,10 @@ struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, co
     jobject jprotocolRecords = getProtocolRecords(protocolRecordRef, methodId, recordMethod, key, val);
 
     int recordCount = jvm->CallIntMethod(jprotocolRecords, java_util_List_size);
-    record** records = (record**)malloc(sizeof(record*) * recordCount);
-    for (int i = 0; i < recordCount; i++) {
-        jobject jrecord = static_cast<jobject>(jvm->CallObjectMethod(jprotocolRecords, java_util_List_get, i));
-        record *record = (struct record*) malloc(sizeof(struct record) + sizeof(jrecord));
-        record->jrecord = (jobject) jrecord;
-        records[i] = record;
-    }
-    struct record_list *record_list = (struct record_list*) malloc(sizeof(struct record_list) + sizeof(records));
+    struct record_list * record_list = (struct record_list *) malloc(sizeof(struct record_list));
     record_list->count = recordCount;
-    record_list->records = records;
+    record_list->jrecords = jprotocolRecords;
 
-    jvm->DeleteLocalRef(jprotocolRecords);
     jvm->DeleteLocalRef(protocolRecordClass);
     jvm->DeleteLocalRef(protocolRecordRef);
 
@@ -216,7 +208,15 @@ struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, co
 
 struct record * MessageApiEndpoint::getRecord(struct record_list * record_list, int index)
 {
-    
+    jobject jRecordRef = jvm->NewLocalRef(record_list->jrecords);
+
+    jobject jrecord = static_cast<jobject>(jvm->CallObjectMethod(jRecordRef, java_util_List_get, index));
+    record * record = (struct record *) malloc(sizeof(struct record) + sizeof(jrecord));
+    record->jrecord = jrecord;
+
+    jvm->DeleteLocalRef(jRecordRef);
+
+    return record;
 }
 
 struct string_list * MessageApiEndpoint::getFieldIds(struct record *record) {
@@ -333,6 +333,7 @@ const char * MessageApiEndpoint::getFieldType(struct field *field)
     const char *fieldType = this->fromJavaString(jFieldType);
 
     jvm->DeleteLocalRef(jFieldType);
+    jvm->DeleteLocalRef(jRecordClass);
     jvm->DeleteLocalRef(jFieldRef);
 
     return fieldType;
