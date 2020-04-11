@@ -20,7 +20,8 @@ extern "C"
     struct field * getField(jlong message, struct record *record, const char *fieldId);
     const char * getFieldId(jlong message, struct field *field);
     const char * getFieldType(jlong message, struct field *field);
-    void * getFieldValue(jlong message, struct field *field);
+    struct field_value * getFieldValue(jlong message, struct field *field);
+    int fieldValueAsInteger(jlong message, struct field_value *field_value);
     bool getFieldIsValid(jlong message, struct field *field);
     bool getFieldIsRequired(jlong message, struct field *field);
 

@@ -27,8 +27,8 @@ public:
     MessageApiEndpoint(JNIEnv* javaEnv, jobject jEndpoint, jobject jProtocolRecord);
     ~MessageApiEndpoint();
 
-    jobject getProtocolRecords(jobject protocolref, jmethodID methodId, const char* method, const char* key, const char* val);
-    
+    jobject getProtocolRecords(const char *method, const char *key, const char *val);
+
     struct record_list * getRecords(const char *method, const char *key = NULL, const char *val = NULL);
     struct record * getRecord(struct record_list *record_list, int index);
     struct string_list *getFieldIds(struct record *record);
@@ -37,6 +37,7 @@ public:
     const char * getFieldId(struct field *field);
     const char * getFieldType(struct field *field);
     struct field_value * getFieldValue(struct field *field);
+    int fieldValueAsInteger(struct field_value *field_value);
     bool getFieldIsValid(struct field *field);
     bool getFieldIsRequired(struct field *field);
 
@@ -44,14 +45,38 @@ private:
     JNIEnv* jvm;
     jobject endpoint;
     jobject protocolRecord;
+    jclass jException;
 
-    jclass java_util_List;
-    jmethodID java_util_List_size;
-    jmethodID java_util_List_get;
+    jmethodID getJBoolMethodId;
+    jmethodID makeJBoolMethodId;
+    jmethodID getJByteMethodId;
+    jmethodID makeJByteMethodId;
+    jmethodID getJIntMethodId;
+    jmethodID makeJIntMethodId;
+    jmethodID getJLongMethodId;
+    jmethodID makeJLongMethodId;
+    jmethodID getJFloatMethodId;
+    jmethodID makeJFloatMethodId;
+    jmethodID getJDoubleMethodId;
+    jmethodID makeJDoubleMethodId;
+    jmethodID getJStringMethodId;
+    jmethodID makeJStringMethodId;
+    jmethodID getJListSizeMethodId;
+    jmethodID getJListItemMethodId;
+
+    jmethodID getRecordsMethodId;
+    jmethodID getRecordsByCollectionMethodId;
+    jmethodID getRecordsByUUIDMethodId;
+    jmethodID getRecordsByTransformationMethodId;
+    jmethodID getRecordsByClassifierMethodId;
+
+    void loadTypeMethodIds();
+    void loadRecordRefs();
+    void releaseProtocolRecordRefs();
+    void loadGlobalTypeRefs();
 
     void checkAndThrow(const char *errorMessage);
 
-    JNIEnv *getJVM();
     jclass getNamedClass(const char *javaClassName);
     jclass getObjectClass(jobject javaObject);
     jmethodID getMethod(jclass javaClass, const char *methodName, const char *methodSignature, bool isStatic);

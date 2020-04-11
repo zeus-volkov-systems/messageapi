@@ -38,6 +38,11 @@ public interface IRecord {
     public List<ICondition> getConditions();
 
     /**
+     * Returns the ids of conditions that are contained by the record
+     */
+    public List<String> getConditionIds();
+
+    /**
      * Returns a deep copy of the current state of the record
      */
     public IRecord getCopy();

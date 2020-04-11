@@ -21,8 +21,7 @@ def "Tests submission of a very simple native task with only one endpoint that c
         IRecord record1 = request.createRecord();
         IRecord record2 = request.createRecord();
 
-        //tested up to 1e6 records (slow, ~20 seconds to load these records)
-        for (int i=0; i<500000; i++) {
+        for (int i=0; i<500; i++) {
             IRecord r = request.createRecord();
             r.setField("initial-value", 5);
             r.setField("string-test", "five");
@@ -32,7 +31,6 @@ def "Tests submission of a very simple native task with only one endpoint that c
         record1.setField("string-test", "hi there!");
         record2.setField("string-test", "cool!");
     when: "We submit the test session with a single endpoint, let it call into C, increment a counter, add it to a new record, and return"
-        println "Built the records, submitting the response."
         IResponse response = request.submit();
         while (!response.isComplete()) {}
     then: "We should have no rejections, there should be one return record, and when we grab the 'counter-value' field, we should get 1."

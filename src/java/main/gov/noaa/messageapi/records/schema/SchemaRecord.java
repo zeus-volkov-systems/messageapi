@@ -165,6 +165,10 @@ public class SchemaRecord implements IRecord {
         return this.conditions;
     }
 
+    public List<String> getConditionIds() {
+        return this.conditions.stream().map(condition -> condition.getId()).collect(Collectors.toList());
+    }
+
     public void setValid(boolean valid) {
         this.valid = valid;
     }

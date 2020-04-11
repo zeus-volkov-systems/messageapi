@@ -82,9 +82,14 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldType(field);
     }
 
-    void *getFieldValue(jlong message, struct field *field)
+    struct field_value *getFieldValue(jlong message, struct field *field)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldValue(field);
+    }
+
+    int fieldValueAsInteger(jlong message, struct field_value *field_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->fieldValueAsInteger(field_value);
     }
 
     bool getFieldIsValid(jlong message, struct field *field)

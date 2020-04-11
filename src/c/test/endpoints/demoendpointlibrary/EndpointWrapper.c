@@ -36,18 +36,14 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       printf("Test field id: %s\n", testFieldId);
       printf("Test field id 2: %s\n", testFieldId2);
       fflush(stdout);
-      const char * testFieldType = getFieldType(message, testField);
-      const char * testFieldType2 = getFieldType(message, testField2);
+      const char *testFieldType = getFieldType(message, testField);
+      const char *testFieldType2 = getFieldType(message, testField2);
       printf("Test field type: %s\n", testFieldType);
       printf("Test field type 2: %s\n", testFieldType2);
       fflush(stdout);
-      //void* testFieldValue = getFieldValue(message, testField);
-      //printf("Field integer value is %d\n", *(int *)testFieldValue);
-      /*for (int i = 0; i < default_field_list->count; i++) {
-          struct string_list* record_field_names = getRecordFieldNames(message,)
-          for (int j = 0; j < )
-          printf("Record Type: %s\n", getRecordType(default_record_list->records[i]));
-      }*/
+      struct field_value *testFieldValue = getFieldValue(message, testField);
+      int integerFieldValue = fieldValueAsInteger(message, testFieldValue);
+      printf("Field integer value is %d\n", integerFieldValue);
       printf("Leaving our test!");
       fflush(stdout);
       return;
