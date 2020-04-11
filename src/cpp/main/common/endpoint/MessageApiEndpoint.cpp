@@ -110,6 +110,11 @@ void MessageApiEndpoint::loadValueTypeMethodIds()
     this->makeJLongMethodId = this->jvm->GetMethodID(jLongClass, "<init>", "(J)V");
     this->jvm->DeleteLocalRef(jLongClass);
 
+    jclass jShortClass = this->getNamedClass("java/lang/Short");
+    this->getJShortMethodId = this->jvm->GetMethodID(jShortClass, "shortValue", "()S");
+    this->makeJShortMethodId = this->jvm->GetMethodID(jShortClass, "<init>", "(S)V");
+    this->jvm->DeleteLocalRef(jShortClass);
+
     jclass jFloatClass = this->getNamedClass("java/lang/Float");
     this->getJFloatMethodId = this->jvm->GetMethodID(jFloatClass, "floatValue", "()F");
     this->makeJFloatMethodId = this->jvm->GetMethodID(jFloatClass, "<init>", "(F)V");
@@ -402,7 +407,49 @@ bool MessageApiEndpoint::getFieldIsRequired(struct field *field)
     return (bool)this->jvm->CallBooleanMethod(field->jfield, this->getFieldIsRequiredMethodId);
 }
 
+bool MessageApiEndpoint::fieldValueAsBoolean(struct field_value *field_value)
+{
+    return (bool)jvm->CallBooleanMethod(field_value->jvalue, this->getJBoolMethodId);
+}
+
+/**
+ * Not sure if this method works yet.
+ */
+unsigned char MessageApiEndpoint::fieldValueAsByte(struct field_value *field_value)
+{
+    jbyte jByte = this->jvm->CallByteMethod(field_value->jvalue, this->getJByteMethodId);
+    return (unsigned char) jByte;
+}
+
+short MessageApiEndpoint::fieldValueAsShort(struct field_value *field_value)
+{
+    return (short)this->jvm->CallShortMethod(field_value->jvalue, this->getJShortMethodId);
+}
+
 int MessageApiEndpoint::fieldValueAsInteger(struct field_value *field_value)
 {
-    return (int)jvm->CallIntMethod(field_value->jvalue, this->getJIntMethodId);
+    return (int)this->jvm->CallIntMethod(field_value->jvalue, this->getJIntMethodId);
+}
+
+long MessageApiEndpoint::fieldValueAsLong(struct field_value *field_value)
+{
+    return (long)this->jvm->CallLongMethod(field_value->jvalue, this->getJLongMethodId);
+}
+
+float MessageApiEndpoint::fieldValueAsFloat(struct field_value *field_value)
+{
+    return (float)this->jvm->CallFloatMethod(field_value->jvalue, this->getJFloatMethodId);
+}
+
+double MessageApiEndpoint::fieldValueAsDouble(struct field_value *field_value)
+{
+    return (double)this->jvm->CallDoubleMethod(field_value->jvalue, this->getJDoubleMethodId);
+}
+
+const char *MessageApiEndpoint::fieldValueAsString(struct field_value *field_value)
+{
+    jstring jString = (jstring) field_value->jvalue;
+    const char *returnString = this->fromJavaString(jString);
+    jvm->DeleteLocalRef(jString);
+    return returnString;
 }

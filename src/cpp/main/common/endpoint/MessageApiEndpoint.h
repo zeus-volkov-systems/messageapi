@@ -37,9 +37,17 @@ public:
     const char * getFieldId(struct field *field);
     const char * getFieldType(struct field *field);
     struct field_value * getFieldValue(struct field *field);
-    int fieldValueAsInteger(struct field_value *field_value);
     bool getFieldIsValid(struct field *field);
     bool getFieldIsRequired(struct field *field);
+
+    int fieldValueAsInteger(struct field_value *field_value);
+    long fieldValueAsLong(struct field_value *field_value);
+    float fieldValueAsFloat(struct field_value *field_value);
+    double fieldValueAsDouble(struct field_value *field_value);
+    unsigned char fieldValueAsByte(struct field_value *field_value);
+    const char* fieldValueAsString(struct field_value *field_value);
+    bool fieldValueAsBoolean(struct field_value *field_value);
+    short fieldValueAsShort(struct field_value *field_value);
 
 private:
     JNIEnv* jvm;
@@ -59,6 +67,8 @@ private:
     jmethodID makeJFloatMethodId;
     jmethodID getJDoubleMethodId;
     jmethodID makeJDoubleMethodId;
+    jmethodID getJShortMethodId;
+    jmethodID makeJShortMethodId;
     jmethodID getJStringMethodId;
     jmethodID makeJStringMethodId;
     jmethodID getJListSizeMethodId;

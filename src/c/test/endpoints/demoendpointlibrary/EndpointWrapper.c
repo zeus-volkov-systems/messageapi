@@ -44,6 +44,9 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       struct field_value *testFieldValue = getFieldValue(message, testField);
       int integerFieldValue = fieldValueAsInteger(message, testFieldValue);
       printf("Field integer value is %d\n", integerFieldValue);
+      struct field_value *testFieldValue2 = getFieldValue(message, testField2);
+      const char* stringFieldValue = fieldValueAsString(message, testFieldValue2);
+      printf("Field string value 2 is: %s\n", stringFieldValue);
       printf("Leaving our test!");
       fflush(stdout);
       return;

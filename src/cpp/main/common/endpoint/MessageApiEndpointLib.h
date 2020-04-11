@@ -20,10 +20,18 @@ extern "C"
     struct field * getField(jlong message, struct record *record, const char *fieldId);
     const char * getFieldId(jlong message, struct field *field);
     const char * getFieldType(jlong message, struct field *field);
-    struct field_value * getFieldValue(jlong message, struct field *field);
-    int fieldValueAsInteger(jlong message, struct field_value *field_value);
     bool getFieldIsValid(jlong message, struct field *field);
     bool getFieldIsRequired(jlong message, struct field *field);
+    struct field_value *getFieldValue(jlong message, struct field *field);
+
+    int fieldValueAsInteger(jlong message, struct field_value *field_value);
+    long fieldValueAsLong(jlong message, struct field_value *field_value);
+    float fieldValueAsFloat(jlong message, struct field_value *field_value);
+    double fieldValueAsDouble(jlong message, struct field_value *field_value);
+    unsigned char fieldValueAsByte(jlong message, struct field_value *field_value);
+    const char *fieldValueAsString(jlong message, struct field_value *field_value);
+    bool fieldValueAsBoolean(jlong message, struct field_value *field_value);
+    short fieldValueAsShort(jlong message, struct field_value *field_value);
 
 #ifdef __cplusplus
 }

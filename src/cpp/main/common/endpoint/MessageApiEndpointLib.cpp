@@ -82,6 +82,16 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldType(field);
     }
 
+    bool getFieldIsValid(jlong message, struct field *field)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIsValid(field);
+    }
+
+    bool getFieldIsRequired(jlong message, struct field *field)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIsRequired(field);
+    }
+
     struct field_value *getFieldValue(jlong message, struct field *field)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldValue(field);
@@ -92,13 +102,38 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->fieldValueAsInteger(field_value);
     }
 
-    bool getFieldIsValid(jlong message, struct field *field)
+    long fieldValueAsLong(jlong message, struct field_value *field_value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIsValid(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->fieldValueAsLong(field_value);
     }
 
-    bool getFieldIsRequired(jlong message, struct field *field)
+    float fieldValueAsFloat(jlong message, struct field_value *field_value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIsRequired(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->fieldValueAsFloat(field_value);
+    }
+
+    double fieldValueAsDouble(jlong message, struct field_value *field_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->fieldValueAsDouble(field_value);
+    }
+
+    unsigned char fieldValueAsByte(jlong message, struct field_value *field_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->fieldValueAsByte(field_value);
+    }
+
+    const char *fieldValueAsString(jlong message, struct field_value *field_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->fieldValueAsString(field_value);
+    }
+
+    bool fieldValueAsBoolean(jlong message, struct field_value *field_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->fieldValueAsBoolean(field_value);
+    }
+
+    short fieldValueAsShort(jlong message, struct field_value *field_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->fieldValueAsShort(field_value);
     }
 }
