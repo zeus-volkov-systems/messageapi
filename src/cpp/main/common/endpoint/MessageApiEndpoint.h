@@ -70,16 +70,31 @@ private:
     jmethodID getRecordsByTransformationMethodId;
     jmethodID getRecordsByClassifierMethodId;
 
-    void loadTypeMethodIds();
-    void loadRecordRefs();
-    void releaseProtocolRecordRefs();
-    void loadGlobalTypeRefs();
+    jmethodID getRecordFieldIdsMethodId;
+    jmethodID getRecordFieldsMethodId;
+    jmethodID getRecordFieldMethodId;
+
+    jmethodID getFieldIdMethodId;
+    jmethodID getFieldTypeMethodId;
+    jmethodID getFieldValueMethodId;
+    jmethodID getFieldIsValidMethodId;
+    jmethodID getFieldIsRequiredMethodId;
+
+    void loadValueTypeMethodIds();
+    void loadProtocolRecordMethodIds();
+    void loadRecordMethodIds();
+    void loadFieldMethodIds();
 
     void checkAndThrow(const char *errorMessage);
 
     jclass getNamedClass(const char *javaClassName);
     jclass getObjectClass(jobject javaObject);
+
     jmethodID getMethod(jclass javaClass, const char *methodName, const char *methodSignature, bool isStatic);
+
+    int getJListLength(jobject jList);
+    struct string_list *translateFromJavaStringList(jobject jList);
+
     jstring toJavaString(const char *charString);
     const char *fromJavaString(jstring javaString);
     const char *getRecordMethodSignature(const char *recordMethodName);

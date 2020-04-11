@@ -18,9 +18,10 @@ MessageApiEndpoint::MessageApiEndpoint(JNIEnv *env, jobject jendpoint, jobject j
     this->protocolRecord = this->jvm->NewGlobalRef(jprotocolRecord);
     this->jException = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Exception")));
 
-    this->loadRecordRefs();
-    this->loadGlobalTypeRefs();
-    this->loadTypeMethodIds();
+    this->loadProtocolRecordMethodIds();
+    this->loadRecordMethodIds();
+    this->loadFieldMethodIds();
+    this->loadValueTypeMethodIds();
 }
 
 MessageApiEndpoint::~MessageApiEndpoint()
@@ -37,7 +38,7 @@ MessageApiEndpoint::~MessageApiEndpoint()
     }
 }
 
-void MessageApiEndpoint::loadRecordRefs()
+void MessageApiEndpoint::loadProtocolRecordMethodIds()
 {
 
     jclass protocolRecordClass = this->getObjectClass(this->protocolRecord);
@@ -51,10 +52,26 @@ void MessageApiEndpoint::loadRecordRefs()
     this->jvm->DeleteLocalRef(protocolRecordClass);
 }
 
-void MessageApiEndpoint::loadGlobalTypeRefs()
+void MessageApiEndpoint::loadRecordMethodIds()
 {
-    
+    jclass recordClass = this->getNamedClass("gov/noaa/messageapi/interfaces/IRecord");
+    this->getRecordFieldIdsMethodId = getMethod(recordClass, "getFieldIds", getFieldMethodSignature("getFieldIds"), false);
+    this->getRecordFieldsMethodId = getMethod(recordClass, "getFields", getFieldMethodSignature("getFields"), false);
+    this->getRecordFieldMethodId = getMethod(recordClass, "getField", getFieldMethodSignature("getField"), false);
+    this->jvm->DeleteLocalRef(recordClass);
 }
+
+void MessageApiEndpoint::loadFieldMethodIds()
+{
+    jclass fieldClass = this->getNamedClass("gov/noaa/messageapi/interfaces/IField");
+    this->getFieldIdMethodId = getMethod(fieldClass, "getId", getFieldMethodSignature("getId"), false);
+    this->getFieldTypeMethodId = getMethod(fieldClass, "getType", getFieldMethodSignature("getType"), false);
+    this->getFieldValueMethodId = getMethod(fieldClass, "getValue", getFieldMethodSignature("getValue"), false);
+    this->getFieldIsValidMethodId = getMethod(fieldClass, "isValid", getFieldMethodSignature("isValid"), false);
+    this->getFieldIsRequiredMethodId = getMethod(fieldClass, "isRequired", getFieldMethodSignature("isRequired"), false);
+    this->jvm->DeleteLocalRef(fieldClass);
+}
+
 
 /**
  * Loads the default value types for MessageApiEndpoint.
@@ -66,7 +83,7 @@ void MessageApiEndpoint::loadGlobalTypeRefs()
  * Default types include the following:
  * integer, long, float, double, string, byte, boolean
  */
-void MessageApiEndpoint::loadTypeMethodIds()
+void MessageApiEndpoint::loadValueTypeMethodIds()
 {
     jclass jListClass = static_cast<jclass>(this->jvm->NewLocalRef(this->jvm->FindClass("java/util/List")));
     this->getJListSizeMethodId = this->jvm->GetMethodID(jListClass, "size", "()I");
@@ -276,64 +293,55 @@ struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, co
 
 struct record * MessageApiEndpoint::getRecord(struct record_list * record_list, int index)
 {
-    jobject jRecordRef = this->jvm->NewLocalRef(record_list->jrecords);
-
-    jobject jrecord = static_cast<jobject>(this->jvm->CallObjectMethod(jRecordRef, this->getJListItemMethodId, index));
+    jobject jrecord = static_cast<jobject>(this->jvm->CallObjectMethod(record_list->jrecords, this->getJListItemMethodId, index));
     struct record *record = (struct record *) malloc(sizeof(struct record) + sizeof(jrecord));
     record->jrecord = jrecord;
-
-    this->jvm->DeleteLocalRef(jRecordRef);
-
     return record;
 }
 
-struct string_list * MessageApiEndpoint::getFieldIds(struct record *record) {
-    const char *methodName = "getFieldIds";
-
-    jobject jRecordRef = this->jvm->NewLocalRef(record->jrecord);
-    jclass jRecordClass = getObjectClass(jRecordRef);
-    jmethodID jFieldIdMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
-    jobject jFieldIdList = this->jvm->CallObjectMethod(jRecordRef, jFieldIdMethodId);
-
-    int fieldCount = this->jvm->CallIntMethod(jFieldIdList, this->getJListSizeMethodId);
-    char **fieldIds = (char**) malloc(sizeof(char*) * fieldCount);
-
-    int maxFieldIdLength = 0;
-    for (int i = 0; i < fieldCount; i++) {
-        jstring fieldId = static_cast<jstring>(this->jvm->CallObjectMethod(jFieldIdList, this->getJListItemMethodId, i));
-        const char *tempFieldId = this->jvm->GetStringUTFChars(fieldId, NULL);
-        int tempMaxFieldIdLength = strlen(tempFieldId);
-        if (tempMaxFieldIdLength > maxFieldIdLength) {
-            maxFieldIdLength = tempMaxFieldIdLength;
-        }
-        fieldIds[i] = (char*) malloc((tempMaxFieldIdLength+1) * sizeof(char));
-        strcpy(fieldIds[i], tempFieldId);
-        this->jvm->ReleaseStringUTFChars(fieldId, tempFieldId);
-        this->jvm->DeleteLocalRef(fieldId);
-    }
-
-    struct string_list *field_names = (struct string_list*) malloc(sizeof(struct string_list) + sizeof(fieldIds));
-    field_names->max_length = maxFieldIdLength;
-    field_names->count = fieldCount;
-    field_names->strings = fieldIds;
-
-    this->jvm->DeleteLocalRef(jFieldIdList);
-    this->jvm->DeleteLocalRef(jRecordClass);
-    this->jvm->DeleteLocalRef(jRecordRef);
-
-    return field_names;
+int MessageApiEndpoint::getJListLength(jobject jList)
+{
+    return this->jvm->CallIntMethod(jList, this->getJListSizeMethodId);
 }
 
-struct field_list * MessageApiEndpoint::getFields(struct record *record) {
-    const char * methodName = "getFields";
+struct string_list *MessageApiEndpoint::translateFromJavaStringList(jobject jList)
+{
+    int stringCount = this->getJListLength(jList);
+    char **strings = (char **)malloc(sizeof(char *) * stringCount);
+    int maxStringLength = 0;
+    for (int i = 0; i < stringCount; i++) {
+        jstring jString = static_cast<jstring>(this->jvm->CallObjectMethod(jList, this->getJListItemMethodId, i));
+        const char *tempString = this->jvm->GetStringUTFChars(jString, NULL);
+        int tempMaxStringLength = strlen(tempString);
+        if (tempMaxStringLength > maxStringLength) {
+            maxStringLength = tempMaxStringLength;
+        }
+        strings[i] = (char*) malloc((tempMaxStringLength+1) * sizeof(char));
+        strcpy(strings[i], tempString);
+        this->jvm->ReleaseStringUTFChars(jString, tempString);
+        this->jvm->DeleteLocalRef(jString);
+    }
 
-    jobject jRecordRef = this->jvm->NewLocalRef(record->jrecord);
-    jclass jRecordClass = getObjectClass(jRecordRef);
-    jmethodID jFieldMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
+    struct string_list *string_list = (struct string_list*) malloc(sizeof(struct string_list) + sizeof(strings));
+    string_list->count = stringCount;
+    string_list->max_length = maxStringLength;
+    string_list->strings = strings;
+    return string_list;
+}
 
-    jobject jFieldList = this->jvm->CallObjectMethod(jRecordRef, jFieldMethodId);
+struct string_list *MessageApiEndpoint::getFieldIds(struct record *record)
+{
+    jobject jFieldIdList = this->jvm->CallObjectMethod(record->jrecord, this->getRecordFieldIdsMethodId);
+    struct string_list *field_ids = this->translateFromJavaStringList(jFieldIdList);
+    this->jvm->DeleteLocalRef(jFieldIdList);
+    return field_ids;
+}
 
-    int fieldCount = this->jvm->CallIntMethod(jFieldList, this->getJListSizeMethodId);
+struct field_list * MessageApiEndpoint::getFields(struct record *record)
+{
+    jobject jFieldList = this->jvm->CallObjectMethod(record->jrecord, this->getRecordFieldsMethodId);
+
+    int fieldCount = this->getJListLength(jFieldList);
     struct field **fields = (struct field**)malloc(sizeof(struct field*) * fieldCount);
 
     for (int i = 0; i < fieldCount; i++) {
@@ -346,117 +354,55 @@ struct field_list * MessageApiEndpoint::getFields(struct record *record) {
     struct field_list *field_list = (struct field_list*)malloc(sizeof(struct field_list) + sizeof(fields));
     field_list->count = fieldCount;
     field_list->fields = fields;
-
-    this->jvm->DeleteLocalRef(jRecordClass);
-    this->jvm->DeleteLocalRef(jRecordRef);
-
     return field_list;
 
 }
 
-struct field * MessageApiEndpoint::getField(struct record *record, const char* fieldId) {
-    const char * methodName = "getField";
-
-    jobject jRecordRef = this->jvm->NewLocalRef(record->jrecord);
-    jclass jRecordClass = getObjectClass(jRecordRef);
-    jmethodID jFieldMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
-
-    jstring jFieldId = toJavaString(fieldId);
-    jobject jField = this->jvm->CallObjectMethod(jRecordRef, jFieldMethodId, jFieldId);
-    struct field *field = (struct field *)malloc(sizeof(field) + sizeof(jField));
+struct field * MessageApiEndpoint::getField(struct record *record, const char *fieldId)
+{
+    jstring jFieldId = this->toJavaString(fieldId);
+    jobject jField = this->jvm->CallObjectMethod(record->jrecord, this->getRecordFieldMethodId, jFieldId);
+    struct field *field = (struct field *)malloc(sizeof(struct field) + sizeof(jField));
     field->jfield = jField;
-
     this->jvm->DeleteLocalRef(jFieldId);
-    this->jvm->DeleteLocalRef(jRecordClass);
-    this->jvm->DeleteLocalRef(jRecordRef);
-
     return field;
 }
 
-const char * MessageApiEndpoint::getFieldId(struct field *field) {
-    const char * methodName = "getId";
-
-    jobject jFieldRef = this->jvm->NewLocalRef(field->jfield);
-    jclass jRecordClass = getObjectClass(jFieldRef);
-    jmethodID jFieldMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
-
-    jstring jFieldId = static_cast<jstring>(this->jvm->CallObjectMethod(jFieldRef, jFieldMethodId));
-    const char * fieldId = this->fromJavaString(jFieldId);
-
+const char *MessageApiEndpoint::getFieldId(struct field *field)
+{
+    jstring jFieldId = static_cast<jstring>(this->jvm->CallObjectMethod(field->jfield, this->getFieldIdMethodId));
+    const char *fieldId = this->fromJavaString(jFieldId);
     this->jvm->DeleteLocalRef(jFieldId);
-    this->jvm->DeleteLocalRef(jFieldRef);
-
     return fieldId;
 }
 
-const char * MessageApiEndpoint::getFieldType(struct field *field)
+const char *MessageApiEndpoint::getFieldType(struct field *field)
 {
-    const char * methodName = "getType";
-
-    jobject jFieldRef = this->jvm->NewLocalRef(field->jfield);
-    jclass jRecordClass = getObjectClass(jFieldRef);
-    jmethodID jFieldMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
-
-    jstring jFieldType = static_cast<jstring>(this->jvm->CallObjectMethod(jFieldRef, jFieldMethodId));
+    jstring jFieldType = static_cast<jstring>(this->jvm->CallObjectMethod(field->jfield, this->getFieldTypeMethodId));
     const char *fieldType = this->fromJavaString(jFieldType);
-
     this->jvm->DeleteLocalRef(jFieldType);
-    this->jvm->DeleteLocalRef(jRecordClass);
-    this->jvm->DeleteLocalRef(jFieldRef);
-
     return fieldType;
 }
 
 struct field_value *MessageApiEndpoint::getFieldValue(struct field *field)
 {
-    const char * methodName = "getValue";
-
-    jobject jFieldRef = this->jvm->NewLocalRef(field->jfield);
-    jclass jRecordClass = getObjectClass(jFieldRef);
-    jmethodID jFieldMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
-
-    jobject jFieldValue = this->jvm->CallObjectMethod(jFieldRef, jFieldMethodId);
-
+    jobject jFieldValue = this->jvm->CallObjectMethod(field->jfield, this->getFieldValueMethodId);
     struct field_value *field_value = (struct field_value *)malloc(sizeof(field_value) + sizeof(jFieldValue));
     field_value->jvalue = jFieldValue;
-
-    this->jvm->DeleteLocalRef(jRecordClass);
-    this->jvm->DeleteLocalRef(jFieldRef);
-
     return field_value;
-}
-
-int MessageApiEndpoint::fieldValueAsInteger(struct field_value *field_value)
-{
-    jobject jFieldRef = this->jvm->NewLocalRef(field_value->jvalue);
-
-    //jint jIntFieldRef = reinterpret_cast<jint>(jFieldRef);
-
-    //int intFieldValue = (int) jIntFieldRef;
-
-    this->jvm->DeleteLocalRef(jFieldRef);
-
-    return 1;
 }
 
 bool MessageApiEndpoint::getFieldIsValid(struct field *field)
 {
-    const char *methodName = "isValid";
-
-    jobject jFieldRef = this->jvm->NewLocalRef(field->jfield);
-    jclass jRecordClass = getObjectClass(jFieldRef);
-    jmethodID jFieldMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
-
-    this->jvm->DeleteLocalRef(jFieldRef);
+    return (bool)this->jvm->CallBooleanMethod(field->jfield, this->getFieldIsValidMethodId);
 }
 
 bool MessageApiEndpoint::getFieldIsRequired(struct field *field)
 {
-    const char *methodName = "isRequired";
+    return (bool)this->jvm->CallBooleanMethod(field->jfield, this->getFieldIsRequiredMethodId);
+}
 
-    jobject jFieldRef = this->jvm->NewLocalRef(field->jfield);
-    jclass jRecordClass = getObjectClass(jFieldRef);
-    jmethodID jFieldMethodId = getMethod(jRecordClass, methodName, getFieldMethodSignature(methodName), false);
-
-    this->jvm->DeleteLocalRef(jFieldRef);
+int MessageApiEndpoint::fieldValueAsInteger(struct field_value *field_value)
+{
+    return (int)jvm->CallIntMethod(field_value->jvalue, this->getJIntMethodId);
 }
