@@ -57,40 +57,40 @@ void MessageApiEndpoint::loadRecordMethodIds()
 {
     jclass recordClass = this->getNamedClass("gov/noaa/messageapi/interfaces/IRecord");
     //Intrinsic Methods
-    this->getRecordIsValidMethodId = getMethod(recordClass, "isValid", getRecordMethodSignature("isValid"), false);
-    this->getRecordCopyMethodId = getMethod(recordClass, "getCopy", getRecordMethodSignature("getCopy"), false);
+    this->getRecordIsValidMethodId = this->getMethod(recordClass, "isValid", this->getRecordMethodSignature("isValid"), false);
+    this->getRecordCopyMethodId = this->getMethod(recordClass, "getCopy", this->getRecordMethodSignature("getCopy"), false);
 
     //Field Related Methods
-    this->getRecordFieldIdsMethodId = getMethod(recordClass, "getFieldIds", getRecordMethodSignature("getFieldIds"), false);
-    this->getRecordFieldsMethodId = getMethod(recordClass, "getFields", getRecordMethodSignature("getFields"), false);
-    this->getRecordHasFieldMethodId = getMethod(recordClass, "hasField", getRecordMethodSignature("hasField"), false);
-    this->getRecordFieldMethodId = getMethod(recordClass, "getField", getRecordMethodSignature("getField"), false);
+    this->getRecordFieldIdsMethodId = this->getMethod(recordClass, "getFieldIds", this->getRecordMethodSignature("getFieldIds"), false);
+    this->getRecordFieldsMethodId = this->getMethod(recordClass, "getFields", this->getRecordMethodSignature("getFields"), false);
+    this->getRecordHasFieldMethodId = this->getMethod(recordClass, "hasField", this->getRecordMethodSignature("hasField"), false);
+    this->getRecordFieldMethodId = this->getMethod(recordClass, "getField", this->getRecordMethodSignature("getField"), false);
     //Condition Related Methods
-    this->getRecordConditionIdsMethodId = getMethod(recordClass, "getConditionIds", getRecordMethodSignature("getConditionIds"), false);
-    this->getRecordConditionsMethodId = getMethod(recordClass, "getConditions", getRecordMethodSignature("getConditions"), false);
-    this->getRecordHasConditionMethodId = getMethod(recordClass, "hasCondition", getRecordMethodSignature("hasCondition"), false);
-    this->getRecordConditionMethodId = getMethod(recordClass, "getCondition", getRecordMethodSignature("getCondition"), false);
+    this->getRecordConditionIdsMethodId = this->getMethod(recordClass, "getConditionIds", this->getRecordMethodSignature("getConditionIds"), false);
+    this->getRecordConditionsMethodId = this->getMethod(recordClass, "getConditions", this->getRecordMethodSignature("getConditions"), false);
+    this->getRecordHasConditionMethodId = this->getMethod(recordClass, "hasCondition", this->getRecordMethodSignature("hasCondition"), false);
+    this->getRecordConditionMethodId = this->getMethod(recordClass, "getCondition", this->getRecordMethodSignature("getCondition"), false);
     this->jvm->DeleteLocalRef(recordClass);
 }
 
 void MessageApiEndpoint::loadFieldMethodIds()
 {
     jclass fieldClass = this->getNamedClass("gov/noaa/messageapi/interfaces/IField");
-    this->getFieldIdMethodId = getMethod(fieldClass, "getId", getFieldMethodSignature("getId"), false);
-    this->getFieldTypeMethodId = getMethod(fieldClass, "getType", getFieldMethodSignature("getType"), false);
-    this->getFieldValueMethodId = getMethod(fieldClass, "getValue", getFieldMethodSignature("getValue"), false);
-    this->getFieldIsValidMethodId = getMethod(fieldClass, "isValid", getFieldMethodSignature("isValid"), false);
-    this->getFieldIsRequiredMethodId = getMethod(fieldClass, "isRequired", getFieldMethodSignature("isRequired"), false);
+    this->getFieldIdMethodId = this->getMethod(fieldClass, "getId", this->getFieldMethodSignature("getId"), false);
+    this->getFieldTypeMethodId = this->getMethod(fieldClass, "getType", this->getFieldMethodSignature("getType"), false);
+    this->getFieldValueMethodId = this->getMethod(fieldClass, "getValue", this->getFieldMethodSignature("getValue"), false);
+    this->getFieldIsValidMethodId = this->getMethod(fieldClass, "isValid", this->getFieldMethodSignature("isValid"), false);
+    this->getFieldIsRequiredMethodId = this->getMethod(fieldClass, "isRequired", this->getFieldMethodSignature("isRequired"), false);
     this->jvm->DeleteLocalRef(fieldClass);
 }
 
 void MessageApiEndpoint::loadConditionMethodIds()
 {
     jclass conditionClass = this->getNamedClass("gov/noaa/messageapi/interfaces/ICondition");
-    this->getConditionIdMethodId = getMethod(conditionClass, "getId", getConditionMethodSignature("getId"), false);
-    this->getConditionTypeMethodId = getMethod(conditionClass, "getType", getConditionMethodSignature("getType"), false);
-    this->getConditionOperatorMethodId = getMethod(conditionClass, "getOperator", getConditionMethodSignature("getOperator"), false);
-    this->getFieldValueMethodId = getMethod(conditionClass, "getValue", getConditionMethodSignature("getValue"), false);
+    this->getConditionIdMethodId = this->getMethod(conditionClass, "getId", this->getConditionMethodSignature("getId"), false);
+    this->getConditionTypeMethodId = this->getMethod(conditionClass, "getType", this->getConditionMethodSignature("getType"), false);
+    this->getConditionOperatorMethodId = this->getMethod(conditionClass, "getOperator", this->getConditionMethodSignature("getOperator"), false);
+    this->getConditionValueMethodId = this->getMethod(conditionClass, "getValue", this->getConditionMethodSignature("getValue"), false);
     this->jvm->DeleteLocalRef(conditionClass);
 }
 
@@ -151,12 +151,12 @@ void MessageApiEndpoint::loadValueTypeMethodIds()
 /**
  * Default error handling for the MessageApiEndpoint Class.
  */
-void MessageApiEndpoint::checkAndThrow(const char *errorMessage)
+void MessageApiEndpoint::checkAndThrow(std::string errorMessage)
 {
     if (this->jvm->ExceptionCheck())
     {
         std::cout << "MessageApiEndpoint.cpp errored with the following message:" << errorMessage << std::endl;
-        this->jvm->ThrowNew(this->jException, errorMessage);
+        this->jvm->ThrowNew(this->jException, errorMessage.c_str());
     }
 }
 
@@ -165,7 +165,9 @@ jclass MessageApiEndpoint::getNamedClass(const char *className)
 {
     jclass clazz = this->jvm->FindClass(className);
     const char *msg = "getNamedClass> failed.";
-    checkAndThrow(msg);
+    std::string buf(msg);
+    buf.append(className);
+    checkAndThrow(buf);
     return clazz;
 }
 
@@ -190,7 +192,9 @@ jmethodID MessageApiEndpoint::getMethod(jclass clazz, const char *name, const ch
     }
 
     const char *msg = "getMethod> jMethodID lookup failed.";
-    checkAndThrow(msg);
+    std::string buf(msg);
+    buf.append(name);
+    checkAndThrow(buf);
     return id;
 }
 
@@ -233,7 +237,7 @@ const char *MessageApiEndpoint::getRecordMethodSignature(const char *methodName)
 {
     if (methodName == "isValid")
     {
-        return "()Z";
+        return "()Ljava/lang/Boolean;";
     }
     else if (methodName == "getCopy")
     {
@@ -245,7 +249,7 @@ const char *MessageApiEndpoint::getRecordMethodSignature(const char *methodName)
     }
     else if (methodName == "hasField")
     {
-        return "()Z";
+        return "(Ljava/lang/String;)Ljava/lang/Boolean;";
     }
     else if (methodName == "getFields")
     {
@@ -261,7 +265,7 @@ const char *MessageApiEndpoint::getRecordMethodSignature(const char *methodName)
     }
     else if (methodName == "hasCondition")
     {
-        return "()Z";
+        return "(Ljava/lang/String;)Ljava/lang/Boolean;";
     }
     else if (methodName == "getConditions")
     {

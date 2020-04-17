@@ -145,7 +145,7 @@ private:
     void loadFieldMethodIds();
     void loadConditionMethodIds();
 
-    void checkAndThrow(const char *errorMessage);
+    void checkAndThrow(std::string errorMessage);
 
     jclass getNamedClass(const char *javaClassName);
     jclass getObjectClass(jobject javaObject);
