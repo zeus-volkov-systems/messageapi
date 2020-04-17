@@ -4,6 +4,22 @@
  * @author Ryan Berkheimer
  */
 
+
+struct condition_value
+{
+    jobject jvalue;
+};
+
+struct condition
+{
+    jobject jcondition;
+};
+
+struct condition_list
+{
+    int count;
+    struct condition **conditions;
+};
 struct field_value
 {
     jobject jvalue;

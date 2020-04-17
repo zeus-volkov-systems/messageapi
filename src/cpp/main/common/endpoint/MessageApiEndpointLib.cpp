@@ -57,6 +57,16 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->getRecord(recordList, recordIndex);
     }
 
+    struct record *getRecordCopy(jlong message, struct record *record)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordCopy(record);
+    }
+
+    bool getRecordIsValid(jlong message, struct record *record)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordIsValid(record);
+    }
+
     struct string_list *getFieldIds(jlong message, struct record *record)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIds(record);
@@ -70,6 +80,31 @@ extern "C"
     struct field *getField(jlong message, struct record *record, const char* fieldId)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getField(record, fieldId);
+    }
+
+    bool hasField(jlong message, struct record *record, const char *fieldId)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordHasField(record, fieldId);
+    }
+
+    struct string_list *getConditionIds(jlong message, struct record *record)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionIds(record);
+    }
+
+    struct condition_list *getConditions(jlong message, struct record *record)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditions(record);
+    }
+
+    struct condition *getCondition(jlong message, struct record *record, const char *conditionId)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getCondition(record, conditionId);
+    }
+
+    bool hasCondition(jlong message, struct record *record, const char *conditionId)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordHasCondition(record, conditionId);
     }
 
     const char *getFieldId(jlong message, struct field *field)
@@ -95,6 +130,26 @@ extern "C"
     struct field_value *getFieldValue(jlong message, struct field *field)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldValue(field);
+    }
+
+    const char *getConditionId(jlong message, struct condition *condition)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionId(condition);
+    }
+
+    const char *getConditionType(jlong message, struct condition *condition)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionType(condition);
+    }
+
+    const char *getConditionOperator(jlong message, struct condition *condition)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionOperator(condition);
+    }
+
+    struct condition_value *getConditionValue(jlong message, struct condition *condition)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionValue(condition);
     }
 
     int fieldValueAsInteger(jlong message, struct field_value *field_value)
@@ -135,5 +190,45 @@ extern "C"
     short fieldValueAsShort(jlong message, struct field_value *field_value)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->fieldValueAsShort(field_value);
+    }
+
+    int conditionValueAsInteger(jlong message, struct condition_value *condition_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->conditionValueAsInteger(condition_value);
+    }
+
+    long conditionValueAsLong(jlong message, struct condition_value *condition_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->conditionValueAsLong(condition_value);
+    }
+
+    float conditionValueAsFloat(jlong message, struct condition_value *condition_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->conditionValueAsFloat(condition_value);
+    }
+
+    double conditionValueAsDouble(jlong message, struct condition_value *condition_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->conditionValueAsDouble(condition_value);
+    }
+
+    unsigned char conditionValueAsByte(jlong message, struct condition_value *condition_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->conditionValueAsByte(condition_value);
+    }
+
+    const char *conditionValueAsString(jlong message, struct condition_value *condition_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->conditionValueAsString(condition_value);
+    }
+
+    bool conditionValueAsBoolean(jlong message, struct condition_value *condition_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->conditionValueAsBoolean(condition_value);
+    }
+
+    short conditionValueAsShort(jlong message, struct condition_value *condition_value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->conditionValueAsShort(condition_value);
     }
 }

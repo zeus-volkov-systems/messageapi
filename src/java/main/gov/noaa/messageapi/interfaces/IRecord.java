@@ -72,7 +72,14 @@ public interface IRecord {
      * their fields defined outside of code, this method may be useful
      * for code-level inspection and/or automation.
      */
-    public Boolean hasField(String fieldName);
+    public Boolean hasField(String fieldId);
+
+    /**
+     * returns a true/false indicating whether the given field (by id/name) exists
+     * in the record. While all records have their fields defined outside of code,
+     * this method may be useful for code-level inspection and/or automation.
+     */
+    public Boolean hasCondition(String conditionId);
 
     /**
      * Sets the given condition to hold the given value. The condition
@@ -96,11 +103,11 @@ public interface IRecord {
      * is abstract, but could typically be used if all conditions are validated against
      * all fields.
      */
-    public boolean isValid();
+    public Boolean isValid();
 
     /**
      * Sets the validity of the record to the passed true/false status.
      */
-    public void setValid(boolean status);
+    public void setValid(Boolean status);
 
 }
