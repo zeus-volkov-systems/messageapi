@@ -5,9 +5,10 @@
  */
 
 
-struct condition_value
+struct val_list
 {
-    jobject jvalue;
+    int count;
+    jobject jlist;
 };
 
 struct condition
@@ -20,7 +21,7 @@ struct condition_list
     int count;
     struct condition **conditions;
 };
-struct field_value
+struct value
 {
     jobject jvalue;
 };

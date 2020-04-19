@@ -49,7 +49,7 @@ public:
     //Field Methods
     const char *getFieldId(struct field *field);
     const char *getFieldType(struct field *field);
-    struct field_value *getFieldValue(struct field *field);
+    struct value *getFieldVal(struct field *field);
     bool getFieldIsValid(struct field *field);
     bool getFieldIsRequired(struct field *field);
 
@@ -57,31 +57,34 @@ public:
     const char *getConditionId(struct condition *condition);
     const char *getConditionType(struct condition *condition);
     const char *getConditionOperator(struct condition *condition);
-    struct condition_value *getConditionValue(struct condition *condition);
+    struct value *getConditionVal(struct condition *condition);
 
-    //Field Value Conversion Methods
-    int fieldValueAsInteger(struct field_value *field_value);
-    long fieldValueAsLong(struct field_value *field_value);
-    float fieldValueAsFloat(struct field_value *field_value);
-    double fieldValueAsDouble(struct field_value *field_value);
-    unsigned char fieldValueAsByte(struct field_value *field_value);
-    const char *fieldValueAsString(struct field_value *field_value);
-    bool fieldValueAsBoolean(struct field_value *field_value);
-    short fieldValueAsShort(struct field_value *field_value);
+    //Value Conversion Methods
+    int valAsInt(struct value *value);
+    long valAsLong(struct value *value);
+    float valAsFloat(struct value *value);
+    double valAsDouble(struct value *value);
+    unsigned char valAsByte(struct value *value);
+    const char *valAsString(struct value *value);
+    bool valAsBool(struct value *value);
+    short valAsShort(struct value *value);
+    struct val_list *valAsList(struct value *value);
 
-    //Condition Value Conversion Methods
-    int conditionValueAsInteger(struct condition_value *condition_value);
-    long conditionValueAsLong(struct condition_value *condition_value);
-    float conditionValueAsFloat(struct condition_value *condition_value);
-    double conditionValueAsDouble(struct condition_value *condition_value);
-    unsigned char conditionValueAsByte(struct condition_value *condition_value);
-    const char *conditionValueAsString(struct condition_value *condition_value);
-    bool conditionValueAsBoolean(struct condition_value *condition_value);
-    short conditionValueAsShort(struct condition_value *condition_value);
+    //List Entry Retrieval Methods
+    int getIntEntry(struct val_list *list, int index);
+    long getLongEntry(struct val_list *list, int index);
+    float getFloatEntry(struct val_list *list, int index);
+    double getDoubleEntry(struct val_list *list, int index);
+    unsigned char getByteEntry(struct val_list *list, int index);
+    const char *getStringEntry(struct val_list *list, int index);
+    bool getBoolEntry(struct val_list *list, int index);
+    short getShortEntry(struct val_list *list, int index);
 
-private:
-    //Global References
-    JNIEnv* jvm;
+    jobject getListEntry(struct val_list *list, int index);
+
+private :
+        //Global References
+    JNIEnv *jvm;
     jobject endpoint;
     jobject protocolRecord;
     jclass jException;

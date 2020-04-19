@@ -45,7 +45,7 @@ public class ListUtils {
      * @return      The new list, same as old list with any nulls filtered out.
      */
     public static <T> List<T> removeAllNulls(List<T> list) {
-        return list.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
+        return list.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**

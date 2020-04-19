@@ -21,15 +21,16 @@ def "Tests submission of a very simple native task with only one endpoint that c
         IRecord record1 = request.createRecord();
         IRecord record2 = request.createRecord();
 
-        for (int i=0; i<500; i++) {
-            IRecord r = request.createRecord();
-            r.setField("initial-value", 5);
-            r.setField("string-test", "five");
-        }
-        record1.setField("initial-value", 0);
-        record2.setField("initial-value", 1);
+        record1.setField("initial-value", 1000);
+        record2.setField("initial-value", 5000);
         record1.setField("string-test", "hi there!");
         record2.setField("string-test", "cool!");
+        /*for (int i=0; i<500; i++) {
+            IRecord r = request.createRecord();
+            r.setField("initial-value", i);
+            r.setField("string-test", Integer.toString(i));
+        }*/
+
     when: "We submit the test session with a single endpoint, let it call into C, increment a counter, add it to a new record, and return"
         IResponse response = request.submit();
         while (!response.isComplete()) {}

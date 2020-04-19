@@ -9,11 +9,17 @@
                 "id": "string-test",
                 "type": "string",
                 "required": false
+            },
+            {
+                "id": "int-list-test",
+                "type": "list(int)",
+                "required": true,
+                "value": [0,1,2,3,4,5,6]
             }],
     "collections": [{"id": "coll-1",
-                     "fields": ["initial-value", "string-test"]},
+                     "fields": ["initial-value", "string-test", "int-list-test"]},
                     {"id": "coll-2",
-                        "fields": ["initial-value", "string-test"]}],
+                        "fields": ["initial-value", "string-test", "int-list-test"]}],
     "connections": [{"id": "1",
                      "collections": ["coll-1"],
                      "constructor": {"native-library": "/Users/rberkheimer/projects/asos/ingest/libraries/messageapi/lib/test/native/demoendpointlibrary/libDemoEndpointLibrary.jnilib",
