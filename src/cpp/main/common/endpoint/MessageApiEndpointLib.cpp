@@ -27,6 +27,32 @@ JNIEXPORT void JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_release
 
 extern "C"
 {
+
+    struct record *getStateContainer(jlong message)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getStateContainer();
+    }
+
+    struct field_list *getDefaultFields(jlong message)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getDefaultFields();
+    }
+
+    struct packet *createPacket(jlong message)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->createPacket();
+    }
+
+    struct record *createRecord(jlong message)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->createRecord();
+    }
+
+    struct rejection *createRejection(jlong message, struct record *record, const char *reason)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->createRejection(record, reason);
+    }
+
     struct record_list *getRecords(jlong message)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecords");

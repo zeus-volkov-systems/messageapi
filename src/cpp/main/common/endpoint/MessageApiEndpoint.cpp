@@ -18,6 +18,7 @@ MessageApiEndpoint::MessageApiEndpoint(JNIEnv *env, jobject jendpoint, jobject j
     this->protocolRecord = this->jvm->NewGlobalRef(jprotocolRecord);
     this->jException = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Exception")));
 
+    this->loadEndpointMethodIds();
     this->loadProtocolRecordMethodIds();
     this->loadRecordMethodIds();
     this->loadFieldMethodIds();
@@ -39,6 +40,20 @@ MessageApiEndpoint::~MessageApiEndpoint()
     }
 }
 
+void MessageApiEndpoint::loadEndpointMethodIds()
+{
+
+    jclass endpointClass = this->getObjectClass(this->endpoint);
+
+    this->getStateContainerMethodId = this->getMethod(endpointClass, "getStateContainer", this->getEndpointMethodSignature("getStateContainer"), false);
+    this->getDefaultFieldsMethodId = this->getMethod(endpointClass, "getDefaultFields", this->getEndpointMethodSignature("getDefaultFields"), false);
+    this->createPacketMethodId = this->getMethod(endpointClass, "createPacket", this->getEndpointMethodSignature("createPacket"), false);
+    this->createRecordMethodId = this->getMethod(endpointClass, "createRecord", this->getEndpointMethodSignature("createRecord"), false);
+    this->createRejectionMethodId = this->getMethod(endpointClass, "createRejection", this->getEndpointMethodSignature("createRejection"), false);
+
+    this->jvm->DeleteLocalRef(endpointClass);
+}
+
 void MessageApiEndpoint::loadProtocolRecordMethodIds()
 {
 
@@ -56,16 +71,16 @@ void MessageApiEndpoint::loadProtocolRecordMethodIds()
 void MessageApiEndpoint::loadRecordMethodIds()
 {
     jclass recordClass = this->getNamedClass("gov/noaa/messageapi/interfaces/IRecord");
-    //Intrinsic Methods
+    /*Intrinsic Methods*/
     this->getRecordIsValidMethodId = this->getMethod(recordClass, "isValid", this->getRecordMethodSignature("isValid"), false);
     this->getRecordCopyMethodId = this->getMethod(recordClass, "getCopy", this->getRecordMethodSignature("getCopy"), false);
 
-    //Field Related Methods
+    /*Field Related Methods*/
     this->getRecordFieldIdsMethodId = this->getMethod(recordClass, "getFieldIds", this->getRecordMethodSignature("getFieldIds"), false);
     this->getRecordFieldsMethodId = this->getMethod(recordClass, "getFields", this->getRecordMethodSignature("getFields"), false);
     this->getRecordHasFieldMethodId = this->getMethod(recordClass, "hasField", this->getRecordMethodSignature("hasField"), false);
     this->getRecordFieldMethodId = this->getMethod(recordClass, "getField", this->getRecordMethodSignature("getField"), false);
-    //Condition Related Methods
+    /*Condition Related Methods*/
     this->getRecordConditionIdsMethodId = this->getMethod(recordClass, "getConditionIds", this->getRecordMethodSignature("getConditionIds"), false);
     this->getRecordConditionsMethodId = this->getMethod(recordClass, "getConditions", this->getRecordMethodSignature("getConditions"), false);
     this->getRecordHasConditionMethodId = this->getMethod(recordClass, "hasCondition", this->getRecordMethodSignature("hasCondition"), false);
@@ -213,10 +228,32 @@ const char * MessageApiEndpoint::fromJavaString(jstring s)
     return cStr;
 }
 
-/**
- * 
- */
-const char * MessageApiEndpoint::getProtocolRecordMethodSignature(const char* methodName)
+const char *MessageApiEndpoint::getEndpointMethodSignature(const char *methodName)
+{
+    if (methodName == "getStateContainer")
+    {
+        return "()Lgov/noaa/messageapi/interfaces/IRecord;";
+    }
+    else if (methodName == "getDefaultFields")
+    {
+        return "()Ljava/util/List;";
+    }
+    else if (methodName == "createPacket")
+    {
+        return "()Lgov/noaa/messageapi/interfaces/IPacket;";
+    }
+    else if (methodName == "createRecord")
+    {
+        return "()Lgov/noaa/messageapi/interfaces/IRecord;";
+    }
+    else if (methodName == "createRejection")
+    {
+        return "(Lgov/noaa/messageapi/interfaces/IRecord;Ljava/lang/String;)Lgov/noaa/messageapi/interfaces/IRejection;";
+    }
+    return NULL;
+}
+
+const char *MessageApiEndpoint::getProtocolRecordMethodSignature(const char* methodName)
 {
     if (methodName == "getRecords")
     {
@@ -324,6 +361,61 @@ const char * MessageApiEndpoint::getConditionMethodSignature(const char *methodN
     return NULL;
 }
 
+struct record *MessageApiEndpoint::getStateContainer()
+{
+    jobject jstatecontainer = this->jvm->CallObjectMethod(this->endpoint, this->getStateContainerMethodId);
+    struct record *record = (struct record *)malloc(sizeof(struct record) + sizeof(jstatecontainer));
+    record->jrecord = jstatecontainer;
+    return record;
+}
+
+struct field_list *MessageApiEndpoint::getDefaultFields()
+{
+    jobject jFieldList = this->jvm->CallObjectMethod(this->endpoint, this->getDefaultFieldsMethodId);
+
+    int fieldCount = this->getJListLength(jFieldList);
+    struct field **fields = (struct field **)malloc(sizeof(struct field *) * fieldCount);
+
+    for (int i = 0; i < fieldCount; i++)
+    {
+        jobject jfield = static_cast<jobject>(this->jvm->CallObjectMethod(jFieldList, this->getJListItemMethodId, i));
+        struct field *field = (struct field *)malloc(sizeof(field) + sizeof(jfield));
+        field->jfield = (jobject)jfield;
+        fields[i] = field;
+    }
+
+    struct field_list *field_list = (struct field_list *)malloc(sizeof(struct field_list) + sizeof(fields));
+    field_list->count = fieldCount;
+    field_list->fields = fields;
+    return field_list;
+}
+
+struct packet *MessageApiEndpoint::createPacket()
+{
+    jobject jpacket = this->jvm->CallObjectMethod(this->endpoint, this->createPacketMethodId);
+    struct packet *packet = (struct packet *)malloc(sizeof(struct packet) + sizeof(jpacket));
+    packet->jpacket = jpacket;
+    return packet;
+}
+
+struct record *MessageApiEndpoint::createRecord()
+{
+    jobject jrecord = this->jvm->CallObjectMethod(this->endpoint, this->createRecordMethodId);
+    struct record *record = (struct record *)malloc(sizeof(struct record) + sizeof(jrecord));
+    record->jrecord = jrecord;
+    return record;
+}
+
+struct rejection *MessageApiEndpoint::createRejection(struct record *record, const char *reason)
+{
+    jstring jreason = this->toJavaString(reason);
+    jobject jrejection = this->jvm->CallObjectMethod(this->endpoint, this->createRejectionMethodId, record->jrecord, jreason);
+    struct rejection *rejection = (struct rejection *)malloc(sizeof(struct rejection) + sizeof(jrejection));
+    rejection->jrejection = jrejection;
+    this->jvm->DeleteLocalRef(jreason);
+    return rejection;
+}
+
 /**
  * Factored method that handles all wrapped record retrieval methods including getRecords, getRecordsByCollection, getRecordsByTransformation,
  * getRecordsByClassifier, and getRecordsbyUUID.
@@ -375,7 +467,7 @@ struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, co
     return record_list;
 }
 
-struct record * MessageApiEndpoint::getRecord(struct record_list * record_list, int index)
+struct record *MessageApiEndpoint::getRecord(struct record_list *record_list, int index)
 {
     jobject jrecord = static_cast<jobject>(this->jvm->CallObjectMethod(record_list->jrecords, this->getJListItemMethodId, index));
     struct record *record = (struct record *) malloc(sizeof(struct record) + sizeof(jrecord));

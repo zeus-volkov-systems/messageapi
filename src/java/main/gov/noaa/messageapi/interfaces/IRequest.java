@@ -2,9 +2,6 @@ package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
 
-//import gov.noaa.messageapi.interfaces.IResponse;
-//import gov.noaa.messageapi.interfaces.IRecord;
-
 /**
  * A Request is the primary method of communicating process
  * streams or batches in MessageAPI. Requests are derived directly from

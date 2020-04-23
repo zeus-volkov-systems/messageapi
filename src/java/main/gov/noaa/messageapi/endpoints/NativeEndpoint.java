@@ -13,7 +13,6 @@ import gov.noaa.messageapi.interfaces.IProtocolRecord;
 
 import gov.noaa.messageapi.endpoints.BaseEndpoint;
 import gov.noaa.messageapi.fields.DefaultField;
-import gov.noaa.messageapi.packets.DefaultPacket;
 import gov.noaa.messageapi.records.schema.SchemaRecord;
 import gov.noaa.messageapi.rejections.DefaultRejection;
 
@@ -167,10 +166,6 @@ public class NativeEndpoint extends BaseEndpoint implements IEndpoint {
             List<Map<String, Object>> fieldMaps = (List<Map<String, Object>>) parameters.get("state-container");
             this.stateContainer = new SchemaRecord(fieldMaps.stream().map(fMap -> new DefaultField(fMap)).collect(Collectors.toList()));
         } catch (Exception e) {}
-    }
-
-    public IPacket createPacket() {
-        return new DefaultPacket();
     }
 
     public IRejection createRejection(IRecord record) {

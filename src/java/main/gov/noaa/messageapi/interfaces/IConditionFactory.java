@@ -1,7 +1,5 @@
 package gov.noaa.messageapi.interfaces;
 
-//import gov.noaa.messageapi.interfaces.IConditionOperator;
-
 /**
  * The ConditionFactory interface provides a method for returning
  * an operator for a given condition type. The type is usually

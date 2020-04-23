@@ -2,10 +2,6 @@ package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
 
-//import gov.noaa.messageapi.interfaces.IRequest;
-//import gov.noaa.messageapi.interfaces.IRecord;
-//import gov.noaa.messageapi.interfaces.IRejection;
-
 /**
  * Responses are the processing center and result aggregation repository
  * for requests. When a request is submitted,

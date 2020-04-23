@@ -8,6 +8,12 @@ extern "C"
 {
 #endif
 
+    struct record *getStateContainer(jlong message);
+    struct field_list *getDefaultFields(jlong message);
+    struct packet *createPacket(jlong message);
+    struct record *createRecord(jlong message);
+    struct rejection *createRejection(jlong message, struct record *record, const char *reason);
+
     struct record_list *getRecords(jlong message);
     struct record_list *getRecordsByCollection(jlong message, const char *collection);
     struct record_list *getRecordsByTransformation(jlong message, const char *transformation);

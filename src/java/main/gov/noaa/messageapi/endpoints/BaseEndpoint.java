@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.interfaces.IField;
+import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
+import gov.noaa.messageapi.packets.DefaultPacket;
 import gov.noaa.messageapi.records.schema.SchemaRecord;
 import gov.noaa.messageapi.rejections.DefaultRejection;
 
@@ -35,6 +37,10 @@ public abstract class BaseEndpoint {
     }
 
     protected abstract List<IField> getDefaultFields();
+
+    public IPacket createPacket() {
+        return new DefaultPacket();
+    }
 
     public IRecord createRecord() {
         return new SchemaRecord(this.getFields());

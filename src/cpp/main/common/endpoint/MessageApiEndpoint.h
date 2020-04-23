@@ -24,15 +24,23 @@ class MessageApiEndpoint
 {
 
 public:
+    /*Default constructor/destructors*/
     MessageApiEndpoint(JNIEnv* javaEnv, jobject jEndpoint, jobject jProtocolRecord);
     ~MessageApiEndpoint();
 
-    //Protocol Record Methods
+    /*Endpoint Methods*/
+    struct record *getStateContainer();
+    struct field_list *getDefaultFields();
+    struct packet *createPacket();
+    struct record *createRecord();
+    struct rejection *createRejection(struct record* record, const char *reason);
+
+    /*Protocol Record Methods*/
     jobject getProtocolRecords(const char *method, const char *key, const char *val);
     struct record_list *getRecords(const char *method, const char *key = NULL, const char *val = NULL);
     struct record *getRecord(struct record_list *record_list, int index);
 
-    //Record Methods
+    /*Record Methods*/
     struct record *getRecordCopy(struct record *record);
     bool getRecordIsValid(struct record *record);
 
@@ -46,20 +54,20 @@ public:
     struct condition_list *getConditions(struct record *record);
     struct condition *getCondition(struct record *record, const char *conditionId);
 
-    //Field Methods
+    /*Field Methods*/
     const char *getFieldId(struct field *field);
     const char *getFieldType(struct field *field);
     struct value *getFieldVal(struct field *field);
     bool getFieldIsValid(struct field *field);
     bool getFieldIsRequired(struct field *field);
 
-    //Condition Methods
+    /*Condition Methods*/
     const char *getConditionId(struct condition *condition);
     const char *getConditionType(struct condition *condition);
     const char *getConditionOperator(struct condition *condition);
     struct value *getConditionVal(struct condition *condition);
 
-    //Value Conversion Methods
+    /*Value Conversion Methods*/
     int valAsInt(struct value *value);
     long valAsLong(struct value *value);
     float valAsFloat(struct value *value);
@@ -70,7 +78,7 @@ public:
     short valAsShort(struct value *value);
     struct val_list *valAsList(struct value *value);
 
-    //List Entry Retrieval Methods
+    /*List Entry Retrieval Methods*/
     int getIntEntry(struct val_list *list, int index);
     long getLongEntry(struct val_list *list, int index);
     float getFloatEntry(struct val_list *list, int index);
@@ -83,13 +91,52 @@ public:
     jobject getListEntry(struct val_list *list, int index);
 
 private :
-        //Global References
+    /*Global References*/
     JNIEnv *jvm;
     jobject endpoint;
     jobject protocolRecord;
     jclass jException;
 
-    //Primitive Type Conversion Methods
+    /*Endpoint Methods*/
+    jmethodID getStateContainerMethodId;
+    jmethodID getDefaultFieldsMethodId;
+    jmethodID createPacketMethodId;
+    jmethodID createRecordMethodId;
+    jmethodID createRejectionMethodId;
+
+    /*Protocol Record Methods*/
+    jmethodID getRecordsMethodId;
+    jmethodID getRecordsByCollectionMethodId;
+    jmethodID getRecordsByUUIDMethodId;
+    jmethodID getRecordsByTransformationMethodId;
+    jmethodID getRecordsByClassifierMethodId;
+
+    /*Record Methods*/
+    jmethodID getRecordIsValidMethodId;
+    jmethodID getRecordCopyMethodId;
+    jmethodID getRecordFieldIdsMethodId;
+    jmethodID getRecordFieldsMethodId;
+    jmethodID getRecordFieldMethodId;
+    jmethodID getRecordHasFieldMethodId;
+    jmethodID getRecordConditionIdsMethodId;
+    jmethodID getRecordConditionsMethodId;
+    jmethodID getRecordHasConditionMethodId;
+    jmethodID getRecordConditionMethodId;
+
+    /*Field Methods*/
+    jmethodID getFieldIdMethodId;
+    jmethodID getFieldTypeMethodId;
+    jmethodID getFieldValueMethodId;
+    jmethodID getFieldIsValidMethodId;
+    jmethodID getFieldIsRequiredMethodId;
+
+    /*Condition Methods*/
+    jmethodID getConditionIdMethodId;
+    jmethodID getConditionTypeMethodId;
+    jmethodID getConditionOperatorMethodId;
+    jmethodID getConditionValueMethodId;
+
+    /*Primitive Type Conversion Methods*/
     jmethodID getJBoolMethodId;
     jmethodID makeJBoolMethodId;
     jmethodID getJByteMethodId;
@@ -109,57 +156,34 @@ private :
     jmethodID getJListSizeMethodId;
     jmethodID getJListItemMethodId;
 
-    //Protocol Record Methods
-    jmethodID getRecordsMethodId;
-    jmethodID getRecordsByCollectionMethodId;
-    jmethodID getRecordsByUUIDMethodId;
-    jmethodID getRecordsByTransformationMethodId;
-    jmethodID getRecordsByClassifierMethodId;
-
-    //Record Methods
-    jmethodID getRecordIsValidMethodId;
-    jmethodID getRecordCopyMethodId;
-    jmethodID getRecordFieldIdsMethodId;
-    jmethodID getRecordFieldsMethodId;
-    jmethodID getRecordFieldMethodId;
-    jmethodID getRecordHasFieldMethodId;
-    jmethodID getRecordConditionIdsMethodId;
-    jmethodID getRecordConditionsMethodId;
-    jmethodID getRecordHasConditionMethodId;
-    jmethodID getRecordConditionMethodId;
-
-    //Field Methods
-    jmethodID getFieldIdMethodId;
-    jmethodID getFieldTypeMethodId;
-    jmethodID getFieldValueMethodId;
-    jmethodID getFieldIsValidMethodId;
-    jmethodID getFieldIsRequiredMethodId;
-
-    //Condition Methods
-    jmethodID getConditionIdMethodId;
-    jmethodID getConditionTypeMethodId;
-    jmethodID getConditionOperatorMethodId;
-    jmethodID getConditionValueMethodId;
-    
-
-    void loadValueTypeMethodIds();
+    /*Load method IDS for reuse. MethodIDS do not count against the jref count and do need to be released.*/
+    void loadEndpointMethodIds();
     void loadProtocolRecordMethodIds();
     void loadRecordMethodIds();
     void loadFieldMethodIds();
     void loadConditionMethodIds();
+    void loadValueTypeMethodIds();
 
+    /*Handles errors allowing throws in java code.*/
     void checkAndThrow(std::string errorMessage);
 
+    /*Lookup for jclass references. Classes returned by these methods should be explicitly released.*/
     jclass getNamedClass(const char *javaClassName);
     jclass getObjectClass(jobject javaObject);
 
+    /*Lookup a java methodID for the given class, method name, and signature string. Also pass in whether method is class static or not.*/
     jmethodID getMethod(jclass javaClass, const char *methodName, const char *methodSignature, bool isStatic);
 
+    /*Utility methods for java list operations*/
     int getJListLength(jobject jList);
     struct string_list *translateFromJavaStringList(jobject jList);
 
+    /*Utility methods for java string operations*/
     jstring toJavaString(const char *charString);
     const char *fromJavaString(jstring javaString);
+
+    /*Grouped methods for returning the matching method signature string for a given interface*/
+    const char *getEndpointMethodSignature(const char *endpointMethodName);
     const char *getProtocolRecordMethodSignature(const char *protocolRecordMethodName);
     const char *getRecordMethodSignature(const char *recordMethodName);
     const char *getFieldMethodSignature(const char *fieldMethodName);

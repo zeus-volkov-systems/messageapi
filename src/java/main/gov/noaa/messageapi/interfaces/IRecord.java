@@ -1,9 +1,6 @@
 package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
-//import gov.noaa.messageapi.interfaces.IField;
-//import gov.noaa.messageapi.interfaces.ICondition;
-
 /**
  * IRecords are the primary data type of
  * MessageAPI, holding collections (lists) of

@@ -37,9 +37,19 @@ struct field_list
     struct field **fields;
 };
 
+struct packet
+{
+    jobject jpacket;
+};
+
 struct record
 {
     jobject jrecord;
+};
+
+struct rejection
+{
+    jobject jrejection;
 };
 
 struct record_list

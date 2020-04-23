@@ -2,8 +2,6 @@ package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
 
-//import gov.noaa.messageapi.interfaces.IRecord;
-
 /**
  * The IRejection serves as a device for recording
  * what IRecords are rejected during processing,

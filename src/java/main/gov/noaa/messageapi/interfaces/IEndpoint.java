@@ -39,10 +39,26 @@ public interface IEndpoint {
     public List<IField> getDefaultFields();
 
     /**
+     * Creates a new packet for returning from the endpoint. As all
+     * processing for endpoints must return a packet, all endpoints
+     * must also implement a packet creation mechanism. Only the empty
+     * packet initializer is required.
+     * @return
+     */
+    public IPacket createPacket();
+
+    /**
      * Creates a new Endpoint Record that can be used as a record for the
      * returned IPacket of the process method. This construct helps users
      * to understand what type of records will be returned by the Endpoint.
      */
     public IRecord createRecord();
+
+    /**
+     * Creates a new Endpoint Rejection that can be used as a rejection for the
+     * returned IPacket of the process method. This construct helps users
+     * to understand what type of rejectiosn will be returned by the Endpoint.
+     */
+    public IRejection createRejection(IRecord record, String reason);
 
 }
