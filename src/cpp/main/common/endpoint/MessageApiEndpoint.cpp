@@ -18,7 +18,10 @@ MessageApiEndpoint::MessageApiEndpoint(JNIEnv *env, jobject jendpoint, jobject j
     this->protocolRecord = this->jvm->NewGlobalRef(jprotocolRecord);
     this->jException = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Exception")));
 
+    this->loadGlobalClassRefs();
+
     this->loadEndpointMethodIds();
+    this->loadPacketMethodIds();
     this->loadProtocolRecordMethodIds();
     this->loadRecordMethodIds();
     this->loadFieldMethodIds();
@@ -30,6 +33,15 @@ MessageApiEndpoint::~MessageApiEndpoint()
 {
     try
     {
+        this->jvm->DeleteGlobalRef(this->jListClass);
+        this->jvm->DeleteGlobalRef(this->jIntClass);
+        this->jvm->DeleteGlobalRef(this->jLongClass);
+        this->jvm->DeleteGlobalRef(this->jFloatClass);
+        this->jvm->DeleteGlobalRef(this->jDoubleClass);
+        this->jvm->DeleteGlobalRef(this->jByteClass);
+        this->jvm->DeleteGlobalRef(this->jStringClass);
+        this->jvm->DeleteGlobalRef(this->jBoolClass);
+        this->jvm->DeleteGlobalRef(this->jShortClass);
         this->jvm->DeleteGlobalRef(this->endpoint);
         this->jvm->DeleteGlobalRef(this->protocolRecord);
         this->jvm->DeleteGlobalRef(this->jException);
@@ -38,6 +50,33 @@ MessageApiEndpoint::~MessageApiEndpoint()
     {
         std::cout << e.what();
     }
+}
+
+void MessageApiEndpoint::loadGlobalClassRefs()
+{
+    this->jIntClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Integer")));
+    this->jLongClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Long")));
+    this->jFloatClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Float")));
+    this->jDoubleClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Double")));
+    this->jByteClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Byte")));
+    this->jStringClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/String")));
+    this->jBoolClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Boolean")));
+    this->jShortClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Short")));
+    this->jListClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/util/ArrayList")));
+}
+
+void MessageApiEndpoint::loadPacketMethodIds()
+{
+    jclass packetClass = this->getNamedClass("gov/noaa/messageapi/interfaces/IPacket");
+
+    this->setPacketRecordsMethodId = this->getMethod(packetClass, "setRecords", this->getPacketMethodSignature("setRecords"), false);
+    this->addPacketRecordMethodId = this->getMethod(packetClass, "addRecord", this->getPacketMethodSignature("addRecord"), false);
+    this->addPacketRecordsMethodId = this->getMethod(packetClass, "addRecords", this->getPacketMethodSignature("addRecords"), false);
+    this->setPacketRejectionsMethodId = this->getMethod(packetClass, "setRejections", this->getPacketMethodSignature("setRejections"), false);
+    this->addPacketRejectionMethodId = this->getMethod(packetClass, "addRejection", this->getPacketMethodSignature("addRejection"), false);
+    this->addPacketRejectionsMethodId = this->getMethod(packetClass, "addRejections", this->getPacketMethodSignature("addRejections"), false);
+
+    this->jvm->DeleteLocalRef(packetClass);
 }
 
 void MessageApiEndpoint::loadEndpointMethodIds()
@@ -85,6 +124,7 @@ void MessageApiEndpoint::loadRecordMethodIds()
     this->getRecordConditionsMethodId = this->getMethod(recordClass, "getConditions", this->getRecordMethodSignature("getConditions"), false);
     this->getRecordHasConditionMethodId = this->getMethod(recordClass, "hasCondition", this->getRecordMethodSignature("hasCondition"), false);
     this->getRecordConditionMethodId = this->getMethod(recordClass, "getCondition", this->getRecordMethodSignature("getCondition"), false);
+    
     this->jvm->DeleteLocalRef(recordClass);
 }
 
@@ -96,6 +136,7 @@ void MessageApiEndpoint::loadFieldMethodIds()
     this->getFieldValueMethodId = this->getMethod(fieldClass, "getValue", this->getFieldMethodSignature("getValue"), false);
     this->getFieldIsValidMethodId = this->getMethod(fieldClass, "isValid", this->getFieldMethodSignature("isValid"), false);
     this->getFieldIsRequiredMethodId = this->getMethod(fieldClass, "isRequired", this->getFieldMethodSignature("isRequired"), false);
+    this->setFieldValueMethodId = this->getMethod(fieldClass, "setValue", this->getFieldMethodSignature("setValue"), false);
     this->jvm->DeleteLocalRef(fieldClass);
 }
 
@@ -113,7 +154,6 @@ void MessageApiEndpoint::loadConditionMethodIds()
  * Loads the default value types for MessageApiEndpoint.
  * Default types are relatively primitive data types. More complicated 'struct' types
  * will require extension of this by user methods.
- * TODO: A mechanism for allowing extension will eventually be provided.
  * The included default types have associated access,modification,and release methods.
  * Each also has an associated 'list' method (i.e., string has string_list, byte has byte_list, etc.)
  * Default types include the following:
@@ -124,41 +164,46 @@ void MessageApiEndpoint::loadValueTypeMethodIds()
     jclass jListClass = static_cast<jclass>(this->jvm->NewLocalRef(this->jvm->FindClass("java/util/List")));
     this->getJListSizeMethodId = this->jvm->GetMethodID(jListClass, "size", "()I");
     this->getJListItemMethodId = this->jvm->GetMethodID(jListClass, "get", "(I)Ljava/lang/Object;");
+    this->addJListItemMethodId = this->jvm->GetMethodID(jListClass, "add", "(Ljava/lang/Object;)Z");
     this->jvm->DeleteLocalRef(jListClass);
+
+    jclass jArrayListClass = static_cast<jclass>(this->jvm->NewLocalRef(this->jvm->FindClass("java/util/ArrayList")));
+    this->createJListMethodId = this->jvm->GetMethodID(jArrayListClass, "<init>", "()V");
+    this->jvm->DeleteLocalRef(jArrayListClass);
 
     jclass jBoolClass = this->getNamedClass("java/lang/Boolean");
     this->getJBoolMethodId = this->jvm->GetMethodID(jBoolClass, "booleanValue", "()Z");
-    this->makeJBoolMethodId = this->jvm->GetMethodID(jBoolClass, "<init>", "(Z)V");
+    this->createJBoolMethodId = this->jvm->GetMethodID(jBoolClass, "<init>", "(Z)V");
     this->jvm->DeleteLocalRef(jBoolClass);
 
     jclass jByteClass = this->getNamedClass("java/lang/Byte");
     this->getJByteMethodId = this->jvm->GetMethodID(jByteClass, "byteValue", "()B");
-    this->makeJByteMethodId = this->jvm->GetMethodID(jByteClass, "<init>", "(B)V");
+    this->createJByteMethodId = this->jvm->GetMethodID(jByteClass, "<init>", "(B)V");
     this->jvm->DeleteLocalRef(jByteClass);
 
     jclass jIntClass = this->getNamedClass("java/lang/Integer");
     this->getJIntMethodId = this->jvm->GetMethodID(jIntClass, "intValue", "()I");
-    this->makeJIntMethodId = this->jvm->GetMethodID(jIntClass, "<init>", "(I)V");
+    this->createJIntMethodId = this->jvm->GetMethodID(jIntClass, "<init>", "(I)V");
     this->jvm->DeleteLocalRef(jIntClass);
 
     jclass jLongClass = this->getNamedClass("java/lang/Long");
     this->getJLongMethodId = this->jvm->GetMethodID(jLongClass, "longValue", "()J");
-    this->makeJLongMethodId = this->jvm->GetMethodID(jLongClass, "<init>", "(J)V");
+    this->createJLongMethodId = this->jvm->GetMethodID(jLongClass, "<init>", "(J)V");
     this->jvm->DeleteLocalRef(jLongClass);
 
     jclass jShortClass = this->getNamedClass("java/lang/Short");
     this->getJShortMethodId = this->jvm->GetMethodID(jShortClass, "shortValue", "()S");
-    this->makeJShortMethodId = this->jvm->GetMethodID(jShortClass, "<init>", "(S)V");
+    this->createJShortMethodId = this->jvm->GetMethodID(jShortClass, "<init>", "(S)V");
     this->jvm->DeleteLocalRef(jShortClass);
 
     jclass jFloatClass = this->getNamedClass("java/lang/Float");
     this->getJFloatMethodId = this->jvm->GetMethodID(jFloatClass, "floatValue", "()F");
-    this->makeJFloatMethodId = this->jvm->GetMethodID(jFloatClass, "<init>", "(F)V");
+    this->createJFloatMethodId = this->jvm->GetMethodID(jFloatClass, "<init>", "(F)V");
     this->jvm->DeleteLocalRef(jFloatClass);
 
     jclass jDoubleClass = this->getNamedClass("java/lang/Double");
     this->getJDoubleMethodId = this->jvm->GetMethodID(jDoubleClass, "doubleValue", "()D");
-    this->makeJDoubleMethodId = this->jvm->GetMethodID(jDoubleClass, "<init>", "(D)V");
+    this->createJDoubleMethodId = this->jvm->GetMethodID(jDoubleClass, "<init>", "(D)V");
     this->jvm->DeleteLocalRef(jDoubleClass);
 
 }
@@ -253,6 +298,35 @@ const char *MessageApiEndpoint::getEndpointMethodSignature(const char *methodNam
     return NULL;
 }
 
+const char *MessageApiEndpoint::getPacketMethodSignature(const char *methodName)
+{
+    if (methodName == "setRecords")
+    {
+        return "(Ljava/util/List;)V";
+    }
+    else if (methodName == "addRecord")
+    {
+        return "(Lgov/noaa/messageapi/interfaces/IRecord;)V";
+    }
+    else if (methodName == "addRecords")
+    {
+        return "(Ljava/util/List;)V";
+    }
+    else if (methodName == "setRejections")
+    {
+        return "(Ljava/util/List;)V";
+    }
+    else if (methodName == "addRejection")
+    {
+        return "(Lgov/noaa/messageapi/interfaces/IRejection;)V";
+    }
+    else if (methodName == "addRejections")
+    {
+        return "(Ljava/util/List;)V";
+    }
+    return NULL;
+}
+
 const char *MessageApiEndpoint::getProtocolRecordMethodSignature(const char* methodName)
 {
     if (methodName == "getRecords")
@@ -336,6 +410,10 @@ const char *MessageApiEndpoint::getFieldMethodSignature(const char *methodName)
     else if (methodName == "isRequired")
     {
         return "()Z";
+    }
+    else if (methodName == "setValue")
+    {
+        return "(Ljava/lang/Object;)V";
     }
     return NULL;
 }
@@ -473,6 +551,11 @@ struct record *MessageApiEndpoint::getRecord(struct record_list *record_list, in
     struct record *record = (struct record *) malloc(sizeof(struct record) + sizeof(jrecord));
     record->jrecord = jrecord;
     return record;
+}
+
+void MessageApiEndpoint::addPacketRecord(struct packet *packet, struct record *record)
+{
+    this->jvm->CallVoidMethod(packet->jpacket, this->addPacketRecordMethodId, record->jrecord);
 }
 
 int MessageApiEndpoint::getJListLength(jobject jList)
@@ -676,6 +759,16 @@ struct value *MessageApiEndpoint::getConditionVal(struct condition *condition)
     return value;
 }
 
+bool MessageApiEndpoint::valIsNull(struct value *value)
+{
+    if (value->jvalue == NULL)
+    {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 bool MessageApiEndpoint::valAsBool(struct value *value)
 {
     return (bool)jvm->CallBooleanMethod(value->jvalue, this->getJBoolMethodId);
@@ -729,14 +822,14 @@ struct val_list *MessageApiEndpoint::valAsList(struct value *value)
     return valueList;
 }
 
-jobject MessageApiEndpoint::getListEntry(struct val_list *val_list, int index)
+jobject MessageApiEndpoint::getJListEntry(struct val_list *val_list, int index)
 {
     return static_cast<jobject>(this->jvm->CallObjectMethod(val_list->jlist, this->getJListItemMethodId, index));
 }
 
 int MessageApiEndpoint::getIntEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getListEntry(list, index);
+    jobject list_entry = this->getJListEntry(list, index);
     int val = (int)this->jvm->CallIntMethod(list_entry, this->getJIntMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -744,7 +837,7 @@ int MessageApiEndpoint::getIntEntry(struct val_list *list, int index)
 
 long MessageApiEndpoint::getLongEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getListEntry(list, index);
+    jobject list_entry = this->getJListEntry(list, index);
     long val = (long)this->jvm->CallLongMethod(list_entry, this->getJLongMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -752,7 +845,7 @@ long MessageApiEndpoint::getLongEntry(struct val_list *list, int index)
 
 float MessageApiEndpoint::getFloatEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getListEntry(list, index);
+    jobject list_entry = this->getJListEntry(list, index);
     float val = (float)this->jvm->CallFloatMethod(list_entry, this->getJFloatMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -760,7 +853,7 @@ float MessageApiEndpoint::getFloatEntry(struct val_list *list, int index)
 
 double MessageApiEndpoint::getDoubleEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getListEntry(list, index);
+    jobject list_entry = this->getJListEntry(list, index);
     double val = (double)this->jvm->CallDoubleMethod(list_entry, this->getJDoubleMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -768,7 +861,7 @@ double MessageApiEndpoint::getDoubleEntry(struct val_list *list, int index)
 
 unsigned char MessageApiEndpoint::getByteEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getListEntry(list, index);
+    jobject list_entry = this->getJListEntry(list, index);
     unsigned char val = (unsigned char)this->jvm->CallByteMethod(list_entry, this->getJByteMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -784,7 +877,7 @@ const char *MessageApiEndpoint::getStringEntry(struct val_list *list, int index)
 
 bool MessageApiEndpoint::getBoolEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getListEntry(list, index);
+    jobject list_entry = this->getJListEntry(list, index);
     bool val = (bool)this->jvm->CallBooleanMethod(list_entry, this->getJBoolMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -792,8 +885,15 @@ bool MessageApiEndpoint::getBoolEntry(struct val_list *list, int index)
 
 short MessageApiEndpoint::getShortEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getListEntry(list, index);
+    jobject list_entry = this->getJListEntry(list, index);
     short val = (short)this->jvm->CallShortMethod(list_entry, this->getJShortMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
+}
+
+void MessageApiEndpoint::setIntVal(void *value_container, int value)
+{
+    jobject jIntVal = jvm->NewObject(this->jIntClass, this->createJIntMethodId, (jint)value);
+    struct field *fieldCast = (struct field *)value_container;
+    this->jvm->CallVoidMethod(fieldCast->jfield, this->setFieldValueMethodId, jIntVal);
 }

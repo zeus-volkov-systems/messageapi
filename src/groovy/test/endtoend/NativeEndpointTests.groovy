@@ -22,9 +22,11 @@ def "Tests submission of a very simple native task with only one endpoint that c
         IRecord record2 = request.createRecord();
 
         record1.setField("initial-value", 1000);
-        record2.setField("initial-value", 5000);
         record1.setField("string-test", "hi there!");
+        record1.setField("null-test", "null");
         record2.setField("string-test", "cool!");
+        record2.setField("initial-value", 5000);
+        record2.setField("null-test", "null");
         /*for (int i=0; i<500; i++) {
             IRecord r = request.createRecord();
             r.setField("initial-value", i);
@@ -34,11 +36,11 @@ def "Tests submission of a very simple native task with only one endpoint that c
     when: "We submit the test session with a single endpoint, let it call into C, increment a counter, add it to a new record, and return"
         IResponse response = request.submit();
         while (!response.isComplete()) {}
-    then: "We should have no rejections, there should be one return record, and when we grab the 'counter-value' field, we should get 1."
+    then: "We should have no rejections, there should be one return record, and when we grab the 'test-string' field, we should get 1."
         response.getRejections().size() == 0
         //println response.getRejections().size()
-        //response.getRecords().size() == 1
-        //response.getRecords().get(0).getField("counter-value").getValue() == 1
+        response.getRecords().size() == 1
+        response.getRecords().get(0).getField("test-integer").getValue() == 5
     }
 
 }

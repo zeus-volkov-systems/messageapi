@@ -45,6 +45,8 @@ extern "C"
     const char *getConditionOperator(jlong message, struct condition *condition);
     struct condition_value *getConditionValue(jlong message, struct condition *condition);
 
+    bool valIsNull(jlong message, struct value *value);
+
     int valAsInt(jlong message, struct value *value);
     long valAsLong(jlong message, struct value *value);
     float valAsFloat(jlong message, struct value *value);
@@ -64,6 +66,10 @@ extern "C"
     bool getBoolEntry(jlong message, struct val_list *list, int index);
     short getShortEntry(jlong message, struct val_list *list, int index);
     jobject getListEntry(jlong message, struct val_list *list, int index);
+
+    void setIntVal(jlong message, void *value_container, int value);
+
+    void addPacketRecord(jlong message, struct packet *packet, struct record *record);
 
 #ifdef __cplusplus
 }

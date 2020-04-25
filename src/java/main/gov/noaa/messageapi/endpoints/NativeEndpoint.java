@@ -135,15 +135,10 @@ public class NativeEndpoint extends BaseEndpoint implements IEndpoint {
     }
 
     public IPacket process(IProtocolRecord protocolRecord) {
-        System.out.println("Processing native endpoint.");
         long nativeInstance = this.create(protocolRecord);
-        System.out.println("created native instance: " + nativeInstance);
-        this.process(nativeInstance);
-        //IPacket nativePacket =  this.process(nativeInstance);
+        IPacket nativePacket =  this.process(nativeInstance);
         this.release(nativeInstance);
-        System.out.println("released native instance.");
-        //return nativePacket;
-        return createPacket();
+        return nativePacket;
     }
 
     public List<IField> getDefaultFields() {

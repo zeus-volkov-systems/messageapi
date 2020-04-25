@@ -178,6 +178,11 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionVal(condition);
     }
 
+    bool valIsNull(jlong message, struct value *value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->valIsNull(value);
+    }
+
     int valAsInt(jlong message, struct value *value)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->valAsInt(value);
@@ -263,8 +268,18 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->getShortEntry(list, index);
     }
 
-    jobject getListEntry(jlong message, struct val_list *list, int index)
+    jobject getJListEntry(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getListEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getJListEntry(list, index);
+    }
+
+    void setIntVal(jlong message, void *value_container, int value)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->setIntVal(value_container, value);
+    }
+
+    void addPacketRecord(jlong message, struct packet *packet, struct record *record)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addPacketRecord(packet, record);
     }
 }

@@ -35,6 +35,9 @@ public:
     struct record *createRecord();
     struct rejection *createRejection(struct record* record, const char *reason);
 
+    /*Packet Methods*/
+    void addPacketRecord(struct packet *packet, struct record *record);
+
     /*Protocol Record Methods*/
     jobject getProtocolRecords(const char *method, const char *key, const char *val);
     struct record_list *getRecords(const char *method, const char *key = NULL, const char *val = NULL);
@@ -67,6 +70,9 @@ public:
     const char *getConditionOperator(struct condition *condition);
     struct value *getConditionVal(struct condition *condition);
 
+    /*Value Utility Methods*/
+    bool valIsNull(struct value *value);
+
     /*Value Conversion Methods*/
     int valAsInt(struct value *value);
     long valAsLong(struct value *value);
@@ -79,6 +85,7 @@ public:
     struct val_list *valAsList(struct value *value);
 
     /*List Entry Retrieval Methods*/
+    jobject getJListEntry(struct val_list *list, int index);
     int getIntEntry(struct val_list *list, int index);
     long getLongEntry(struct val_list *list, int index);
     float getFloatEntry(struct val_list *list, int index);
@@ -87,8 +94,25 @@ public:
     const char *getStringEntry(struct val_list *list, int index);
     bool getBoolEntry(struct val_list *list, int index);
     short getShortEntry(struct val_list *list, int index);
+    struct val_list *getListEntry(struct val_list *list, int index);
 
-    jobject getListEntry(struct val_list *list, int index);
+    /*List Creation Method*/
+    struct val_list *createList();
+
+    /*List Entry Insertion Methods*/
+    void addJListEntry(struct val_list *list, jobject val);
+    void addIntEntry(struct val_list *list, int val);
+    void addLongEntry(struct val_list *list, long val);
+    void addFloatEntry(struct val_list *list, float val);
+    void addDoubleEntry(struct val_list *list, double val);
+    void addByteEntry(struct val_list *list, unsigned char val);
+    void addStringEntry(struct val_list *list, const char* val);
+    void addBoolEntry(struct val_list *list, bool val);
+    void addShortEntry(struct val_list *list, short val);
+    void addListEntry(struct val_list *list, struct val_list *val);
+
+    /*Value Insertion Methods*/
+    void setIntVal(void *value_container, int value);
 
 private :
     /*Global References*/
@@ -97,12 +121,30 @@ private :
     jobject protocolRecord;
     jclass jException;
 
+    jclass jListClass;
+    jclass jIntClass;
+    jclass jLongClass;
+    jclass jFloatClass;
+    jclass jDoubleClass;
+    jclass jByteClass;
+    jclass jStringClass;
+    jclass jBoolClass;
+    jclass jShortClass;
+
     /*Endpoint Methods*/
     jmethodID getStateContainerMethodId;
     jmethodID getDefaultFieldsMethodId;
     jmethodID createPacketMethodId;
     jmethodID createRecordMethodId;
     jmethodID createRejectionMethodId;
+
+    /*Packet Methods*/
+    jmethodID setPacketRecordsMethodId;
+    jmethodID addPacketRecordMethodId;
+    jmethodID addPacketRecordsMethodId;
+    jmethodID setPacketRejectionsMethodId;
+    jmethodID addPacketRejectionMethodId;
+    jmethodID addPacketRejectionsMethodId;
 
     /*Protocol Record Methods*/
     jmethodID getRecordsMethodId;
@@ -129,6 +171,7 @@ private :
     jmethodID getFieldValueMethodId;
     jmethodID getFieldIsValidMethodId;
     jmethodID getFieldIsRequiredMethodId;
+    jmethodID setFieldValueMethodId;
 
     /*Condition Methods*/
     jmethodID getConditionIdMethodId;
@@ -136,28 +179,36 @@ private :
     jmethodID getConditionOperatorMethodId;
     jmethodID getConditionValueMethodId;
 
-    /*Primitive Type Conversion Methods*/
-    jmethodID getJBoolMethodId;
-    jmethodID makeJBoolMethodId;
-    jmethodID getJByteMethodId;
-    jmethodID makeJByteMethodId;
-    jmethodID getJIntMethodId;
-    jmethodID makeJIntMethodId;
-    jmethodID getJLongMethodId;
-    jmethodID makeJLongMethodId;
-    jmethodID getJFloatMethodId;
-    jmethodID makeJFloatMethodId;
-    jmethodID getJDoubleMethodId;
-    jmethodID makeJDoubleMethodId;
-    jmethodID getJShortMethodId;
-    jmethodID makeJShortMethodId;
-    jmethodID getJStringMethodId;
-    jmethodID makeJStringMethodId;
+    /*List Utility Methods*/
+    jmethodID createJListMethodId;
     jmethodID getJListSizeMethodId;
+    jmethodID addJListItemMethodId;
     jmethodID getJListItemMethodId;
+
+    /*Type Utility Retrieval Methods*/
+    jmethodID getJBoolMethodId;
+    jmethodID getJByteMethodId;
+    jmethodID getJIntMethodId;
+    jmethodID getJLongMethodId;
+    jmethodID getJFloatMethodId;
+    jmethodID getJDoubleMethodId;
+    jmethodID getJShortMethodId;
+
+    /*Type Utility Creation Methods*/
+    jmethodID createJBoolMethodId;
+    jmethodID createJByteMethodId;
+    jmethodID createJIntMethodId;
+    jmethodID createJLongMethodId;
+    jmethodID createJFloatMethodId;
+    jmethodID createJDoubleMethodId;
+    jmethodID createJShortMethodId;
+
+    /*Load Global Type Class Refs. These can be reused for vals, so the lookup is held and released when returning from native code.*/
+    void loadGlobalClassRefs();
 
     /*Load method IDS for reuse. MethodIDS do not count against the jref count and do need to be released.*/
     void loadEndpointMethodIds();
+    void loadPacketMethodIds();
     void loadProtocolRecordMethodIds();
     void loadRecordMethodIds();
     void loadFieldMethodIds();
@@ -184,6 +235,7 @@ private :
 
     /*Grouped methods for returning the matching method signature string for a given interface*/
     const char *getEndpointMethodSignature(const char *endpointMethodName);
+    const char *getPacketMethodSignature(const char *packetMethodName);
     const char *getProtocolRecordMethodSignature(const char *protocolRecordMethodName);
     const char *getRecordMethodSignature(const char *recordMethodName);
     const char *getFieldMethodSignature(const char *fieldMethodName);
