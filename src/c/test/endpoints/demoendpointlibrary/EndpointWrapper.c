@@ -51,24 +51,20 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       printf("Test field 3 type: %s\n", testFieldType3);
       printf("Test field 4 type: %s\n", testFieldType4);
       fflush(stdout);
-      struct value *testFieldValue = getFieldVal(message, testField);
-      int integerFieldValue = valAsInt(message, testFieldValue);
+      int integerFieldValue = getFieldIntVal(message, testField);
       printf("Field integer value is %d\n", integerFieldValue);
-      struct value *testFieldValue2 = getFieldVal(message, testField2);
-      const char *stringFieldValue = valAsString(message, testFieldValue2);
+      const char *stringFieldValue = getFieldStringVal(message, testField2);
       printf("Field string value 2 is: %s\n", stringFieldValue);
-      struct value *testFieldValue3 = getFieldVal(message, testField3);
-      struct val_list *val_list = valAsList(message, testFieldValue3);
+      struct val_list *val_list = getFieldListVal(message, testField3);
       printf("Field value 3 (list) length is: %d\n", val_list->count);
       for (int i = 0; i < val_list->count; i++) {
           printf("Field value 3, element %d, is: %d\n", i, getIntEntry(message, val_list, i));
       }
       fflush(stdout);
-      struct value *testFieldValue4 = getFieldVal(message, testField4);
-      if (valIsNull(message, testFieldValue4)) {
-          printf("Got a null field val.\n");
+      if (getFieldIsNull(message, testField4)) {
+          printf("Got a null field val for field 4.\n");
       } else {
-          printf("Field val has a value!\n");
+          printf("Field val 4 has a value!\n");
       }
       fflush(stdout);
       struct record *returnRecord = createRecord(message);
@@ -76,14 +72,14 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       printf("field ids for return field follow. \n");
       for (int i=0; i < fieldIds->count; i++) {
           printf("Field name: %s\n", fieldIds->strings[i]);
-          if (valIsNull(message, getFieldVal(message, getField(message, returnRecord,fieldIds->strings[i]))))
+          if (getFieldIsNull(message, getField(message, returnRecord,fieldIds->strings[i])))
           {
               printf("Got a null field val for %s.\n", fieldIds->strings[i]);
-              setIntVal(message, getField(message, returnRecord, fieldIds->strings[i]), 5);
+              setFieldIntVal(message, getField(message, returnRecord, fieldIds->strings[i]), 5);
           }
           else
           {
-              printf("Field val for field %s has a value!\n", fieldIds->strings[i]);
+              printf("Field val for field %s already has a value!\n", fieldIds->strings[i]);
           }
       }
       printf("Leaving our C test!");

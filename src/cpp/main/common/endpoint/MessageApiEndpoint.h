@@ -60,59 +60,82 @@ public:
     /*Field Methods*/
     const char *getFieldId(struct field *field);
     const char *getFieldType(struct field *field);
-    struct value *getFieldVal(struct field *field);
     bool getFieldIsValid(struct field *field);
     bool getFieldIsRequired(struct field *field);
+    bool getFieldIsNull(struct field *field);
+    struct val *getFieldVal(struct field *field);
+    int getFieldIntVal(struct field *field);
+    long getFieldLongVal(struct field *field);
+    float getFieldFloatVal(struct field *field);
+    double getFieldDoubleVal(struct field *field);
+    signed char getFieldByteVal(struct field *field);
+    const char *getFieldStringVal(struct field *field);
+    bool getFieldBoolVal(struct field *field);
+    short getFieldShortVal(struct field *field);
+    struct val_list *getFieldListVal(struct field *field);
+    void setFieldVal(struct field *field, struct val *value);
+    void setFieldIntVal(struct field *field, int value);
+    void setFieldLongVal(struct field *field, long value);
+    void setFieldFloatVal(struct field *field, float value);
+    void setFieldDoubleVal(struct field *field, double value);
+    void setFieldByteVal(struct field *field, signed char value);
+    void setFieldStringVal(struct field *field, const char *value);
+    void setFieldBoolVal(struct field *field, bool value);
+    void setFieldShortVal(struct field *field, short value);
+    void setFieldListVal(struct field *field, struct val_list *value);
 
     /*Condition Methods*/
     const char *getConditionId(struct condition *condition);
     const char *getConditionType(struct condition *condition);
     const char *getConditionOperator(struct condition *condition);
-    struct value *getConditionVal(struct condition *condition);
-
-    /*Value Utility Methods*/
-    bool valIsNull(struct value *value);
-
-    /*Value Conversion Methods*/
-    int valAsInt(struct value *value);
-    long valAsLong(struct value *value);
-    float valAsFloat(struct value *value);
-    double valAsDouble(struct value *value);
-    unsigned char valAsByte(struct value *value);
-    const char *valAsString(struct value *value);
-    bool valAsBool(struct value *value);
-    short valAsShort(struct value *value);
-    struct val_list *valAsList(struct value *value);
+    bool getConditionIsNull(struct condition *condition);
+    struct val *getConditionVal(struct condition *condition);
+    int getConditionIntVal(struct condition *condition);
+    long getConditionLongVal(struct condition *condition);
+    float getConditionFloatVal(struct condition *condition);
+    double getConditionDoubleVal(struct condition *condition);
+    signed char getConditionByteVal(struct condition *condition);
+    const char *getConditionStringVal(struct condition *condition);
+    bool getConditionBoolVal(struct condition *condition);
+    short getConditionShortVal(struct condition *condition);
+    struct val_list *getConditionListVal(struct condition *condition);
+    void setConditionVal(struct condition *condition, struct val *value);
+    void setConditionIntVal(struct condition *condition, int value);
+    void setConditionLongVal(struct condition *condition, long value);
+    void setConditionFloatVal(struct condition *condition, float value);
+    void setConditionDoubleVal(struct condition *condition, double value);
+    void setConditionByteVal(struct condition *condition, signed char value);
+    void setConditionStringVal(struct condition *condition, const char *value);
+    void setConditionBoolVal(struct condition *condition, bool value);
+    void setConditionShortVal(struct condition *condition, short value);
+    void setConditionListVal(struct condition *condition, struct val_list *value);
 
     /*List Entry Retrieval Methods*/
-    jobject getJListEntry(struct val_list *list, int index);
+    struct list_entry *getEntry(struct val_list *list, int index);
     int getIntEntry(struct val_list *list, int index);
     long getLongEntry(struct val_list *list, int index);
     float getFloatEntry(struct val_list *list, int index);
     double getDoubleEntry(struct val_list *list, int index);
-    unsigned char getByteEntry(struct val_list *list, int index);
+    signed char getByteEntry(struct val_list *list, int index);
     const char *getStringEntry(struct val_list *list, int index);
     bool getBoolEntry(struct val_list *list, int index);
     short getShortEntry(struct val_list *list, int index);
     struct val_list *getListEntry(struct val_list *list, int index);
 
     /*List Creation Method*/
-    struct val_list *createList();
+    struct val_list *createList(); //TODO
 
     /*List Entry Insertion Methods*/
-    void addJListEntry(struct val_list *list, jobject val);
-    void addIntEntry(struct val_list *list, int val);
-    void addLongEntry(struct val_list *list, long val);
-    void addFloatEntry(struct val_list *list, float val);
-    void addDoubleEntry(struct val_list *list, double val);
-    void addByteEntry(struct val_list *list, unsigned char val);
-    void addStringEntry(struct val_list *list, const char* val);
-    void addBoolEntry(struct val_list *list, bool val);
-    void addShortEntry(struct val_list *list, short val);
-    void addListEntry(struct val_list *list, struct val_list *val);
-
-    /*Value Insertion Methods*/
-    void setIntVal(void *value_container, int value);
+    void addJListEntry(struct val_list *list, jobject val); //TODO
+    void addIntEntry(struct val_list *list, int val);       //TODO
+    void addLongEntry(struct val_list *list, long val);     //TODO
+    void addFloatEntry(struct val_list *list, float val);   //TODO
+    void addDoubleEntry(struct val_list *list, double val); //TODO
+    void addByteEntry(struct val_list *list, signed char val); //TODO
+    void addStringEntry(struct val_list *list, const char *val); //TODO
+    void addBoolEntry(struct val_list *list, bool val);          //TODO
+    void addShortEntry(struct val_list *list, short val);        //TODO
+    void addListEntry(struct val_list *list, struct val_list *val); //TODO
 
 private :
     /*Global References*/
@@ -178,6 +201,7 @@ private :
     jmethodID getConditionTypeMethodId;
     jmethodID getConditionOperatorMethodId;
     jmethodID getConditionValueMethodId;
+    jmethodID setConditionValueMethodId;
 
     /*List Utility Methods*/
     jmethodID createJListMethodId;
@@ -228,6 +252,7 @@ private :
     /*Utility methods for java list operations*/
     int getJListLength(jobject jList);
     struct string_list *translateFromJavaStringList(jobject jList);
+    jobject getJListEntry(struct val_list *list, int index);
 
     /*Utility methods for java string operations*/
     jstring toJavaString(const char *charString);

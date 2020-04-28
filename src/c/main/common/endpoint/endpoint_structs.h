@@ -4,6 +4,10 @@
  * @author Ryan Berkheimer
  */
 
+struct list_entry
+{
+    jobject jentry;
+};
 
 struct val_list
 {
@@ -21,7 +25,7 @@ struct condition_list
     int count;
     struct condition **conditions;
 };
-struct value
+struct val
 {
     jobject jvalue;
 };

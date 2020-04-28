@@ -8,12 +8,14 @@ extern "C"
 {
 #endif
 
+    /*Endpoint Methods*/
     struct record *getStateContainer(jlong message);
     struct field_list *getDefaultFields(jlong message);
     struct packet *createPacket(jlong message);
     struct record *createRecord(jlong message);
     struct rejection *createRejection(jlong message, struct record *record, const char *reason);
 
+    /*Protocol Record Methods*/
     struct record_list *getRecords(jlong message);
     struct record_list *getRecordsByCollection(jlong message, const char *collection);
     struct record_list *getRecordsByTransformation(jlong message, const char *transformation);
@@ -21,6 +23,7 @@ extern "C"
     struct record_list *getRecordsByClassifier(jlong message, const char *key, const char *value);
     struct record *getRecord(jlong message, struct record_list *recordList, int recordIndex);
 
+    /*Record Methods*/
     struct record *getRecordCopy(jlong message, struct record *record);
     bool getRecordIsValid(jlong message, struct record *record);
 
@@ -34,41 +37,72 @@ extern "C"
     struct condition *getCondition(jlong message, struct record *record, const char *conditionId);
     bool hasCondition(jlong message, struct record *record, const char *conditionId);
 
+    /*Field Methods*/
     const char *getFieldId(jlong message, struct field *field);
     const char * getFieldType(jlong message, struct field *field);
     bool getFieldIsValid(jlong message, struct field *field);
     bool getFieldIsRequired(jlong message, struct field *field);
-    struct value *getFieldVal(jlong message, struct field *field);
+    bool getFieldIsNull(jlong message, struct field *field);
+    struct val *getFieldVal(jlong message, struct field *field);
+    int getFieldIntVal(jlong message, struct field *field);
+    long getFieldLongVal(jlong message, struct field *field);
+    float getFieldFloatVal(jlong message, struct field *field);
+    double getFieldDoubleVal(jlong message, struct field *field);
+    signed char getFieldByteVal(jlong message, struct field *field);
+    const char *getFieldStringVal(jlong message, struct field *field);
+    bool getFieldBoolVal(jlong message, struct field *field);
+    short getFieldShortVal(jlong message, struct field *field);
+    struct val_list *getFieldListVal(jlong message, struct field *field);
+    void setFieldVal(jlong message, struct field *field, struct val *value);
+    void setFieldIntVal(jlong message, struct field *field, int value);
+    void setFieldLongVal(jlong message, struct field *field, long value);
+    void setFieldFloatVal(jlong message, struct field *field, float value);
+    void setFieldDoubleVal(jlong message, struct field *field, double value);
+    void setFieldByteVal(jlong message, struct field *field, signed char value);
+    void setFieldStringVal(jlong message, struct field *field, const char *value);
+    void setFieldBoolVal(jlong message, struct field *field, bool value);
+    void setFieldShortVal(jlong message, struct field *field, short value);
+    void setFieldListVal(jlong message, struct field *field, struct val_list *value);
 
+    /*Condition Methods*/
     const char *getConditionId(jlong message, struct condition *condition);
     const char *getConditionType(jlong message, struct condition *condition);
     const char *getConditionOperator(jlong message, struct condition *condition);
-    struct condition_value *getConditionValue(jlong message, struct condition *condition);
+    bool getConditionIsNull(jlong message, struct condition *condition);
+    struct val *getConditionVal(jlong message, struct condition *condition);
+    int getConditionIntVal(jlong message, struct condition *condition);
+    long getConditionLongVal(jlong message, struct condition *condition);
+    float getConditionFloatVal(jlong message, struct condition *condition);
+    double getConditionDoubleVal(jlong message, struct condition *condition);
+    signed char getConditionByteVal(jlong message, struct condition *condition);
+    const char *getConditionStringVal(jlong message, struct condition *condition);
+    bool getConditionBoolVal(jlong message, struct condition *condition);
+    short getConditionShortVal(jlong message, struct condition *condition);
+    struct val_list *getConditionListVal(jlong message, struct condition *condition);
+    void setConditionVal(jlong message, struct condition *condition, struct val *value);
+    void setConditionIntVal(jlong message, struct condition *condition, int value);
+    void setConditionLongVal(jlong message, struct condition *condition, long value);
+    void setConditionFloatVal(jlong message, struct condition *condition, float value);
+    void setConditionDoubleVal(jlong message, struct condition *condition, double value);
+    void setConditionByteVal(jlong message, struct condition *condition, signed char value);
+    void setConditionStringVal(jlong message, struct condition *condition, const char *value);
+    void setConditionBoolVal(jlong message, struct condition *condition, bool value);
+    void setConditionShortVal(jlong message, struct condition *condition, short value);
+    void setConditionListVal(jlong message, struct condition *condition, struct val_list *value);
 
-    bool valIsNull(jlong message, struct value *value);
-
-    int valAsInt(jlong message, struct value *value);
-    long valAsLong(jlong message, struct value *value);
-    float valAsFloat(jlong message, struct value *value);
-    double valAsDouble(jlong message, struct value *value);
-    unsigned char valAsByte(jlong message, struct value *value);
-    const char *valAsString(jlong message, struct value *value);
-    bool valAsBool(jlong message, struct value *value);
-    short valAsShort(jlong message, struct value *value);
-    struct val_list *valAsList(jlong message, struct value *value);
-
+    /*List Utility Methods*/
     int getIntEntry(jlong message, struct val_list *list, int index);
     long getLongEntry(jlong message, struct val_list *list, int index);
     float getFloatEntry(jlong message, struct val_list *list, int index);
     double getDoubleEntry(jlong message, struct val_list *list, int index);
-    unsigned char getByteEntry(jlong message, struct val_list *list, int index);
+    signed char getByteEntry(jlong message, struct val_list *list, int index);
     const char *getStringEntry(jlong message, struct val_list *list, int index);
     bool getBoolEntry(jlong message, struct val_list *list, int index);
     short getShortEntry(jlong message, struct val_list *list, int index);
-    jobject getListEntry(jlong message, struct val_list *list, int index);
+    struct list_entry *getEntry(jlong message, struct val_list *list, int index);
+    struct val_list *getListEntry(jlong message, struct val_list *list, int index);
 
-    void setIntVal(jlong message, void *value_container, int value);
-
+    /*Packet Methods*/
     void addPacketRecord(jlong message, struct packet *packet, struct record *record);
 
 #ifdef __cplusplus

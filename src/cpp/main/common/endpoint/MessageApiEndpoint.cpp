@@ -147,6 +147,7 @@ void MessageApiEndpoint::loadConditionMethodIds()
     this->getConditionTypeMethodId = this->getMethod(conditionClass, "getType", this->getConditionMethodSignature("getType"), false);
     this->getConditionOperatorMethodId = this->getMethod(conditionClass, "getOperator", this->getConditionMethodSignature("getOperator"), false);
     this->getConditionValueMethodId = this->getMethod(conditionClass, "getValue", this->getConditionMethodSignature("getValue"), false);
+    this->setConditionValueMethodId = this->getMethod(conditionClass, "setValue", this->getConditionMethodSignature("setValue"), false);
     this->jvm->DeleteLocalRef(conditionClass);
 }
 
@@ -436,6 +437,11 @@ const char * MessageApiEndpoint::getConditionMethodSignature(const char *methodN
     {
         return "()Ljava/lang/Object;";
     }
+    else if (methodName == "setValue")
+    {
+        return "(Ljava/lang/Object;)V";
+    }
+
     return NULL;
 }
 
@@ -709,14 +715,6 @@ const char *MessageApiEndpoint::getFieldType(struct field *field)
     return fieldType;
 }
 
-struct value *MessageApiEndpoint::getFieldVal(struct field *field)
-{
-    jobject jFieldValue = this->jvm->CallObjectMethod(field->jfield, this->getFieldValueMethodId);
-    struct value *value = (struct value *)malloc(sizeof(value) + sizeof(jFieldValue));
-    value->jvalue = jFieldValue;
-    return value;
-}
-
 bool MessageApiEndpoint::getFieldIsValid(struct field *field)
 {
     return (bool)this->jvm->CallBooleanMethod(field->jfield, this->getFieldIsValidMethodId);
@@ -725,6 +723,161 @@ bool MessageApiEndpoint::getFieldIsValid(struct field *field)
 bool MessageApiEndpoint::getFieldIsRequired(struct field *field)
 {
     return (bool)this->jvm->CallBooleanMethod(field->jfield, this->getFieldIsRequiredMethodId);
+}
+
+bool MessageApiEndpoint::getFieldIsNull(struct field *field)
+{
+    struct val *value = this->getFieldVal(field);
+    if (value->jvalue == NULL)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+struct val *MessageApiEndpoint::getFieldVal(struct field *field)
+{
+    jobject jFieldValue = this->jvm->CallObjectMethod(field->jfield, this->getFieldValueMethodId);
+    struct val *value = (struct val *)malloc(sizeof(value) + sizeof(jFieldValue));
+    value->jvalue = jFieldValue;
+    return value;
+}
+
+int MessageApiEndpoint::getFieldIntVal(struct field *field)
+{
+    struct val *value = this->getFieldVal(field);
+    int intVal = (int)this->jvm->CallIntMethod(value->jvalue, this->getJIntMethodId);
+    return intVal;
+}
+
+long MessageApiEndpoint::getFieldLongVal(struct field *field)
+{
+    struct val *value = this->getFieldVal(field);
+    long longVal = (long)this->jvm->CallLongMethod(value->jvalue, this->getJLongMethodId);
+    return longVal;
+}
+
+float MessageApiEndpoint::getFieldFloatVal(struct field *field)
+{
+    struct val *value = this->getFieldVal(field);
+    float floatVal = (float)this->jvm->CallFloatMethod(value->jvalue, this->getJFloatMethodId);
+    return floatVal;
+}
+
+double MessageApiEndpoint::getFieldDoubleVal(struct field *field)
+{
+    struct val *value = this->getFieldVal(field);
+    double doubleVal = (double)this->jvm->CallDoubleMethod(value->jvalue, this->getJDoubleMethodId);
+    return doubleVal;
+}
+
+signed char MessageApiEndpoint::getFieldByteVal(struct field *field)
+{
+    struct val *value = this->getFieldVal(field);
+    jbyte jByte = this->jvm->CallByteMethod(value->jvalue, this->getJByteMethodId);
+    return (signed char)jByte;
+}
+
+const char *MessageApiEndpoint::getFieldStringVal(struct field *field)
+{
+    struct val *value = this->getFieldVal(field);
+    jstring jString = (jstring)value->jvalue;
+    const char *returnString = this->fromJavaString(jString);
+    jvm->DeleteLocalRef(jString);
+    return returnString;
+}
+
+bool MessageApiEndpoint::getFieldBoolVal(struct field *field)
+{
+    struct val *value = this->getFieldVal(field);
+    bool boolVal = (bool)jvm->CallBooleanMethod(value->jvalue, this->getJBoolMethodId);
+    return boolVal;
+}
+
+short MessageApiEndpoint::getFieldShortVal(struct field *field)
+{
+    struct val *value = this->getFieldVal(field);
+    short shortVal = (short)this->jvm->CallShortMethod(value->jvalue, this->getJShortMethodId);
+    return shortVal;
+}
+
+struct val_list *MessageApiEndpoint::getFieldListVal(struct field *field)
+{
+    struct val *value = this->getFieldVal(field);
+    int entryCount = this->getJListLength(value->jvalue);
+    struct val_list *valueList = (struct val_list *)malloc(sizeof(struct val_list));
+    valueList->count = entryCount;
+    valueList->jlist = value->jvalue;
+    return valueList;
+}
+
+void MessageApiEndpoint::setFieldVal(struct field *field, struct val *value)
+{
+    this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, value->jvalue);
+}
+
+void MessageApiEndpoint::setFieldIntVal(struct field *field, int value)
+{
+    jobject jIntVal = jvm->NewObject(this->jIntClass, this->createJIntMethodId, (jint)value);
+    this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, jIntVal);
+    this->jvm->DeleteLocalRef(jIntVal);
+}
+
+void MessageApiEndpoint::setFieldLongVal(struct field *field, long value)
+{
+    jobject jLongVal = jvm->NewObject(this->jLongClass, this->createJLongMethodId, (jlong)value);
+    this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, jLongVal);
+    this->jvm->DeleteLocalRef(jLongVal);
+}
+
+void MessageApiEndpoint::setFieldFloatVal(struct field *field, float value)
+{
+    jobject jFloatVal = jvm->NewObject(this->jFloatClass, this->createJFloatMethodId, (jfloat)value);
+    this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, jFloatVal);
+    this->jvm->DeleteLocalRef(jFloatVal);
+}
+
+void MessageApiEndpoint::setFieldDoubleVal(struct field *field, double value)
+{
+    jobject jDoubleVal = jvm->NewObject(this->jDoubleClass, this->createJDoubleMethodId, (jdouble)value);
+    this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, jDoubleVal);
+    this->jvm->DeleteLocalRef(jDoubleVal);
+}
+
+void MessageApiEndpoint::setFieldByteVal(struct field *field, signed char value)
+{
+    jobject jByteVal = jvm->NewObject(this->jByteClass, this->createJByteMethodId, (jbyte)value);
+    this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, jByteVal);
+    this->jvm->DeleteLocalRef(jByteVal);
+}
+
+void MessageApiEndpoint::setFieldStringVal(struct field *field, const char *value)
+{
+    jstring jStringVal = this->toJavaString(value);
+    this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, jStringVal);
+    this->jvm->DeleteLocalRef(jStringVal);
+}
+
+void MessageApiEndpoint::setFieldBoolVal(struct field *field, bool value)
+{
+    jobject jBoolVal = jvm->NewObject(this->jBoolClass, this->createJBoolMethodId, (jboolean)value);
+    this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, jBoolVal);
+    this->jvm->DeleteLocalRef(jBoolVal);
+}
+
+void MessageApiEndpoint::setFieldShortVal(struct field *field, short value)
+{
+    jobject jShortVal = jvm->NewObject(this->jBoolClass, this->createJShortMethodId, (jshort)value);
+    this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, jShortVal);
+    this->jvm->DeleteLocalRef(jShortVal);
+}
+
+void MessageApiEndpoint::setFieldListVal(struct field *field, struct val_list *value)
+{
+    this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, value->jlist);
 }
 
 const char *MessageApiEndpoint::getConditionId(struct condition *condition)
@@ -751,70 +904,87 @@ const char *MessageApiEndpoint::getConditionOperator(struct condition *condition
     return conditionOperator;
 }
 
-struct value *MessageApiEndpoint::getConditionVal(struct condition *condition)
+bool MessageApiEndpoint::getConditionIsNull(struct condition *condition)
+{
+    struct val *value = this->getConditionVal(condition);
+    if (value->jvalue == NULL)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+struct val *MessageApiEndpoint::getConditionVal(struct condition *condition)
 {
     jobject jConditionValue = this->jvm->CallObjectMethod(condition->jcondition, this->getConditionValueMethodId);
-    struct value *value = (struct value *)malloc(sizeof(value) + sizeof(jConditionValue));
+    struct val *value = (struct val *)malloc(sizeof(value) + sizeof(jConditionValue));
     value->jvalue = jConditionValue;
     return value;
 }
 
-bool MessageApiEndpoint::valIsNull(struct value *value)
+int MessageApiEndpoint::getConditionIntVal(struct condition *condition)
 {
-    if (value->jvalue == NULL)
-    {
-        return true;
-    } else {
-        return false;
-    }
+    struct val *value = this->getConditionVal(condition);
+    int intVal = (int)this->jvm->CallIntMethod(value->jvalue, this->getJIntMethodId);
+    return intVal;
 }
 
-bool MessageApiEndpoint::valAsBool(struct value *value)
+long MessageApiEndpoint::getConditionLongVal(struct condition *condition)
 {
-    return (bool)jvm->CallBooleanMethod(value->jvalue, this->getJBoolMethodId);
+    struct val *value = this->getConditionVal(condition);
+    long longVal = (long)this->jvm->CallLongMethod(value->jvalue, this->getJLongMethodId);
+    return longVal;
 }
 
-unsigned char MessageApiEndpoint::valAsByte(struct value *value)
+float MessageApiEndpoint::getConditionFloatVal(struct condition *condition)
 {
+    struct val *value = this->getConditionVal(condition);
+    float floatVal = (float)this->jvm->CallFloatMethod(value->jvalue, this->getJFloatMethodId);
+    return floatVal;
+}
+
+double MessageApiEndpoint::getConditionDoubleVal(struct condition *condition)
+{
+    struct val *value = this->getConditionVal(condition);
+    double doubleVal = (double)this->jvm->CallDoubleMethod(value->jvalue, this->getJDoubleMethodId);
+    return doubleVal;
+}
+
+signed char MessageApiEndpoint::getConditionByteVal(struct condition *condition)
+{
+    struct val *value = this->getConditionVal(condition);
     jbyte jByte = this->jvm->CallByteMethod(value->jvalue, this->getJByteMethodId);
-    return (unsigned char) jByte;
+    return (signed char)jByte;
 }
 
-short MessageApiEndpoint::valAsShort(struct value *value)
+const char *MessageApiEndpoint::getConditionStringVal(struct condition *condition)
 {
-    return (short)this->jvm->CallShortMethod(value->jvalue, this->getJShortMethodId);
-}
-
-int MessageApiEndpoint::valAsInt(struct value *value)
-{
-    return (int)this->jvm->CallIntMethod(value->jvalue, this->getJIntMethodId);
-}
-
-long MessageApiEndpoint::valAsLong(struct value *value)
-{
-    return (long)this->jvm->CallLongMethod(value->jvalue, this->getJLongMethodId);
-}
-
-float MessageApiEndpoint::valAsFloat(struct value *value)
-{
-    return (float)this->jvm->CallFloatMethod(value->jvalue, this->getJFloatMethodId);
-}
-
-double MessageApiEndpoint::valAsDouble(struct value *value)
-{
-    return (double)this->jvm->CallDoubleMethod(value->jvalue, this->getJDoubleMethodId);
-}
-
-const char *MessageApiEndpoint::valAsString(struct value *value)
-{
-    jstring jString = (jstring) value->jvalue;
+    struct val *value = this->getConditionVal(condition);
+    jstring jString = (jstring)value->jvalue;
     const char *returnString = this->fromJavaString(jString);
     jvm->DeleteLocalRef(jString);
     return returnString;
 }
 
-struct val_list *MessageApiEndpoint::valAsList(struct value *value)
+bool MessageApiEndpoint::getConditionBoolVal(struct condition *condition)
 {
+    struct val *value = this->getConditionVal(condition);
+    bool boolVal = (bool)jvm->CallBooleanMethod(value->jvalue, this->getJBoolMethodId);
+    return boolVal;
+}
+
+short MessageApiEndpoint::getConditionShortVal(struct condition *condition)
+{
+    struct val *value = this->getConditionVal(condition);
+    short shortVal = (short)this->jvm->CallShortMethod(value->jvalue, this->getJShortMethodId);
+    return shortVal;
+}
+
+struct val_list *MessageApiEndpoint::getConditionListVal(struct condition *condition)
+{
+    struct val *value = this->getConditionVal(condition);
     int entryCount = this->getJListLength(value->jvalue);
     struct val_list *valueList = (struct val_list *)malloc(sizeof(struct val_list));
     valueList->count = entryCount;
@@ -825,6 +995,23 @@ struct val_list *MessageApiEndpoint::valAsList(struct value *value)
 jobject MessageApiEndpoint::getJListEntry(struct val_list *val_list, int index)
 {
     return static_cast<jobject>(this->jvm->CallObjectMethod(val_list->jlist, this->getJListItemMethodId, index));
+}
+
+struct list_entry *MessageApiEndpoint::getEntry(struct val_list *list, int index)
+{
+    struct list_entry *listEntry = (struct list_entry *)malloc(sizeof(struct list_entry));
+    listEntry->jentry = this->getJListEntry(list, index);
+    return listEntry;
+}
+
+struct val_list *MessageApiEndpoint::getListEntry(struct val_list *list, int index)
+{
+    jobject listEntry = this->getJListEntry(list, index);
+    int entryCount = this->getJListLength(listEntry);
+    struct val_list *valueList = (struct val_list *)malloc(sizeof(struct val_list));
+    valueList->count = entryCount;
+    valueList->jlist = listEntry;
+    return valueList;
 }
 
 int MessageApiEndpoint::getIntEntry(struct val_list *list, int index)
@@ -859,10 +1046,10 @@ double MessageApiEndpoint::getDoubleEntry(struct val_list *list, int index)
     return val;
 }
 
-unsigned char MessageApiEndpoint::getByteEntry(struct val_list *list, int index)
+signed char MessageApiEndpoint::getByteEntry(struct val_list *list, int index)
 {
     jobject list_entry = this->getJListEntry(list, index);
-    unsigned char val = (unsigned char)this->jvm->CallByteMethod(list_entry, this->getJByteMethodId);
+    signed char val = (signed char)this->jvm->CallByteMethod(list_entry, this->getJByteMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
 }
@@ -891,9 +1078,68 @@ short MessageApiEndpoint::getShortEntry(struct val_list *list, int index)
     return val;
 }
 
-void MessageApiEndpoint::setIntVal(void *value_container, int value)
+void MessageApiEndpoint::setConditionVal(struct condition *condition, struct val *value)
+{
+    this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, value->jvalue);
+}
+
+void MessageApiEndpoint::setConditionIntVal(struct condition *condition, int value)
 {
     jobject jIntVal = jvm->NewObject(this->jIntClass, this->createJIntMethodId, (jint)value);
-    struct field *fieldCast = (struct field *)value_container;
-    this->jvm->CallVoidMethod(fieldCast->jfield, this->setFieldValueMethodId, jIntVal);
+    this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, jIntVal);
+    this->jvm->DeleteLocalRef(jIntVal);
+}
+
+void MessageApiEndpoint::setConditionLongVal(struct condition *condition, long value)
+{
+    jobject jLongVal = jvm->NewObject(this->jLongClass, this->createJLongMethodId, (jlong)value);
+    this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, jLongVal);
+    this->jvm->DeleteLocalRef(jLongVal);
+}
+
+void MessageApiEndpoint::setConditionFloatVal(struct condition *condition, float value)
+{
+    jobject jFloatVal = jvm->NewObject(this->jFloatClass, this->createJFloatMethodId, (jfloat)value);
+    this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, jFloatVal);
+    this->jvm->DeleteLocalRef(jFloatVal);
+}
+
+void MessageApiEndpoint::setConditionDoubleVal(struct condition *condition, double value)
+{
+    jobject jDoubleVal = jvm->NewObject(this->jDoubleClass, this->createJDoubleMethodId, (jdouble)value);
+    this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, jDoubleVal);
+    this->jvm->DeleteLocalRef(jDoubleVal);
+}
+
+void MessageApiEndpoint::setConditionByteVal(struct condition *condition, signed char value)
+{
+    jobject jByteVal = jvm->NewObject(this->jByteClass, this->createJByteMethodId, (jbyte)value);
+    this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, jByteVal);
+    this->jvm->DeleteLocalRef(jByteVal);
+}
+
+void MessageApiEndpoint::setConditionStringVal(struct condition *condition, const char *value)
+{
+    jstring jStringVal = this->toJavaString(value);
+    this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, jStringVal);
+    this->jvm->DeleteLocalRef(jStringVal);
+}
+
+void MessageApiEndpoint::setConditionBoolVal(struct condition *condition, bool value)
+{
+    jobject jBoolVal = jvm->NewObject(this->jBoolClass, this->createJBoolMethodId, (jboolean)value);
+    this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, jBoolVal);
+    this->jvm->DeleteLocalRef(jBoolVal);
+}
+
+void MessageApiEndpoint::setConditionShortVal(struct condition *condition, short value)
+{
+    jobject jShortVal = jvm->NewObject(this->jBoolClass, this->createJShortMethodId, (jshort)value);
+    this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, jShortVal);
+    this->jvm->DeleteLocalRef(jShortVal);
+}
+
+void MessageApiEndpoint::setConditionListVal(struct condition *condition, struct val_list *value)
+{
+    this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, value->jlist);
 }
