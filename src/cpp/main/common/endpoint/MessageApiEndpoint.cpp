@@ -163,9 +163,9 @@ void MessageApiEndpoint::loadConditionMethodIds()
 void MessageApiEndpoint::loadValueTypeMethodIds()
 {
     jclass jListClass = static_cast<jclass>(this->jvm->NewLocalRef(this->jvm->FindClass("java/util/List")));
-    this->getJListSizeMethodId = this->jvm->GetMethodID(this->jListClass, "size", "()I");
-    this->getJListItemMethodId = this->jvm->GetMethodID(this->jListClass, "get", "(I)Ljava/lang/Object;");
-    this->addJListItemMethodId = this->jvm->GetMethodID(this->jListClass, "add", "(Ljava/lang/Object;)Z");
+    this->getJListSizeMethodId = this->jvm->GetMethodID(jListClass, "size", "()I");
+    this->getJListItemMethodId = this->jvm->GetMethodID(jListClass, "get", "(I)Ljava/lang/Object;");
+    this->addJListItemMethodId = this->jvm->GetMethodID(jListClass, "add", "(Ljava/lang/Object;)Z");
     this->jvm->DeleteLocalRef(jListClass);
 
     jclass jArrayListClass = static_cast<jclass>(this->jvm->NewLocalRef(this->jvm->FindClass("java/util/ArrayList")));
@@ -543,7 +543,8 @@ struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, co
 {
     jobject jprotocolRecords = this->getProtocolRecords(recordMethod, key, val);
 
-    int recordCount = this->jvm->CallIntMethod(jprotocolRecords, this->getJListSizeMethodId);
+    jint jRecordCount = this->jvm->CallIntMethod(jprotocolRecords, this->getJListSizeMethodId);
+    int recordCount = (int)jRecordCount;
     struct record_list *record_list = (struct record_list *) malloc(sizeof(struct record_list));
     record_list->count = recordCount;
     record_list->jrecords = jprotocolRecords;
