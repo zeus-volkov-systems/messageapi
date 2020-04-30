@@ -9,5 +9,5 @@
     "connections": [{"id": "conn-1",
                      "collections": ["coll-1"],
                      "constructor": {"directory-fields": "directory",
-                                     "server": "ftp.ncdc.noaa.gov"}}]
+                                     "server": "ftp-dev.ncdc.noaa.gov"}}]
 }
