@@ -163,9 +163,9 @@ void MessageApiEndpoint::loadConditionMethodIds()
 void MessageApiEndpoint::loadValueTypeMethodIds()
 {
     jclass jListClass = static_cast<jclass>(this->jvm->NewLocalRef(this->jvm->FindClass("java/util/List")));
-    this->getJListSizeMethodId = this->jvm->GetMethodID(jListClass, "size", "()I");
-    this->getJListItemMethodId = this->jvm->GetMethodID(jListClass, "get", "(I)Ljava/lang/Object;");
-    this->addJListItemMethodId = this->jvm->GetMethodID(jListClass, "add", "(Ljava/lang/Object;)Z");
+    this->getJListSizeMethodId = this->jvm->GetMethodID(this->jListClass, "size", "()I");
+    this->getJListItemMethodId = this->jvm->GetMethodID(this->jListClass, "get", "(I)Ljava/lang/Object;");
+    this->addJListItemMethodId = this->jvm->GetMethodID(this->jListClass, "add", "(Ljava/lang/Object;)Z");
     this->jvm->DeleteLocalRef(jListClass);
 
     jclass jArrayListClass = static_cast<jclass>(this->jvm->NewLocalRef(this->jvm->FindClass("java/util/ArrayList")));
