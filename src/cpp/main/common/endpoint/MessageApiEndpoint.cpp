@@ -543,9 +543,10 @@ struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, co
     jobject jprotocolRecords = this->getProtocolRecords(recordMethod, key, val);
     printf("Received jProtocolRecords.\n");
     fflush(stdout);
-    int recordCount = this->getJListLength(jprotocolRecords);
+    //int recordCount = this->getJListLength(jprotocolRecords);
     struct record_list *record_list = (struct record_list *) malloc(sizeof(struct record_list));
-    record_list->count = recordCount;
+    //record_list->count = recordCount;
+    record_list->count = 2;
     record_list->jrecords = jprotocolRecords;
 
     return record_list;
