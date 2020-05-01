@@ -510,10 +510,11 @@ struct rejection *MessageApiEndpoint::createRejection(struct record *record, con
  */
 jobject MessageApiEndpoint::getProtocolRecords(const char* method, const char* key, const char* val)
 {
-    if (method == "getRecords")
+    return this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsMethodId);
+    /*if (method == "getRecords")
     {
         return this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsMethodId);
-    }/*
+    }
     else if (method == "getRecordsByCollection")
     {
         jstring javaKey = this->toJavaString(key);
