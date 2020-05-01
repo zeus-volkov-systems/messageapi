@@ -537,6 +537,7 @@ jobject MessageApiEndpoint::getProtocolRecords(const char* method, const char* k
     }
     else if (method == "getRecordsByClassifier")
     {
+        jstring javaKey = this->toJavaString(key);
         jstring javaVal = this->toJavaString(val);
         jobject protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByClassifierMethodId, javaKey, javaVal);
         this->jvm->DeleteLocalRef(javaKey);
