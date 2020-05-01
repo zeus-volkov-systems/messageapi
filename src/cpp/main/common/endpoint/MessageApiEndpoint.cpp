@@ -510,46 +510,45 @@ struct rejection *MessageApiEndpoint::createRejection(struct record *record, con
  */
 jobject MessageApiEndpoint::getProtocolRecords(const char* method, const char* key, const char* val)
 {
-    return this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsMethodId);
-    /*if (method == "getRecords")
+    if (method == "getRecords")
     {
-        printf("method entered getRecords selection.\n");
-        fflush(stdout);
         return this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsMethodId);
     }
-    jstring javaKey = this->toJavaString(key);
-    jobject protocolRecords;
-    printf("oops, method went too far...\n");
-    fflush(stdout);
-    if (method == "getRecordsByCollection")
+    else if (method == "getRecordsByCollection")
     {
-        protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByCollectionMethodId, javaKey);
+        jstring javaKey = this->toJavaString(key);
+        jobject protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByCollectionMethodId, javaKey);
+        this->jvm->DeleteLocalRef(javaKey);
+        return protocolRecords;
     }
     else if (method == "getRecordsByTransformation")
     {
-        protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByTransformationMethodId, javaKey);
+        jstring javaKey = this->toJavaString(key);
+        jobject protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByTransformationMethodId, javaKey);
+        this->jvm->DeleteLocalRef(javaKey);
+        return protocolRecords;
     }
     else if (method == "getRecordsByUUID")
     {
-        protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByUUIDMethodId, javaKey);
+        jstring javaKey = this->toJavaString(key);
+        jobject protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByUUIDMethodId, javaKey);
+        this->jvm->DeleteLocalRef(javaKey);
+        return protocolRecords;
     }
     else if (method == "getRecordsByClassifier")
     {
         jstring javaVal = this->toJavaString(val);
-        protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByClassifierMethodId, javaKey, javaVal);
+        jobject protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByClassifierMethodId, javaKey, javaVal);
+        this->jvm->DeleteLocalRef(javaKey);
         this->jvm->DeleteLocalRef(javaVal);
+        return protocolRecords;
     }
-    this->jvm->DeleteLocalRef(javaKey);
-    return protocolRecords;*/
 }
 
 struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, const char *key, const char *val)
 {
     jobject jprotocolRecords = this->getProtocolRecords(recordMethod, key, val);
-    printf("Populated jProtocolRecords jobject using method %s.\n", recordMethod);
-    fflush(stdout);
     int recordCount = this->getJListLength(jprotocolRecords);
-    printf("we got %d protocol records.",recordCount);
     struct record_list *record_list = (struct record_list *) malloc(sizeof(struct record_list));
     record_list->count = recordCount;
     record_list->jrecords = jprotocolRecords;

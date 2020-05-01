@@ -19,8 +19,7 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       //struct record_list* collection_record_list = getRecordsByCollection(message, "gold");
       //struct record_list* transformation_record_list = getRecordsByTransformation(message, "combine-colors");
       printf("Record count: %d\n", default_record_list->count);
-      fflush(stdout);
-      /*struct string_list* default_field_name_list = getFieldIds(message, getRecord(message, default_record_list, 0));
+      struct string_list* default_field_name_list = getFieldIds(message, getRecord(message, default_record_list, 0));
       printf("Field name count: %d\n", default_field_name_list->count);
       printf("Length of longest field name: %d\n", default_field_name_list->max_length);
       for (int i = 0; i < default_field_name_list->count; i++) {
@@ -66,7 +65,7 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       } else {
           printf("Field val 4 has a value!\n");
       }
-      fflush(stdout);*/
+      fflush(stdout);
       struct record *returnRecord = createRecord(message);
       struct string_list *fieldIds = getFieldIds(message, returnRecord);
       printf("field ids for return field follow. \n");
@@ -82,10 +81,11 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
               printf("Field val for field %s already has a value!\n", fieldIds->strings[i]);
           }
       }
-      printf("Leaving our C test!");
       fflush(stdout);
       struct packet* packet = createPacket(message);
       addPacketRecord(message, packet, returnRecord);
+      printf("Leaving our C test!");
+      fflush(stdout);
       return packet->jpacket;
   }
 
