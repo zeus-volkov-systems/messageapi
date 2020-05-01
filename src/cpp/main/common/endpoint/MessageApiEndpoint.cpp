@@ -513,7 +513,7 @@ jobject MessageApiEndpoint::getProtocolRecords(const char* method, const char* k
     if (method == "getRecords")
     {
         return this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsMethodId);
-    }
+    }/*
     else if (method == "getRecordsByCollection")
     {
         jstring javaKey = this->toJavaString(key);
@@ -543,7 +543,7 @@ jobject MessageApiEndpoint::getProtocolRecords(const char* method, const char* k
         this->jvm->DeleteLocalRef(javaKey);
         this->jvm->DeleteLocalRef(javaVal);
         return protocolRecords;
-    }
+    }*/
 }
 
 struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, const char *key, const char *val)
