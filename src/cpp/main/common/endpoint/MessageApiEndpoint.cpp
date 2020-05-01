@@ -33,7 +33,7 @@ MessageApiEndpoint::~MessageApiEndpoint()
 {
     try
     {
-        this->jvm->DeleteGlobalRef(this->jListClass);
+        this->jvm->DeleteGlobalRef(this->jArrayListClass);
         this->jvm->DeleteGlobalRef(this->jIntClass);
         this->jvm->DeleteGlobalRef(this->jLongClass);
         this->jvm->DeleteGlobalRef(this->jFloatClass);
