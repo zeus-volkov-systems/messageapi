@@ -62,7 +62,7 @@ void MessageApiEndpoint::loadGlobalClassRefs()
     this->jStringClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/String")));
     this->jBoolClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Boolean")));
     this->jShortClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/lang/Short")));
-    this->jListClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/util/ArrayList")));
+    this->jArrayListClass = static_cast<jclass>(this->jvm->NewGlobalRef(this->jvm->FindClass("java/util/ArrayList")));
 }
 
 void MessageApiEndpoint::loadPacketMethodIds()
@@ -162,14 +162,14 @@ void MessageApiEndpoint::loadConditionMethodIds()
  */
 void MessageApiEndpoint::loadValueTypeMethodIds()
 {
-    jclass jListClazz = this->getNamedClass("java/util/List");
-    this->getJListSizeMethodId = this->jvm->GetMethodID(jListClazz, "size", "()I");
-    this->getJListItemMethodId = this->jvm->GetMethodID(jListClazz, "get", "(I)Ljava/lang/Object;");
-    this->addJListItemMethodId = this->jvm->GetMethodID(jListClazz, "add", "(Ljava/lang/Object;)Z");
-    this->jvm->DeleteLocalRef(jListClazz);
+    jclass jListClass = this->getNamedClass("java/util/List");
+    this->getJListSizeMethodId = this->jvm->GetMethodID(jListClass, "size", "()I");
+    this->getJListItemMethodId = this->jvm->GetMethodID(jListClass, "get", "(I)Ljava/lang/Object;");
+    this->addJListItemMethodId = this->jvm->GetMethodID(jListClass, "add", "(Ljava/lang/Object;)Z");
+    this->jvm->DeleteLocalRef(jListClass);
 
     /*Initialization for list as ArrayList (not List)*/
-    this->createJListMethodId = this->jvm->GetMethodID(this->jListClass, "<init>", "()V");
+    this->createJListMethodId = this->jvm->GetMethodID(this->jArrayListClass, "<init>", "()V");
 
     jclass jBoolClass = this->getNamedClass("java/lang/Boolean");
     this->getJBoolMethodId = this->jvm->GetMethodID(jBoolClass, "booleanValue", "()Z");
@@ -541,9 +541,9 @@ jobject MessageApiEndpoint::getProtocolRecords(const char* method, const char* k
 struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, const char *key, const char *val)
 {
     jobject jprotocolRecords = this->getProtocolRecords(recordMethod, key, val);
-
-    jint jRecordCount = this->jvm->CallIntMethod(jprotocolRecords, this->getJListSizeMethodId);
-    int recordCount = (int)jRecordCount;
+    printf("Received jProtocolRecords.");
+    fflush(stdout);
+    int recordCount = this->getJListLength(jprotocolRecords);
     struct record_list *record_list = (struct record_list *) malloc(sizeof(struct record_list));
     record_list->count = recordCount;
     record_list->jrecords = jprotocolRecords;
@@ -566,7 +566,7 @@ void MessageApiEndpoint::addPacketRecord(struct packet *packet, struct record *r
 
 int MessageApiEndpoint::getJListLength(jobject jList)
 {
-    return this->jvm->CallIntMethod(jList, this->getJListSizeMethodId);
+    return (int)this->jvm->CallIntMethod(jList, this->getJListSizeMethodId);
 }
 
 struct string_list *MessageApiEndpoint::translateFromJavaStringList(jobject jList)

@@ -144,7 +144,7 @@ private :
     jobject protocolRecord;
     jclass jException;
 
-    jclass jListClass;
+    jclass jArrayListClass;
     jclass jIntClass;
     jclass jLongClass;
     jclass jFloatClass;
