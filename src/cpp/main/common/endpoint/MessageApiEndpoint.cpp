@@ -162,15 +162,14 @@ void MessageApiEndpoint::loadConditionMethodIds()
  */
 void MessageApiEndpoint::loadValueTypeMethodIds()
 {
-    jclass jListClass = static_cast<jclass>(this->jvm->NewLocalRef(this->jvm->FindClass("java/util/List")));
-    this->getJListSizeMethodId = this->jvm->GetMethodID(jListClass, "size", "()I");
-    this->getJListItemMethodId = this->jvm->GetMethodID(jListClass, "get", "(I)Ljava/lang/Object;");
-    this->addJListItemMethodId = this->jvm->GetMethodID(jListClass, "add", "(Ljava/lang/Object;)Z");
-    this->jvm->DeleteLocalRef(jListClass);
+    jclass jListClazz = this->getNamedClass("java/util/List");
+    this->getJListSizeMethodId = this->jvm->GetMethodID(jListClazz, "size", "()I");
+    this->getJListItemMethodId = this->jvm->GetMethodID(jListClazz, "get", "(I)Ljava/lang/Object;");
+    this->addJListItemMethodId = this->jvm->GetMethodID(jListClazz, "add", "(Ljava/lang/Object;)Z");
+    this->jvm->DeleteLocalRef(jListClazz);
 
-    jclass jArrayListClass = static_cast<jclass>(this->jvm->NewLocalRef(this->jvm->FindClass("java/util/ArrayList")));
-    this->createJListMethodId = this->jvm->GetMethodID(jArrayListClass, "<init>", "()V");
-    this->jvm->DeleteLocalRef(jArrayListClass);
+    /*Initialization for list as ArrayList (not List)*/
+    this->createJListMethodId = this->jvm->GetMethodID(this->jListClass, "<init>", "()V");
 
     jclass jBoolClass = this->getNamedClass("java/lang/Boolean");
     this->getJBoolMethodId = this->jvm->GetMethodID(jBoolClass, "booleanValue", "()Z");
