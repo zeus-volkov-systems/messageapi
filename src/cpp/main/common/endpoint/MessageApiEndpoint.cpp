@@ -162,11 +162,11 @@ void MessageApiEndpoint::loadConditionMethodIds()
  */
 void MessageApiEndpoint::loadValueTypeMethodIds()
 {
-    jclass jListClass = this->getNamedClass("java/util/List");
-    this->getJListSizeMethodId = this->jvm->GetMethodID(jListClass, "size", "()I");
-    this->getJListItemMethodId = this->jvm->GetMethodID(jListClass, "get", "(I)Ljava/lang/Object;");
-    this->addJListItemMethodId = this->jvm->GetMethodID(jListClass, "add", "(Ljava/lang/Object;)Z");
-    this->jvm->DeleteLocalRef(jListClass);
+    //jclass jListClass = this->getNamedClass("java/util/List");
+    this->getJListSizeMethodId = this->jvm->GetMethodID(this->jArrayListClass, "size", "()I");
+    this->getJListItemMethodId = this->jvm->GetMethodID(this->jArrayListClass, "get", "(I)Ljava/lang/Object;");
+    this->addJListItemMethodId = this->jvm->GetMethodID(this->jArrayListClass, "add", "(Ljava/lang/Object;)Z");
+    //this->jvm->DeleteLocalRef(jListClass);
 
     /*Initialization for list as ArrayList (not List)*/
     this->createJListMethodId = this->jvm->GetMethodID(this->jArrayListClass, "<init>", "()V");

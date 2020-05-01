@@ -90,7 +90,7 @@ ifeq ($(UNAME), Darwin)
 LNFLAGS=-dynamiclib -shared -lgfortran -I$(JVMHEADERS) -framework JavaVM
 endif
 
-CFLAGS=-I$(JVMHEADERS) -I$(COMMONCPPPATH) -I$(COMMONCPATH) -I$(USERCPPPATH) -I$(USERCPATH) -I$(JNIDIR) -I$(JNIMDDIR) -fpic# -std=c99
+CFLAGS=-I$(JVMHEADERS) -I$(COMMONCPPPATH) -I$(COMMONCPATH) -I$(USERCPPPATH) -I$(USERCPATH) -I$(JNIDIR) -I$(JNIMDDIR) -fpic -std=c99
 FFLAGS=-I$(COMMONFORTRANPATH) -I$(USERFORTRANPATH) -fPIC -fopenmp
 
 #The following is the target library for the native jni library.

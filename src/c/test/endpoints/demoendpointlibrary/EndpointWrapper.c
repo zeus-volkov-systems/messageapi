@@ -23,8 +23,7 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       struct string_list* default_field_name_list = getFieldIds(message, getRecord(message, default_record_list, 0));
       printf("Field name count: %d\n", default_field_name_list->count);
       printf("Length of longest field name: %d\n", default_field_name_list->max_length);
-      int i;
-      for (i = 0; i < default_field_name_list->count; i++) {
+      for (int i = 0; i < default_field_name_list->count; i++) {
           printf("Field name: %s\n", default_field_name_list->strings[i]);
       }
       fflush(stdout);
@@ -58,7 +57,7 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       printf("Field string value 2 is: %s\n", stringFieldValue);
       struct val_list *val_list = getFieldListVal(message, testField3);
       printf("Field value 3 (list) length is: %d\n", val_list->count);
-      for (i = 0; i < val_list->count; i++) {
+      for (int i = 0; i < val_list->count; i++) {
           printf("Field value 3, element %d, is: %d\n", i, getIntEntry(message, val_list, i));
       }
       fflush(stdout);
@@ -71,7 +70,7 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       struct record *returnRecord = createRecord(message);
       struct string_list *fieldIds = getFieldIds(message, returnRecord);
       printf("field ids for return field follow. \n");
-      for (i=0; i < fieldIds->count; i++) {
+      for (int i=0; i < fieldIds->count; i++) {
           printf("Field name: %s\n", fieldIds->strings[i]);
           if (getFieldIsNull(message, getField(message, returnRecord,fieldIds->strings[i])))
           {
