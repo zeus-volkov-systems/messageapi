@@ -510,33 +510,32 @@ struct rejection *MessageApiEndpoint::createRejection(struct record *record, con
  */
 jobject MessageApiEndpoint::getProtocolRecords(const char* method, const char* key, const char* val)
 {
-    return this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsMethodId);
-    /*if (method == "getRecords")
+    if (strcmp(method, "getRecords") == 0)
     {
         return this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsMethodId);
     }
-    else if (method == "getRecordsByCollection")
+    else if (strcmp(method, "getRecordsByCollection") == 0)
     {
         jstring javaKey = this->toJavaString(key);
         jobject protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByCollectionMethodId, javaKey);
         this->jvm->DeleteLocalRef(javaKey);
         return protocolRecords;
     }
-    else if (method == "getRecordsByTransformation")
+    else if (strcmp(method, "getRecordsByTransformation") == 0)
     {
         jstring javaKey = this->toJavaString(key);
         jobject protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByTransformationMethodId, javaKey);
         this->jvm->DeleteLocalRef(javaKey);
         return protocolRecords;
     }
-    else if (method == "getRecordsByUUID")
+    else if (strcmp(method, "getRecordsByUUID") == 0)
     {
         jstring javaKey = this->toJavaString(key);
         jobject protocolRecords = this->jvm->CallObjectMethod(this->protocolRecord, this->getRecordsByUUIDMethodId, javaKey);
         this->jvm->DeleteLocalRef(javaKey);
         return protocolRecords;
     }
-    else if (method == "getRecordsByClassifier")
+    else if (strcmp(method, "getRecordsByClassifier") == 0)
     {
         jstring javaKey = this->toJavaString(key);
         jstring javaVal = this->toJavaString(val);
@@ -544,7 +543,11 @@ jobject MessageApiEndpoint::getProtocolRecords(const char* method, const char* k
         this->jvm->DeleteLocalRef(javaKey);
         this->jvm->DeleteLocalRef(javaVal);
         return protocolRecords;
-    }*/
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, const char *key, const char *val)
