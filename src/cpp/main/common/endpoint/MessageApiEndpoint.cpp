@@ -98,6 +98,9 @@ void MessageApiEndpoint::loadProtocolRecordMethodIds()
 
     jclass protocolRecordClass = this->getObjectClass(this->protocolRecord);
 
+    printf("Loaded protocolRecordClass..\n");
+    fflush(stdout);
+
     this->getRecordsMethodId = this->getMethod(protocolRecordClass, "getRecords", this->getProtocolRecordMethodSignature("getRecords"), false);
     this->getRecordsByCollectionMethodId = this->getMethod(protocolRecordClass, "getRecordsByCollection", this->getProtocolRecordMethodSignature("getRecordsByCollection"), false);
     this->getRecordsByUUIDMethodId = this->getMethod(protocolRecordClass, "getRecordsByUUID", this->getProtocolRecordMethodSignature("getRecordsByUUID"), false);
