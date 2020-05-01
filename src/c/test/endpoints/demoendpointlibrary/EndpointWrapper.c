@@ -14,13 +14,13 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
   {
       printf("In our test!\n");
       printf("Hello, World\n");
-      /*struct record_list* default_record_list = getRecords(message);
+      struct record_list* default_record_list = getRecords(message);
       //struct record_list* classifier_record_list = getRecordsByClassifier(message, "color", "blue");
       //struct record_list* collection_record_list = getRecordsByCollection(message, "gold");
       //struct record_list* transformation_record_list = getRecordsByTransformation(message, "combine-colors");
       printf("Record count: %d\n", default_record_list->count);
       fflush(stdout);
-      struct string_list* default_field_name_list = getFieldIds(message, getRecord(message, default_record_list, 0));
+      /*struct string_list* default_field_name_list = getFieldIds(message, getRecord(message, default_record_list, 0));
       printf("Field name count: %d\n", default_field_name_list->count);
       printf("Length of longest field name: %d\n", default_field_name_list->max_length);
       for (int i = 0; i < default_field_name_list->count; i++) {
