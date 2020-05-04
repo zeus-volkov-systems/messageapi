@@ -82,6 +82,14 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
           }
       }
       fflush(stdout);
+      printf("Creating a string list\n");
+      struct val_list *return_val_list = createList(message);
+      addStringEntry(message, return_val_list, "first element of our string!");
+      addStringEntry(message, return_val_list, "second element of our string!!");
+      printf("Created a string list.\n");
+      setFieldListVal(message, getField(message, returnRecord, "return-list"), return_val_list);
+      printf("Added the string list to the return record. Should have two elements, see above.\n");
+      fflush(stdout);
       struct packet* packet = createPacket(message);
       addPacketRecord(message, packet, returnRecord);
       printf("Leaving our C test!");
