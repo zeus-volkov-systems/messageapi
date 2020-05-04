@@ -115,6 +115,13 @@ extern "C"
 
     /*Packet Methods*/
     void addPacketRecord(jlong message, struct packet *packet, struct record *record);
+    void setPacketRecords(jlong message, struct packet *packet, struct record_list *records);
+    void addPacketRecords(jlong message, struct packet *packet, struct record_list *records);
+    void setPacketRejections(jlong message, struct packet *packet, struct rejection_list *rejections);
+    void addPacketRejection(jlong message, struct packet *packet, struct rejection *rejection);
+    void addPacketRejections(jlong message, struct packet *packet, struct rejection_list *rejections);
+    struct record_list *getPacketRecords(jlong message, struct packet *packet);
+    struct rejection_list *getPacketRejections(jlong message, struct packet *packet);
 
 #ifdef __cplusplus
 }

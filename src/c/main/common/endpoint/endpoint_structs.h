@@ -51,6 +51,11 @@ struct record
     jobject jrecord;
 };
 
+struct rejection_list
+{
+    int count;
+    jobject jrejections;
+};
 struct rejection
 {
     jobject jrejection;

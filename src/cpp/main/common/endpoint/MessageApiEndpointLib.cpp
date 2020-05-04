@@ -494,4 +494,39 @@ extern "C"
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->addPacketRecord(packet, record);
     }
+
+    void setPacketRecords(jlong message, struct packet *packet, struct record_list *records)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->setPacketRecords(packet, records);
+    }
+
+    void addPacketRecords(jlong message, struct packet *packet, struct record_list *records)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addPacketRecords(packet, records);
+    }
+
+    void setPacketRejections(jlong message, struct packet *packet, struct rejection_list *rejections)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->setPacketRejections(packet, rejections);
+    }
+
+    void addPacketRejection(jlong message, struct packet *packet, struct rejection *rejection)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addPacketRejection(packet, rejection);
+    }
+
+    void addPacketRejections(jlong message, struct packet *packet, struct rejection_list *rejections)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addPacketRejections(packet, rejections);
+    }
+
+    struct record_list *getPacketRecords(jlong message, struct packet *packet)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketRecords(packet);
+    }
+
+    struct rejection_list *getPacketRejections(jlong message, struct packet *packet)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketRejections(packet);
+    }
 }

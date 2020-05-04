@@ -36,7 +36,15 @@ public:
     struct rejection *createRejection(struct record* record, const char *reason);
 
     /*Packet Methods*/
+    void setPacketRecords(struct packet *packet, struct record_list *records);
     void addPacketRecord(struct packet *packet, struct record *record);
+    void addPacketRecords(struct packet *packet, struct record_list *records);
+    void setPacketRejections(struct packet *packet, struct rejection_list *rejections);
+    void addPacketRejection(struct packet *packet, struct rejection *rejection);
+    void addPacketRejections(struct packet *packet, struct rejection_list *rejections);
+    struct record_list *getPacketRecords(struct packet *packet);
+    struct rejection_list *getPacketRejections(struct packet *packet);
+
 
     /*Protocol Record Methods*/
     jobject getProtocolRecords(const char *method, const char *key, const char *val);
@@ -170,6 +178,8 @@ private :
     jmethodID setPacketRejectionsMethodId;
     jmethodID addPacketRejectionMethodId;
     jmethodID addPacketRejectionsMethodId;
+    jmethodID getPacketRecordsMethodId;
+    jmethodID getPacketRejectionsMethodId;
 
     /*Protocol Record Methods*/
     jmethodID getRecordsMethodId;

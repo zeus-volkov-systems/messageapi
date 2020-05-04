@@ -68,14 +68,14 @@ void MessageApiEndpoint::loadGlobalClassRefs()
 void MessageApiEndpoint::loadPacketMethodIds()
 {
     jclass packetClass = this->getNamedClass("gov/noaa/messageapi/interfaces/IPacket");
-
     this->setPacketRecordsMethodId = this->getMethod(packetClass, "setRecords", this->getPacketMethodSignature("setRecords"), false);
     this->addPacketRecordMethodId = this->getMethod(packetClass, "addRecord", this->getPacketMethodSignature("addRecord"), false);
     this->addPacketRecordsMethodId = this->getMethod(packetClass, "addRecords", this->getPacketMethodSignature("addRecords"), false);
     this->setPacketRejectionsMethodId = this->getMethod(packetClass, "setRejections", this->getPacketMethodSignature("setRejections"), false);
     this->addPacketRejectionMethodId = this->getMethod(packetClass, "addRejection", this->getPacketMethodSignature("addRejection"), false);
     this->addPacketRejectionsMethodId = this->getMethod(packetClass, "addRejections", this->getPacketMethodSignature("addRejections"), false);
-
+    this->getPacketRecordsMethodId = this->getMethod(packetClass, "getRecords", this->getPacketMethodSignature("getRecords"), false);
+    this->getPacketRejectionsMethodId = this->getMethod(packetClass, "getRejections", this->getPacketMethodSignature("getRejections"), false);
     this->jvm->DeleteLocalRef(packetClass);
 }
 
@@ -83,13 +83,11 @@ void MessageApiEndpoint::loadEndpointMethodIds()
 {
 
     jclass endpointClass = this->getObjectClass(this->endpoint);
-
     this->getStateContainerMethodId = this->getMethod(endpointClass, "getStateContainer", this->getEndpointMethodSignature("getStateContainer"), false);
     this->getDefaultFieldsMethodId = this->getMethod(endpointClass, "getDefaultFields", this->getEndpointMethodSignature("getDefaultFields"), false);
     this->createPacketMethodId = this->getMethod(endpointClass, "createPacket", this->getEndpointMethodSignature("createPacket"), false);
     this->createRecordMethodId = this->getMethod(endpointClass, "createRecord", this->getEndpointMethodSignature("createRecord"), false);
     this->createRejectionMethodId = this->getMethod(endpointClass, "createRejection", this->getEndpointMethodSignature("createRejection"), false);
-
     this->jvm->DeleteLocalRef(endpointClass);
 }
 
@@ -97,13 +95,11 @@ void MessageApiEndpoint::loadProtocolRecordMethodIds()
 {
 
     jclass protocolRecordClass = this->getObjectClass(this->protocolRecord);
-
     this->getRecordsMethodId = this->getMethod(protocolRecordClass, "getRecords", this->getProtocolRecordMethodSignature("getRecords"), false);
     this->getRecordsByCollectionMethodId = this->getMethod(protocolRecordClass, "getRecordsByCollection", this->getProtocolRecordMethodSignature("getRecordsByCollection"), false);
     this->getRecordsByUUIDMethodId = this->getMethod(protocolRecordClass, "getRecordsByUUID", this->getProtocolRecordMethodSignature("getRecordsByUUID"), false);
     this->getRecordsByTransformationMethodId = this->getMethod(protocolRecordClass, "getRecordsByTransformation", this->getProtocolRecordMethodSignature("getRecordsByTransformation"), false);
     this->getRecordsByClassifierMethodId = this->getMethod(protocolRecordClass, "getRecordsByClassifier", this->getProtocolRecordMethodSignature("getRecordsByClassifier"), false);
-
     this->jvm->DeleteLocalRef(protocolRecordClass);
 }
 
@@ -113,7 +109,6 @@ void MessageApiEndpoint::loadRecordMethodIds()
     /*Intrinsic Methods*/
     this->getRecordIsValidMethodId = this->getMethod(recordClass, "isValid", this->getRecordMethodSignature("isValid"), false);
     this->getRecordCopyMethodId = this->getMethod(recordClass, "getCopy", this->getRecordMethodSignature("getCopy"), false);
-
     /*Field Related Methods*/
     this->getRecordFieldIdsMethodId = this->getMethod(recordClass, "getFieldIds", this->getRecordMethodSignature("getFieldIds"), false);
     this->getRecordFieldsMethodId = this->getMethod(recordClass, "getFields", this->getRecordMethodSignature("getFields"), false);
@@ -124,7 +119,6 @@ void MessageApiEndpoint::loadRecordMethodIds()
     this->getRecordConditionsMethodId = this->getMethod(recordClass, "getConditions", this->getRecordMethodSignature("getConditions"), false);
     this->getRecordHasConditionMethodId = this->getMethod(recordClass, "hasCondition", this->getRecordMethodSignature("hasCondition"), false);
     this->getRecordConditionMethodId = this->getMethod(recordClass, "getCondition", this->getRecordMethodSignature("getCondition"), false);
-    
     this->jvm->DeleteLocalRef(recordClass);
 }
 
@@ -324,6 +318,14 @@ const char *MessageApiEndpoint::getPacketMethodSignature(const char *methodName)
     {
         return "(Ljava/util/List;)V";
     }
+    else if (strcmp(methodName, "getRecords") == 0)
+    {
+        return "()Ljava/util/List;";
+    }
+    else if (strcmp(methodName, "getRejections") == 0)
+    {
+        return "()Ljava/util/List;";
+    }
     return NULL;
 }
 
@@ -333,7 +335,15 @@ const char *MessageApiEndpoint::getProtocolRecordMethodSignature(const char* met
     {
         return "()Ljava/util/List;";
     }
-    else if (strcmp(methodName, "getRecordsByCollection") == 0 || strcmp(methodName, "getRecordsByUUID") == 0 || strcmp(methodName, "getRecordsByTransformation") == 0)
+    else if (strcmp(methodName, "getRecordsByCollection") == 0)
+    {
+        return "(Ljava/lang/String;)Ljava/util/List;";
+    }
+    else if (strcmp(methodName, "getRecordsByUUID") == 0)
+    {
+        return "(Ljava/lang/String;)Ljava/util/List;";
+    }
+    else if (strcmp(methodName, "getRecordsByTransformation") == 0)
     {
         return "(Ljava/lang/String;)Ljava/util/List;";
     }
@@ -563,15 +573,62 @@ struct record_list * MessageApiEndpoint::getRecords(const char *recordMethod, co
 
 struct record *MessageApiEndpoint::getRecord(struct record_list *record_list, int index)
 {
-    jobject jrecord = static_cast<jobject>(this->jvm->CallObjectMethod(record_list->jrecords, this->getJListItemMethodId, index));
+    jobject jrecord = this->jvm->CallObjectMethod(record_list->jrecords, this->getJListItemMethodId, index);
     struct record *record = (struct record *) malloc(sizeof(struct record) + sizeof(jrecord));
     record->jrecord = jrecord;
     return record;
 }
 
+void MessageApiEndpoint::setPacketRecords(struct packet *packet, struct record_list *records)
+{
+    this->jvm->CallVoidMethod(packet->jpacket, this->setPacketRecordsMethodId, records->jrecords);
+}
+
 void MessageApiEndpoint::addPacketRecord(struct packet *packet, struct record *record)
 {
     this->jvm->CallVoidMethod(packet->jpacket, this->addPacketRecordMethodId, record->jrecord);
+}
+
+void MessageApiEndpoint::addPacketRecords(struct packet *packet, struct record_list *records)
+{
+    this->jvm->CallVoidMethod(packet->jpacket, this->addPacketRecordsMethodId, records->jrecords);
+}
+
+void MessageApiEndpoint::setPacketRejections(struct packet *packet, struct rejection_list *rejections)
+{
+    this->jvm->CallVoidMethod(packet->jpacket, this->setPacketRejectionsMethodId, rejections->jrejections);
+}
+
+void MessageApiEndpoint::addPacketRejection(struct packet *packet, struct rejection *rejection)
+{
+    this->jvm->CallVoidMethod(packet->jpacket, this->addPacketRejectionMethodId, rejection->jrejection);
+}
+
+void MessageApiEndpoint::addPacketRejections(struct packet *packet, struct rejection_list *rejections)
+{
+    this->jvm->CallVoidMethod(packet->jpacket, this->addPacketRejectionsMethodId, rejections->jrejections);
+}
+
+struct record_list *MessageApiEndpoint::getPacketRecords(struct packet *packet)
+{
+    jobject jPacketRecords = this->jvm->CallObjectMethod(packet->jpacket, this->getPacketRecordsMethodId);
+    int recordCount = this->getJListLength(jPacketRecords);
+    struct record_list *record_list = (struct record_list *)malloc(sizeof(struct record_list));
+    record_list->count = recordCount;
+    record_list->jrecords = jPacketRecords;
+
+    return record_list;
+}
+
+struct rejection_list *MessageApiEndpoint::getPacketRejections(struct packet *packet)
+{
+    jobject jPacketRejections = this->jvm->CallObjectMethod(packet->jpacket, this->getPacketRejectionsMethodId);
+    int rejectionCount = this->getJListLength(jPacketRejections);
+    struct rejection_list *rejection_list = (struct rejection_list *)malloc(sizeof(struct rejection_list));
+    rejection_list->count = rejectionCount;
+    rejection_list->jrejections = jPacketRejections;
+
+    return rejection_list;
 }
 
 int MessageApiEndpoint::getJListLength(jobject jList)
