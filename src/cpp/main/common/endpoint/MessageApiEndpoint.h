@@ -112,6 +112,7 @@ public:
 
     /*List Entry Retrieval Methods*/
     struct list_entry *getEntry(struct val_list *list, int index);
+    jobject getObjectEntry(struct val_list *list, int index);
     int getIntEntry(struct val_list *list, int index);
     long getLongEntry(struct val_list *list, int index);
     float getFloatEntry(struct val_list *list, int index);
@@ -127,6 +128,7 @@ public:
 
     /*List Entry Insertion Methods*/
     void addEntry(struct val_list *list, struct list_entry *entry);
+    void addObjectEntry(struct val_list *list, jobject val);
     void addIntEntry(struct val_list *list, int val);
     void addLongEntry(struct val_list *list, long val);
     void addFloatEntry(struct val_list *list, float val);
@@ -252,8 +254,6 @@ private :
     /*Utility methods for java list operations*/
     int getJListLength(jobject jList);
     struct string_list *translateFromJavaStringList(jobject jList);
-    jobject getObjectEntry(struct val_list *list, int index);
-    void addObjectEntry(struct val_list *list, jobject val);
 
     /*Utility methods for java string operations*/
     jstring toJavaString(const char *charString);
