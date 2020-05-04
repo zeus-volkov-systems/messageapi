@@ -1211,6 +1211,36 @@ void MessageApiEndpoint::setConditionListVal(struct condition *condition, struct
     this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, value->jlist);
 }
 
+struct record_list *MessageApiEndpoint::createRecordList()
+{
+    jobject jList = this->jvm->NewObject(this->jArrayListClass, this->createJArrayListMethodId);
+    struct record_list *record_list = (struct record_list *)malloc(sizeof(struct record_list));
+    record_list->count = 0;
+    record_list->jrecords = jList;
+    return record_list;
+}
+
+void MessageApiEndpoint::addRecordEntry(struct record_list *record_list, struct record *record)
+{
+    this->jvm->CallVoidMethod(record_list->jrecords, this->addJListItemMethodId, record->jrecord);
+    record_list->count += 1;
+}
+
+struct rejection_list *MessageApiEndpoint::createRejectionList()
+{
+    jobject jList = this->jvm->NewObject(this->jArrayListClass, this->createJArrayListMethodId);
+    struct rejection_list *rejection_list = (struct rejection_list *)malloc(sizeof(struct rejection_list));
+    rejection_list->count = 0;
+    rejection_list->jrejections = jList;
+    return rejection_list;
+}
+
+void MessageApiEndpoint::addRejectionEntry(struct rejection_list *rejection_list, struct rejection *rejection)
+{
+    this->jvm->CallVoidMethod(rejection_list->jrejections, this->addJListItemMethodId, rejection->jrejection);
+    rejection_list->count += 1;
+}
+
 struct val_list *MessageApiEndpoint::createList()
 {
     jobject jList = this->jvm->NewObject(this->jArrayListClass, this->createJArrayListMethodId);

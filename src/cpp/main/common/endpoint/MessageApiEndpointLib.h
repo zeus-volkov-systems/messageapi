@@ -24,6 +24,9 @@ extern "C"
     struct record *getRecord(jlong message, struct record_list *recordList, int recordIndex);
 
     /*Record Methods*/
+    struct record_list *createRecordList(jlong message);
+    void addRecordEntry(jlong message, struct record_list *record_list, struct record *record);
+
     struct record *getRecordCopy(jlong message, struct record *record);
     bool getRecordIsValid(jlong message, struct record *record);
 
@@ -36,6 +39,10 @@ extern "C"
     struct condition_list *getConditions(jlong message, struct record *record);
     struct condition *getCondition(jlong message, struct record *record, const char *conditionId);
     bool hasCondition(jlong message, struct record *record, const char *conditionId);
+
+    /*Rejection Methods*/
+    struct rejection_list *createRejectionList(jlong message);
+    void addRejectionEntry(jlong message, struct rejection_list *rejection_list, struct rejection *rejection);
 
     /*Field Methods*/
     const char *getFieldId(jlong message, struct field *field);

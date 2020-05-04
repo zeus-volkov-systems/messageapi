@@ -52,6 +52,8 @@ public:
     struct record *getRecord(struct record_list *record_list, int index);
 
     /*Record Methods*/
+    struct record_list *createRecordList();
+    void addRecordEntry(struct record_list *record_list, struct record *record);
     struct record *getRecordCopy(struct record *record);
     bool getRecordIsValid(struct record *record);
 
@@ -64,6 +66,10 @@ public:
     struct string_list *getConditionIds(struct record *record);
     struct condition_list *getConditions(struct record *record);
     struct condition *getCondition(struct record *record, const char *conditionId);
+
+    /*Rejection Methods*/
+    struct rejection_list *createRejectionList();
+    void addRejectionEntry(struct rejection_list *rejection_list, struct rejection *rejection);
 
     /*Field Methods*/
     const char *getFieldId(struct field *field);

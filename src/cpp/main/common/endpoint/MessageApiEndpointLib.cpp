@@ -78,6 +78,16 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByClassifier", classifierKey, classifierValue);
     }
 
+    struct record_list *createRecordList(jlong message)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->createRecordList();
+    }
+
+    void addRecordEntry(jlong message, struct record_list *record_list, struct record *record)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addRecordEntry(record_list, record);
+    }
+
     struct record *getRecord(jlong message, struct record_list *recordList, int recordIndex)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getRecord(recordList, recordIndex);
@@ -487,6 +497,17 @@ extern "C"
     void addListEntry(jlong message, struct val_list *list, struct val_list *val)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->addListEntry(list, val);
+    }
+
+    /*Rejection Utils*/
+    struct rejection_list *createRejectionList(jlong message)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->createRejectionList();
+    }
+
+    void addRejectionEntry(jlong message, struct rejection_list *rejection_list, struct rejection *rejection)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addRejectionEntry(rejection_list, rejection);
     }
 
     /*Packet Utils*/
