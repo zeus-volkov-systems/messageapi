@@ -434,6 +434,61 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->getShortEntry(list, index);
     }
 
+    struct val_list *createList(jlong message)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->createList();
+    }
+
+    void addEntry(jlong message, struct val_list *list, struct list_entry *entry)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addEntry(list, entry);
+    }
+
+    void addIntEntry(jlong message, struct val_list *list, int val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addIntEntry(list, val);
+    }
+
+    void addLongEntry(jlong message, struct val_list *list, long val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addLongEntry(list, val);
+    }
+
+    void addFloatEntry(jlong message, struct val_list *list, float val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addFloatEntry(list, val);
+    }
+
+    void addDoubleEntry(jlong message, struct val_list *list, double val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addDoubleEntry(list, val);
+    }
+
+    void addByteEntry(jlong message, struct val_list *list, signed char val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addByteEntry(list, val);
+    }
+
+    void addStringEntry(jlong message, struct val_list *list, const char *val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addStringEntry(list, val);
+    }
+
+    void addBoolEntry(jlong message, struct val_list *list, bool val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addBoolEntry(list, val);
+    }
+
+    void addShortEntry(jlong message, struct val_list *list, short val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addShortEntry(list, val);
+    }
+
+    void addListEntry(jlong message, struct val_list *list, struct val_list *val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addListEntry(list, val);
+    }
+
     /*Packet Utils*/
     void addPacketRecord(jlong message, struct packet *packet, struct record *record)
     {

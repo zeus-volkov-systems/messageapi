@@ -162,14 +162,14 @@ void MessageApiEndpoint::loadConditionMethodIds()
  */
 void MessageApiEndpoint::loadValueTypeMethodIds()
 {
-    //jclass jListClass = this->getNamedClass("java/util/List");
-    this->getJListSizeMethodId = this->jvm->GetMethodID(this->jArrayListClass, "size", "()I");
-    this->getJListItemMethodId = this->jvm->GetMethodID(this->jArrayListClass, "get", "(I)Ljava/lang/Object;");
-    this->addJListItemMethodId = this->jvm->GetMethodID(this->jArrayListClass, "add", "(Ljava/lang/Object;)Z");
-    //this->jvm->DeleteLocalRef(jListClass);
+    jclass jListClass = this->getNamedClass("java/util/List");
+    this->getJListSizeMethodId = this->jvm->GetMethodID(jListClass, "size", "()I");
+    this->getJListItemMethodId = this->jvm->GetMethodID(jListClass, "get", "(I)Ljava/lang/Object;");
+    this->addJListItemMethodId = this->jvm->GetMethodID(jListClass, "add", "(Ljava/lang/Object;)Z");
+    this->jvm->DeleteLocalRef(jListClass);
 
     /*Initialization for list as ArrayList (not List)*/
-    this->createJListMethodId = this->jvm->GetMethodID(this->jArrayListClass, "<init>", "()V");
+    this->createJArrayListMethodId = this->jvm->GetMethodID(this->jArrayListClass, "<init>", "()V");
 
     jclass jBoolClass = this->getNamedClass("java/lang/Boolean");
     this->getJBoolMethodId = this->jvm->GetMethodID(jBoolClass, "booleanValue", "()Z");
@@ -275,23 +275,23 @@ const char * MessageApiEndpoint::fromJavaString(jstring s)
 
 const char *MessageApiEndpoint::getEndpointMethodSignature(const char *methodName)
 {
-    if (methodName == "getStateContainer")
+    if (strcmp(methodName, "getStateContainer") == 0)
     {
         return "()Lgov/noaa/messageapi/interfaces/IRecord;";
     }
-    else if (methodName == "getDefaultFields")
+    else if (strcmp(methodName,"getDefaultFields") == 0)
     {
         return "()Ljava/util/List;";
     }
-    else if (methodName == "createPacket")
+    else if (strcmp(methodName, "createPacket") == 0)
     {
         return "()Lgov/noaa/messageapi/interfaces/IPacket;";
     }
-    else if (methodName == "createRecord")
+    else if (strcmp(methodName, "createRecord") == 0)
     {
         return "()Lgov/noaa/messageapi/interfaces/IRecord;";
     }
-    else if (methodName == "createRejection")
+    else if (strcmp(methodName, "createRejection") == 0)
     {
         return "(Lgov/noaa/messageapi/interfaces/IRecord;Ljava/lang/String;)Lgov/noaa/messageapi/interfaces/IRejection;";
     }
@@ -300,27 +300,27 @@ const char *MessageApiEndpoint::getEndpointMethodSignature(const char *methodNam
 
 const char *MessageApiEndpoint::getPacketMethodSignature(const char *methodName)
 {
-    if (methodName == "setRecords")
+    if (strcmp(methodName, "setRecords") == 0)
     {
         return "(Ljava/util/List;)V";
     }
-    else if (methodName == "addRecord")
+    else if (strcmp(methodName, "addRecord") == 0)
     {
         return "(Lgov/noaa/messageapi/interfaces/IRecord;)V";
     }
-    else if (methodName == "addRecords")
+    else if (strcmp(methodName, "addRecords") == 0)
     {
         return "(Ljava/util/List;)V";
     }
-    else if (methodName == "setRejections")
+    else if (strcmp(methodName, "setRejections") == 0)
     {
         return "(Ljava/util/List;)V";
     }
-    else if (methodName == "addRejection")
+    else if (strcmp(methodName, "addRejection") == 0)
     {
         return "(Lgov/noaa/messageapi/interfaces/IRejection;)V";
     }
-    else if (methodName == "addRejections")
+    else if (strcmp(methodName, "addRejections") == 0)
     {
         return "(Ljava/util/List;)V";
     }
@@ -329,15 +329,15 @@ const char *MessageApiEndpoint::getPacketMethodSignature(const char *methodName)
 
 const char *MessageApiEndpoint::getProtocolRecordMethodSignature(const char* methodName)
 {
-    if (methodName == "getRecords")
+    if (strcmp(methodName, "getRecords") == 0)
     {
         return "()Ljava/util/List;";
     }
-    else if (methodName == "getRecordsByCollection" || methodName == "getRecordsByUUID" || methodName == "getRecordsByTransformation")
+    else if (strcmp(methodName, "getRecordsByCollection") == 0 || strcmp(methodName, "getRecordsByUUID") == 0 || strcmp(methodName, "getRecordsByTransformation") == 0)
     {
         return "(Ljava/lang/String;)Ljava/util/List;";
     }
-    else if (methodName == "getRecordsByClassifier")
+    else if (strcmp(methodName, "getRecordsByClassifier") == 0)
     {
         return "(Ljava/lang/String;Ljava/lang/Object;)Ljava/util/List;";
     }
@@ -346,43 +346,43 @@ const char *MessageApiEndpoint::getProtocolRecordMethodSignature(const char* met
 
 const char *MessageApiEndpoint::getRecordMethodSignature(const char *methodName)
 {
-    if (methodName == "isValid")
+    if (strcmp(methodName, "isValid") == 0)
     {
         return "()Ljava/lang/Boolean;";
     }
-    else if (methodName == "getCopy")
+    else if (strcmp(methodName, "getCopy") == 0)
     {
         return "()Lgov/noaa/messageapi/interfaces/IRecord;";
     }
-    else if (methodName == "getFieldIds")
+    else if (strcmp(methodName, "getFieldIds") == 0)
     {
         return "()Ljava/util/List;";
     }
-    else if (methodName == "hasField")
+    else if (strcmp(methodName, "hasField") == 0)
     {
         return "(Ljava/lang/String;)Ljava/lang/Boolean;";
     }
-    else if (methodName == "getFields")
+    else if (strcmp(methodName, "getFields") == 0)
     {
         return "()Ljava/util/List;";
     }
-    else if (methodName == "getField")
+    else if (strcmp(methodName, "getField") == 0)
     {
         return "(Ljava/lang/String;)Lgov/noaa/messageapi/interfaces/IField;";
     }
-    else if (methodName == "getConditionIds")
+    else if (strcmp(methodName, "getConditionIds") == 0)
     {
         return "()Ljava/util/List;";
     }
-    else if (methodName == "hasCondition")
+    else if (strcmp(methodName, "hasCondition") == 0)
     {
         return "(Ljava/lang/String;)Ljava/lang/Boolean;";
     }
-    else if (methodName == "getConditions")
+    else if (strcmp(methodName, "getConditions") == 0)
     {
         return "()Ljava/util/List;";
     }
-    else if (methodName == "getCondition")
+    else if (strcmp(methodName, "getCondition") == 0)
     {
         return "(Ljava/lang/String;)Lgov/noaa/messageapi/interfaces/ICondition;";
     }
@@ -391,27 +391,27 @@ const char *MessageApiEndpoint::getRecordMethodSignature(const char *methodName)
 
 const char *MessageApiEndpoint::getFieldMethodSignature(const char *methodName)
 {
-    if (methodName == "getId")
+    if (strcmp(methodName, "getId") == 0)
     {
         return "()Ljava/lang/String;";
     }
-    else if (methodName == "getType")
+    else if (strcmp(methodName, "getType") == 0)
     {
         return "()Ljava/lang/String;";
     }
-    else if (methodName == "getValue")
+    else if (strcmp(methodName, "getValue") == 0)
     {
         return "()Ljava/lang/Object;";
     }
-    else if (methodName == "isValid")
+    else if (strcmp(methodName, "isValid") == 0)
     {
         return "()Z";
     }
-    else if (methodName == "isRequired")
+    else if (strcmp(methodName, "isRequired") == 0)
     {
         return "()Z";
     }
-    else if (methodName == "setValue")
+    else if (strcmp(methodName, "setValue") == 0)
     {
         return "(Ljava/lang/Object;)V";
     }
@@ -420,23 +420,23 @@ const char *MessageApiEndpoint::getFieldMethodSignature(const char *methodName)
 
 const char * MessageApiEndpoint::getConditionMethodSignature(const char *methodName)
 {
-    if (methodName == "getId")
+    if (strcmp(methodName, "getId") == 0)
     {
         return "()Ljava/lang/String;";
     }
-    else if (methodName == "getType")
+    else if (strcmp(methodName, "getType") == 0)
     {
         return "()Ljava/lang/String;";
     }
-    else if (methodName == "getOperator")
+    else if (strcmp(methodName, "getOperator") == 0)
     {
         return "()Ljava/lang/String;";
     }
-    else if (methodName == "getValue")
+    else if (strcmp(methodName, "getValue") == 0)
     {
         return "()Ljava/lang/Object;";
     }
-    else if (methodName == "setValue")
+    else if (strcmp(methodName, "setValue") == 0)
     {
         return "(Ljava/lang/Object;)V";
     }
@@ -880,7 +880,7 @@ void MessageApiEndpoint::setFieldBoolVal(struct field *field, bool value)
 
 void MessageApiEndpoint::setFieldShortVal(struct field *field, short value)
 {
-    jobject jShortVal = jvm->NewObject(this->jBoolClass, this->createJShortMethodId, (jshort)value);
+    jobject jShortVal = jvm->NewObject(this->jShortClass, this->createJShortMethodId, (jshort)value);
     this->jvm->CallVoidMethod(field->jfield, this->setFieldValueMethodId, jShortVal);
     this->jvm->DeleteLocalRef(jShortVal);
 }
@@ -1002,7 +1002,7 @@ struct val_list *MessageApiEndpoint::getConditionListVal(struct condition *condi
     return valueList;
 }
 
-jobject MessageApiEndpoint::getJListEntry(struct val_list *val_list, int index)
+jobject MessageApiEndpoint::getObjectEntry(struct val_list *val_list, int index)
 {
     return static_cast<jobject>(this->jvm->CallObjectMethod(val_list->jlist, this->getJListItemMethodId, index));
 }
@@ -1010,13 +1010,13 @@ jobject MessageApiEndpoint::getJListEntry(struct val_list *val_list, int index)
 struct list_entry *MessageApiEndpoint::getEntry(struct val_list *list, int index)
 {
     struct list_entry *listEntry = (struct list_entry *)malloc(sizeof(struct list_entry));
-    listEntry->jentry = this->getJListEntry(list, index);
+    listEntry->jentry = this->getObjectEntry(list, index);
     return listEntry;
 }
 
 struct val_list *MessageApiEndpoint::getListEntry(struct val_list *list, int index)
 {
-    jobject listEntry = this->getJListEntry(list, index);
+    jobject listEntry = this->getObjectEntry(list, index);
     int entryCount = this->getJListLength(listEntry);
     struct val_list *valueList = (struct val_list *)malloc(sizeof(struct val_list));
     valueList->count = entryCount;
@@ -1026,7 +1026,7 @@ struct val_list *MessageApiEndpoint::getListEntry(struct val_list *list, int ind
 
 int MessageApiEndpoint::getIntEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getJListEntry(list, index);
+    jobject list_entry = this->getObjectEntry(list, index);
     int val = (int)this->jvm->CallIntMethod(list_entry, this->getJIntMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -1034,7 +1034,7 @@ int MessageApiEndpoint::getIntEntry(struct val_list *list, int index)
 
 long MessageApiEndpoint::getLongEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getJListEntry(list, index);
+    jobject list_entry = this->getObjectEntry(list, index);
     long val = (long)this->jvm->CallLongMethod(list_entry, this->getJLongMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -1042,7 +1042,7 @@ long MessageApiEndpoint::getLongEntry(struct val_list *list, int index)
 
 float MessageApiEndpoint::getFloatEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getJListEntry(list, index);
+    jobject list_entry = this->getObjectEntry(list, index);
     float val = (float)this->jvm->CallFloatMethod(list_entry, this->getJFloatMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -1050,7 +1050,7 @@ float MessageApiEndpoint::getFloatEntry(struct val_list *list, int index)
 
 double MessageApiEndpoint::getDoubleEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getJListEntry(list, index);
+    jobject list_entry = this->getObjectEntry(list, index);
     double val = (double)this->jvm->CallDoubleMethod(list_entry, this->getJDoubleMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -1058,7 +1058,7 @@ double MessageApiEndpoint::getDoubleEntry(struct val_list *list, int index)
 
 signed char MessageApiEndpoint::getByteEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getJListEntry(list, index);
+    jobject list_entry = this->getObjectEntry(list, index);
     signed char val = (signed char)this->jvm->CallByteMethod(list_entry, this->getJByteMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -1074,7 +1074,7 @@ const char *MessageApiEndpoint::getStringEntry(struct val_list *list, int index)
 
 bool MessageApiEndpoint::getBoolEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getJListEntry(list, index);
+    jobject list_entry = this->getObjectEntry(list, index);
     bool val = (bool)this->jvm->CallBooleanMethod(list_entry, this->getJBoolMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -1082,7 +1082,7 @@ bool MessageApiEndpoint::getBoolEntry(struct val_list *list, int index)
 
 short MessageApiEndpoint::getShortEntry(struct val_list *list, int index)
 {
-    jobject list_entry = this->getJListEntry(list, index);
+    jobject list_entry = this->getObjectEntry(list, index);
     short val = (short)this->jvm->CallShortMethod(list_entry, this->getJShortMethodId);
     jvm->DeleteLocalRef(list_entry);
     return val;
@@ -1152,4 +1152,95 @@ void MessageApiEndpoint::setConditionShortVal(struct condition *condition, short
 void MessageApiEndpoint::setConditionListVal(struct condition *condition, struct val_list *value)
 {
     this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, value->jlist);
+}
+
+struct val_list *MessageApiEndpoint::createList()
+{
+    jobject jList = this->jvm->NewObject(this->jArrayListClass, this->createJArrayListMethodId);
+    struct val_list *valueList = (struct val_list *)malloc(sizeof(struct val_list));
+    valueList->count = 0;
+    valueList->jlist = jList;
+    return valueList;
+}
+
+void MessageApiEndpoint::addObjectEntry(struct val_list *list, jobject val)
+{
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, val);
+    list->count += 1;
+}
+
+void MessageApiEndpoint::addEntry(struct val_list *list, struct list_entry *entry)
+{
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, entry->jentry);
+    list->count += 1;
+}
+
+void MessageApiEndpoint::addIntEntry(struct val_list *list, int val)
+{
+    jobject jVal = jvm->NewObject(this->jIntClass, this->createJIntMethodId, (jint)val);
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, jVal);
+    list->count += 1;
+    this->jvm->DeleteLocalRef(jVal);
+}
+
+void MessageApiEndpoint::addLongEntry(struct val_list *list, long val)
+{
+    jobject jVal = jvm->NewObject(this->jLongClass, this->createJLongMethodId, (jlong)val);
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, jVal);
+    list->count += 1;
+    this->jvm->DeleteLocalRef(jVal);
+}
+
+void MessageApiEndpoint::addFloatEntry(struct val_list *list, float val)
+{
+    jobject jVal = jvm->NewObject(this->jFloatClass, this->createJFloatMethodId, (jfloat)val);
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, jVal);
+    list->count += 1;
+    this->jvm->DeleteLocalRef(jVal);
+}
+
+void MessageApiEndpoint::addDoubleEntry(struct val_list *list, double val)
+{
+    jobject jVal = jvm->NewObject(this->jDoubleClass, this->createJDoubleMethodId, (jdouble)val);
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, jVal);
+    list->count += 1;
+    this->jvm->DeleteLocalRef(jVal);
+}
+
+void MessageApiEndpoint::addByteEntry(struct val_list *list, signed char val)
+{
+    jobject jVal = jvm->NewObject(this->jByteClass, this->createJByteMethodId, (jbyte)val);
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, jVal);
+    list->count += 1;
+    this->jvm->DeleteLocalRef(jVal);
+}
+
+void MessageApiEndpoint::addStringEntry(struct val_list *list, const char *val)
+{
+    jstring jVal = this->toJavaString(val);
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, jVal);
+    list->count += 1;
+    this->jvm->DeleteLocalRef(jVal);
+}
+
+void MessageApiEndpoint::addBoolEntry(struct val_list *list, bool val)
+{
+    jobject jVal = jvm->NewObject(this->jBoolClass, this->createJBoolMethodId, (jboolean)val);
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, jVal);
+    list->count += 1;
+    this->jvm->DeleteLocalRef(jVal);
+}
+
+void MessageApiEndpoint::addShortEntry(struct val_list *list, short val)
+{
+    jobject jVal = jvm->NewObject(this->jShortClass, this->createJShortMethodId, (jshort)val);
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, jVal);
+    list->count += 1;
+    this->jvm->DeleteLocalRef(jVal);
+}
+
+void MessageApiEndpoint::addListEntry(struct val_list *list, struct val_list *val)
+{
+    this->jvm->CallVoidMethod(list->jlist, this->addJListItemMethodId, val->jlist);
+    list->count += 1;
 }

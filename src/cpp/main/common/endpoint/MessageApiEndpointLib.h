@@ -101,6 +101,17 @@ extern "C"
     short getShortEntry(jlong message, struct val_list *list, int index);
     struct list_entry *getEntry(jlong message, struct val_list *list, int index);
     struct val_list *getListEntry(jlong message, struct val_list *list, int index);
+    struct val_list *createList(jlong message);
+    void addEntry(jlong message, struct val_list *list, struct list_entry *entry);
+    void addIntEntry(jlong message, struct val_list *list, int val);
+    void addLongEntry(jlong message, struct val_list *list, long val);
+    void addFloatEntry(jlong message, struct val_list *list, float val);
+    void addDoubleEntry(jlong message, struct val_list *list, double val);
+    void addByteEntry(jlong message, struct val_list *list, signed char val);
+    void addStringEntry(jlong message, struct val_list *list, const char *val);
+    void addBoolEntry(jlong message, struct val_list *list, bool val);
+    void addShortEntry(jlong message, struct val_list *list, short val);
+    void addListEntry(jlong message, struct val_list *list, struct val_list *val);
 
     /*Packet Methods*/
     void addPacketRecord(jlong message, struct packet *packet, struct record *record);

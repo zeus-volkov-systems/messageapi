@@ -123,19 +123,19 @@ public:
     struct val_list *getListEntry(struct val_list *list, int index);
 
     /*List Creation Method*/
-    struct val_list *createList(); //TODO
+    struct val_list *createList();
 
     /*List Entry Insertion Methods*/
-    void addJListEntry(struct val_list *list, jobject val); //TODO
-    void addIntEntry(struct val_list *list, int val);       //TODO
-    void addLongEntry(struct val_list *list, long val);     //TODO
-    void addFloatEntry(struct val_list *list, float val);   //TODO
-    void addDoubleEntry(struct val_list *list, double val); //TODO
-    void addByteEntry(struct val_list *list, signed char val); //TODO
-    void addStringEntry(struct val_list *list, const char *val); //TODO
-    void addBoolEntry(struct val_list *list, bool val);          //TODO
-    void addShortEntry(struct val_list *list, short val);        //TODO
-    void addListEntry(struct val_list *list, struct val_list *val); //TODO
+    void addEntry(struct val_list *list, struct list_entry *entry);
+    void addIntEntry(struct val_list *list, int val);
+    void addLongEntry(struct val_list *list, long val);
+    void addFloatEntry(struct val_list *list, float val);
+    void addDoubleEntry(struct val_list *list, double val);
+    void addByteEntry(struct val_list *list, signed char val);
+    void addStringEntry(struct val_list *list, const char *val);
+    void addBoolEntry(struct val_list *list, bool val);
+    void addShortEntry(struct val_list *list, short val);
+    void addListEntry(struct val_list *list, struct val_list *val);
 
 private :
     /*Global References*/
@@ -204,7 +204,7 @@ private :
     jmethodID setConditionValueMethodId;
 
     /*List Utility Methods*/
-    jmethodID createJListMethodId;
+    jmethodID createJArrayListMethodId;
     jmethodID getJListSizeMethodId;
     jmethodID addJListItemMethodId;
     jmethodID getJListItemMethodId;
@@ -252,7 +252,8 @@ private :
     /*Utility methods for java list operations*/
     int getJListLength(jobject jList);
     struct string_list *translateFromJavaStringList(jobject jList);
-    jobject getJListEntry(struct val_list *list, int index);
+    jobject getObjectEntry(struct val_list *list, int index);
+    void addObjectEntry(struct val_list *list, jobject val);
 
     /*Utility methods for java string operations*/
     jstring toJavaString(const char *charString);
