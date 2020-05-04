@@ -24,6 +24,7 @@ MessageApiEndpoint::MessageApiEndpoint(JNIEnv *env, jobject jendpoint, jobject j
     this->loadPacketMethodIds();
     this->loadProtocolRecordMethodIds();
     this->loadRecordMethodIds();
+    this->loadRejectionMethodIds();
     this->loadFieldMethodIds();
     this->loadConditionMethodIds();
     this->loadValueTypeMethodIds();
@@ -120,6 +121,16 @@ void MessageApiEndpoint::loadRecordMethodIds()
     this->getRecordHasConditionMethodId = this->getMethod(recordClass, "hasCondition", this->getRecordMethodSignature("hasCondition"), false);
     this->getRecordConditionMethodId = this->getMethod(recordClass, "getCondition", this->getRecordMethodSignature("getCondition"), false);
     this->jvm->DeleteLocalRef(recordClass);
+}
+
+void MessageApiEndpoint::loadRejectionMethodIds()
+{
+    jclass rejectionClass = this->getNamedClass("gov/noaa/messageapi/interfaces/IRejection");
+    this->getRejectionCopyMethodId = this->getMethod(rejectionClass, "getCopy", this->getRejectionMethodSignature("getCopy"), false);
+    this->getRejectionReasonsMethodId = this->getMethod(rejectionClass, "getReasons", this->getRejectionMethodSignature("getReasons"), false);
+    this->getRejectionRecordMethodId = this->getMethod(rejectionClass, "getRecord", this->getRejectionMethodSignature("getRecord"), false);
+    this->addRejectionReasonMethodId = this->getMethod(rejectionClass, "addReason", this->getRejectionMethodSignature("addReason"), false);
+    this->jvm->DeleteLocalRef(rejectionClass);
 }
 
 void MessageApiEndpoint::loadFieldMethodIds()
@@ -396,6 +407,28 @@ const char *MessageApiEndpoint::getRecordMethodSignature(const char *methodName)
     {
         return "(Ljava/lang/String;)Lgov/noaa/messageapi/interfaces/ICondition;";
     }
+    return NULL;
+}
+
+const char *MessageApiEndpoint::getRejectionMethodSignature(const char *methodName)
+{
+    if (strcmp(methodName, "getCopy") == 0)
+    {
+        return "()Lgov/noaa/messageapi/interfaces/IRejection;";
+    }
+    else if (strcmp(methodName, "getReasons") == 0)
+    {
+        return "()Ljava/util/List;";
+    }
+    else if (strcmp(methodName, "getRecord") == 0)
+    {
+        return "()Lgov/noaa/messageapi/interfaces/IRecord;";
+    }
+    else if (strcmp(methodName, "addReason") == 0)
+    {
+        return "(Ljava/lang/String;)V";
+    }
+
     return NULL;
 }
 
@@ -1239,6 +1272,35 @@ void MessageApiEndpoint::addRejectionEntry(struct rejection_list *rejection_list
 {
     this->jvm->CallVoidMethod(rejection_list->jrejections, this->addJListItemMethodId, rejection->jrejection);
     rejection_list->count += 1;
+}
+
+struct rejection *MessageApiEndpoint::getRejectionCopy(struct rejection *rejection)
+{
+    jobject jRejectionCopy = this->jvm->CallObjectMethod(rejection->jrejection, this->getRejectionCopyMethodId);
+    struct rejection *rejectionCopy = (struct rejection *)malloc(sizeof(struct rejection) + sizeof(jRejectionCopy));
+    rejectionCopy->jrejection = jRejectionCopy;
+    return rejectionCopy;
+}
+
+struct record *MessageApiEndpoint::getRejectionRecord(struct rejection *rejection)
+{
+    jobject jRecord = this->jvm->CallObjectMethod(rejection->jrejection, this->getRejectionRecordMethodId);
+    struct record *record = (struct record *)malloc(sizeof(struct record) + sizeof(jRecord));
+    record->jrecord = jRecord;
+    return record;
+}
+
+struct string_list *MessageApiEndpoint::getRejectionReasons(struct rejection *rejection)
+{
+    jobject jReasons = this->jvm->CallObjectMethod(rejection->jrejection, this->getRejectionReasonsMethodId);
+    struct string_list *reasons = this->translateFromJavaStringList(jReasons);
+    return reasons;
+}
+
+void MessageApiEndpoint::addRejectionReason(struct rejection *rejection, const char *reason)
+{
+    jstring jReason = this->toJavaString(reason);
+    this->jvm->CallVoidMethod(rejection->jrejection, this->addRejectionReasonMethodId, jReason);
 }
 
 struct val_list *MessageApiEndpoint::createList()

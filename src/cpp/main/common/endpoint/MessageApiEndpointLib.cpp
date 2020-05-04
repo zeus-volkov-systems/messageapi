@@ -510,6 +510,26 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->addRejectionEntry(rejection_list, rejection);
     }
 
+    struct rejection *getRejectionCopy(jlong message, struct rejection *rejection)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionCopy(rejection);
+    }
+
+    struct record *getRejectionRecord(jlong message, struct rejection *rejection)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionRecord(rejection);
+    }
+
+    struct string_list *getRejectionReasons(jlong message, struct rejection *rejection)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionReasons(rejection);
+    }
+
+    void addRejectionReason(jlong message, struct rejection *rejection, const char *reason)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addRejectionReason(rejection, reason);
+    }
+
     /*Packet Utils*/
     void addPacketRecord(jlong message, struct packet *packet, struct record *record)
     {

@@ -43,6 +43,10 @@ extern "C"
     /*Rejection Methods*/
     struct rejection_list *createRejectionList(jlong message);
     void addRejectionEntry(jlong message, struct rejection_list *rejection_list, struct rejection *rejection);
+    struct rejection *getRejectionCopy(jlong message, struct rejection *rejection);
+    struct record *getRejectionRecord(jlong message, struct rejection *rejection);
+    struct string_list *getRejectionReasons(jlong message, struct rejection *rejection);
+    void addRejectionReason(jlong message, struct rejection *rejection, const char *reason);
 
     /*Field Methods*/
     const char *getFieldId(jlong message, struct field *field);
