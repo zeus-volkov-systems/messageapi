@@ -1,6 +1,6 @@
 #include <jni.h>
 #include <stdio.h>
-#include "endpoint_structs.h"
+#include "messageapi_structs.h"
 #include "MessageApiEndpointLib.h"
 #include "gov_noaa_messageapi_endpoints_NativeEndpoint.h"
 
@@ -57,7 +57,7 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       struct val_list *val_list = getFieldListVal(message, testField3);
       printf("Field value 3 (list) length is: %d\n", val_list->count);
       for (int i = 0; i < val_list->count; i++) {
-          printf("Field value 3, element %d, is: %d\n", i, getIntEntry(message, val_list, i));
+          printf("Field value 3, element %d, is: %d\n", i, getIntItem(message, val_list, i));
       }
       fflush(stdout);
       if (getFieldIsNull(message, testField4)) {
@@ -82,12 +82,14 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
           }
       }
       fflush(stdout);
-      printf("Creating a string list\n");
+      printf("Creating a string list..\n");
       struct val_list *return_val_list = createList(message);
-      addStringEntry(message, return_val_list, "first element of our string!");
-      addStringEntry(message, return_val_list, "second element of our string!!");
+      addStringItem(message, return_val_list, "first element of our string!");
+      addStringItem(message, return_val_list, "second element of our string!!");
       printf("Created a string list.\n");
       setFieldListVal(message, getField(message, returnRecord, "return-list"), return_val_list);
+      printf("First value added to the return-list field: %s\n", getStringItem(message, return_val_list, 0));
+      printf("Second value added to the return-list field: %s\n", getStringItem(message, return_val_list, 1));
       printf("Added the string list to the return record. Should have two elements, see above.\n");
       fflush(stdout);
       struct packet* packet = createPacket(message);

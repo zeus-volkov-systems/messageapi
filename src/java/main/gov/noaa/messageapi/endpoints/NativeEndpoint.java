@@ -100,7 +100,7 @@ public class NativeEndpoint extends BaseEndpoint implements IEndpoint {
      * <p>
      * jni.h
      * <p>
-     * endpoint_structs.h
+     * messageapi_structs.h
      * <p>
      * MessageApiEndpointLib.h
      * <p>

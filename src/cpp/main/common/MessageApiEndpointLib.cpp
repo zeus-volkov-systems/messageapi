@@ -83,9 +83,9 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->createRecordList();
     }
 
-    void addRecordEntry(jlong message, struct record_list *record_list, struct record *record)
+    void addRecord(jlong message, struct record_list *record_list, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addRecordEntry(record_list, record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addRecord(record_list, record);
     }
 
     struct record *getRecord(jlong message, struct record_list *recordList, int recordIndex)
@@ -394,109 +394,109 @@ extern "C"
 
     /*List Utility Methods*/
 
-    struct list_entry *getEntry(jlong message, struct val_list *list, int index)
+    struct list_item *getItem(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getItem(list, index);
     }
 
-    struct val_list *getListEntry(jlong message, struct val_list *list, int index)
+    struct val_list *getListItem(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getListEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getListItem(list, index);
     }
 
-    int getIntEntry(jlong message, struct val_list *list, int index)
+    int getIntItem(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getIntEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getIntItem(list, index);
     }
 
-    long getLongEntry(jlong message, struct val_list *list, int index)
+    long getLongItem(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getLongEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getLongItem(list, index);
     }
 
-    float getFloatEntry(jlong message, struct val_list *list, int index)
+    float getFloatItem(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFloatEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getFloatItem(list, index);
     }
 
-    double getDoubleEntry(jlong message, struct val_list *list, int index)
+    double getDoubleItem(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getDoubleEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getDoubleItem(list, index);
     }
 
-    signed char getByteEntry(jlong message, struct val_list *list, int index)
+    signed char getByteItem(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getByteEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getByteItem(list, index);
     }
 
-    const char *getStringEntry(jlong message, struct val_list *list, int index)
+    const char *getStringItem(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getStringEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getStringItem(list, index);
     }
 
-    bool getBoolEntry(jlong message, struct val_list *list, int index)
+    bool getBoolItem(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getBoolEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getBoolItem(list, index);
     }
 
-    short getShortEntry(jlong message, struct val_list *list, int index)
+    short getShortItem(jlong message, struct val_list *list, int index)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getShortEntry(list, index);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getShortItem(list, index);
     }
 
     struct val_list *createList(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->createList();
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->createList();
     }
 
-    void addEntry(jlong message, struct val_list *list, struct list_entry *entry)
+    void addItem(jlong message, struct val_list *list, struct list_item *item)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addEntry(list, entry);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addItem(list, item);
     }
 
-    void addIntEntry(jlong message, struct val_list *list, int val)
+    void addIntItem(jlong message, struct val_list *list, int val)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addIntEntry(list, val);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addIntItem(list, val);
     }
 
-    void addLongEntry(jlong message, struct val_list *list, long val)
+    void addLongItem(jlong message, struct val_list *list, long val)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addLongEntry(list, val);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addLongItem(list, val);
     }
 
-    void addFloatEntry(jlong message, struct val_list *list, float val)
+    void addFloatItem(jlong message, struct val_list *list, float val)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addFloatEntry(list, val);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addFloatItem(list, val);
     }
 
-    void addDoubleEntry(jlong message, struct val_list *list, double val)
+    void addDoubleItem(jlong message, struct val_list *list, double val)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addDoubleEntry(list, val);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addDoubleItem(list, val);
     }
 
-    void addByteEntry(jlong message, struct val_list *list, signed char val)
+    void addByteItem(jlong message, struct val_list *list, signed char val)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addByteEntry(list, val);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addByteItem(list, val);
     }
 
-    void addStringEntry(jlong message, struct val_list *list, const char *val)
+    void addStringItem(jlong message, struct val_list *list, const char *val)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addStringEntry(list, val);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addStringItem(list, val);
     }
 
-    void addBoolEntry(jlong message, struct val_list *list, bool val)
+    void addBoolItem(jlong message, struct val_list *list, bool val)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addBoolEntry(list, val);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addBoolItem(list, val);
     }
 
-    void addShortEntry(jlong message, struct val_list *list, short val)
+    void addShortItem(jlong message, struct val_list *list, short val)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addShortEntry(list, val);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addShortItem(list, val);
     }
 
-    void addListEntry(jlong message, struct val_list *list, struct val_list *val)
+    void addListItem(jlong message, struct val_list *list, struct val_list *val)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addListEntry(list, val);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addListItem(list, val);
     }
 
     /*Rejection Utils*/
@@ -505,9 +505,9 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->createRejectionList();
     }
 
-    void addRejectionEntry(jlong message, struct rejection_list *rejection_list, struct rejection *rejection)
+    void addRejection(jlong message, struct rejection_list *rejection_list, struct rejection *rejection)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addRejectionEntry(rejection_list, rejection);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->addRejection(rejection_list, rejection);
     }
 
     struct rejection *getRejectionCopy(jlong message, struct rejection *rejection)
@@ -533,41 +533,41 @@ extern "C"
     /*Packet Utils*/
     void addPacketRecord(jlong message, struct packet *packet, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addPacketRecord(packet, record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketUtils()->addRecord(packet, record);
     }
 
     void setPacketRecords(jlong message, struct packet *packet, struct record_list *records)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setPacketRecords(packet, records);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketUtils()->setRecords(packet, records);
     }
 
     void addPacketRecords(jlong message, struct packet *packet, struct record_list *records)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addPacketRecords(packet, records);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketUtils()->addRecords(packet, records);
     }
 
     void setPacketRejections(jlong message, struct packet *packet, struct rejection_list *rejections)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setPacketRejections(packet, rejections);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketUtils()->setRejections(packet, rejections);
     }
 
     void addPacketRejection(jlong message, struct packet *packet, struct rejection *rejection)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addPacketRejection(packet, rejection);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketUtils()->addRejection(packet, rejection);
     }
 
     void addPacketRejections(jlong message, struct packet *packet, struct rejection_list *rejections)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addPacketRejections(packet, rejections);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketUtils()->addRejections(packet, rejections);
     }
 
     struct record_list *getPacketRecords(jlong message, struct packet *packet)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketRecords(packet);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketUtils()->getRecords(packet);
     }
 
     struct rejection_list *getPacketRejections(jlong message, struct packet *packet)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketRejections(packet);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getPacketUtils()->getRejections(packet);
     }
 }

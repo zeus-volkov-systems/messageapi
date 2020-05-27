@@ -20,14 +20,14 @@ UNAME := $(shell uname)
 #The following vars are used to route source code and scripts (from the scripts and src dirs)
 #to the library dir as compiled files (the job name should match the name of the directory/job map.)
 #the job type is simply a test job or a main job and should either be test or main.
-ENDPOINT_NAME=demoendpointlibrary
+ENDPOINT_NAME=demosession
 ENDPOINT_TYPE=test
 
 #USER SPECIFIED
 #The following var represents the output name of the JniLib that will be created and referenced in the job map.
 #Do not specify the extension (.so/.dll/.jnilib) - these are determined automatically on build.
 #The full path to the created library must be referenced in the endpoint config.
-LIBNAME=DemoEndpointLibrary
+LIBNAME=DemoSession
 
 #USER SPECIFIED
 #The following vars should contain strings representing the C, Fortran, and CPP libraries that glue the fortran code to java code.
@@ -63,7 +63,7 @@ FF=gfortran
 #The following vars contain strings representing common libraries used by all code
 #at a project level. These should generally not be touched by users.
 COMMONC=
-COMMONCPP=JniUtils.cpp TypeUtils.cpp ListUtils.cpp PacketUtils.cpp MessageApiEndpoint.cpp MessageApiEndpointLib.cpp
+COMMONCPP=MessageApiEndpoint.cpp MessageApiEndpointLib.cpp
 COMMONFORTRAN=
 JAVACLASSES:=$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/endpoints/NativeEndpoint.java
 JAVAPATH=$(PROJECTPATH)/src/java/main:$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/endpoints
@@ -72,7 +72,7 @@ JAVAPATH=$(PROJECTPATH)/src/java/main:$(PROJECTPATH)/src/java/main/gov/noaa/mess
 #The following contains source code paths derived from the ENDPOINT_NAME and ENDPOINT_TYPE supplied by the user.
 COMMONCPATH=$(PROJECTPATH)/src/c/main/common/structs/
 USERCPATH=$(PROJECTPATH)/src/c/$(ENDPOINT_TYPE)/endpoints/$(ENDPOINT_NAME)/
-COMMONCPPPATH=$(PROJECTPATH)/src/cpp/main/common/
+COMMONCPPPATH=$(PROJECTPATH)/src/cpp/main/common/endpoint/
 USERCPPPATH=$(PROJECTPATH)/src/cpp/$(ENDPOINT_TYPE)/$(ENDPOINT_NAME)/
 COMMONFORTRANPATH=$(PROJECTPATH)/src/fortran/main/common/
 USERFORTRANPATH=$(PROJECTPATH)/src/fortran/$(ENDPOINT_TYPE)/$(ENDPOINT_NAME)/

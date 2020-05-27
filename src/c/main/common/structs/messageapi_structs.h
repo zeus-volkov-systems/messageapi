@@ -1,8 +1,17 @@
+
+#ifndef _Included_messageapi_structs
+#define _Included_messageapi_structs
+
 #include <jni.h>
 
 /**
  * @author Ryan Berkheimer
  */
+
+struct list_item
+{
+    jobject jitem;
+};
 
 struct list_entry
 {
@@ -80,3 +89,5 @@ struct classifier
     char* key;
     char* val;
 };
+
+#endif

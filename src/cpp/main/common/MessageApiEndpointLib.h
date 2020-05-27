@@ -25,7 +25,7 @@ extern "C"
 
     /*Record Methods*/
     struct record_list *createRecordList(jlong message);
-    void addRecordEntry(jlong message, struct record_list *record_list, struct record *record);
+    void addRecord(jlong message, struct record_list *record_list, struct record *record);
 
     struct record *getRecordCopy(jlong message, struct record *record);
     bool getRecordIsValid(jlong message, struct record *record);
@@ -42,7 +42,7 @@ extern "C"
 
     /*Rejection Methods*/
     struct rejection_list *createRejectionList(jlong message);
-    void addRejectionEntry(jlong message, struct rejection_list *rejection_list, struct rejection *rejection);
+    void addRejection(jlong message, struct rejection_list *rejection_list, struct rejection *rejection);
     struct rejection *getRejectionCopy(jlong message, struct rejection *rejection);
     struct record *getRejectionRecord(jlong message, struct rejection *rejection);
     struct string_list *getRejectionReasons(jlong message, struct rejection *rejection);
@@ -102,27 +102,27 @@ extern "C"
     void setConditionListVal(jlong message, struct condition *condition, struct val_list *value);
 
     /*List Utility Methods*/
-    int getIntEntry(jlong message, struct val_list *list, int index);
-    long getLongEntry(jlong message, struct val_list *list, int index);
-    float getFloatEntry(jlong message, struct val_list *list, int index);
-    double getDoubleEntry(jlong message, struct val_list *list, int index);
-    signed char getByteEntry(jlong message, struct val_list *list, int index);
-    const char *getStringEntry(jlong message, struct val_list *list, int index);
-    bool getBoolEntry(jlong message, struct val_list *list, int index);
-    short getShortEntry(jlong message, struct val_list *list, int index);
-    struct list_entry *getEntry(jlong message, struct val_list *list, int index);
-    struct val_list *getListEntry(jlong message, struct val_list *list, int index);
+    int getIntItem(jlong message, struct val_list *list, int index);
+    long getLongItem(jlong message, struct val_list *list, int index);
+    float getFloatItem(jlong message, struct val_list *list, int index);
+    double getDoubleItem(jlong message, struct val_list *list, int index);
+    signed char getByteItem(jlong message, struct val_list *list, int index);
+    const char *getStringItem(jlong message, struct val_list *list, int index);
+    bool getBoolItem(jlong message, struct val_list *list, int index);
+    short getShortItem(jlong message, struct val_list *list, int index);
+    struct list_item *getItem(jlong message, struct val_list *list, int index);
+    struct val_list *getListItem(jlong message, struct val_list *list, int index);
     struct val_list *createList(jlong message);
-    void addEntry(jlong message, struct val_list *list, struct list_entry *entry);
-    void addIntEntry(jlong message, struct val_list *list, int val);
-    void addLongEntry(jlong message, struct val_list *list, long val);
-    void addFloatEntry(jlong message, struct val_list *list, float val);
-    void addDoubleEntry(jlong message, struct val_list *list, double val);
-    void addByteEntry(jlong message, struct val_list *list, signed char val);
-    void addStringEntry(jlong message, struct val_list *list, const char *val);
-    void addBoolEntry(jlong message, struct val_list *list, bool val);
-    void addShortEntry(jlong message, struct val_list *list, short val);
-    void addListEntry(jlong message, struct val_list *list, struct val_list *val);
+    void addItem(jlong message, struct val_list *list, struct list_item *item);
+    void addIntItem(jlong message, struct val_list *list, int val);
+    void addLongItem(jlong message, struct val_list *list, long val);
+    void addFloatItem(jlong message, struct val_list *list, float val);
+    void addDoubleItem(jlong message, struct val_list *list, double val);
+    void addByteItem(jlong message, struct val_list *list, signed char val);
+    void addStringItem(jlong message, struct val_list *list, const char *val);
+    void addBoolItem(jlong message, struct val_list *list, bool val);
+    void addShortItem(jlong message, struct val_list *list, short val);
+    void addListItem(jlong message, struct val_list *list, struct val_list *val);
 
     /*Packet Methods*/
     void addPacketRecord(jlong message, struct packet *packet, struct record *record);

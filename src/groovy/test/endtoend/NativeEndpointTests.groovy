@@ -39,9 +39,15 @@ def 'Session with one endpoint that calls into C, populates a return record, and
         IResponse response = request.submit()
         while (!response.isComplete()) { }
     then: 'No rejections, one return record, field values match..'
+        println "finished!!!!"
         response.getRejections().size() == 0
-        //println response.getRejections().size()
+        println "rejection size:"
+        println response.getRejections().size()
+        println "record size:"
+        println response.getRecords().size()
         response.getRecords().size() == 1
+        println "test-integer value:"
+        println response.getRecords().get(0).getField('test-integer').getValue()
         response.getRecords().get(0).getField('test-integer').getValue() == 5
         response.getRecords().get(0).getField('return-list').getValue().get(0) == "first element of our string!"
         response.getRecords().get(0).getField('return-list').getValue().get(1) == "second element of our string!!"
