@@ -4,7 +4,7 @@
 
 
 /** Constructor */
-FieldUtils::FieldUtils(JNIEnv *jvm, TypeUtils *TypeUtils, ListUtils *listUtils)
+FieldUtils::FieldUtils(JNIEnv *jvm, TypeUtils *typeUtils, ListUtils *listUtils)
 {
     this->loadGlobalRefs(jvm, typeUtils, listUtils);
     this->loadMethodIds();

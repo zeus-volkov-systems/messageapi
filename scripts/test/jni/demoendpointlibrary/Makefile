@@ -63,7 +63,7 @@ FF=gfortran
 #The following vars contain strings representing common libraries used by all code
 #at a project level. These should generally not be touched by users.
 COMMONC=
-COMMONCPP=JniUtils.cpp TypeUtils.cpp ListUtils.cpp PacketUtils.cpp MessageApiEndpoint.cpp MessageApiEndpointLib.cpp
+COMMONCPP=JniUtils.cpp TypeUtils.cpp ListUtils.cpp ConditionUtils.cpp FieldUtils.cpp EndpointUtils.cpp ProtocolRecordUtils.cpp RecordUtils.cpp RejectionUtils.cpp PacketUtils.cpp MessageApiEndpoint.cpp MessageApiEndpointLib.cpp
 COMMONFORTRAN=
 JAVACLASSES:=$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/endpoints/NativeEndpoint.java
 JAVAPATH=$(PROJECTPATH)/src/java/main:$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/endpoints

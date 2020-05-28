@@ -26,7 +26,6 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
           printf("Field name: %s\n", default_field_name_list->strings[i]);
       }
       fflush(stdout);
-      //struct field_list* default_field_list = getFields(message, default_record_list->records[0]);
       struct field *testField = getField(message, getRecord(message, default_record_list, 0), "initial-value");
       struct field *testField2 = getField(message, getRecord(message, default_record_list, 0), "string-test");
       struct field *testField3 = getField(message, getRecord(message, default_record_list, 0), "int-list-test");
