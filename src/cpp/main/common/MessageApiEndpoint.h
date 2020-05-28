@@ -7,11 +7,13 @@
 #include "messageapi_structs.h"
 
 #ifdef __cplusplus
+#include <iostream>
+#include <string>
+
 #include "JniUtils.h"
 #include "ListUtils.h"
 #include "PacketUtils.h"
-#include <iostream>
-#include <string>
+#include "EndpointUtils.h"
 
 /**
  * This is the header for the MessageApiEndpoint class - this class is the native side facility
@@ -32,16 +34,10 @@ public:
     ~MessageApiEndpoint();
 
     /*Utils Accessors*/
+    EndpointUtils *getEndpointUtils();
     PacketUtils *getPacketUtils();
     ListUtils *getListUtils();
     TypeUtils *getTypeUtils();
-
-    /*Endpoint Methods*/
-    struct record *getStateContainer();
-    struct field_list *getDefaultFields();
-    struct packet *createPacket();
-    struct record *createRecord();
-    struct rejection *createRejection(struct record* record, const char *reason);
 
     /*Protocol Record Methods*/
     jobject getProtocolRecords(const char *method, const char *key, const char *val);
@@ -134,13 +130,7 @@ private :
     TypeUtils *typeUtils;
     ListUtils *listUtils;
     PacketUtils *packetUtils;
-
-    /*Endpoint Methods*/
-    jmethodID getStateContainerMethodId;
-    jmethodID getDefaultFieldsMethodId;
-    jmethodID createPacketMethodId;
-    jmethodID createRecordMethodId;
-    jmethodID createRejectionMethodId;
+    EndpointUtils *endpointUtils;
 
     /*Protocol Record Methods*/
     jmethodID getRecordsMethodId;
@@ -184,7 +174,6 @@ private :
 
 
     /*Load method IDS for reuse. MethodIDS do not count against the jref count and do need to be released.*/
-    void loadEndpointMethodIds();
     void loadProtocolRecordMethodIds();
     void loadRecordMethodIds();
     void loadRejectionMethodIds();
@@ -192,7 +181,6 @@ private :
     void loadConditionMethodIds();
 
     /*Grouped methods for returning the matching method signature string for a given interface*/
-    const char *getEndpointMethodSignature(const char *endpointMethodName);
     const char *getProtocolRecordMethodSignature(const char *protocolRecordMethodName);
     const char *getRecordMethodSignature(const char *recordMethodName);
     const char *getRejectionMethodSignature(const char *rejectionMethodName);

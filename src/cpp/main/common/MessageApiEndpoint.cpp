@@ -19,9 +19,9 @@ MessageApiEndpoint::MessageApiEndpoint(JNIEnv *env, jobject jendpoint, jobject j
 
     this->typeUtils = new TypeUtils(this->jvm);
     this->listUtils = new ListUtils(this->jvm, typeUtils);
+    this->endpointUtils = new EndpointUtils(this->jvm, this->endpoint, this->listUtils);
     this->packetUtils = new PacketUtils(this->jvm, this->listUtils);
 
-    this->loadEndpointMethodIds();
     this->loadProtocolRecordMethodIds();
     this->loadRecordMethodIds();
     this->loadRejectionMethodIds();
@@ -33,6 +33,7 @@ MessageApiEndpoint::~MessageApiEndpoint()
 {
     try
     {
+        delete this->endpointUtils;
         delete this->packetUtils;
         delete this->listUtils;
         delete this->typeUtils;
@@ -43,6 +44,11 @@ MessageApiEndpoint::~MessageApiEndpoint()
     {
         std::cout << e.what();
     }
+}
+
+EndpointUtils *MessageApiEndpoint::getEndpointUtils()
+{
+    return this->endpointUtils;
 }
 
 PacketUtils *MessageApiEndpoint::getPacketUtils()
@@ -60,17 +66,6 @@ TypeUtils *MessageApiEndpoint::getTypeUtils()
     return this->typeUtils;
 }
 
-void MessageApiEndpoint::loadEndpointMethodIds()
-{
-
-    jclass endpointClass = JniUtils::getObjectClass(this->jvm, this->endpoint);
-    this->getStateContainerMethodId = JniUtils::getMethod(this->jvm, endpointClass, "getStateContainer", this->getEndpointMethodSignature("getStateContainer"), false);
-    this->getDefaultFieldsMethodId = JniUtils::getMethod(this->jvm, endpointClass, "getDefaultFields", this->getEndpointMethodSignature("getDefaultFields"), false);
-    this->createPacketMethodId = JniUtils::getMethod(this->jvm, endpointClass, "createPacket", this->getEndpointMethodSignature("createPacket"), false);
-    this->createRecordMethodId = JniUtils::getMethod(this->jvm, endpointClass, "createRecord", this->getEndpointMethodSignature("createRecord"), false);
-    this->createRejectionMethodId = JniUtils::getMethod(this->jvm, endpointClass, "createRejection", this->getEndpointMethodSignature("createRejection"), false);
-    this->jvm->DeleteLocalRef(endpointClass);
-}
 
 void MessageApiEndpoint::loadProtocolRecordMethodIds()
 {
@@ -136,40 +131,6 @@ void MessageApiEndpoint::loadConditionMethodIds()
     this->jvm->DeleteLocalRef(conditionClass);
 }
 
-/**
- * Loads the default value types for MessageApiEndpoint.
- * Default types are relatively primitive data types. More complicated 'struct' types
- * will require extension of this by user methods.
- * The included default types have associated access,modification,and release methods.
- * Each also has an associated 'list' method (i.e., string has string_list, byte has byte_list, etc.)
- * Default types include the following:
- * integer, long, float, double, string, byte, boolean
- */
-
-const char *MessageApiEndpoint::getEndpointMethodSignature(const char *methodName)
-{
-    if (strcmp(methodName, "getStateContainer") == 0)
-    {
-        return "()Lgov/noaa/messageapi/interfaces/IRecord;";
-    }
-    else if (strcmp(methodName,"getDefaultFields") == 0)
-    {
-        return "()Ljava/util/List;";
-    }
-    else if (strcmp(methodName, "createPacket") == 0)
-    {
-        return "()Lgov/noaa/messageapi/interfaces/IPacket;";
-    }
-    else if (strcmp(methodName, "createRecord") == 0)
-    {
-        return "()Lgov/noaa/messageapi/interfaces/IRecord;";
-    }
-    else if (strcmp(methodName, "createRejection") == 0)
-    {
-        return "(Lgov/noaa/messageapi/interfaces/IRecord;Ljava/lang/String;)Lgov/noaa/messageapi/interfaces/IRejection;";
-    }
-    return NULL;
-}
 
 const char *MessageApiEndpoint::getProtocolRecordMethodSignature(const char* methodName)
 {
@@ -318,60 +279,6 @@ const char * MessageApiEndpoint::getConditionMethodSignature(const char *methodN
     return NULL;
 }
 
-struct record *MessageApiEndpoint::getStateContainer()
-{
-    jobject jstatecontainer = this->jvm->CallObjectMethod(this->endpoint, this->getStateContainerMethodId);
-    struct record *record = (struct record *)malloc(sizeof(struct record) + sizeof(jstatecontainer));
-    record->jrecord = jstatecontainer;
-    return record;
-}
-
-struct field_list *MessageApiEndpoint::getDefaultFields()
-{
-    jobject jFieldList = this->jvm->CallObjectMethod(this->endpoint, this->getDefaultFieldsMethodId);
-
-    int fieldCount = this->listUtils->getListLength(jFieldList);
-    struct field **fields = (struct field **)malloc(sizeof(struct field *) * fieldCount);
-
-    for (int i = 0; i < fieldCount; i++)
-    {
-        jobject jfield = static_cast<jobject>(this->jvm->CallObjectMethod(jFieldList, this->listUtils->getListItemMethod(), i));
-        struct field *field = (struct field *)malloc(sizeof(field) + sizeof(jfield));
-        field->jfield = (jobject)jfield;
-        fields[i] = field;
-    }
-
-    struct field_list *field_list = (struct field_list *)malloc(sizeof(struct field_list) + sizeof(fields));
-    field_list->count = fieldCount;
-    field_list->fields = fields;
-    return field_list;
-}
-
-struct packet *MessageApiEndpoint::createPacket()
-{
-    jobject jpacket = this->jvm->CallObjectMethod(this->endpoint, this->createPacketMethodId);
-    struct packet *packet = (struct packet *)malloc(sizeof(struct packet) + sizeof(jpacket));
-    packet->jpacket = jpacket;
-    return packet;
-}
-
-struct record *MessageApiEndpoint::createRecord()
-{
-    jobject jrecord = this->jvm->CallObjectMethod(this->endpoint, this->createRecordMethodId);
-    struct record *record = (struct record *)malloc(sizeof(struct record) + sizeof(jrecord));
-    record->jrecord = jrecord;
-    return record;
-}
-
-struct rejection *MessageApiEndpoint::createRejection(struct record *record, const char *reason)
-{
-    jstring jreason = this->typeUtils->toJavaString(reason);
-    jobject jrejection = this->jvm->CallObjectMethod(this->endpoint, this->createRejectionMethodId, record->jrecord, jreason);
-    struct rejection *rejection = (struct rejection *)malloc(sizeof(struct rejection) + sizeof(jrejection));
-    rejection->jrejection = jrejection;
-    this->jvm->DeleteLocalRef(jreason);
-    return rejection;
-}
 
 /**
  * Factored method that handles all wrapped record retrieval methods including getRecords, getRecordsByCollection, getRecordsByTransformation,
