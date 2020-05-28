@@ -21,9 +21,9 @@ MessageApiEndpoint::MessageApiEndpoint(JNIEnv *env, jobject jendpoint, jobject j
     this->listUtils = new ListUtils(this->jvm, typeUtils);
     this->endpointUtils = new EndpointUtils(this->jvm, this->endpoint, this->typeUtils, this->listUtils);
     this->protocolRecordUtils = new ProtocolRecordUtils(this->jvm, this->protocolRecord, this->typeUtils, this->listUtils);
+    this->recordUtils = new RecordUtils(this->jvm, this->typeUtils, this->listUtils);
     this->packetUtils = new PacketUtils(this->jvm, this->listUtils);
 
-    this->loadRecordMethodIds();
     this->loadRejectionMethodIds();
     this->loadFieldMethodIds();
     this->loadConditionMethodIds();
@@ -35,6 +35,7 @@ MessageApiEndpoint::~MessageApiEndpoint()
     {
         delete this->endpointUtils;
         delete this->protocolRecordUtils;
+        delete this->recordUtils;
         delete this->packetUtils;
         delete this->listUtils;
         delete this->typeUtils;
@@ -57,6 +58,11 @@ ProtocolRecordUtils *MessageApiEndpoint::getProtocolRecordUtils()
     return this->protocolRecordUtils;
 }
 
+RecordUtils *MessageApiEndpoint::getRecordUtils()
+{
+    return this->recordUtils;
+}
+
 PacketUtils *MessageApiEndpoint::getPacketUtils()
 {
     return this->packetUtils;
@@ -74,24 +80,6 @@ TypeUtils *MessageApiEndpoint::getTypeUtils()
 
 
 
-void MessageApiEndpoint::loadRecordMethodIds()
-{
-    jclass recordClass = JniUtils::getNamedClass(this->jvm, "gov/noaa/messageapi/interfaces/IRecord");
-    /*Intrinsic Methods*/
-    this->getRecordIsValidMethodId = JniUtils::getMethod(this->jvm, recordClass, "isValid", this->getRecordMethodSignature("isValid"), false);
-    this->getRecordCopyMethodId = JniUtils::getMethod(this->jvm, recordClass, "getCopy", this->getRecordMethodSignature("getCopy"), false);
-    /*Field Related Methods*/
-    this->getRecordFieldIdsMethodId = JniUtils::getMethod(this->jvm, recordClass, "getFieldIds", this->getRecordMethodSignature("getFieldIds"), false);
-    this->getRecordFieldsMethodId = JniUtils::getMethod(this->jvm, recordClass, "getFields", this->getRecordMethodSignature("getFields"), false);
-    this->getRecordHasFieldMethodId = JniUtils::getMethod(this->jvm, recordClass, "hasField", this->getRecordMethodSignature("hasField"), false);
-    this->getRecordFieldMethodId = JniUtils::getMethod(this->jvm, recordClass, "getField", this->getRecordMethodSignature("getField"), false);
-    /*Condition Related Methods*/
-    this->getRecordConditionIdsMethodId = JniUtils::getMethod(this->jvm, recordClass, "getConditionIds", this->getRecordMethodSignature("getConditionIds"), false);
-    this->getRecordConditionsMethodId = JniUtils::getMethod(this->jvm, recordClass, "getConditions", this->getRecordMethodSignature("getConditions"), false);
-    this->getRecordHasConditionMethodId = JniUtils::getMethod(this->jvm, recordClass, "hasCondition", this->getRecordMethodSignature("hasCondition"), false);
-    this->getRecordConditionMethodId = JniUtils::getMethod(this->jvm, recordClass, "getCondition", this->getRecordMethodSignature("getCondition"), false);
-    this->jvm->DeleteLocalRef(recordClass);
-}
 
 void MessageApiEndpoint::loadRejectionMethodIds()
 {
@@ -126,51 +114,6 @@ void MessageApiEndpoint::loadConditionMethodIds()
     this->jvm->DeleteLocalRef(conditionClass);
 }
 
-
-const char *MessageApiEndpoint::getRecordMethodSignature(const char *methodName)
-{
-    if (strcmp(methodName, "isValid") == 0)
-    {
-        return "()Ljava/lang/Boolean;";
-    }
-    else if (strcmp(methodName, "getCopy") == 0)
-    {
-        return "()Lgov/noaa/messageapi/interfaces/IRecord;";
-    }
-    else if (strcmp(methodName, "getFieldIds") == 0)
-    {
-        return "()Ljava/util/List;";
-    }
-    else if (strcmp(methodName, "hasField") == 0)
-    {
-        return "(Ljava/lang/String;)Ljava/lang/Boolean;";
-    }
-    else if (strcmp(methodName, "getFields") == 0)
-    {
-        return "()Ljava/util/List;";
-    }
-    else if (strcmp(methodName, "getField") == 0)
-    {
-        return "(Ljava/lang/String;)Lgov/noaa/messageapi/interfaces/IField;";
-    }
-    else if (strcmp(methodName, "getConditionIds") == 0)
-    {
-        return "()Ljava/util/List;";
-    }
-    else if (strcmp(methodName, "hasCondition") == 0)
-    {
-        return "(Ljava/lang/String;)Ljava/lang/Boolean;";
-    }
-    else if (strcmp(methodName, "getConditions") == 0)
-    {
-        return "()Ljava/util/List;";
-    }
-    else if (strcmp(methodName, "getCondition") == 0)
-    {
-        return "(Ljava/lang/String;)Lgov/noaa/messageapi/interfaces/ICondition;";
-    }
-    return NULL;
-}
 
 const char *MessageApiEndpoint::getRejectionMethodSignature(const char *methodName)
 {
@@ -247,111 +190,6 @@ const char * MessageApiEndpoint::getConditionMethodSignature(const char *methodN
     }
 
     return NULL;
-}
-
-bool MessageApiEndpoint::getRecordIsValid(struct record *record)
-{
-    return (bool)this->jvm->CallBooleanMethod(record->jrecord, this->getRecordIsValidMethodId);
-}
-
-struct record *MessageApiEndpoint::getRecordCopy(struct record *record)
-{
-    jobject jRecordCopy = this->jvm->CallObjectMethod(record->jrecord, this->getRecordCopyMethodId);
-    struct record *recordCopy = (struct record *)malloc(sizeof(struct record) + sizeof(jRecordCopy));
-    recordCopy->jrecord = jRecordCopy;
-    return recordCopy;
-}
-
-bool MessageApiEndpoint::getRecordHasField(struct record *record, const char *fieldId)
-{
-    jstring jFieldId = this->typeUtils->toJavaString(fieldId);
-    bool hasJField = (bool)this->jvm->CallBooleanMethod(record->jrecord, this->getRecordHasFieldMethodId, jFieldId);
-    this->jvm->DeleteLocalRef(jFieldId);
-    return hasJField;
-}
-struct string_list *MessageApiEndpoint::getFieldIds(struct record *record)
-{
-    jobject jFieldIdList = this->jvm->CallObjectMethod(record->jrecord, this->getRecordFieldIdsMethodId);
-    struct string_list *field_ids = this->listUtils->translateStringList(jFieldIdList);
-    this->jvm->DeleteLocalRef(jFieldIdList);
-    return field_ids;
-}
-struct field_list *MessageApiEndpoint::getFields(struct record *record)
-{
-    jobject jFieldList = this->jvm->CallObjectMethod(record->jrecord, this->getRecordFieldsMethodId);
-
-    int fieldCount = this->listUtils->getListLength(jFieldList);
-    struct field **fields = (struct field **)malloc(sizeof(struct field *) * fieldCount);
-
-    for (int i = 0; i < fieldCount; i++)
-    {
-        jobject jfield = static_cast<jobject>(this->jvm->CallObjectMethod(jFieldList, this->listUtils->getListItemMethod(), i));
-        struct field *field = (struct field *)malloc(sizeof(field) + sizeof(jfield));
-        field->jfield = (jobject)jfield;
-        fields[i] = field;
-    }
-
-    struct field_list *field_list = (struct field_list *)malloc(sizeof(struct field_list) + sizeof(fields));
-    field_list->count = fieldCount;
-    field_list->fields = fields;
-    return field_list;
-}
-
-struct field *MessageApiEndpoint::getField(struct record *record, const char *fieldId)
-{
-    jstring jFieldId = this->typeUtils->toJavaString(fieldId);
-    jobject jField = this->jvm->CallObjectMethod(record->jrecord, this->getRecordFieldMethodId, jFieldId);
-    struct field *field = (struct field *)malloc(sizeof(struct field) + sizeof(jField));
-    field->jfield = jField;
-    this->jvm->DeleteLocalRef(jFieldId);
-    return field;
-}
-
-bool MessageApiEndpoint::getRecordHasCondition(struct record *record, const char *conditionId)
-{
-    jstring jConditionId = this->typeUtils->toJavaString(conditionId);
-    bool hasJCondition = (bool)this->jvm->CallBooleanMethod(record->jrecord, this->getRecordHasConditionMethodId, jConditionId);
-    this->jvm->DeleteLocalRef(jConditionId);
-    return hasJCondition;
-}
-
-struct string_list *MessageApiEndpoint::getConditionIds(struct record *record)
-{
-    jobject jConditionIdList = this->jvm->CallObjectMethod(record->jrecord, this->getRecordConditionIdsMethodId);
-    struct string_list *condition_ids = this->listUtils->translateStringList(jConditionIdList);
-    this->jvm->DeleteLocalRef(jConditionIdList);
-    return condition_ids;
-}
-
-struct condition_list *MessageApiEndpoint::getConditions(struct record *record)
-{
-    jobject jConditionList = this->jvm->CallObjectMethod(record->jrecord, this->getRecordConditionsMethodId);
-
-    int conditionCount = this->listUtils->getListLength(jConditionList);
-    struct condition **conditions = (struct condition **)malloc(sizeof(struct condition *) * conditionCount);
-
-    for (int i = 0; i < conditionCount; i++)
-    {
-        jobject jcondition = static_cast<jobject>(this->jvm->CallObjectMethod(jConditionList, this->listUtils->getListItemMethod(), i));
-        struct condition *condition = (struct condition *)malloc(sizeof(condition) + sizeof(jcondition));
-        condition->jcondition = (jobject)jcondition;
-        conditions[i] = condition;
-    }
-
-    struct condition_list *condition_list = (struct condition_list *)malloc(sizeof(struct condition_list) + sizeof(conditions));
-    condition_list->count = conditionCount;
-    condition_list->conditions = conditions;
-    return condition_list;
-}
-
-struct condition *MessageApiEndpoint::getCondition(struct record *record, const char *conditionId)
-{
-    jstring jConditionId = this->typeUtils->toJavaString(conditionId);
-    jobject jCondition = this->jvm->CallObjectMethod(record->jrecord, this->getRecordConditionMethodId, jConditionId);
-    struct condition *condition = (struct condition *)malloc(sizeof(struct condition) + sizeof(jCondition));
-    condition->jcondition = jCondition;
-    this->jvm->DeleteLocalRef(jConditionId);
-    return condition;
 }
 
 const char *MessageApiEndpoint::getFieldId(struct field *field)
@@ -712,27 +550,6 @@ void MessageApiEndpoint::setConditionShortVal(struct condition *condition, short
 void MessageApiEndpoint::setConditionListVal(struct condition *condition, struct val_list *value)
 {
     this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, value->jlist);
-}
-
-struct record_list *MessageApiEndpoint::createRecordList()
-{
-    jobject jList = this->jvm->NewObject(this->typeUtils->getListClass(), this->listUtils->createListMethod());
-    //would change previous to
-    //jobject jList = this->jvm->NewObject(this->listUtils->getListClass(), this->listUtils->getCreateListMethodId());
-    //then we would need to add the following to the MessageApi Constructor:
-    //this->recordUtils = new RecordUtils(this->jvm, this->listUtils)
-    //then, in the RecordUtils class, we set this->listUtils = listUtils
-    //remember to also add a delete listUtils on the pointer in the Destructor for Record Utils
-    struct record_list *record_list = (struct record_list *)malloc(sizeof(struct record_list));
-    record_list->count = 0;
-    record_list->jrecords = jList;
-    return record_list;
-}
-
-void MessageApiEndpoint::addRecord(struct record_list *record_list, struct record *record)
-{
-    this->jvm->CallVoidMethod(record_list->jrecords, this->listUtils->addListItemMethod(), record->jrecord);
-    record_list->count += 1;
 }
 
 struct rejection_list *MessageApiEndpoint::createRejectionList()

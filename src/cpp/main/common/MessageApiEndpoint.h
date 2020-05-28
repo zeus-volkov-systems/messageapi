@@ -14,6 +14,7 @@
 #include "ListUtils.h"
 #include "EndpointUtils.h"
 #include "ProtocolRecordUtils.h"
+#include "RecordUtils.h"
 #include "PacketUtils.h"
 
 /**
@@ -37,26 +38,10 @@ public:
     /*Utils Accessors*/
     EndpointUtils *getEndpointUtils();
     ProtocolRecordUtils *getProtocolRecordUtils();
+    RecordUtils *getRecordUtils();
     PacketUtils *getPacketUtils();
     ListUtils *getListUtils();
     TypeUtils *getTypeUtils();
-
-
-    /*Record Methods*/
-    struct record_list *createRecordList();
-    void addRecord(struct record_list *record_list, struct record *record);
-    struct record *getRecordCopy(struct record *record);
-    bool getRecordIsValid(struct record *record);
-
-    bool getRecordHasField(struct record *record, const char *fieldId);
-    struct string_list *getFieldIds(struct record *record);
-    struct field_list *getFields(struct record *record);
-    struct field *getField(struct record *record, const char* fieldId);
-
-    bool getRecordHasCondition(struct record *record, const char *conditionId);
-    struct string_list *getConditionIds(struct record *record);
-    struct condition_list *getConditions(struct record *record);
-    struct condition *getCondition(struct record *record, const char *conditionId);
 
     /*Rejection Methods*/
     struct rejection_list *createRejectionList();
@@ -127,21 +112,10 @@ private :
     
     EndpointUtils *endpointUtils;
     ProtocolRecordUtils *protocolRecordUtils;
+    RecordUtils *recordUtils;
     PacketUtils *packetUtils;
     TypeUtils *typeUtils;
     ListUtils *listUtils;
-
-    /*Record Methods*/
-    jmethodID getRecordIsValidMethodId;
-    jmethodID getRecordCopyMethodId;
-    jmethodID getRecordFieldIdsMethodId;
-    jmethodID getRecordFieldsMethodId;
-    jmethodID getRecordFieldMethodId;
-    jmethodID getRecordHasFieldMethodId;
-    jmethodID getRecordConditionIdsMethodId;
-    jmethodID getRecordConditionsMethodId;
-    jmethodID getRecordHasConditionMethodId;
-    jmethodID getRecordConditionMethodId;
 
     /*Rejection Methods*/
     jmethodID getRejectionCopyMethodId;
@@ -166,13 +140,11 @@ private :
 
 
     /*Load method IDS for reuse. MethodIDS do not count against the jref count and do need to be released.*/
-    void loadRecordMethodIds();
     void loadRejectionMethodIds();
     void loadFieldMethodIds();
     void loadConditionMethodIds();
 
     /*Grouped methods for returning the matching method signature string for a given interface*/
-    const char *getRecordMethodSignature(const char *recordMethodName);
     const char *getRejectionMethodSignature(const char *rejectionMethodName);
     const char *getFieldMethodSignature(const char *fieldMethodName);
     const char *getConditionMethodSignature(const char *conditionMethodName);
