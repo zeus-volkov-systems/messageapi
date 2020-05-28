@@ -19,7 +19,7 @@ public interface IResponse {
      * Returns true or false, depending on if all processing
      * within the response is complete.
      */
-    public boolean isComplete();
+    public Boolean isComplete();
 
     /**
      * Returns the associated request that the response is
