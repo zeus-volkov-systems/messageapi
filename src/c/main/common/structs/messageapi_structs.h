@@ -13,15 +13,20 @@ struct list_item
     jobject jitem;
 };
 
-struct list_entry
-{
-    jobject jentry;
-};
-
 struct val_list
 {
     int count;
     jobject jlist;
+};
+
+struct response
+{
+    jobject jresponse;
+};
+
+struct request
+{
+    jobject jrequest;
 };
 
 struct condition
