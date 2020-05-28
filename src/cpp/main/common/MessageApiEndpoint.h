@@ -16,6 +16,7 @@
 #include "ProtocolRecordUtils.h"
 #include "RecordUtils.h"
 #include "RejectionUtils.h"
+#include "FieldUtils.h"
 #include "PacketUtils.h"
 
 /**
@@ -41,36 +42,10 @@ public:
     ProtocolRecordUtils *getProtocolRecordUtils();
     RecordUtils *getRecordUtils();
     RejectionUtils *getRejectionUtils();
+    FieldUtils *getFieldUtils();
     PacketUtils *getPacketUtils();
     ListUtils *getListUtils();
     TypeUtils *getTypeUtils();
-
-    /*Field Methods*/
-    const char *getFieldId(struct field *field);
-    const char *getFieldType(struct field *field);
-    bool getFieldIsValid(struct field *field);
-    bool getFieldIsRequired(struct field *field);
-    bool getFieldIsNull(struct field *field);
-    struct val *getFieldVal(struct field *field);
-    int getFieldIntVal(struct field *field);
-    long getFieldLongVal(struct field *field);
-    float getFieldFloatVal(struct field *field);
-    double getFieldDoubleVal(struct field *field);
-    signed char getFieldByteVal(struct field *field);
-    const char *getFieldStringVal(struct field *field);
-    bool getFieldBoolVal(struct field *field);
-    short getFieldShortVal(struct field *field);
-    struct val_list *getFieldListVal(struct field *field);
-    void setFieldVal(struct field *field, struct val *value);
-    void setFieldIntVal(struct field *field, int value);
-    void setFieldLongVal(struct field *field, long value);
-    void setFieldFloatVal(struct field *field, float value);
-    void setFieldDoubleVal(struct field *field, double value);
-    void setFieldByteVal(struct field *field, signed char value);
-    void setFieldStringVal(struct field *field, const char *value);
-    void setFieldBoolVal(struct field *field, bool value);
-    void setFieldShortVal(struct field *field, short value);
-    void setFieldListVal(struct field *field, struct val_list *value);
 
     /*Condition Methods*/
     const char *getConditionId(struct condition *condition);
@@ -108,17 +83,10 @@ private :
     ProtocolRecordUtils *protocolRecordUtils;
     RecordUtils *recordUtils;
     RejectionUtils *rejectionUtils;
+    FieldUtils *fieldUtils;
     PacketUtils *packetUtils;
     TypeUtils *typeUtils;
     ListUtils *listUtils;
-
-    /*Field Methods*/
-    jmethodID getFieldIdMethodId;
-    jmethodID getFieldTypeMethodId;
-    jmethodID getFieldValueMethodId;
-    jmethodID getFieldIsValidMethodId;
-    jmethodID getFieldIsRequiredMethodId;
-    jmethodID setFieldValueMethodId;
 
     /*Condition Methods*/
     jmethodID getConditionIdMethodId;
@@ -129,11 +97,9 @@ private :
 
 
     /*Load method IDS for reuse. MethodIDS do not count against the jref count and do need to be released.*/
-    void loadFieldMethodIds();
     void loadConditionMethodIds();
 
     /*Grouped methods for returning the matching method signature string for a given interface*/
-    const char *getFieldMethodSignature(const char *fieldMethodName);
     const char *getConditionMethodSignature(const char *conditionMethodName);
 };
 

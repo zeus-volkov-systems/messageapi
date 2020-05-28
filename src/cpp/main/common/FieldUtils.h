@@ -11,6 +11,7 @@
 #include <string>
 
 #include "JniUtils.h"
+#include "TypeUtils.h"
 #include "ListUtils.h"
 
 /**
@@ -22,17 +23,54 @@ class FieldUtils
 
 public:
     /*Default constructor/destructors*/
-    FieldUtils(JNIEnv *javaEnv, ListUtils *listUtils);
+    FieldUtils(JNIEnv *javaEnv, TypeUtils *typeUtils, ListUtils *listUtils);
     ~FieldUtils();
 
+    /*Field Methods*/
+    const char *getId(struct field *field);
+    const char *getType(struct field *field);
+    bool isValid(struct field *field);
+    bool isRequired(struct field *field);
+    bool isNull(struct field *field);
+    struct val *getVal(struct field *field);
+    int getIntVal(struct field *field);
+    long getLongVal(struct field *field);
+    float getFloatVal(struct field *field);
+    double getDoubleVal(struct field *field);
+    signed char getByteVal(struct field *field);
+    const char *getStringVal(struct field *field);
+    bool getBoolVal(struct field *field);
+    short getShortVal(struct field *field);
+    struct val_list *getListVal(struct field *field);
+    void setVal(struct field *field, struct val *value);
+    void setIntVal(struct field *field, int value);
+    void setLongVal(struct field *field, long value);
+    void setFloatVal(struct field *field, float value);
+    void setDoubleVal(struct field *field, double value);
+    void setByteVal(struct field *field, signed char value);
+    void setStringVal(struct field *field, const char *value);
+    void setBoolVal(struct field *field, bool value);
+    void setShortVal(struct field *field, short value);
+    void setListVal(struct field *field, struct val_list *value);
+
 private:
+
     /*Vars*/
     JNIEnv *jvm;
+    TypeUtils *typeUtils;
     ListUtils *listUtils;
+
+    /*Field Methods*/
+    jmethodID getIdMethodId;
+    jmethodID getTypeMethodId;
+    jmethodID getValueMethodId;
+    jmethodID isValidMethodId;
+    jmethodID isRequiredMethodId;
+    jmethodID setValueMethodId;
 
     /*Load method IDS for reuse. MethodIDS do not count against the jref count and do need to be released.*/
     void loadMethodIds();
-    void loadGlobalRefs(JNIEnv *env, ListUtils *listUtils);
+    void loadGlobalRefs(JNIEnv *env, TypeUtils *typeUtils, ListUtils *listUtils);
 
     /*Grouped methods for returning the matching method signature string for a given interface*/
     const char *getMethodSignature(const char *methodName);
