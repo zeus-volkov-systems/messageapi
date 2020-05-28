@@ -47,7 +47,7 @@ public class BaseResponse {
         this.rejections = rejections;
     }
 
-    public void setComplete(boolean complete) {
+    public void setComplete(Boolean complete) {
         this.complete = complete;
     }
 

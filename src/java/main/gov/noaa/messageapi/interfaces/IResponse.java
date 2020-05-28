@@ -59,7 +59,7 @@ public interface IResponse {
      * there are no more records or rejections coming through for the current
      * submission. 
      */
-    public void setComplete(boolean isComplete);
+    public void setComplete(Boolean isComplete);
 
 
 }
