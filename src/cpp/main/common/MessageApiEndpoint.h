@@ -12,8 +12,9 @@
 
 #include "JniUtils.h"
 #include "ListUtils.h"
-#include "PacketUtils.h"
 #include "EndpointUtils.h"
+#include "ProtocolRecordUtils.h"
+#include "PacketUtils.h"
 
 /**
  * This is the header for the MessageApiEndpoint class - this class is the native side facility
@@ -35,14 +36,11 @@ public:
 
     /*Utils Accessors*/
     EndpointUtils *getEndpointUtils();
+    ProtocolRecordUtils *getProtocolRecordUtils();
     PacketUtils *getPacketUtils();
     ListUtils *getListUtils();
     TypeUtils *getTypeUtils();
 
-    /*Protocol Record Methods*/
-    jobject getProtocolRecords(const char *method, const char *key, const char *val);
-    struct record_list *getRecords(const char *method, const char *key = NULL, const char *val = NULL);
-    struct record *getRecord(struct record_list *record_list, int index);
 
     /*Record Methods*/
     struct record_list *createRecordList();
@@ -127,17 +125,11 @@ private :
     jobject endpoint;
     jobject protocolRecord;
     
+    EndpointUtils *endpointUtils;
+    ProtocolRecordUtils *protocolRecordUtils;
+    PacketUtils *packetUtils;
     TypeUtils *typeUtils;
     ListUtils *listUtils;
-    PacketUtils *packetUtils;
-    EndpointUtils *endpointUtils;
-
-    /*Protocol Record Methods*/
-    jmethodID getRecordsMethodId;
-    jmethodID getRecordsByCollectionMethodId;
-    jmethodID getRecordsByUUIDMethodId;
-    jmethodID getRecordsByTransformationMethodId;
-    jmethodID getRecordsByClassifierMethodId;
 
     /*Record Methods*/
     jmethodID getRecordIsValidMethodId;
@@ -174,14 +166,12 @@ private :
 
 
     /*Load method IDS for reuse. MethodIDS do not count against the jref count and do need to be released.*/
-    void loadProtocolRecordMethodIds();
     void loadRecordMethodIds();
     void loadRejectionMethodIds();
     void loadFieldMethodIds();
     void loadConditionMethodIds();
 
     /*Grouped methods for returning the matching method signature string for a given interface*/
-    const char *getProtocolRecordMethodSignature(const char *protocolRecordMethodName);
     const char *getRecordMethodSignature(const char *recordMethodName);
     const char *getRejectionMethodSignature(const char *rejectionMethodName);
     const char *getFieldMethodSignature(const char *fieldMethodName);
