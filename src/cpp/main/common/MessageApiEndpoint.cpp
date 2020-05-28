@@ -22,9 +22,9 @@ MessageApiEndpoint::MessageApiEndpoint(JNIEnv *env, jobject jendpoint, jobject j
     this->endpointUtils = new EndpointUtils(this->jvm, this->endpoint, this->typeUtils, this->listUtils);
     this->protocolRecordUtils = new ProtocolRecordUtils(this->jvm, this->protocolRecord, this->typeUtils, this->listUtils);
     this->recordUtils = new RecordUtils(this->jvm, this->typeUtils, this->listUtils);
+    this->rejectionUtils = new RejectionUtils(this->jvm, this->typeUtils, this->listUtils);
     this->packetUtils = new PacketUtils(this->jvm, this->listUtils);
 
-    this->loadRejectionMethodIds();
     this->loadFieldMethodIds();
     this->loadConditionMethodIds();
 }
@@ -36,6 +36,7 @@ MessageApiEndpoint::~MessageApiEndpoint()
         delete this->endpointUtils;
         delete this->protocolRecordUtils;
         delete this->recordUtils;
+        delete this->rejectionUtils;
         delete this->packetUtils;
         delete this->listUtils;
         delete this->typeUtils;
@@ -63,6 +64,11 @@ RecordUtils *MessageApiEndpoint::getRecordUtils()
     return this->recordUtils;
 }
 
+RejectionUtils *MessageApiEndpoint::getRejectionUtils()
+{
+    return this->rejectionUtils;
+}
+
 PacketUtils *MessageApiEndpoint::getPacketUtils()
 {
     return this->packetUtils;
@@ -78,18 +84,6 @@ TypeUtils *MessageApiEndpoint::getTypeUtils()
     return this->typeUtils;
 }
 
-
-
-
-void MessageApiEndpoint::loadRejectionMethodIds()
-{
-    jclass rejectionClass = JniUtils::getNamedClass(this->jvm, "gov/noaa/messageapi/interfaces/IRejection");
-    this->getRejectionCopyMethodId = JniUtils::getMethod(this->jvm, rejectionClass, "getCopy", this->getRejectionMethodSignature("getCopy"), false);
-    this->getRejectionReasonsMethodId = JniUtils::getMethod(this->jvm, rejectionClass, "getReasons", this->getRejectionMethodSignature("getReasons"), false);
-    this->getRejectionRecordMethodId = JniUtils::getMethod(this->jvm, rejectionClass, "getRecord", this->getRejectionMethodSignature("getRecord"), false);
-    this->addRejectionReasonMethodId = JniUtils::getMethod(this->jvm, rejectionClass, "addReason", this->getRejectionMethodSignature("addReason"), false);
-    this->jvm->DeleteLocalRef(rejectionClass);
-}
 
 void MessageApiEndpoint::loadFieldMethodIds()
 {
@@ -112,29 +106,6 @@ void MessageApiEndpoint::loadConditionMethodIds()
     this->getConditionValueMethodId = JniUtils::getMethod(this->jvm, conditionClass, "getValue", this->getConditionMethodSignature("getValue"), false);
     this->setConditionValueMethodId = JniUtils::getMethod(this->jvm, conditionClass, "setValue", this->getConditionMethodSignature("setValue"), false);
     this->jvm->DeleteLocalRef(conditionClass);
-}
-
-
-const char *MessageApiEndpoint::getRejectionMethodSignature(const char *methodName)
-{
-    if (strcmp(methodName, "getCopy") == 0)
-    {
-        return "()Lgov/noaa/messageapi/interfaces/IRejection;";
-    }
-    else if (strcmp(methodName, "getReasons") == 0)
-    {
-        return "()Ljava/util/List;";
-    }
-    else if (strcmp(methodName, "getRecord") == 0)
-    {
-        return "()Lgov/noaa/messageapi/interfaces/IRecord;";
-    }
-    else if (strcmp(methodName, "addReason") == 0)
-    {
-        return "(Ljava/lang/String;)V";
-    }
-
-    return NULL;
 }
 
 const char *MessageApiEndpoint::getFieldMethodSignature(const char *methodName)
@@ -552,47 +523,4 @@ void MessageApiEndpoint::setConditionListVal(struct condition *condition, struct
     this->jvm->CallVoidMethod(condition->jcondition, this->setConditionValueMethodId, value->jlist);
 }
 
-struct rejection_list *MessageApiEndpoint::createRejectionList()
-{
-    jobject jList = this->jvm->NewObject(this->typeUtils->getListClass(), this->listUtils->createListMethod());
-    struct rejection_list *rejection_list = (struct rejection_list *)malloc(sizeof(struct rejection_list));
-    rejection_list->count = 0;
-    rejection_list->jrejections = jList;
-    return rejection_list;
-}
-
-void MessageApiEndpoint::addRejection(struct rejection_list *rejection_list, struct rejection *rejection)
-{
-    this->jvm->CallVoidMethod(rejection_list->jrejections, this->listUtils->addListItemMethod(), rejection->jrejection);
-    rejection_list->count += 1;
-}
-
-struct rejection *MessageApiEndpoint::getRejectionCopy(struct rejection *rejection)
-{
-    jobject jRejectionCopy = this->jvm->CallObjectMethod(rejection->jrejection, this->getRejectionCopyMethodId);
-    struct rejection *rejectionCopy = (struct rejection *)malloc(sizeof(struct rejection) + sizeof(jRejectionCopy));
-    rejectionCopy->jrejection = jRejectionCopy;
-    return rejectionCopy;
-}
-
-struct record *MessageApiEndpoint::getRejectionRecord(struct rejection *rejection)
-{
-    jobject jRecord = this->jvm->CallObjectMethod(rejection->jrejection, this->getRejectionRecordMethodId);
-    struct record *record = (struct record *)malloc(sizeof(struct record) + sizeof(jRecord));
-    record->jrecord = jRecord;
-    return record;
-}
-
-struct string_list *MessageApiEndpoint::getRejectionReasons(struct rejection *rejection)
-{
-    jobject jReasons = this->jvm->CallObjectMethod(rejection->jrejection, this->getRejectionReasonsMethodId);
-    struct string_list *reasons = this->listUtils->translateStringList(jReasons);
-    return reasons;
-}
-
-void MessageApiEndpoint::addRejectionReason(struct rejection *rejection, const char *reason)
-{
-    jstring jReason = this->typeUtils->toJavaString(reason);
-    this->jvm->CallVoidMethod(rejection->jrejection, this->addRejectionReasonMethodId, jReason);
-}
 

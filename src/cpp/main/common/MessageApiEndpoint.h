@@ -15,6 +15,7 @@
 #include "EndpointUtils.h"
 #include "ProtocolRecordUtils.h"
 #include "RecordUtils.h"
+#include "RejectionUtils.h"
 #include "PacketUtils.h"
 
 /**
@@ -39,17 +40,10 @@ public:
     EndpointUtils *getEndpointUtils();
     ProtocolRecordUtils *getProtocolRecordUtils();
     RecordUtils *getRecordUtils();
+    RejectionUtils *getRejectionUtils();
     PacketUtils *getPacketUtils();
     ListUtils *getListUtils();
     TypeUtils *getTypeUtils();
-
-    /*Rejection Methods*/
-    struct rejection_list *createRejectionList();
-    void addRejection(struct rejection_list *rejection_list, struct rejection *rejection);
-    struct rejection *getRejectionCopy(struct rejection *rejection);
-    struct record *getRejectionRecord(struct rejection *rejection);
-    struct string_list *getRejectionReasons(struct rejection *rejection);
-    void addRejectionReason(struct rejection *rejection, const char *reason);
 
     /*Field Methods*/
     const char *getFieldId(struct field *field);
@@ -113,15 +107,10 @@ private :
     EndpointUtils *endpointUtils;
     ProtocolRecordUtils *protocolRecordUtils;
     RecordUtils *recordUtils;
+    RejectionUtils *rejectionUtils;
     PacketUtils *packetUtils;
     TypeUtils *typeUtils;
     ListUtils *listUtils;
-
-    /*Rejection Methods*/
-    jmethodID getRejectionCopyMethodId;
-    jmethodID getRejectionReasonsMethodId;
-    jmethodID getRejectionRecordMethodId;
-    jmethodID addRejectionReasonMethodId;
 
     /*Field Methods*/
     jmethodID getFieldIdMethodId;
@@ -140,12 +129,10 @@ private :
 
 
     /*Load method IDS for reuse. MethodIDS do not count against the jref count and do need to be released.*/
-    void loadRejectionMethodIds();
     void loadFieldMethodIds();
     void loadConditionMethodIds();
 
     /*Grouped methods for returning the matching method signature string for a given interface*/
-    const char *getRejectionMethodSignature(const char *rejectionMethodName);
     const char *getFieldMethodSignature(const char *fieldMethodName);
     const char *getConditionMethodSignature(const char *conditionMethodName);
 };
