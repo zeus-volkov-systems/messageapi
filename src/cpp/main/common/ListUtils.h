@@ -7,6 +7,7 @@
 
 #ifdef __cplusplus
 
+#include "JniUtils.h"
 #include "TypeUtils.h"
 #include <stdlib.h>
 #include <iostream>

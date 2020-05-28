@@ -1,4 +1,3 @@
-#include "JniUtils.h"
 #include "TypeUtils.h"
 
 TypeUtils::TypeUtils(JNIEnv *env)

@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <iostream>
+#include "JniUtils.h"
 
 /**
  * This is the header for the TypeUtils object class. TypeUtils contains a set of methods used for manipulation of Java Lists

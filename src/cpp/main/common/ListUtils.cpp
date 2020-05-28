@@ -1,5 +1,4 @@
 #include "ListUtils.h"
-#include "JniUtils.h"
 
 ListUtils::ListUtils(JNIEnv *env, TypeUtils *typeUtils)
 {
