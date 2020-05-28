@@ -23,15 +23,19 @@ class RecordUtils
 
 public:
     /*Default constructor/destructors*/
+    
     RecordUtils(JNIEnv *javaEnv, TypeUtils *typeUtils, ListUtils *listUtils);
     ~RecordUtils();
 
     /*Record Methods*/
+
     struct record_list *createRecordList();
     void addRecord(struct record_list *record_list, struct record *record);
+    struct record *getRecord(struct record_list *record_list, int index);
+
     struct record *getCopy(struct record *record);
     bool isValid(struct record *record);
-
+    
     bool hasField(struct record *record, const char *fieldId);
     struct string_list *getFieldIds(struct record *record);
     struct field_list *getFields(struct record *record);

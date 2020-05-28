@@ -144,6 +144,13 @@ void RecordUtils::addRecord(struct record_list *record_list, struct record *reco
     record_list->count += 1;
 }
 
+struct record *RecordUtils::getRecord(struct record_list *record_list, int index)
+{
+    jobject jrecord = this->jvm->CallObjectMethod(record_list->jrecords, this->listUtils->getListItemMethod(), index);
+    struct record *record = (struct record *)malloc(sizeof(struct record) + sizeof(jrecord));
+    record->jrecord = jrecord;
+    return record;
+}
 
 /*Private methods*/
 

@@ -30,366 +30,366 @@ extern "C"
 
     struct record *getStateContainer(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getStateContainer();
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getEndpointUtils()->getStateContainer();
     }
 
     struct field_list *getDefaultFields(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getDefaultFields();
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getEndpointUtils()->getDefaultFields();
     }
 
     struct packet *createPacket(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->createPacket();
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getEndpointUtils()->createPacket();
     }
 
     struct record *createRecord(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->createRecord();
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getEndpointUtils()->createRecord();
     }
 
     struct rejection *createRejection(jlong message, struct record *record, const char *reason)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->createRejection(record, reason);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getEndpointUtils()->createRejection(record, reason);
     }
 
     struct record_list *getRecords(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecords");
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getProtocolRecordUtils()->getRecords("getRecords");
     }
 
     struct record_list *getRecordsByCollection(jlong message, const char *collectionId)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByCollection", collectionId);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getProtocolRecordUtils()->getRecords("getRecordsByCollection", collectionId);
     }
 
     struct record_list *getRecordsByTransformation(jlong message, const char *transformationId)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByTransformation", transformationId);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getProtocolRecordUtils()->getRecords("getRecordsByTransformation", transformationId);
     }
 
     struct record_list *getRecordsByUUID(jlong message, const char *uuid)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByUUID", uuid);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getProtocolRecordUtils()->getRecords("getRecordsByUUID", uuid);
     }
 
     struct record_list *getRecordsByClassifier(jlong message, const char *classifierKey, const char *classifierValue)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecords("getRecordsByClassifier", classifierKey, classifierValue);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getProtocolRecordUtils()->getRecords("getRecordsByClassifier", classifierKey, classifierValue);
     }
 
     struct record_list *createRecordList(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->createRecordList();
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->createRecordList();
     }
 
     void addRecord(jlong message, struct record_list *record_list, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addRecord(record_list, record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->addRecord(record_list, record);
     }
 
     struct record *getRecord(jlong message, struct record_list *recordList, int recordIndex)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecord(recordList, recordIndex);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->getRecord(recordList, recordIndex);
     }
 
     struct record *getRecordCopy(jlong message, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordCopy(record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->getCopy(record);
     }
 
     bool getRecordIsValid(jlong message, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordIsValid(record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->isValid(record);
     }
 
     struct string_list *getFieldIds(jlong message, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIds(record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->getFieldIds(record);
     }
 
     struct field_list *getFields(jlong message, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFields(record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->getFields(record);
     }
 
     struct field *getField(jlong message, struct record *record, const char* fieldId)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getField(record, fieldId);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->getField(record, fieldId);
     }
 
     bool hasField(jlong message, struct record *record, const char *fieldId)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordHasField(record, fieldId);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->hasField(record, fieldId);
     }
 
     struct string_list *getConditionIds(jlong message, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionIds(record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->getConditionIds(record);
     }
 
     struct condition_list *getConditions(jlong message, struct record *record)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditions(record);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->getConditions(record);
     }
 
     struct condition *getCondition(jlong message, struct record *record, const char *conditionId)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getCondition(record, conditionId);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->getCondition(record, conditionId);
     }
 
     bool hasCondition(jlong message, struct record *record, const char *conditionId)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordHasCondition(record, conditionId);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRecordUtils()->hasCondition(record, conditionId);
     }
 
     /*Field Methods*/
 
     const char *getFieldId(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldId(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getId(field);
     }
 
     const char *getFieldType(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldType(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getType(field);
     }
 
     bool getFieldIsValid(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIsValid(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->isValid(field);
     }
 
     bool getFieldIsRequired(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIsRequired(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->isRequired(field);
     }
 
     bool getFieldIsNull(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIsNull(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->isNull(field);
     }
 
     struct val *getFieldVal(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldVal(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getVal(field);
     }
 
     int getFieldIntVal(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldIntVal(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getIntVal(field);
     }
 
     long getFieldLongVal(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldLongVal(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getLongVal(field);
     }
 
     float getFieldFloatVal(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldFloatVal(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getFloatVal(field);
     }
 
     double getFieldDoubleVal(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldDoubleVal(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getDoubleVal(field);
     }
 
     signed char getFieldByteVal(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldByteVal(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getByteVal(field);
     }
 
     const char *getFieldStringVal(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldStringVal(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getStringVal(field);
     }
 
     bool getFieldBoolVal(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldBoolVal(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getBoolVal(field);
     }
 
     short getFieldShortVal(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldShortVal(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getShortVal(field);
     }
 
     struct val_list *getFieldListVal(jlong message, struct field *field)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldListVal(field);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->getListVal(field);
     }
 
     void setFieldVal(jlong message, struct field *field, struct val *value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setFieldVal(field, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->setVal(field, value);
     }
 
     void setFieldIntVal(jlong message, struct field *field, int value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setFieldIntVal(field, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->setIntVal(field, value);
     }
 
     void setFieldLongVal(jlong message, struct field *field, long value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setFieldLongVal(field, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->setLongVal(field, value);
     }
 
     void setFieldFloatVal(jlong message, struct field *field, float value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setFieldFloatVal(field, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->setFloatVal(field, value);
     }
 
     void setFieldDoubleVal(jlong message, struct field *field, double value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setFieldDoubleVal(field, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->setDoubleVal(field, value);
     }
 
     void setFieldByteVal(jlong message, struct field *field, signed char value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setFieldByteVal(field, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->setByteVal(field, value);
     }
 
     void setFieldStringVal(jlong message, struct field *field, const char *value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setFieldStringVal(field, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->setStringVal(field, value);
     }
 
     void setFieldBoolVal(jlong message, struct field *field, bool value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setFieldBoolVal(field, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->setBoolVal(field, value);
     }
 
     void setFieldShortVal(jlong message, struct field *field, short value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setFieldShortVal(field, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->setShortVal(field, value);
     }
 
     void setFieldListVal(jlong message, struct field *field, struct val_list *value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setFieldListVal(field, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getFieldUtils()->setListVal(field, value);
     }
 
     /*Condition Methods*/
 
     const char *getConditionId(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionId(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getId(condition);
     }
 
     const char *getConditionType(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionType(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getType(condition);
     }
 
     const char *getConditionOperator(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionOperator(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getOperator(condition);
     }
 
     bool getConditionIsNull(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionIsNull(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->isNull(condition);
     }
 
     struct val *getConditionVal(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionVal(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getVal(condition);
     }
     
     int getConditionIntVal(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionIntVal(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getIntVal(condition);
     }
 
     long getConditionLongVal(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionLongVal(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getLongVal(condition);
     }
 
     float getConditionFloatVal(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionFloatVal(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getFloatVal(condition);
     }
 
     double getConditionDoubleVal(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionDoubleVal(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getDoubleVal(condition);
     }
 
     signed char getConditionByteVal(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionByteVal(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getByteVal(condition);
     }
 
     const char *getConditionStringVal(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionStringVal(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getStringVal(condition);
     }
 
     bool getConditionBoolVal(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionBoolVal(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getBoolVal(condition);
     }
 
     short getConditionShortVal(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionShortVal(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getShortVal(condition);
     }
 
     struct val_list *getConditionListVal(jlong message, struct condition *condition)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionListVal(condition);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->getListVal(condition);
     }
 
     void setConditionVal(jlong message, struct condition *condition, struct val *value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setConditionVal(condition, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->setVal(condition, value);
     }
 
     void setConditionIntVal(jlong message, struct condition *condition, int value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setConditionIntVal(condition, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->setIntVal(condition, value);
     }
 
     void setConditionLongVal(jlong message, struct condition *condition, long value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setConditionLongVal(condition, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->setLongVal(condition, value);
     }
 
     void setConditionFloatVal(jlong message, struct condition *condition, float value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setConditionFloatVal(condition, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->setFloatVal(condition, value);
     }
 
     void setConditionDoubleVal(jlong message, struct condition *condition, double value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setConditionDoubleVal(condition, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->setDoubleVal(condition, value);
     }
 
     void setConditionByteVal(jlong message, struct condition *condition, signed char value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setConditionByteVal(condition, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->setByteVal(condition, value);
     }
 
     void setConditionStringVal(jlong message, struct condition *condition, const char *value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setConditionStringVal(condition, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->setStringVal(condition, value);
     }
 
     void setConditionBoolVal(jlong message, struct condition *condition, bool value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setConditionBoolVal(condition, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->setBoolVal(condition, value);
     }
 
     void setConditionShortVal(jlong message, struct condition *condition, short value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setConditionShortVal(condition, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->setShortVal(condition, value);
     }
 
     void setConditionListVal(jlong message, struct condition *condition, struct val_list *value)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->setConditionListVal(condition, value);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getConditionUtils()->setListVal(condition, value);
     }
 
     /*List Utility Methods*/
@@ -502,32 +502,32 @@ extern "C"
     /*Rejection Utils*/
     struct rejection_list *createRejectionList(jlong message)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->createRejectionList();
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionUtils()->createRejectionList();
     }
 
     void addRejection(jlong message, struct rejection_list *rejection_list, struct rejection *rejection)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addRejection(rejection_list, rejection);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionUtils()->addRejection(rejection_list, rejection);
     }
 
     struct rejection *getRejectionCopy(jlong message, struct rejection *rejection)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionCopy(rejection);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionUtils()->getCopy(rejection);
     }
 
     struct record *getRejectionRecord(jlong message, struct rejection *rejection)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionRecord(rejection);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionUtils()->getRecord(rejection);
     }
 
     struct string_list *getRejectionReasons(jlong message, struct rejection *rejection)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionReasons(rejection);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionUtils()->getReasons(rejection);
     }
 
     void addRejectionReason(jlong message, struct rejection *rejection, const char *reason)
     {
-        return reinterpret_cast<MessageApiEndpoint *>(message)->addRejectionReason(rejection, reason);
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getRejectionUtils()->addReason(rejection, reason);
     }
 
     /*Packet Utils*/

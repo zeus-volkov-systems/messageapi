@@ -32,7 +32,6 @@ public:
     /*Protocol Record Methods*/
     jobject getProtocolRecords(const char *method, const char *key, const char *val);
     struct record_list *getRecords(const char *method, const char *key = NULL, const char *val = NULL);
-    struct record *getRecord(struct record_list *record_list, int index);
 
 private:
     /*Vars*/

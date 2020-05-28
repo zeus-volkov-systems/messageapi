@@ -84,14 +84,6 @@ struct record_list *ProtocolRecordUtils::getRecords(const char *recordMethod, co
     return record_list;
 }
 
-struct record *ProtocolRecordUtils::getRecord(struct record_list *record_list, int index)
-{
-    jobject jrecord = this->jvm->CallObjectMethod(record_list->jrecords, this->listUtils->getListItemMethod(), index);
-    struct record *record = (struct record *)malloc(sizeof(struct record) + sizeof(jrecord));
-    record->jrecord = jrecord;
-    return record;
-}
-
 void ProtocolRecordUtils::loadGlobalRefs(JNIEnv *jvm, jobject protocolRecord, TypeUtils *typeUtils, ListUtils *listUtils)
 {
     this->jvm = jvm;
