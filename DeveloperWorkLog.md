@@ -36,21 +36,21 @@ A C API should be provided that allows use of MessageAPI in native code. This AP
 
 Resolution - The README was updated to the final architectural state, removing incorrect information, updating incomplete information, and adding basic system diagrams. There is still work to be done - README must be updated with Polyglot API discussion when that's done.
 
-#### Description and Goals
+#### README Updating Description and Goals
 
 The README should be updated to match the current state of the package. It should be correct, comprehensive enough to serve as a complete guide for getting the system running, and contain enough information for external review. It should form the basis of a MessageAPI white paper.
-
 
 ### Field Definition Enforcement on Transformations and Endpoints
 
 #### Status - Completed Successfully With Design Change
 
-
 Resolution - after an analysis of the initial design specifications WRT patterns found in communicating sequential processes, it was determined that the process both Transformation and Endpoint alphabets had an unknown potential for collision when intersected with the Schema alphabet. Due to this potential for collision and inability to make guarantees that fields which are part of the global alphabet are uniquely typed, a solution was implemented that provides configurable control and as many guarantees about endpoint fields as possible. This was done by creating an abstract base class that requires extending endpoints to define their own default fields. Then which of these fields returned is configurable by the session that uses the endpoint (on the connection map). In other words, the endpoint defines its maximal/default return field set, but that is a maximum bound that can be reduced by sessions, by specifying a subset on the connection map.
 
-*Author: Ryan Berkheimer*
+```json
+Author: Ryan Berkheimer
+```
 
-#### Description and Goals
+#### Transformation and Endpoint Field Definition Enforcement Description and Goals
 
 The goal is to implement enforcement of field definitions on transformations and endpoints. This means that fields should be specified for each transformation and endpoint connection, and these fields must be defined in the schema fields map. The transformation and endpoint base classes would then be able to have a stereotyped method for creating a record that can be used inside the transformation or endpoint, and the caller/receiver will also would know what type of record to expect as emergent from the system. This also introduces the potential for future system type validation.
 
@@ -64,11 +64,13 @@ Ultimately it was decided that the best that could be done with endpoint fields 
 
 #### Status - Completed Successfully
 
-Resolution - This feature was implemented as described below. All conditions originate from the global conditions map. In default sessions, the request now gets a complete copy of the conditions, as well as each record. If initial conditions are set, they are kept in the request set of conditions. Any initial conditions that are set are wiped from individual records - if the values are set independently, they will be honored for that record. When a request is submitted, conditions valued on individual records will filter records as before - in new behavior, request-wide records are  applied to all records being parsed/factored into different containers - ie, records must satistfy the conditions specified on a contained to be added to that container. Currently, only collection containers allow specified conditions. This is due to the ability of transformations for arbitrary fieldset modification, including addition of fields that are not specified on the global fieldset schema. 
+Resolution - This feature was implemented as described below. All conditions originate from the global conditions map. In default sessions, the request now gets a complete copy of the conditions, as well as each record. If initial conditions are set, they are kept in the request set of conditions. Any initial conditions that are set are wiped from individual records - if the values are set independently, they will be honored for that record. When a request is submitted, conditions valued on individual records will filter records as before - in new behavior, request-wide records are  applied to all records being parsed/factored into different containers - ie, records must satistfy the conditions specified on a contained to be added to that container. Currently, only collection containers allow specified conditions. This is due to the ability of transformations for arbitrary fieldset modification, including addition of fields that are not specified on the global fieldset schema.
 
-*Author: Ryan Berkheimer*
+```json
+Author: Ryan Berkheimer
+```
 
-#### Description and Goals
+#### Collection Condition Description and Goals
 
 The goal is to implement condition behavior, similar to that currently seen at the record level, at the collection level. This involves allowing the user to optionally specify a 'conditions' property on individual collections, as a key/value pair, where the key is the word 'conditions' is the key, corresponding to a list of condition ids.
 
@@ -129,13 +131,13 @@ At the time of this feature specification, the condition map is copied and attac
 
 This feature addition would add these same abilities - condition value setting, record filtering, to collections.
 
-**We want the system to conform to the following conditions**
+##### We want the system to conform to the following conditions
 
 - conditions are able to be valued on requests by the user, or specified beforehand on the map, in addition to individual records
 - conditions are able to be added to collections by id with an optional 'conditions' keyword on each collections map
 - when a request is submitted, after records are individually filtered, they are only placed in collections if they meet conditions specified on the collection
 
-**We want the internal behavior to conform to the following conditions**
+##### We want the internal behavior to conform to the following conditions
 
 - conditions are now parsed and checked as part of collection map parsing in the container definition
 - a request should hold an ICondition (in addition to a list of IRecords, etc.)
@@ -149,7 +151,7 @@ At the time of writing, the condition engine is complete and already implemented
 
 In the current implementation, the engine attempts to be clever in determining which conditions apply to a given record. It does this by first removing all conditions on a record that don't have values. From the conditions that are left (those with values), top level conditions are determined (conditions not referenced in any remaining condition). For each top level condition, a condition tree is created. Each of these independent condition trees are then evaluated against the record as an 'and' condition (all condition trees must be satisfied for the record to be accepted). This process is repeated for every record that is passed in a request, in order to determine which records should be filtered out before the entire record set is passed onto the container layer for factoring into collections.
 
-#### Design Path
+#### Collection Condition Design Path
 
 Comparing the desired status to baseline, we see some obvious system characteristics that will have an impact on the path of change implementation. These affecting characteristics are
 
@@ -174,23 +176,24 @@ To implement our change with the chosen option and for maximum reuse of existing
 7. Add access methods to ICollection for condition evaluation of a passed record
 8. Update the factoring process during response processing to include condition evaluation during collection creation
 
-
 ### Transformations
 
-#### Status - Completed Successfully
+#### Transformation Status - Completed Successfully
 
 Resolution - Transformations are fully implemented and functional. Transformations get their own copies of records, so they are completely functional. They can accept an arbitrary number of any container type as inputs - i.e., collections, classifiers, or other transformations, as well as UUID sets. Because they can accept other transformations, they can be recursive. Transformations are also lazy, in the sense that they are containers. They hold definitions until they are used inside an endpoint, at which point they are evaluated. In the case that the UUID keyword is used as an input to a transformation, the transformation will be applied to every UUID set individually, and then the transformation will return an aggregate of all evaluations.
 
-*Author: Ryan Berkheimer*
+```json
+Author: Ryan Berkheimer
+```
 
-#### Description and Goals
+#### Transformation Description and Goals
 
 The goal is to make the method getRecordsByTransformation("transformationID")
 on the protocol record functional. 'Being functional' in this context means
 when we call this method from an endpoint class instance, we should get a list
 of records that satisfy the conditions specified by the transformation.
 
-**We want the method to conform to the following conditions**
+##### We want the method to conform to the following conditions
 
 - method should only compute when called (lazy behavior)
 - method should be as fast/optimized as possible - don't build common things more than we have to
@@ -202,16 +205,16 @@ of records that satisfy the conditions specified by the transformation.
   - uuids
   - other transformations
 
-**We want the internal behavior to conform to the following conditions**
+##### We want the internal behavior for the transformation mod to conform to the following conditions
 
 - transformation factory should be preloaded in the container layer
 - classifiers and/or collections used by a transformation or its child transformations as parameters must be available to any associated connection
 - the transformation instance should be preloaded before getRecordsByTransformation method invocation
 - records used by a transformation should be immutable, in that they don't change any already existing record
 
-#### Baselining our Status
+#### Transformation - Baselining our Status
 
-**The following configuration maps are involved in transformations**
+##### The following configuration maps are involved in transformations
 
 - the global transformation list of transformation maps (contains specifications of transformations)
 - the connection list for each endpoint (lists by id transformations that should be available)
@@ -229,14 +232,13 @@ of connection hash-maps
 the protocol definition endpoint map are turned into a flat list of connections,
 and held by the protocol.
 
-#### Design Path
+#### Transformation Design Path
 
 Based on the stated constraints, a straightforward design path is evident. First we describe how the design is implemented when calling the method, and then we describe what changes will be made to the baseline system to implement this change.
 
-**Method Invocation Action**
+##### Method Invocation Action
 
 When a transformation is desired, the user calls getRecordsByTransformation("transformationId"), and the following things happen:
-
 
 1. the transformationId key is accessed on the transformationMap held in the associated connection where the method is invoked
     - The value associated with the transformationId is another map with entries
@@ -268,7 +270,7 @@ When a transformation is desired, the user calls getRecordsByTransformation("tra
 5. Operations are completed as specified within the transformation class. This transformation class has access to the record sets as values of the keys which were originally specified on the map.
 6. The transformation class must return a new record set, where each record contains the keys listed in the original transformation map.
 
-**Implementation Design**
+##### Transformation Implementation Design
 
 In order to implement the transformation, the following modifications must be made to the baseline system
 
