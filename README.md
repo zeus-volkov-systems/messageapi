@@ -2,18 +2,17 @@
 
 ## Version
 
-**0.0.10** (Pre-Release)
+**0.9.0** (Pre-Release)
 
-MessageAPI uses [Semantic Versioning 2.0.0](https://semver.org/) as its versioning strategy. The first official version will be released upon the implementation of the C and Fortran native APIs.
-
+MessageAPI uses [Semantic Versioning 2.0.0](https://semver.org/) as its versioning strategy. The first official version will be released upon the implementation of the C native API. Subsequent minor versions will release the fortran, python, IDL, and R APIs.
 
 ## Overview
 
 MessageAPI is a structured-data-processing specification designed to allow the development of decomplected, transparent, easily understood, evolutionary, and highly configurable process oriented systems. MessageAPI does this by drawing a domain distinction between process structure (the 'Message' of MessageAPI) and data (the 'API' part) and then providing complimentary orthonormal bases that span each space. The structure and data domain definitions of MessageAPI are based on the principles of generic programming and designed using the language of Communicating Sequential Processes (CSP) in order to be easily picked up and understood by different audiences and users.
 
-MessageAPI is ultimately a specification for data-process pipelines, but for practical purposes it is also an implementation that consists of a default **Session** that sets itself up using a declarative JSON specification of the MessageAPI structural model (through a manifest and parameter map), and then allows data to be formulated using the **Request** and **Response** APIs to process batch and/or streaming Requests asynchronously. In the provided Session implementation, Requests terminate on **Endpoints** which can be thought of as defining the terminus of a given computation. Endpoints are provided an interface and an abstract base class to extend. Endpoints have access to the data passed through MessageAPI as **Records**, which can be held in any number of *containers* - such as **Collections**, **Classifiers**, and **Transformations**. 
+MessageAPI is ultimately a specification for data-process pipelines, but for practical purposes it is also an implementation that consists of a default **Session** that sets itself up using a declarative JSON specification of the MessageAPI structural model (through a manifest and parameter map), and then allows data to be formulated using the **Request** and **Response** APIs to process batch and/or streaming Requests asynchronously. In the provided Session implementation, Requests terminate on **Endpoints** which can be thought of as defining the terminus of a given computation. Endpoints are provided an interface and an abstract base class to extend. Endpoints have access to the data passed through MessageAPI as **Records**, which can be held in any number of *containers* - such as **Collections**, **Classifiers**, and **Transformations**.  
 
-Collections are Record set containers, Classfiers are potentially cross-Collection Record containers, and Transformations are containers of Records which apply some manipulation on other containers (including other Transformations). In contrast with Endpoints, Transformations are more open ended, providing an interface to implement. Transformations exhibit lazy processing behavior that is only executed when they are referred to in an **Endpoint**. In MessageAPI, Transformations always get their own copies of inputs, making them easy to use without worrying about shared system state. 
+Collections are Record set containers, Classfiers are potentially cross-Collection Record containers, and Transformations are containers of Records which apply some manipulation on other containers (including other Transformations). In contrast with Endpoints, Transformations are more open ended, providing an interface to implement. Transformations exhibit lazy processing behavior that is only executed when they are referred to in an **Endpoint**. In MessageAPI, Transformations always get their own copies of inputs, making them easy to use without worrying about shared system state.
 
 *Caveat - if users provide their own Record Field 'types' (i.e., other than string, integer, float, etc.) that are some complex object, to make this guarantee, users must provide and call a 'deep copy' on each object in the record Field. Only standard types in the shipped default implementation guarantee immutable Transformations.*
 
@@ -29,11 +28,11 @@ This process usually involves integrating with existing development teams, defin
 
 As the SSRG Rejuvenation program itself has matured, organizational patterns in the program's constraint parameters (character of systems under study, NCEI infrastructure and trends) have emerged. Based on these patterns, SSRG has endeavored to create and maintain an 'SSRG Toolbox' - a collection of generalized tools that standardize one or more aspects of the Rejuvenation process (assessment, testing, development, deployment). Some tools in the toolbox are commercial and/or organizational tools like Docker, Git, Jenkins, Slack, Understand, valgrind, gdb, JIRA, Google Docs - and some are custom tools like the FortranCommons (comprised of fortran language unit tests and properties, written in fortran), Harness (a data-oriented testing framework, written in python), and TaskAPI (a polyglot declarative workflow abstraction, written in java).
 
-The TaskAPI tool was initially developed to replace Bash as the 'glue' for ASOS Ingest jobs, and was subsequently split from that project and made generic enough for any distributed computation project. TaskAPI provides distributed workflow parallelization capabilities, job control, declarative task definition, and logging standardization for the 3 language (fortran, java, c) ASOS Ingest system. It was also designed to promote iterative system improvement - allowing a quick load of existing project code into TaskAPI, and then allowing monolithic job tasks to be broken up into smaller tasks (and corresponding TaskAPI tasks) by factoring code over time. This iterative improvement and the end goal is still an ideal, but there is often a need for intraprocess tasks (e.g., a deeply nested x = system('ls -l'), or system('mail -s 'missing data!' bigArrayContents')) to be replaced first, or instead of, whole scale task splitting. 
+The TaskAPI tool was initially developed to replace Bash as the 'glue' for ASOS Ingest jobs, and was subsequently split from that project and made generic enough for any distributed computation project. TaskAPI provides distributed workflow parallelization capabilities, job control, declarative task definition, and logging standardization for the 3 language (fortran, java, c) ASOS Ingest system. It was also designed to promote iterative system improvement - allowing a quick load of existing project code into TaskAPI, and then allowing monolithic job tasks to be broken up into smaller tasks (and corresponding TaskAPI tasks) by factoring code over time. This iterative improvement and the end goal is still an ideal, but there is often a need for intraprocess tasks (e.g., a deeply nested x = system('ls -l'), or system('mail -s 'missing data!' bigArrayContents')) to be replaced first, or instead of, whole scale task splitting.
 
 TaskAPI does allow for arbitrary data to be passed between fortran, c, and java through a map structure, but the map changes are only communicated during native method invocation or return. In the case of ASOS Ingest it was also discovered that there was widespread use of a binary Fortran Direct Access file storage package throughout. This Direct Access storage turned out to be the primary storage container for the intermediary Low Resolution data format (CLISAM) which serves as the basis for almost all LowRes derived products - including ISD, SODGraph, HPD, and US-CLIMAT, among others. Removal of the direct access storage media of CLISAM is a major priority for several reasons, including - the format was shown to be brittle during operating system port; the data would be much more useful and easier to use organizationally if it were stored in something like a Kafka topic.
 
-All of these use cases added up to the need for a new tool to provide generalized intraprocess communication. This is what MessageAPI was primarily designed to do - replace targeted intraprocess communication in native languages with a standardized, stable, general, flexible, and portable mechanism. Due to type system differences across languages, the system would have to 
+All of these use cases added up to the need for a new tool to provide generalized intraprocess communication. This is what MessageAPI was primarily designed to do - replace targeted intraprocess communication in native languages with a standardized, stable, general, flexible, and portable mechanism. Due to type system differences across languages, the system would have to
 
 - have a small, static API (any message would need to be transferred through a small set of bounded API methods)
 - able to handle inward or outward directed messages
@@ -56,16 +55,15 @@ All of these requirements added up to creating a specification first, and then w
 
 ## Philosophy
 
-MessageAPI is designed with the belief that all processes are fundamentally simple, similar, and understandable. MessageAPI was designed to expose these process characteristics by the use of a simple (in the decomplected sense) information model. 
+MessageAPI is designed with the belief that all processes are fundamentally simple, similar, and understandable. MessageAPI was designed to expose these process characteristics by the use of a simple (in the decomplected sense) information model.
 
-Every part of how a MessageAPI defined process will play out, down to the implementation classes, is laid bare in a pair of text based maps - one for the manifest, and one for the parameters. These maps makes trivial work out of reasoning about how a program is structured and will run before it is ever executed. 
+Every part of how a MessageAPI defined process will play out, down to the implementation classes, is laid bare in a pair of text based maps - one for the manifest, and one for the parameters. These maps makes trivial work out of reasoning about how a program is structured and will run before it is ever executed.
 
 The primary dimensions of MessageAPI are held to three - A **Schema** holds a flat map of all fields and conditions a user will interact with; a **Container** defines how fields will be factored and held in collections, classifications, and transformations; and a **Protocol** defines Endpoints and connections to them, which define where containers of records will go. All of these parts of a Message are viewable and configurable without touching code. Users write and share their own custom Endpoints and Transformations, which are then specified in the map.
 
 Figure 1 below illustrates the layout of a Session - how MessageAPI structures all Processes.
 
 ![Session Topology](./resources/docs/images/Figure1_SessionTopology.jpg "Session Topology")
-
 
 Everything that passes data in MessageAPI consumes and produces the same object type - the record. The manifests are used in code by creating a session based on them - and then using a stable API to create a request, add records, set field and/or condition values, and then submit, which immediately returns an async response. The response will hold its own records and rejections, and eventually get an 'isComplete' flag. That's the entirety of the API surface. Everything else depends on the Manifest.
 
@@ -95,7 +93,7 @@ The default MessageAPI session provides a standard topology that will suit many 
 
 The following is an example of a DefaultSession manifest:
 
-```
+```json
 {
     "plugin": "gov.noaa.messageapi.sessions.DefaultSession",
     "constructor": {
@@ -135,7 +133,7 @@ The following is an example of a DefaultSession manifest:
 }
 ```
 
-The general pattern in a manifest is to declare a key with the class as the plugin, and then provide another map that holds constructor parameters. The specification for MessageAPI consists of 
+The general pattern in a manifest is to declare a key with the class as the plugin, and then provide another map that holds constructor parameters. The specification for MessageAPI consists of
 
 - A **Session**, which holds the primary **Schema**, **Container**, and **Protocol** dimensions
 - A **Schema**, which defines all the **Fields** and **Conditions** (optional) a user will interact with for each **Record**
@@ -150,7 +148,8 @@ Note that both Conditions and Transformations specify 'factories'. These factori
 
 *Notice that in this map, the **Fields, Conditions, Collections, Transformations,** and **Connections** all refer to the same 'parameters' map:*
 ***Also note - the only 'required' things are 'fields', 'collections', and 'connections'. If the other parts aren't needed (conditions/transformations/metadata), don't reference them in the manifest and don't include them in the parameters.***
-```
+
+```json
 {
     "fields": [{"id": "file-path",
                 "type": "string",
@@ -174,10 +173,9 @@ Note that both Conditions and Transformations specify 'factories'. These factori
                      "constructor": {"file-fields": "file-path"},
                      "fields" : ["value","number", "length"]}]
 }
-
 ```
 
-*These parameters can be split up into separate files or held together like they are here. Each of these domain concepts will be explored in more depth further down.* 
+*These parameters can be split up into separate files or held together like they are here. Each of these domain concepts will be explored in more depth further down.*
 
 Once built, this session is then in memory and can be reused as often as necessary (subsequent requests do deep-copies of loaded session components). MessageAPI trades initial speed of compile-time class construction for the flexibility and declarative nature of doing it at runtime (although the initial bootstrapping is generally very fast, as the provided MessageAPI implementation footprint is small). *Sessions can, for example, be passed as objects to different machines, different thread groups, etc. and used to construct brand new, guaranteed-isolated requests from the same template.*
 
@@ -189,13 +187,9 @@ We saw earlier that MessageAPI works by separating out structural and dataflow c
 
 ![Session Flow](./resources/docs/images/Figure2_SessionFlow.jpg "Session Flow")
 
-
-
 Figure 3 illustrates the Hierarchy of all Structural Components. We will delve into each below.
 
 ![Session Hierarchy](./resources/docs/images/Figure3_SessionHierarchy.jpg "Session Hierarchy")
-
-
 
 ##### Schemas
 
@@ -203,7 +197,7 @@ Schemas are what define records as seen by the Session holder. This is the part 
 
 Here we see that Schemas refer to a plugin class, and the constructor used to create the plugin.
 
-```
+```json
 "schema": {
     "plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
     "constructor": {
@@ -216,13 +210,13 @@ Here we see that Schemas refer to a plugin class, and the constructor used to cr
     }
 ```
 
-Schemas contain **Fields** (required), **Conditions** (optional), and **MetaData** (optional). 
+Schemas contain **Fields** (required), **Conditions** (optional), and **MetaData** (optional).
 
 ###### Metadata
 
 The MetaData becomes part of the definition when the manifest is loaded, and can be accessed from the endpoint layer this allows for interaction with mutable endpoint schemas when field sets change over time (for example, Avro storage in Kafka).
 
-```
+```json
 {
     "metadata": {
         "id": "the-schema-id",
@@ -241,11 +235,11 @@ A Schema Field set is a flat set of field definitions - for example, software th
 
 In the provided schema class, fields need to be provided with a 'name', 'type', and 'required' properties.
 
-The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. If a field is required but not provided, that record will be immediately rejected on request submission. 
+The 'name' must be unique in the schema, the 'type' must be understood by the parsing class, and the 'required' must be a boolean. If a field is required but not provided, that record will be immediately rejected on request submission.
 
 In the provided implementation, the types understood by the system (for use by conditions) are 'string', 'float', 'double', 'integer', 'datetime', and 'boolean'. Without adjustment, other types can be handled without issue, although to use the condition system, additional types should be added. This can be done easily by adjusting the ConditionFactory.
 
-```
+```json
 {
     "fields": [
         {
@@ -287,10 +281,9 @@ In the provided implementation, the types understood by the system (for use by c
 }
 ```
 
-
 ###### Condition Sets
 
-Conditions can be set on fields that qualify records when passed in, serving as a potentially powerful filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator. Conditions that are to be used in filtering must be valued on individual records. Conditions are also provided on a whole-request basis - to be used in containerization of records. In this case, conditions can be given values when 
+Conditions can be set on fields that qualify records when passed in, serving as a potentially powerful filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator. Conditions that are to be used in filtering must be valued on individual records. Conditions are also provided on a whole-request basis - to be used in containerization of records. In this case, conditions can be given values when
 
 There are two condition types in the provided implementation  - composite and comparison.
 
@@ -298,8 +291,7 @@ Comparison type conditions are direct comparisons (things like equivalency, grea
 
 Composite conditions can also include other composite conditions and will be unpacked and applied recursively, in whatever context is specified by the session type in the manifest. The only global restriction for the given implementation is that conditions cannot be self referential (no infinite loops).
 
-
-```
+```json
 {
     "conditions": [
         {
@@ -332,7 +324,7 @@ Composite conditions can also include other composite conditions and will be unp
         {
             "id": "relative-path",
             "type": "comparison",
-            "operator": "contains"
+            "operator": "contains",
             "field": "filename",
             "value": "{}"
         },
@@ -348,7 +340,7 @@ Composite conditions can also include other composite conditions and will be unp
 
 ##### Containers
 
-The **Container** dimension of a MessageAPI Session represents groupings of Schema information (Fields and/or Conditions). Because all Records are defined from a single flat schema, Containers allow records to specify how they are factored/binned, and then additionally given classifier information and computational specification. In the Session manifest, like the other two dimensions, the Container contains a plugin and a constructor. The constructor defines where to find 
+The **Container** dimension of a MessageAPI Session represents groupings of Schema information (Fields and/or Conditions). Because all Records are defined from a single flat schema, Containers allow records to specify how they are factored/binned, and then additionally given classifier information and computational specification. In the Session manifest, like the other two dimensions, the Container contains a plugin and a constructor. The constructor defines where to find
 
 - metadata (optional)
 - collections (required)
@@ -356,7 +348,7 @@ The **Container** dimension of a MessageAPI Session represents groupings of Sche
 
 Transformations, if specified, must specify both a map of connections, and a factory. The factory contains key/value pairs of transformation handles and transformation classes, each of which implement the ITransformation interface. The map property provides the location for a list of transformations, described further in this README.
 
-```
+```json
 "container": {
     "plugin": "gov.noaa.messageapi.containers.DefaultContainer",
     "constructor": {
@@ -370,15 +362,13 @@ Transformations, if specified, must specify both a map of connections, and a fac
 }
 ```
 
-There are three types of container groupings provided by the default MessageAPI implementation - **Collections**, **Classifiers**, and **Transformations**. 
-
-
+There are three types of container groupings provided by the default MessageAPI implementation - **Collections**, **Classifiers**, and **Transformations**.
 
 ###### Collections
 
 - **Collections** are the most basic containers, and are the only type required in a session manifest. Collections specify a session-global unique id, a list of fields that belong to them, a list of conditions that must be met before a record will build into one, and optionally, a map of classifiers (keys with arbitrary values). When a request is submitted, the list of records attached to the request at submission time is mapped to collections. Each record individually is broken into whatever collections are specified. These collections are immutable - they can overlap fields, even containing the same identical field sets, and each one will get its own independent copy. After grouping, collections derived from the same Record are still tied together by a separate UUID that is attached to each.
 
-```
+```json
 {
     "collections": [
         {
@@ -397,13 +387,12 @@ There are three types of container groupings provided by the default MessageAPI 
     ]
 }
 ```
-
 
 ###### Classifiers
 
 - **Classifiers** are metadata containers, in that they are not specified directly in the Session manifest, but are attached to Collections. A single Classifier can be attached to different Collections, and this mechanism provides a guarantee of the ability to arbitrarily group Records in MessageAPI. These Classifier labels are then available separately for use in Transformations and/or Endpoints - retrieving a Classifier in an Endpoint or using it as an input of a Transformation will retrieve all records from all collections labeled with that Classifier, no matter which Collection it lives in. Determination of the potential utility of this mechanism is left to the user.
 
-```
+```json
 {
     "collections": [
         {
@@ -426,12 +415,11 @@ There are three types of container groupings provided by the default MessageAPI 
 }
 ```
 
-
 ###### Transformations
 
-- **Transformations** are computational containers. They are an optional component of MessageAPI. Transformations act as instances of immutable functions that can hold global, configurable constructor/initialization parameters, use other arbitrary named containers as arguments in a process function, return a list of records, and list the fields that each record will provide in a 'fields' map entry. Transformations are always immutable, executed lazily (only when called in an Endpoint), and always operate on and produce lists of records. 
+- **Transformations** are computational containers. They are an optional component of MessageAPI. Transformations act as instances of immutable functions that can hold global, configurable constructor/initialization parameters, use other arbitrary named containers as arguments in a process function, return a list of records, and list the fields that each record will provide in a 'fields' map entry. Transformations are always immutable, executed lazily (only when called in an Endpoint), and always operate on and produce lists of records.
 
-The 'records' entry on the Transformation map itself holds a map of named parameter keys that correspond to values describing what type of container and the id of that container to use as that particular input. For example, in the following Transformation map, the first Transformation is called 'join-test'. The Transformation has an operator of 'join', which corresponds to a java class in the TransformationFactory listed in the Session manifest. This Transformation provides a constructor map containing two keys, 'join_field' and 'collection_field', both which specify constants that are set in the Transformation when it is initialized. 
+The 'records' entry on the Transformation map itself holds a map of named parameter keys that correspond to values describing what type of container and the id of that container to use as that particular input. For example, in the following Transformation map, the first Transformation is called 'join-test'. The Transformation has an operator of 'join', which corresponds to a java class in the TransformationFactory listed in the Session manifest. This Transformation provides a constructor map containing two keys, 'join_field' and 'collection_field', both which specify constants that are set in the Transformation when it is initialized.
 
 The 'join-test' Transformation defines three parameters in its process method map - 'parent', 'child', and 'other'. Each of these corresponds to a different container - when used in the Transformation, the 'parent' parameter will provide a list of all records contained by the 'namespace=condition-test' classifier; the 'child' parameter will provide a list of records contained by the 'mix-and-match' collection; and the 'other' parameter contains a special case - the UUID - which will provide every collection for a given UUID, and map the Transformation to every UUID, and all returned records for every UUID in this Transformation will be merged on return. The use of UUID as a Transformation record parameter is a special case, and due to its mapping ability, limits its use to once per Transformation.
 
@@ -441,7 +429,7 @@ In the second Transformation, the 'reduce-list' record parameter will provide al
 
 It is the view of the package authors that Transformations hold computational tasks and List manipulations - Transformations are good places for things like Joins, Unions, Filters, etc. Any type of computation is technically allowed in a Transformation, but external behavior is better suited for taking place in Endpoints, which are specifically designed with external communication in mind.
 
-```
+```json
 {
     "transformations": [
     {
@@ -465,12 +453,11 @@ It is the view of the package authors that Transformations hold computational ta
 }
 ```
 
-
-###### Metadata
+###### Container Metadata
 
 Additionally, like **Schemas** and **Protocols**, **Containers** may provide a metadata map in the Session manifest. This metadata map is formed identically to the other metadata maps.
 
-```
+```json
 {
     "metadata": {
         "id": "condition-test",
@@ -487,8 +474,7 @@ The Protocol dimension of MessageAPI represents the boundary of a MessageAPI pro
 
 Similarly to the Schema and Container dimensions of a Session, the Protocol key in the manifest specifies a Protocol class and a map of parameters used in the class construction. Constructor keys in a Protocol include **metadata**(optional) and **endpoints**(required). Endpoints are specified as classes that must be available on the classpath at runtime - each Endpoint must at least have one Connection. Each Endpoint specifies its own Connection map.
 
-
-```
+```json
 "protocol": {
     "plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
     "constructor": {
@@ -501,7 +487,6 @@ Similarly to the Schema and Container dimensions of a Session, the Protocol key 
 }
 ```
 
-
 ###### Endpoints
 
 The Protocol layer can hold arbitrary Endpoints, and arbitrary Connections for every endpoint. Each Endpoint Connection has its own isolated state during computation, and the specific containers it has access to, along with any initialization parameters, are specified out of code in the configuration. Endpoints generally extend the provided AbstractEndpoint class, which requires Endpoints to provide a list of default fields that will be used in creation of an Endpoint Record. Similar to Java Runnables, Endpoints all have a single method that gets called when the endpoint connection is encountered during Request submission. Within this method, Endpoints can access the records in whatever containers are available to them as specified on the connection map.
@@ -510,7 +495,7 @@ The Protocol layer can hold arbitrary Endpoints, and arbitrary Connections for e
 
 Endpoints are written as classes and initialized using configurable Connection maps. Every Connection represents an 'instance' of a specific Endpoint. Here is an example of a connections map used by an email type endpoint:
 
-```
+```json
 {
     "connections": [
         {
@@ -544,7 +529,6 @@ Each Connection specifies a unique id (required), a constructor used to build th
 
 *Note that there's a special character "\*" that allows specification of all containers of a certain type from the container layer.*
 
-
 #### MessageAPI API and Examples
 
 Now that we've described the general architecture, we will describe how a typical program will use this system using the API available.
@@ -557,9 +541,9 @@ All user-interactive parts of the MessageAPI model can be imported as interfaces
 
 The overall strategy for using MessageAPI is straightforward:
 
-Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples) - *alternatively, import and use the desired Session type directly*. 
+Use the imported SessionFactory to create an ISession (pass the path to a specification like the one described above, or one in the package examples) - *alternatively, import and use the desired Session type directly*.
 
-```
+```java
 import gov.noaa.messageapi.factories.SessionFactory;
 import gov.noaa.messageapi.interfaces.ISession;
 
@@ -568,16 +552,15 @@ ISession session = SessionFactory.create("/path/to/session_manifest.json");
 
 or
 
-```
+```java
 import gov.noaa.messageapi.interfaces.ISession;
 
 ISession session = new DefaultSession("/path/to/session_manifest.json");
 ```
 
-
 Using the created Session object, create a Request - the Request type was baked into the session on session creation. All fields and conditions that define the Request Record template will be available from the same Record.
 
-```
+```java
 import gov.noaa.messageapi.interfaces.IRequest;
 
 IRequest request = session.createRequest();
@@ -585,7 +568,7 @@ IRequest request = session.createRequest();
 
 Using the request, create as many records as needed directly on the request. For each record, set field values and/or condition values as needed. Every created record is automatically part of the request.
 
-```
+```java
 import gov.noaa.messageapi.interfaces.IRecord;
 
 IRecord record = request.createRecord();
@@ -593,11 +576,12 @@ IRecord record = request.createRecord();
 record.setField("field-id", "value");
 record.setCondition("condition-id", "condition-value");
 ```
-In the provided MessageAPI implementation, all Conditions are nullified for individual Records (any values set in the parameter manifest are removed). Values must be explicitly set for individual records to filter them. MessageAPI checks every record individually for valid (valued) condition branches and then validates each record against only those valued paths. 
+
+In the provided MessageAPI implementation, all Conditions are nullified for individual Records (any values set in the parameter manifest are removed). Values must be explicitly set for individual records to filter them. MessageAPI checks every record individually for valid (valued) condition branches and then validates each record against only those valued paths.
 
 We can also set Conditions directly on the Request if there are collection conditions specified in the Session Container:
 
-```
+```java
 request.setCondition("condition-id", "condition-value");
 
 ```
@@ -608,7 +592,7 @@ Initial values set in Condition maps are maintained in Requests (they are not nu
 
 Once the records are set, call submit on the request. This submission immediately creates a duplicate of the entire request inside a response object, and then returns. All logic is processed against that request copy and its parent response asynchronously. Inside a response, protocols can produce response records and response rejections.
 
-```
+```java
 import gov.noaa.messageapi.interfaces.IResponse;
 
 IResponse response = request.submit(); \\asynchronous, returns immediately
@@ -618,7 +602,7 @@ System.out.println(response.isComplete()); \\would initially return 'False'
 
 When complete, the IResponse will flip isComplete() to true, and will have available IRecords and IRejections.
 
-```
+```java
 import gov.noaa.messageapi.interfaces.IRejection;
 
 if (response.isComplete()) {
@@ -635,37 +619,35 @@ Figure 5 demonstrates how data typically flows through the Request structure ill
 
 ![Request Flow](./resources/docs/images/Figure5_RequestFlow.jpg "Request Flow")
 
-
 Figure 6 provides more insight into the internal parts of a Request.
 
 ![Request Structure](./resources/docs/images/Figure6_RequestTopology.jpg "Request Structure")
-
 
 Figure 7 provides more insight into the internal parts of a Record, which parts can be set, etc..
 
 ![Record Structure](./resources/docs/images/Figure7_RecordTopology.png "Record Structure")
 
-
 The provided MessageAPI implementation is designed to be thread-safe in Requests across Sessions, and Responses across Requests ***with respect to Records***. This means that when a Request is submitted, the submitted Record set is deep copied to the Response. The Response will use the Endpoint Connection instances that were created when the Request was created. This means that the Endpoints across a given Request are potentially Stateful. Separate Requests are guaranteed to be isolated and thread-safe with respect to state.
 
-This has important implications for use. If a stateful Endpoint is required, for example, some counting mechanism, or some situation where newer records depend on older, the same Request can be submitted multiple times (i.e., by calling request.submit()), with potentially different record sets (i.e., before calling request.submit() the second time, first call request.setRecords(List<IRecord> newRecords));
+This has important implications for use. If a stateful Endpoint is required, for example, some counting mechanism, or some situation where newer records depend on older, the same Request can be submitted multiple times (i.e., by calling request.submit()), with potentially different record sets (i.e., before calling request.submit() the second time, first call
 
-If isolated state is required, just create a new Request on the Session. All Endpoints and other stateful machinery will be re-instantiated for each Request. 
+```java
+request.setRecords(List<IRecord> newRecords));
+```
+
+If isolated state is required, just create a new Request on the Session. All Endpoints and other stateful machinery will be re-instantiated for each Request.
 
 In each case, Transformations are always stateless WRT Requests or Responses, because they are always recreated when called from an endpoint.
-
-
 
 Figure 8 provides an entire, top down view of a Request Lifecycle.
 
 ![Request Lifecycle](./resources/docs/images/Figure8_RequestLifecycle.jpeg "Request Lifecycle")
 
-
 ##### API Examples
 
 To illustrate a typical use case, we provide a simple example class that creates a new Session from manifest, creates a Request, Creates many Records on the Request for an arraylist of strings, submits the Request, and parses/prints out the Response Records and Rejections.
 
-```
+```java
 package gov.noaa.messageapi.test;
 
 import gov.noaa.messageapi.factories.SessionFactory;
@@ -728,12 +710,11 @@ Because requests contain a copy of the session variables which created them, the
 
 ##### Package Use
 
-When installed from source or acquired through repository, the MessageAPI-all.jar contains all dependencies required to run standalone. Because of the way MessageAPI handles Session bootstrapping, it is not required to bundle the MessageAPI core with user ConditionFactories, TransformationFactories, or Endpoints. As long as these are made available to MessageAPI on the Java classpath at Session creation, Sessions will be able to use them. This design makes it easier to automate things like creating K8s pods of certain session types. 
+When installed from source or acquired through repository, the MessageAPI-all.jar contains all dependencies required to run standalone. Because of the way MessageAPI handles Session bootstrapping, it is not required to bundle the MessageAPI core with user ConditionFactories, TransformationFactories, or Endpoints. As long as these are made available to MessageAPI on the Java classpath at Session creation, Sessions will be able to use them. This design makes it easier to automate things like creating K8s pods of certain session types.
 
 If desired or needed, MessageAPI can be bundled into other JARS or packages containing user Factories and Endpoints for portability, performance, security, or other reasons.
 
 ### Configurations
-
 
 ### Instructions
 
@@ -746,8 +727,7 @@ method was updated to accommodate this change. If building from scratch, the gra
 
 Once these two system dependencies are met, this package can be run with tests by running 'gradle' from the package root.
 
-
-```
+```Makefile
 gradle
 ```
 

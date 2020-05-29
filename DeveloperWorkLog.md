@@ -58,8 +58,7 @@ Currently fields are specified by transformations on transformation spec maps, a
 
 #### Design Path
 
-Ultimately it was decided that the best that could be done with endpoint fields without breaking some mathematical domain guarantees was to create a BaseEndpoint abstract class, which other endpoints could extend, that would parse default fields (to be specified on the endpoint itself). This design allows consumers of endpoints to have a guarantee of what fields they will expect to originate out of an endpoint. In the specification, a subset of those fields can be specified to restrict what endpoints return. This design compromise was due to the uncertainty in the field domain of reusable endpoints - i.e., the possibility for endpoints to define fields with the same name but different types. This could either be controlled via 
-
+Ultimately it was decided that the best that could be done with endpoint fields without breaking some mathematical domain guarantees was to create a BaseEndpoint abstract class, which other endpoints could extend, that would parse default fields (to be specified on the endpoint itself). This design allows consumers of endpoints to have a guarantee of what fields they will expect to originate out of an endpoint. In the specification, a subset of those fields can be specified to restrict what endpoints return. This design compromise was due to the uncertainty in the field domain of reusable endpoints - i.e., the possibility for endpoints to define fields with the same name but different types. This could either be controlled via
 
 ### Collection Conditions
 
@@ -75,7 +74,7 @@ The goal is to implement condition behavior, similar to that currently seen at t
 
 Currently, we have conditions listed as a list of maps, e.g.
 
-```
+```json
 "conditions": [
     {
         "id": "1",
@@ -99,8 +98,7 @@ Currently, we have conditions listed as a list of maps, e.g.
 
 And we have a list of collections in another list of maps, e.g.,
 
-
-```
+```json
 "collections": [
     {
         "id": "required-fields",
@@ -199,10 +197,10 @@ of records that satisfy the conditions specified by the transformation.
 - method should select data from the protocol record records map
 - method should allow any combination of record sets to be used in transformations
 - method should allow as record set parameters
-    - collections
-    - classifiers
-    - uuids
-    - other transformations
+  - collections
+  - classifiers
+  - uuids
+  - other transformations
 
 **We want the internal behavior to conform to the following conditions**
 
