@@ -13,6 +13,11 @@ struct list_item
     jobject jitem;
 };
 
+struct val_map
+{
+    jobject jmap;
+};
+
 struct val_list
 {
     int count;
@@ -22,6 +27,16 @@ struct val_list
 struct session
 {
     jobject jsession;
+};
+
+struct transformation
+{
+    jobject jtransformation;
+};
+
+struct transformation_map
+{
+    jobject jtransformation_map;
 };
 
 struct response

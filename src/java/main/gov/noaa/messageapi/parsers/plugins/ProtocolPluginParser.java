@@ -30,7 +30,7 @@ public class ProtocolPluginParser extends BasePluginParser implements IPluginPar
 
     protected Set<String> getRequiredConstructorKeys() {
         Set<String> set = new HashSet<String>();
-        set.add("metadata");
+        //set.add("metadata");
         set.add("endpoints");
         return set;
     }

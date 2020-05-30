@@ -30,8 +30,9 @@ public class FixRelativePathsTransformation implements ITransformation {
     private List<String> relativePathFields = null;
     private String transformKey = null;
 
-    public FixRelativePathsTransformation(List<String> fields, Map<String, Object> params) {
-        this.setRelativePathFields(fields);
+    @SuppressWarnings("unchecked")
+    public FixRelativePathsTransformation(Map<String, Object> params) {
+        this.setRelativePathFields((List<String>) params.get("fields"));
         this.setTransformKey((String) params.get("transform-key"));
     }
 

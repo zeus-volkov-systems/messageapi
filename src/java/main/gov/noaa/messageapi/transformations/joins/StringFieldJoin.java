@@ -64,7 +64,7 @@ public class StringFieldJoin implements ITransformation {
     private IField joinField = null;
     private IField collectionField = null;
 
-    public StringFieldJoin(List<String> fields, Map<String,Object> params) {
+    public StringFieldJoin(Map<String,Object> params) {
         this.setJoinField((String) params.get("join-field"));
         this.setCollectionField((String) params.get("collection-field"));
     }

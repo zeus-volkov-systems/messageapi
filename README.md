@@ -164,10 +164,10 @@ Note that both Conditions and Transformations specify 'factories'. These factori
                      "fields": ["file-path"],
                      "conditions": ["is-relative-path"]}],
     "transformations": [{"id": "trans-1",
-                         "operator": "fix-relative-paths",
-                         "constructor": {"transform-key": "file-collection"},
-                         "records": {"file-collection": {"COLLECTION": "coll-1"}},
-                         "fields": ["file-path"]}],
+                         "operator": "gov.noaa.messageapi.test.transformations.FixRelativePathsTransformation",
+                         "constructor": {"transform-key": "file-collection",
+                                        "fields": ["file-path"]},
+                         "records": {"file-collection": {"COLLECTION": "coll-1"}}}],
     "connections": [{"id": "conn-1",
                      "transformations": ["trans-1"],
                      "constructor": {"file-fields": "file-path"},
@@ -419,7 +419,7 @@ There are three types of container groupings provided by the default MessageAPI 
 
 - **Transformations** are computational containers. They are an optional component of MessageAPI. Transformations act as instances of immutable functions that can hold global, configurable constructor/initialization parameters, use other arbitrary named containers as arguments in a process function, return a list of records, and list the fields that each record will provide in a 'fields' map entry. Transformations are always immutable, executed lazily (only when called in an Endpoint), and always operate on and produce lists of records.
 
-The 'records' entry on the Transformation map itself holds a map of named parameter keys that correspond to values describing what type of container and the id of that container to use as that particular input. For example, in the following Transformation map, the first Transformation is called 'join-test'. The Transformation has an operator of 'join', which corresponds to a java class in the TransformationFactory listed in the Session manifest. This Transformation provides a constructor map containing two keys, 'join_field' and 'collection_field', both which specify constants that are set in the Transformation when it is initialized.
+The 'records' entry on the Transformation map itself holds a map of named parameter keys that correspond to values describing what type of container and the id of that container to use as that particular input. For example, in the following Transformation map, the first Transformation is called 'join-test'. The Transformation has an operator of the fully qualified join Class listed in the Session manifest. This Transformation provides a constructor map containing two keys, 'join_field' and 'collection_field', both which specify constants that are set in the Transformation when it is initialized.
 
 The 'join-test' Transformation defines three parameters in its process method map - 'parent', 'child', and 'other'. Each of these corresponds to a different container - when used in the Transformation, the 'parent' parameter will provide a list of all records contained by the 'namespace=condition-test' classifier; the 'child' parameter will provide a list of records contained by the 'mix-and-match' collection; and the 'other' parameter contains a special case - the UUID - which will provide every collection for a given UUID, and map the Transformation to every UUID, and all returned records for every UUID in this Transformation will be merged on return. The use of UUID as a Transformation record parameter is a special case, and due to its mapping ability, limits its use to once per Transformation.
 
@@ -434,21 +434,21 @@ It is the view of the package authors that Transformations hold computational ta
     "transformations": [
     {
         "id": "join-test",
-        "operator": "join",
+        "operator": "gov.noaa.messageapi.transformations.joins.StringFieldJoin",
         "constructor": {"join_field": "key",
-                        "collection_field": "mix-and-match"},
+                        "collection_field": "mix-and-match",
+                        "fields": ["key", "record", "filename", "type", "mix-and-match"]},
         "records": {"parent": {"CLASSIFIER": ["namespace", "condition-test"]},
                     "child":  {"COLLECTION": "mix-and-match"},
-                    "other": "UUID"},
-        "fields": ["key", "record", "filename", "type", "mix-and-match"]
+                    "other": "UUID"}
     },
     {
         "id": "reduce-test",
-        "operator": "reduce-sum",
+        "operator": "gov.noaa.messageapi.transformations.reductions.ReduceTransformation",
         "constructor": {"reduce-field": "mix-and-match",
-                        "reduce-target": "mix-and-match-reduction"},
-        "records": {"reduce-list" : {"TRANSFORMATION": "join-test"}},
-        "fields": ["key", "mix-and-match-reduction"]
+                        "reduce-target": "mix-and-match-reduction",
+                        "fields": ["key", "mix-and-match-reduction"]},
+        "records": {"reduce-list" : {"TRANSFORMATION": "join-test"}}
     }]
 }
 ```

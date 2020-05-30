@@ -9,7 +9,6 @@ import java.util.UUID;
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
-import gov.noaa.messageapi.interfaces.ITransformationFactory;
 
 import gov.noaa.messageapi.definitions.ContainerDefinition;
 
@@ -44,8 +43,7 @@ public class DefaultConnection extends BaseConnection implements IConnection {
                 this.setClassifiers(new HashMap<String,List<Object>>());
             }
             if (connectionMap.containsKey("transformations")) {
-                this.integrateTransformations((List<String>) connectionMap.get("transformations"),
-                                containerDefinition.getTransformationFactory(), containerDefinition.getTransformationMaps());
+                this.integrateTransformations((List<String>) connectionMap.get("transformations"), containerDefinition.getTransformationMaps());
             } else {
                 this.setTransformationMap(new HashMap<String, Map<String, Object>>());
             }
@@ -178,16 +176,15 @@ public class DefaultConnection extends BaseConnection implements IConnection {
      * are parent transformations of named transformations, as well as classifiers and connections
      * used by any transformation.
      * @param transformations       The named transformations included on the connection spec itself
-     * @param transformationFactory A class factory that contains key/value pairs of transformation operator keywords and class references
      * @param rawTransformationMaps The raw transformation maps containing entire transformation specifications
      */
-    private void integrateTransformations(List<String> transformations,ITransformationFactory transformationFactory, List<Map<String,Object>> rawTransformationMaps) {
+    private void integrateTransformations(List<String> transformations, List<Map<String,Object>> rawTransformationMaps) {
         List<String> allTransformationIds = ConnectionUtils.getAllTransformationIds(transformations, rawTransformationMaps);
         List<String> transformationCollections = ConnectionUtils.getTransformationCollections(allTransformationIds, rawTransformationMaps);
         Map<String,List<Object>> transformationClassifiers = ConnectionUtils.getTransformationClassifiers(allTransformationIds,
                                                                 rawTransformationMaps);
         Map<String, Map<String, Object>> transformationMap = ConnectionUtils.buildTransformationMap(allTransformationIds,
-                                                                rawTransformationMaps, transformationFactory);
+                                                                rawTransformationMaps);
         this.addCollections(transformationCollections);
         this.addClassifiers(transformationClassifiers);
         this.setTransformationMap(transformationMap);

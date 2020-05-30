@@ -4,14 +4,15 @@ import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 import java.util.HashMap;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.concurrent.CompletableFuture;
 
 import gov.noaa.messageapi.interfaces.IConnection;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
+import gov.noaa.messageapi.interfaces.ITransformation;
 import gov.noaa.messageapi.interfaces.IPacket;
-import gov.noaa.messageapi.interfaces.ITransformationFactory;
 
 import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.general.MapUtils;
@@ -103,14 +104,26 @@ public class ConnectionUtils {
         return returnMap;
     }
 
+    public static ITransformation getTransformationInstance(String transformationClass, Map<String,Object> args) {
+        try {
+            Class<?> pluginClass = Class.forName(transformationClass);
+            Class<?>[] ctrClasses = { Map.class };
+            Constructor<?> constructor = pluginClass.getDeclaredConstructor(ctrClasses);
+            return (ITransformation) constructor.newInstance(args);
+        } catch (Exception e){
+            System.out.println("couldnt build a transformation instance!!!");
+            return null;
+        }
+    }
+
 
     @SuppressWarnings("unchecked")
-    public static Map<String, Map<String, Object>> buildTransformationMap(List<String> ids, List<Map<String,Object>> allMaps, ITransformationFactory factory) {
+    public static Map<String, Map<String, Object>> buildTransformationMap(List<String> ids, List<Map<String,Object>> allMaps) {
         List<Map<String,Object>> idMaps = allMaps.stream().filter(m -> ids.contains((String)m.get("id"))).collect(Collectors.toList());
         List<Map<String, Map<String, Object>>> tMaps = idMaps.stream().map(m -> {
             Map<String, Map<String,Object>> templateMap = new HashMap<String, Map<String,Object>>();
             Map<String,Object> valMap = new HashMap<String,Object>();
-            valMap.put("instance", factory.getTransformation((String)m.get("operator"), (List<String>)m.get("fields"), (Map<String,Object>)m.get("constructor")));
+            valMap.put("instance", ConnectionUtils.getTransformationInstance((String)m.get("operator"), (Map<String,Object>)m.get("constructor")));
             valMap.put("parameters", ConnectionUtils.makeRecordSymbolMaps((Map<String,Object>)m.get("records")));
             templateMap.put((String)m.get("id"), valMap);
             return templateMap;

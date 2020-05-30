@@ -29,7 +29,7 @@ public class SchemaPluginParser extends BasePluginParser implements IPluginParse
 
     protected Set<String> getRequiredConstructorKeys() {
         Set<String> set = new HashSet<String>();
-        set.add("metadata");
+        //set.add("metadata");
         set.add("fields");
         return set;
     }

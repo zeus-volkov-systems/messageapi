@@ -39,6 +39,8 @@ def "Tests submission of a full file reader task with 1 large input."() {
         IResponse response = request.submit();
         while (!response.isComplete()) {}
     then: "We should have no rejections and there should be 79794 records in the return set."
+        //println "FIELD VALUE!!!"
+        //println response.getRecords().get(0).getField("value").getValue()
         response.getRejections().size() == 0
         response.getRecords().size() == 79794
     }
