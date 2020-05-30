@@ -28,7 +28,7 @@ def 'Session with one endpoint that calls into C, populates a return record, and
         record1.setField('null-test', 'null')
         record2.setField('string-test', 'cool!')
         record2.setField('initial-value', 5000)
-        record2.setField('null-test', 'null')
+        //record2.setField('null-test', 'null')
         /*for (int i=0; i<500; i++) {
             IRecord r = request.createRecord();
             r.setField("initial-value", i);

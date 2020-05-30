@@ -192,11 +192,11 @@ const char *RecordUtils::getMethodSignature(const char *methodName)
 {
     if (strcmp(methodName, "isValid") == 0)
     {
-        return "()Z";
+        return "()Ljava/lang/Boolean;";
     }
     else if (strcmp(methodName, "setValid") == 0)
     {
-        return "(Z)V";
+        return "(Ljava/lang/Boolean;)V";
     }
 
     else if (strcmp(methodName, "getCopy") == 0)
@@ -209,7 +209,7 @@ const char *RecordUtils::getMethodSignature(const char *methodName)
     }
     else if (strcmp(methodName, "hasField") == 0)
     {
-        return "(Ljava/lang/String;)Z";
+        return "(Ljava/lang/String;)Ljava/lang/Boolean;";
     }
     else if (strcmp(methodName, "getFields") == 0)
     {
@@ -225,7 +225,7 @@ const char *RecordUtils::getMethodSignature(const char *methodName)
     }
     else if (strcmp(methodName, "hasCondition") == 0)
     {
-        return "(Ljava/lang/String;)Z";
+        return "(Ljava/lang/String;)Ljava/lang/Boolean;";
     }
     else if (strcmp(methodName, "getConditions") == 0)
     {

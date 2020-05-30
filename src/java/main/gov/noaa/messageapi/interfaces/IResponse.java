@@ -9,7 +9,7 @@ import java.util.List;
  * any processing steps (validation, factoring, transformation, etc.)
  * in sequence, eventually yielding a set of returned data packets from
  * endpoint connections, where it combines them and sets a response
- * list of records, list of rejections, and changes the isComplete boolean
+ * list of records, list of rejections, and changes the isComplete Boolean
  * to true.
  * @author Ryan Berkheimer
  */

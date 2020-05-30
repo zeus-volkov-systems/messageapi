@@ -240,11 +240,11 @@ const char *FieldUtils::getMethodSignature(const char *methodName)
     }
     else if (strcmp(methodName, "isValid") == 0)
     {
-        return "()Z";
+        return "()Ljava/lang/Boolean;";
     }
     else if (strcmp(methodName, "isRequired") == 0)
     {
-        return "()Z";
+        return "()Ljava/lang/Boolean;";
     }
     else if (strcmp(methodName, "setValue") == 0)
     {
