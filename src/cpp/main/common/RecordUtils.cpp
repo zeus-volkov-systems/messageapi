@@ -29,6 +29,13 @@ bool RecordUtils::isValid(struct record *record)
     return (bool)this->jvm->CallBooleanMethod(record->jrecord, this->isValidMethodId);
 }
 
+void RecordUtils::setValid(struct record *record, bool isValid)
+{
+    jobject jBoolVal = jvm->NewObject(this->typeUtils->getBoolClass(), this->typeUtils->createBoolMethod(), (jboolean)isValid);
+    this->jvm->CallVoidMethod(record->jrecord, this->setValidMethodId, jBoolVal);
+    this->jvm->DeleteLocalRef(jBoolVal);
+}
+
 struct record *RecordUtils::getCopy(struct record *record)
 {
     jobject jRecordCopy = this->jvm->CallObjectMethod(record->jrecord, this->getCopyMethodId);
@@ -166,6 +173,7 @@ void RecordUtils::loadMethodIds()
     jclass recordClass = JniUtils::getNamedClass(this->jvm, "gov/noaa/messageapi/interfaces/IRecord");
     /*Intrinsic Methods*/
     this->isValidMethodId = JniUtils::getMethod(this->jvm, recordClass, "isValid", this->getMethodSignature("isValid"), false);
+    this->setValidMethodId = JniUtils::getMethod(this->jvm, recordClass, "setValid", this->getMethodSignature("setValid"), false);
     this->getCopyMethodId = JniUtils::getMethod(this->jvm, recordClass, "getCopy", this->getMethodSignature("getCopy"), false);
     /*Field Related Methods*/
     this->getFieldIdsMethodId = JniUtils::getMethod(this->jvm, recordClass, "getFieldIds", this->getMethodSignature("getFieldIds"), false);
@@ -184,8 +192,13 @@ const char *RecordUtils::getMethodSignature(const char *methodName)
 {
     if (strcmp(methodName, "isValid") == 0)
     {
-        return "()Ljava/lang/Boolean;";
+        return "()Z";
     }
+    else if (strcmp(methodName, "setValid") == 0)
+    {
+        return "(Z)V";
+    }
+
     else if (strcmp(methodName, "getCopy") == 0)
     {
         return "()Lgov/noaa/messageapi/interfaces/IRecord;";
@@ -196,7 +209,7 @@ const char *RecordUtils::getMethodSignature(const char *methodName)
     }
     else if (strcmp(methodName, "hasField") == 0)
     {
-        return "(Ljava/lang/String;)Ljava/lang/Boolean;";
+        return "(Ljava/lang/String;)Z";
     }
     else if (strcmp(methodName, "getFields") == 0)
     {
@@ -212,7 +225,7 @@ const char *RecordUtils::getMethodSignature(const char *methodName)
     }
     else if (strcmp(methodName, "hasCondition") == 0)
     {
-        return "(Ljava/lang/String;)Ljava/lang/Boolean;";
+        return "(Ljava/lang/String;)Z";
     }
     else if (strcmp(methodName, "getConditions") == 0)
     {

@@ -35,6 +35,7 @@ public:
 
     struct record *getCopy(struct record *record);
     bool isValid(struct record *record);
+    void setValid(struct record *record, bool isValid);
     
     bool hasField(struct record *record, const char *fieldId);
     struct string_list *getFieldIds(struct record *record);
@@ -54,6 +55,7 @@ private:
 
     /*Record Methods*/
     jmethodID isValidMethodId;
+    jmethodID setValidMethodId;
     jmethodID getCopyMethodId;
     jmethodID getFieldIdsMethodId;
     jmethodID getFieldsMethodId;
