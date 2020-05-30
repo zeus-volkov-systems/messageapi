@@ -63,9 +63,11 @@ public class SchemaUtils {
     public static List<IRecord> filterNonValuedConditions(List<IRecord> records) {
         return records.stream().map(r -> {
             List<ICondition> conditions = ConditionUtils.filterNonValuedConditions(r.getConditions());
-            IRecord newR = r.getCopy();
-            newR.setConditions(conditions);
-            return newR;
+            //IRecord newR = r.getCopy();
+            //newR.setConditions(conditions);
+            r.setConditions(conditions);
+            //return newR;
+            return r;
         }).collect(Collectors.toList());
     }
 

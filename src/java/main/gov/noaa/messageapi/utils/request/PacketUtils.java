@@ -27,8 +27,7 @@ public class PacketUtils {
         List<IRejection> primaryRejections = RejectionUtils.getRequiredFieldRejections(records);
         List<IRecord> filteredRecords = SchemaUtils.filterFieldlessConditions(
                                          SchemaUtils.filterNonValuedConditions(
-                                          SchemaUtils.filterNonValuedFields(
-                                           SchemaUtils.filterRejections(records, primaryRejections))));
+                                           SchemaUtils.filterRejections(records, primaryRejections)));
         List<IRejection> secondaryRejections = RejectionUtils.getFieldConditionRejections(schema, filteredRecords);
         dataPacket.setRecords(SchemaUtils.filterRejections(filteredRecords, secondaryRejections));
         dataPacket.setRejections(ListUtils.flatten(new ArrayList<List<IRejection>>(Arrays.asList(primaryRejections, secondaryRejections))));
