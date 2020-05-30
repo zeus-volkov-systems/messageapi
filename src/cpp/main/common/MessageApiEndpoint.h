@@ -1,4 +1,3 @@
-
 #ifndef _Included_MessageApiEndpoint
 #define _Included_MessageApiEndpoint
 

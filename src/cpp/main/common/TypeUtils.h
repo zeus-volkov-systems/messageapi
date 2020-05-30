@@ -1,4 +1,3 @@
-
 #ifndef _TYPEUTILS_H
 #define _TYPEUTILS_H
 

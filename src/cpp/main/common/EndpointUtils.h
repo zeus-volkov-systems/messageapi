@@ -1,4 +1,3 @@
-
 #ifndef _ENDPOINTUTILS_H
 #define _ENDPOINTUTILS_H
 

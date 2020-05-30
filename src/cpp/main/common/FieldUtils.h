@@ -1,4 +1,3 @@
-
 #ifndef _FIELDUTILS_H
 #define _FIELDUTILS_H
 

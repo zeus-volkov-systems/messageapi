@@ -1,4 +1,3 @@
-
 #ifndef _JNIUTILS_H
 #define _JNIUTILS_H
 

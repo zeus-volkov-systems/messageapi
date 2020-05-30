@@ -19,6 +19,11 @@ struct val_list
     jobject jlist;
 };
 
+struct session
+{
+    jobject jsession;
+};
+
 struct response
 {
     jobject jresponse;

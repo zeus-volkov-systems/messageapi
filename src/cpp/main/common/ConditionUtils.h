@@ -1,4 +1,3 @@
-
 #ifndef _CONDITIONUTILS_H
 #define _CONDITIONUTILS_H
 

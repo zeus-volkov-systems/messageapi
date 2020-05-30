@@ -1,4 +1,3 @@
-
 #ifndef _RESPONSEUTILS_H
 #define _RESPONSEUTILS_H
 

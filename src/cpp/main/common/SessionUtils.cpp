@@ -1,0 +1,65 @@
+#include "SessionUtils.h"
+
+#include <jni.h>
+
+/**
+ * Sessions are the top level API container of any given computation. Sessions
+ * bootstrap from a specification map and 'lock-in' a computation environment,
+ * allowing requests to be created.
+ * 
+ * @author Ryan Berkheimer
+ */
+
+/* Default Constructor */
+SessionUtils::SessionUtils(JNIEnv *jvm)
+{
+    this->loadGlobalRefs(jvm);
+    this->loadMethodIds();
+}
+
+/* Default Destructor */
+SessionUtils::~SessionUtils()
+{
+    try
+    {}
+    catch (const std::exception &e)
+    {
+        std::cout << e.what();
+    }
+}
+
+/* Public API */
+
+struct request *SessionUtils::createRequest(struct session *session)
+{
+    jobject jrequest = this->jvm->CallObjectMethod(session->jsession, this->createRequestMethodId);
+    struct request *request = (struct request *)malloc(sizeof(struct request) + sizeof(jrequest));
+    request->jrequest = jrequest;
+    return request;
+}
+
+/* Private Methods */
+
+void SessionUtils::loadGlobalRefs(JNIEnv *jvm)
+{
+    this->jvm = jvm;
+}
+
+void SessionUtils::loadMethodIds()
+{
+    jclass sessionClass = JniUtils::getNamedClass(this->jvm, "gov/noaa/messageapi/interfaces/ISession");
+
+    this->createRequestMethodId = JniUtils::getMethod(this->jvm, sessionClass, "createRequest", this->getMethodSignature("createRequest"), false);
+
+    jvm->DeleteLocalRef(sessionClass);
+}
+
+
+const char *SessionUtils::getMethodSignature(const char *methodName)
+{
+    if (strcmp(methodName, "createRequest") == 0)
+    {
+        return "()Lgov/noaa/messageapi/interfaces/IRequest;";
+    }
+    return NULL;
+}

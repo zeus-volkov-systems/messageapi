@@ -1,4 +1,3 @@
-
 #ifndef _REJECTIONUTILS_H
 #define _REJECTIONUTILS_H
 
