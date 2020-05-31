@@ -19,6 +19,7 @@ MessageApiEndpoint::MessageApiEndpoint(JNIEnv *env, jobject jendpoint, jobject j
 
     this->typeUtils = new TypeUtils(this->jvm);
     this->listUtils = new ListUtils(this->jvm, typeUtils);
+    this->mapUtils = new MapUtils(this->jvm, typeUtils);
     this->endpointUtils = new EndpointUtils(this->jvm, this->endpoint, this->typeUtils, this->listUtils);
     this->protocolRecordUtils = new ProtocolRecordUtils(this->jvm, this->protocolRecord, this->typeUtils, this->listUtils);
     this->recordUtils = new RecordUtils(this->jvm, this->typeUtils, this->listUtils);
@@ -41,6 +42,7 @@ MessageApiEndpoint::~MessageApiEndpoint()
         delete this->conditionUtils;
         delete this->packetUtils;
         delete this->listUtils;
+        delete this->mapUtils;
         delete this->typeUtils;
         this->jvm->DeleteGlobalRef(this->endpoint);
         this->jvm->DeleteGlobalRef(this->protocolRecord);
@@ -89,6 +91,11 @@ PacketUtils *MessageApiEndpoint::getPacketUtils()
 ListUtils *MessageApiEndpoint::getListUtils()
 {
     return this->listUtils;
+}
+
+MapUtils *MessageApiEndpoint::getMapUtils()
+{
+    return this->mapUtils;
 }
 
 TypeUtils *MessageApiEndpoint::getTypeUtils()

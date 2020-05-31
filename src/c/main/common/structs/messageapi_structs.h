@@ -8,14 +8,19 @@
  * @author Ryan Berkheimer
  */
 
-struct list_item
+struct map_val
 {
-    jobject jitem;
+    jobject jval;
 };
 
 struct val_map
 {
     jobject jmap;
+};
+
+struct list_item
+{
+    jobject jitem;
 };
 
 struct val_list

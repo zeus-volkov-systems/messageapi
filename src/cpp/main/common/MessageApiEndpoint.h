@@ -10,6 +10,7 @@
 #include <string>
 
 #include "JniUtils.h"
+#include "MapUtils.h"
 #include "ListUtils.h"
 #include "EndpointUtils.h"
 #include "ProtocolRecordUtils.h"
@@ -46,6 +47,7 @@ public:
     ConditionUtils *getConditionUtils();
     PacketUtils *getPacketUtils();
     ListUtils *getListUtils();
+    MapUtils *getMapUtils();
     TypeUtils *getTypeUtils();
 
 private :
@@ -63,6 +65,7 @@ private :
     PacketUtils *packetUtils;
     TypeUtils *typeUtils;
     ListUtils *listUtils;
+    MapUtils *mapUtils;
 
 };
 

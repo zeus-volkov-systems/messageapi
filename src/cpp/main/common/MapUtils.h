@@ -6,10 +6,12 @@
 
 #ifdef __cplusplus
 
-#include "JniUtils.h"
-#include "TypeUtils.h"
 #include <stdlib.h>
 #include <iostream>
+
+#include "JniUtils.h"
+#include "TypeUtils.h"
+#include "ListUtils.h"
 
 /**
  * This is the header for the MapUtils object class. MapUtils contains a set of methods used for manipulation of Java Maps
@@ -27,49 +29,54 @@ public:
 
     /* Utility methods */
     struct val_map *createMap();
-    int getListLength(jobject jList);
-    struct string_list *translateStringList(jobject jList);
+    int getSize(struct val_map *map);
+    bool hasKey(struct val_map *map, const char *key);
 
-    /*List Item Retrieval Methods*/
-    struct list_item *getItem(struct val_list *list, int index);
-    jobject getObjectItem(struct val_list *list, int index);
-    int getIntItem(struct val_list *list, int index);
-    long getLongItem(struct val_list *list, int index);
-    float getFloatItem(struct val_list *list, int index);
-    double getDoubleItem(struct val_list *list, int index);
-    signed char getByteItem(struct val_list *list, int index);
-    const char *getStringItem(struct val_list *list, int index);
-    bool getBoolItem(struct val_list *list, int index);
-    short getShortItem(struct val_list *list, int index);
-    struct val_list *getListItem(struct val_list *list, int index);
+    /*Map Value Retrieval Methods*/
+    struct map_val *getVal(struct val_map *map, const char *key);
+    jobject getObjectVal(struct val_map *map, const char *key);
+    int getIntVal(struct val_map *map, const char *key);
+    long getLongVal(struct val_map *map, const char *key);
+    float getFloatVal(struct val_map *map, const char *key);
+    double getDoubleVal(struct val_map *map, const char *key);
+    signed char getByteVal(struct val_map *map, const char *key);
+    const char *getStringVal(struct val_map *map, const char *key);
+    bool getBoolVal(struct val_map *map, const char *key);
+    short getShortVal(struct val_map *map, const char *key);
+    struct val_list *getListVal(struct val_map *map, const char *key);
+    struct val_map *getMapVal(struct val_map *map, const char *key);
 
-    /*List Item Insertion Methods*/
-    void addItem(struct val_list *list, struct list_item *item);
-    void addObjectItem(struct val_list *list, jobject val);
-    void addIntItem(struct val_list *list, int val);
-    void addLongItem(struct val_list *list, long val);
-    void addFloatItem(struct val_list *list, float val);
-    void addDoubleItem(struct val_list *list, double val);
-    void addByteItem(struct val_list *list, signed char val);
-    void addStringItem(struct val_list *list, const char *val);
-    void addBoolItem(struct val_list *list, bool val);
-    void addShortItem(struct val_list *list, short val);
-    void addListItem(struct val_list *list, struct val_list *val);
+    /*Insert or Update Methods*/
+    void putVal(struct val_map *map, const char *key, struct map_val *val);
+    void putObjectVal(struct val_map *map, const char *key, jobject val);
+    void putIntVal(struct val_map *map, const char *key, int val);
+    void putLongVal(struct val_map *map, const char *key, long val);
+    void putFloatVal(struct val_map *map, const char *key, float val);
+    void putDoubleVal(struct val_map *map, const char *key, double val);
+    void putByteVal(struct val_map *map, const char *key, signed char val);
+    void putStringVal(struct val_map *map, const char *key, const char *val);
+    void putBoolVal(struct val_map *map, const char *key, bool val);
+    void putShortVal(struct val_map *map, const char *key, short val);
+    void putListVal(struct val_map *map, const char *key, struct val_list *val);
+    void putMapVal(struct val_map *map, const char *key, struct val_map *val);
 
-    jmethodID createListMethod();
-    jmethodID getListSizeMethod();
-    jmethodID getListItemMethod();
-    jmethodID addListItemMethod();
+    jmethodID createMapMethod();
+    jmethodID getSizeMethod();
+    jmethodID hasKeyMethod();
+    jmethodID getValueMethod();
+    jmethodID putValueMethod();
 
 
 private:
     JNIEnv *jvm;
     TypeUtils *typeUtils;
+    ListUtils *listUtils;
 
-    jmethodID createListMethodId;
-    jmethodID getListSizeMethodId;
-    jmethodID getListItemMethodId;
-    jmethodID addListItemMethodId;
+    jmethodID createMapMethodId;
+    jmethodID getSizeMethodId;
+    jmethodID hasKeyMethodId;
+    jmethodID getValueMethodId;
+    jmethodID putValueMethodId;
 
     /* Initialization Methods */
     void loadGlobalRefs(JNIEnv *env, TypeUtils *TypeUtils);

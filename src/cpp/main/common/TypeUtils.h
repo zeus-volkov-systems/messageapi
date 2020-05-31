@@ -51,6 +51,7 @@ public:
     jclass getShortClass();
 
     jclass getListClass();
+    jclass getMapClass();
 
     jstring toJavaString(const char *charString);
     const char *fromJavaString(jstring javaString);
@@ -71,6 +72,7 @@ private:
     jclass shortClass;
 
     jclass listClass;
+    jclass mapClass;
 
     /*Type Utility Retrieval Methods*/
     jmethodID getBoolMethodId;

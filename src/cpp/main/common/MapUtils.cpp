@@ -1,12 +1,14 @@
-#include "ListUtils.h"
+#include "MapUtils.h"
 
-ListUtils::ListUtils(JNIEnv *env, TypeUtils *typeUtils)
+/* Default Constructor */
+MapUtils::MapUtils(JNIEnv *env, TypeUtils *typeUtils)
 {
     this->loadGlobalRefs(env, typeUtils);
     this->loadMethodIds();
 }
 
-ListUtils::~ListUtils()
+/* Default destructor */
+MapUtils::~MapUtils()
 {
     try
     {
@@ -17,248 +19,262 @@ ListUtils::~ListUtils()
     }
 }
 
-void ListUtils::loadGlobalRefs(JNIEnv *env, TypeUtils *typeUtils)
+void MapUtils::loadGlobalRefs(JNIEnv *env, TypeUtils *typeUtils)
 {
     this->jvm = env;
     this->typeUtils = typeUtils;
 }
 
-void ListUtils::loadMethodIds()
+void MapUtils::loadMethodIds()
 {
-    jclass listClass = JniUtils::getNamedClass(this->jvm, "java/util/List");
-    this->getListSizeMethodId = this->jvm->GetMethodID(listClass, "size", "()I");
-    this->getListItemMethodId = this->jvm->GetMethodID(listClass, "get", "(I)Ljava/lang/Object;");
-    this->addListItemMethodId = this->jvm->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
-    this->jvm->DeleteLocalRef(listClass);
+    jclass mapClass = JniUtils::getNamedClass(this->jvm, "java/util/Map");
 
-    this->createListMethodId = this->jvm->GetMethodID(this->typeUtils->getListClass(), "<init>", "()V");
+    this->getSizeMethodId = this->jvm->GetMethodID(mapClass, "size", "()I");
+    this->hasKeyMethodId = this->jvm->GetMethodID(mapClass, "containsKey", "(Ljava/lang/Object;)Z");
+    this->getValueMethodId = this->jvm->GetMethodID(mapClass, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
+    this->putValueMethodId = this->jvm->GetMethodID(mapClass, "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
+
+    this->jvm->DeleteLocalRef(mapClass);
+
+    this->createMapMethodId = this->jvm->GetMethodID(this->typeUtils->getMapClass(), "<init>", "()V");
 }
 
-jmethodID ListUtils::createListMethod()
+jmethodID MapUtils::createMapMethod()
 {
-    return this->createListMethodId;
+    return this->createMapMethodId;
 }
 
-jmethodID ListUtils::getListSizeMethod()
+jmethodID MapUtils::getSizeMethod()
 {
-    return this->getListSizeMethodId;
+    return this->getSizeMethodId;
 }
 
-jmethodID ListUtils::getListItemMethod()
+jmethodID MapUtils::hasKeyMethod()
 {
-    return this->getListItemMethodId;
+    return this->hasKeyMethodId;
 }
 
-jmethodID ListUtils::addListItemMethod()
+jmethodID MapUtils::getValueMethod()
 {
-    return this->addListItemMethodId;
+    return this->getValueMethodId;
 }
 
-struct val_list *ListUtils::createList()
+jmethodID MapUtils::putValueMethod()
 {
-    jobject jList = this->jvm->NewObject(this->typeUtils->getListClass(), this->createListMethod());
-    struct val_list *valueList = (struct val_list *)malloc(sizeof(struct val_list));
-    valueList->count = 0;
-    valueList->jlist = jList;
-    return valueList;
+    return this->putValueMethodId;
 }
 
-int ListUtils::getListLength(jobject jList)
+struct val_map *MapUtils::createMap()
 {
-    return (int)this->jvm->CallIntMethod(jList, this->getListSizeMethod());
+    jobject jMap = this->jvm->NewObject(this->typeUtils->getMapClass(), this->createMapMethod());
+    struct val_map *valueMap = (struct val_map *)malloc(sizeof(struct val_map));
+    valueMap->jmap = jMap;
+    return valueMap;
 }
 
-struct list_item *ListUtils::getItem(struct val_list *list, int index)
+int MapUtils::getSize(val_map *val_map)
 {
-    struct list_item *listItem = (struct list_item *)malloc(sizeof(struct list_item));
-    listItem->jitem = this->getObjectItem(list, index);
-    return listItem;
+    return (int)this->jvm->CallIntMethod(val_map->jmap, this->getSizeMethod());
 }
 
-jobject ListUtils::getObjectItem(struct val_list *val_list, int index)
+bool MapUtils::hasKey(val_map *val_map, const char *key)
 {
-    return static_cast<jobject>(this->jvm->CallObjectMethod(val_list->jlist, this->getListItemMethod(), index));
+    return (bool)this->jvm->CallBooleanMethod(val_map->jmap, this->hasKeyMethod());
 }
 
-struct val_list *ListUtils::getListItem(struct val_list *list, int index)
+/*Map Value Retrieval Methods*/
+struct map_val *MapUtils::getVal(struct val_map *map, const char *key)
 {
-    jobject listItem = this->getObjectItem(list, index);
-    int itemCount = this->getListLength(listItem);
-    struct val_list *valueList = (struct val_list *)malloc(sizeof(struct val_list));
-    valueList->count = itemCount;
-    valueList->jlist = listItem;
-    return valueList;
+    struct map_val *mapVal = (struct map_val *)malloc(sizeof(struct map_val));
+    mapVal->jval = this->getObjectVal(map, key);
+    return mapVal;
 }
 
-int ListUtils::getIntItem(struct val_list *list, int index)
+jobject MapUtils::getObjectVal(struct val_map *map, const char *key)
 {
-    jobject list_item = this->getObjectItem(list, index);
-    int val = (int)this->jvm->CallIntMethod(list_item, this->typeUtils->getIntMethod());
-    jvm->DeleteLocalRef(list_item);
+    jstring jkey = this->typeUtils->toJavaString(key);
+    jobject objectVal = static_cast<jobject>(this->jvm->CallObjectMethod(map->jmap, this->getValueMethod(), jkey));
+    this->jvm->DeleteLocalRef(jkey);
+    return objectVal;
+}
+
+int MapUtils::getIntVal(struct val_map *map, const char *key)
+{
+    jobject jval = this->getObjectVal(map, key);
+    int val = (int)this->jvm->CallIntMethod(jval, this->typeUtils->getIntMethod());
+    jvm->DeleteLocalRef(jval);
     return val;
 }
 
-long ListUtils::getLongItem(struct val_list *list, int index)
+long MapUtils::getLongVal(struct val_map *map, const char *key)
 {
-    jobject list_item = this->getObjectItem(list, index);
-    long val = (long)this->jvm->CallLongMethod(list_item, this->typeUtils->getLongMethod());
-    jvm->DeleteLocalRef(list_item);
+    jobject jval = this->getObjectVal(map, key);
+    long val = (long)this->jvm->CallLongMethod(jval, this->typeUtils->getLongMethod());
+    jvm->DeleteLocalRef(jval);
     return val;
 }
 
-float ListUtils::getFloatItem(struct val_list *list, int index)
+float MapUtils::getFloatVal(struct val_map *map, const char *key)
 {
-    jobject list_item = this->getObjectItem(list, index);
-    float val = (float)this->jvm->CallFloatMethod(list_item, this->typeUtils->getFloatMethod());
-    jvm->DeleteLocalRef(list_item);
+    jobject jval = this->getObjectVal(map, key);
+    float val = (float)this->jvm->CallFloatMethod(jval, this->typeUtils->getFloatMethod());
+    jvm->DeleteLocalRef(jval);
     return val;
 }
 
-double ListUtils::getDoubleItem(struct val_list *list, int index)
+double MapUtils::getDoubleVal(struct val_map *map, const char *key)
 {
-    jobject list_item = this->getObjectItem(list, index);
-    double val = (double)this->jvm->CallDoubleMethod(list_item, this->typeUtils->getDoubleMethod());
-    jvm->DeleteLocalRef(list_item);
+    jobject jval = this->getObjectVal(map, key);
+    double val = (double)this->jvm->CallDoubleMethod(jval, this->typeUtils->getDoubleMethod());
+    jvm->DeleteLocalRef(jval);
     return val;
 }
 
-signed char ListUtils::getByteItem(struct val_list *list, int index)
+signed char MapUtils::getByteVal(struct val_map *map, const char *key)
 {
-    jobject list_item = this->getObjectItem(list, index);
-    signed char val = (signed char)this->jvm->CallByteMethod(list_item, this->typeUtils->getByteMethod());
-    jvm->DeleteLocalRef(list_item);
+    jobject jval = this->getObjectVal(map, key);
+    signed char val = (signed char)this->jvm->CallByteMethod(jval, this->typeUtils->getByteMethod());
+    jvm->DeleteLocalRef(jval);
     return val;
 }
 
-const char *ListUtils::getStringItem(struct val_list *list, int index)
+const char *MapUtils::getStringVal(struct val_map *map, const char *key)
 {
-    jstring jString = static_cast<jstring>(this->jvm->CallObjectMethod(list->jlist, this->getListItemMethod(), index));
+    jstring jString = static_cast<jstring>(this->jvm->CallObjectMethod(map->jmap, this->getValueMethod(), key));
     const char *val = this->typeUtils->fromJavaString(jString);
     jvm->DeleteLocalRef(jString);
     return val;
 }
 
-bool ListUtils::getBoolItem(struct val_list *list, int index)
+bool MapUtils::getBoolVal(struct val_map *map, const char *key)
 {
-    jobject list_item = this->getObjectItem(list, index);
-    bool val = (bool)this->jvm->CallBooleanMethod(list_item, this->typeUtils->getBoolMethod());
-    jvm->DeleteLocalRef(list_item);
+    jobject jval = this->getObjectVal(map, key);
+    bool val = (bool)this->jvm->CallBooleanMethod(jval, this->typeUtils->getBoolMethod());
+    jvm->DeleteLocalRef(jval);
     return val;
 }
 
-short ListUtils::getShortItem(struct val_list *list, int index)
+short MapUtils::getShortVal(struct val_map *map, const char *key)
 {
-    jobject list_item = this->getObjectItem(list, index);
-    short val = (short)this->jvm->CallShortMethod(list_item, this->typeUtils->getShortMethod());
-    jvm->DeleteLocalRef(list_item);
+    jobject jval = this->getObjectVal(map, key);
+    short val = (short)this->jvm->CallShortMethod(jval, this->typeUtils->getShortMethod());
+    jvm->DeleteLocalRef(jval);
     return val;
 }
 
-void ListUtils::addObjectItem(struct val_list *list, jobject val)
+struct val_list *MapUtils::getListVal(struct val_map *map, const char *key)
 {
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), val);
-    list->count += 1;
+    jobject listItem = this->getObjectVal(map, key);
+    struct val_list *valueList = (struct val_list *)malloc(sizeof(struct val_list));
+    valueList->jlist = listItem;
+    return valueList;
 }
 
-void ListUtils::addItem(struct val_list *list, struct list_item *item)
+struct val_map *MapUtils::getMapVal(struct val_map *map, const char *key)
 {
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), item->jitem);
-    list->count += 1;
+    jobject jValMap = this->getObjectVal(map, key);
+    struct val_map *valMap = (struct val_map *)malloc(sizeof(struct val_map));
+    valMap->jmap = jValMap;
+    return valMap;
 }
 
-void ListUtils::addIntItem(struct val_list *list, int val)
+/*Insert or Update Methods*/
+void MapUtils::putVal(struct val_map *map, const char *key, struct map_val *val)
 {
+    jstring jKey = this->typeUtils->toJavaString(key);
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, val->jval);
+    this->jvm->DeleteLocalRef(jKey);
+}
+
+void MapUtils::putObjectVal(struct val_map *map, const char *key, jobject val)
+{
+    jstring jKey = this->typeUtils->toJavaString(key);
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, val);
+    this->jvm->DeleteLocalRef(jKey);
+}
+
+void MapUtils::putIntVal(struct val_map *map, const char *key, int val)
+{
+    jstring jKey = this->typeUtils->toJavaString(key);
     jobject jVal = jvm->NewObject(this->typeUtils->getIntClass(), this->typeUtils->createIntMethod(), (jint)val);
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), jVal);
-    list->count += 1;
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, jVal);
+    this->jvm->DeleteLocalRef(jKey);
     this->jvm->DeleteLocalRef(jVal);
 }
 
-void ListUtils::addLongItem(struct val_list *list, long val)
+void MapUtils::putLongVal(struct val_map *map, const char *key, long val)
 {
+    jstring jKey = this->typeUtils->toJavaString(key);
     jobject jVal = jvm->NewObject(this->typeUtils->getLongClass(), this->typeUtils->createLongMethod(), (jlong)val);
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), jVal);
-    list->count += 1;
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, jVal);
+    this->jvm->DeleteLocalRef(jKey);
     this->jvm->DeleteLocalRef(jVal);
 }
 
-void ListUtils::addFloatItem(struct val_list *list, float val)
+void MapUtils::putFloatVal(struct val_map *map, const char *key, float val)
 {
+    jstring jKey = this->typeUtils->toJavaString(key);
     jobject jVal = jvm->NewObject(this->typeUtils->getFloatClass(), this->typeUtils->createFloatMethod(), (jfloat)val);
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), jVal);
-    list->count += 1;
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, jVal);
+    this->jvm->DeleteLocalRef(jKey);
     this->jvm->DeleteLocalRef(jVal);
 }
 
-void ListUtils::addDoubleItem(struct val_list *list, double val)
+void MapUtils::putDoubleVal(struct val_map *map, const char *key, double val)
 {
+    jstring jKey = this->typeUtils->toJavaString(key);
     jobject jVal = jvm->NewObject(this->typeUtils->getDoubleClass(), this->typeUtils->createDoubleMethod(), (jdouble)val);
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), jVal);
-    list->count += 1;
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, jVal);
+    this->jvm->DeleteLocalRef(jKey);
     this->jvm->DeleteLocalRef(jVal);
 }
 
-void ListUtils::addByteItem(struct val_list *list, signed char val)
+void MapUtils::putByteVal(struct val_map *map, const char *key, signed char val)
 {
+    jstring jKey = this->typeUtils->toJavaString(key);
     jobject jVal = jvm->NewObject(this->typeUtils->getByteClass(), this->typeUtils->createByteMethod(), (jbyte)val);
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), jVal);
-    list->count += 1;
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, jVal);
+    this->jvm->DeleteLocalRef(jKey);
     this->jvm->DeleteLocalRef(jVal);
 }
 
-void ListUtils::addStringItem(struct val_list *list, const char *val)
+void MapUtils::putStringVal(struct val_map *map, const char *key, const char *val)
 {
+    jstring jKey = this->typeUtils->toJavaString(key);
     jstring jVal = this->typeUtils->toJavaString(val);
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), jVal);
-    list->count += 1;
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, jVal);
+    this->jvm->DeleteLocalRef(jKey);
     this->jvm->DeleteLocalRef(jVal);
 }
 
-void ListUtils::addBoolItem(struct val_list *list, bool val)
+void MapUtils::putBoolVal(struct val_map *map, const char *key, bool val)
 {
+    jstring jKey = this->typeUtils->toJavaString(key);
     jobject jVal = jvm->NewObject(this->typeUtils->getBoolClass(), this->typeUtils->createBoolMethod(), (jboolean)val);
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), jVal);
-    list->count += 1;
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, jVal);
+    this->jvm->DeleteLocalRef(jKey);
     this->jvm->DeleteLocalRef(jVal);
 }
 
-void ListUtils::addShortItem(struct val_list *list, short val)
+void MapUtils::putShortVal(struct val_map *map, const char *key, short val)
 {
+    jstring jKey = this->typeUtils->toJavaString(key);
     jobject jVal = jvm->NewObject(this->typeUtils->getShortClass(), this->typeUtils->createShortMethod(), (jshort)val);
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), jVal);
-    list->count += 1;
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, jVal);
+    this->jvm->DeleteLocalRef(jKey);
     this->jvm->DeleteLocalRef(jVal);
 }
 
-void ListUtils::addListItem(struct val_list *list, struct val_list *val)
+void MapUtils::putListVal(struct val_map *map, const char *key, struct val_list *val)
 {
-    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), val->jlist);
-    list->count += 1;
+    jstring jKey = this->typeUtils->toJavaString(key);
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, val->jlist);
+    this->jvm->DeleteLocalRef(jKey);
 }
 
-struct string_list *ListUtils::translateStringList(jobject jList)
+void MapUtils::putMapVal(struct val_map *map, const char *key, struct val_map *val)
 {
-    int stringCount = this->getListLength(jList);
-    char **strings = (char **)malloc(sizeof(char *) * stringCount);
-    int maxStringLength = 0;
-    for (int i = 0; i < stringCount; i++)
-    {
-        jstring jString = static_cast<jstring>(this->jvm->CallObjectMethod(jList, this->getListItemMethod(), i));
-        const char *tempString = this->jvm->GetStringUTFChars(jString, NULL);
-        int tempMaxStringLength = strlen(tempString);
-        if (tempMaxStringLength > maxStringLength)
-        {
-            maxStringLength = tempMaxStringLength;
-        }
-        strings[i] = (char *)malloc((tempMaxStringLength + 1) * sizeof(char));
-        strcpy(strings[i], tempString);
-        this->jvm->ReleaseStringUTFChars(jString, tempString);
-        this->jvm->DeleteLocalRef(jString);
-    }
-
-    struct string_list *string_list = (struct string_list *)malloc(sizeof(struct string_list) + sizeof(strings));
-    string_list->count = stringCount;
-    string_list->max_length = maxStringLength;
-    string_list->strings = strings;
-    return string_list;
+    jstring jKey = this->typeUtils->toJavaString(key);
+    this->jvm->CallVoidMethod(map->jmap, this->putValueMethod(), jKey, val->jmap);
+    this->jvm->DeleteLocalRef(jKey);
 }

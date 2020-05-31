@@ -10,6 +10,7 @@ TypeUtils::~TypeUtils()
 {
     try
     {
+        this->jvm->DeleteGlobalRef(this->mapClass);
         this->jvm->DeleteGlobalRef(this->listClass);
         this->jvm->DeleteGlobalRef(this->intClass);
         this->jvm->DeleteGlobalRef(this->longClass);
@@ -30,6 +31,7 @@ void TypeUtils::loadGlobalRefs(JNIEnv *env)
 {
     this->jvm = env;
 
+    this->mapClass = JniUtils::getGlobalClassRef(env, "java/util/HashMap");
     this->listClass = JniUtils::getGlobalClassRef(env, "java/util/ArrayList");
 
     this->intClass = JniUtils::getGlobalClassRef(env, "java/lang/Integer");
@@ -205,4 +207,9 @@ jclass TypeUtils::getShortClass()
 jclass TypeUtils::getListClass()
 {
     return this->listClass;
+}
+
+jclass TypeUtils::getMapClass()
+{
+    return this->mapClass;
 }
