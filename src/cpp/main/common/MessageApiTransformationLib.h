@@ -8,21 +8,9 @@ extern "C"
 {
 #endif
 
-    /*Endpoint Methods*/
-    struct record *getStateContainer(jlong message);
-    struct field_list *getDefaultFields(jlong message);
+    /* Transformation methods */
     struct val_map *getConstructor(jlong message);
-    struct packet *createPacket(jlong message);
-    struct record *createRecord(jlong message);
-    struct rejection *createRejection(jlong message, struct record *record, const char *reason);
-
-    /*Protocol Record Methods*/
-    struct record_list *getRecords(jlong message);
-    struct record_list *getRecordsByCollection(jlong message, const char *collection);
-    struct record_list *getRecordsByTransformation(jlong message, const char *transformation);
-    struct record_list *getRecordsByUUID(jlong message, const char *uuid);
-    struct record_list *getRecordsByClassifier(jlong message, const char *key, const char *value);
-    struct record *getRecord(jlong message, struct record_list *recordList, int recordIndex);
+    struct record_list *getRecords(jlong message, const char *key);
 
     /*Record Methods*/
     struct record_list *createRecordList(jlong message);
@@ -32,8 +20,8 @@ extern "C"
     bool getRecordIsValid(jlong message, struct record *record);
 
     struct string_list *getFieldIds(jlong message, struct record *record);
-    struct field_list * getFields(jlong message, struct record *record);
-    struct field * getField(jlong message, struct record *record, const char *fieldId);
+    struct field_list *getFields(jlong message, struct record *record);
+    struct field *getField(jlong message, struct record *record, const char *fieldId);
     bool hasField(jlong message, struct record *record, const char *fieldId);
 
     struct string_list *getConditionIds(jlong message, struct record *record);
@@ -51,7 +39,7 @@ extern "C"
 
     /*Field Methods*/
     const char *getFieldId(jlong message, struct field *field);
-    const char * getFieldType(jlong message, struct field *field);
+    const char *getFieldType(jlong message, struct field *field);
     bool getFieldIsValid(jlong message, struct field *field);
     bool getFieldIsRequired(jlong message, struct field *field);
     bool getFieldIsNull(jlong message, struct field *field);

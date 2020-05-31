@@ -38,6 +38,11 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->getEndpointUtils()->getDefaultFields();
     }
 
+    struct val_map *getConstructor(jlong message)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getEndpointUtils()->getConstructor();
+    }
+
     struct packet *createPacket(jlong message)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getEndpointUtils()->createPacket();
@@ -404,6 +409,11 @@ extern "C"
         return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getListItem(list, index);
     }
 
+    struct val_map *getMapItem(jlong message, struct val_list *list, int index)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getMapItem(list, index);
+    }
+
     int getIntItem(jlong message, struct val_list *list, int index)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->getIntItem(list, index);
@@ -497,6 +507,149 @@ extern "C"
     void addListItem(jlong message, struct val_list *list, struct val_list *val)
     {
         return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addListItem(list, val);
+    }
+
+    void addMapItem(jlong message, struct val_list *list, struct val_map *val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getListUtils()->addMapItem(list, val);
+    }
+
+    /*Map Utility Methods*/
+    struct val_map *createMap(jlong message)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->createMap();
+    }
+
+    int getSize(jlong message, struct val_map *map)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getSize(map);
+    }
+
+    bool hasKey(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->hasKey(map, key);
+    }
+
+    /*Map Value Retrieval Methods*/
+    struct map_val *getVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getVal(map, key);
+    }
+
+    jobject getObjectVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getObjectVal(map, key);
+    }
+
+    int getIntVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getIntVal(map, key);
+    }
+
+    long getLongVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getLongVal(map, key);
+    }
+
+    float getFloatVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getFloatVal(map, key);
+    }
+
+    double getDoubleVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getDoubleVal(map, key);
+    }
+
+    signed char getByteVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getByteVal(map, key);
+    }
+
+    const char *getStringVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getStringVal(map, key);
+    }
+
+    bool getBoolVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getBoolVal(map, key);
+    }
+
+    short getShortVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getShortVal(map, key);
+    }
+
+    struct val_list *getListVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getListVal(map, key);
+    }
+
+    struct val_map *getMapVal(jlong message, struct val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->getMapVal(map, key);
+    }
+
+    /*Insert or Update Methods*/
+    void putVal(jlong message, struct val_map *map, const char *key, struct map_val *val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putVal(map, key, val);
+    }
+
+    void putObjectVal(jlong message, struct val_map *map, const char *key, jobject val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putObjectVal(map, key, val);
+    }
+
+    void putIntVal(jlong message, struct val_map *map, const char *key, int val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putIntVal(map, key, val);
+    }
+
+    void putLongVal(jlong message, struct val_map *map, const char *key, long val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putLongVal(map, key, val);
+    }
+
+    void putFloatVal(jlong message, struct val_map *map, const char *key, float val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putFloatVal(map, key, val);
+    }
+
+    void putDoubleVal(jlong message, struct val_map *map, const char *key, double val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putDoubleVal(map, key, val);
+    }
+
+    void putByteVal(jlong message, struct val_map *map, const char *key, signed char val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putByteVal(map, key, val);
+    }
+
+    void putStringVal(jlong message, struct val_map *map, const char *key, const char *val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putStringVal(map, key, val);
+    }
+
+    void putBoolVal(jlong message, struct val_map *map, const char *key, bool val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putBoolVal(map, key, val);
+    }
+
+    void putShortVal(jlong message, struct val_map *map, const char *key, short val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putShortVal(map, key, val);
+    }
+
+    void putListVal(jlong message, struct val_map *map, const char *key, struct val_list *val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putListVal(map, key, val);
+    }
+
+    void putMapVal(jlong message, struct val_map *map, const char *key, struct val_map *val)
+    {
+        return reinterpret_cast<MessageApiEndpoint *>(message)->getMapUtils()->putMapVal(map, key, val);
     }
 
     /*Rejection Utils*/

@@ -3,17 +3,13 @@
 #include <jni.h>
 
 /**
- * Sessions are the top level API container of any given computation. Sessions
- * bootstrap from a specification map and 'lock-in' a computation environment,
- * allowing requests to be created.
- * 
  * @author Ryan Berkheimer
  */
 
 /* Default Constructor */
-TransformationUtils::TransformationUtils(JNIEnv *jvm, jobject transformation, TypeUtils *typeUtils, MapUtils *mapUtils, ListUtils *listUtils)
+TransformationUtils::TransformationUtils(JNIEnv *jvm, jobject transformation, jobject transformationMap, TypeUtils *typeUtils, MapUtils *mapUtils, ListUtils *listUtils)
 {
-    this->loadGlobalRefs(jvm, transformation, typeUtils, mapUtils, listUtils);
+    this->loadGlobalRefs(jvm, transformation, transformationMap, typeUtils, mapUtils, listUtils);
     this->loadMethodIds();
 }
 
@@ -30,23 +26,38 @@ TransformationUtils::~TransformationUtils()
 
 /* Public API */
 
-struct val_map *TransformationUtils::getConstructor() {
+struct val_map *TransformationUtils::getConstructor()
+{
     jobject jMap = this->jvm->CallObjectMethod(this->transformation, this->getConstructorMethodId);
     struct val_map *map = (struct val_map *)malloc(sizeof(struct val_map));
     map->jmap = jMap;
     return map;
 }
 
+struct record_list *TransformationUtils::getRecords(const char *key)
+{
+    jobject jList = this->mapUtils->getObjectVal(this->tMap, key);
+    int count = this->listUtils->getListLength(jList);
+    struct record_list *records = (struct record_list *)malloc(sizeof(struct record_list));
+    records->count = count;
+    records->jrecords = jList;
+    return records;
+}
 
 /* Private Methods */
 
-void TransformationUtils::loadGlobalRefs(JNIEnv *jvm, jobject transformation, TypeUtils *typeUtils, MapUtils *mapUtils, ListUtils *listUtils)
+void TransformationUtils::loadGlobalRefs(JNIEnv *jvm, jobject transformation, jobject transformationMap, TypeUtils *typeUtils, MapUtils *mapUtils, ListUtils *listUtils)
 {
     this->jvm = jvm;
     this->transformation = transformation;
+    this->transformationMap = transformationMap;
     this->typeUtils = typeUtils;
     this->mapUtils = mapUtils;
     this->listUtils = listUtils;
+
+    struct val_map *map = (struct val_map *)malloc(sizeof(struct val_map));
+    map->jmap = transformationMap;
+    this->tMap = map;
 }
 
 void TransformationUtils::loadMethodIds()
