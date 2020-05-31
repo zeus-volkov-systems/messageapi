@@ -11,6 +11,7 @@ import gov.noaa.messageapi.interfaces.ITransformation;
 
 import gov.noaa.messageapi.fields.DefaultField;
 import gov.noaa.messageapi.records.schema.SchemaRecord;
+import gov.noaa.messageapi.transformations.BaseTransformation;
 
 
 /**
@@ -59,12 +60,13 @@ import gov.noaa.messageapi.records.schema.SchemaRecord;
  *<p>
  * @author Ryan Berkheimer
  */
-public class StringFieldJoin implements ITransformation {
+public class StringFieldJoin extends BaseTransformation implements ITransformation {
 
     private IField joinField = null;
     private IField collectionField = null;
 
     public StringFieldJoin(Map<String,Object> params) {
+        super(params);
         this.setJoinField((String) params.get("join-field"));
         this.setCollectionField((String) params.get("collection-field"));
     }

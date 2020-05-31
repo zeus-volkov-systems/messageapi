@@ -10,6 +10,8 @@ import gov.noaa.messageapi.interfaces.ITransformation;
 import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.general.PathUtils;
 
+import gov.noaa.messageapi.transformations.BaseTransformation;
+
 
 /**
  * <h1>FixRelativePathsTransformation</h1>
@@ -25,13 +27,14 @@ import gov.noaa.messageapi.utils.general.PathUtils;
  *
  * @author Ryan Berkheimer
  */
-public class FixRelativePathsTransformation implements ITransformation {
+public class FixRelativePathsTransformation extends BaseTransformation implements ITransformation {
 
     private List<String> relativePathFields = null;
     private String transformKey = null;
 
     @SuppressWarnings("unchecked")
     public FixRelativePathsTransformation(Map<String, Object> params) {
+        super(params);
         this.setRelativePathFields((List<String>) params.get("fields"));
         this.setTransformKey((String) params.get("transform-key"));
     }

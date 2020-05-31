@@ -26,10 +26,12 @@ public abstract class BaseEndpoint {
     public List<String> collectionIds = null;
     public List<Map.Entry<String,String>> classifierIds = null;
     public List<String> transformationIds = null;
+    public Map<String,Object> constructorMap = null;
 
     @SuppressWarnings("unchecked")
     public BaseEndpoint(Map<String,Object> parameters) {
         Map<String,Object> internalParameters = (Map<String,Object>)parameters.get("__internal__");
+        this.setConstructor(parameters);
         this.setFields((List<String>)internalParameters.get("fields"), this.getDefaultFields());
         this.setCollectionIds((List<String>)internalParameters.get("collections"));
         this.setClassifierIds((List<Map.Entry<String,String>>)internalParameters.get("classifiers"));
@@ -37,6 +39,10 @@ public abstract class BaseEndpoint {
     }
 
     protected abstract List<IField> getDefaultFields();
+
+    public Map<String,Object> getConstructor() {
+        return this.constructorMap;
+    }
 
     public IPacket createPacket() {
         return new DefaultPacket();
@@ -60,6 +66,10 @@ public abstract class BaseEndpoint {
 
     protected List<String> getTransformations() {
         return this.transformationIds;
+    }
+
+    private void setConstructor(Map<String, Object> constructorMap) {
+        this.constructorMap = constructorMap;
     }
 
     private List<IField> getFields() {

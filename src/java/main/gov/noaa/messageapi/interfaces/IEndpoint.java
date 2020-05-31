@@ -1,6 +1,7 @@
 package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
+import java.util.Map;
 
 //import gov.noaa.messageapi.interfaces.IPacket;
 //import gov.noaa.messageapi.interfaces.IProtocolRecord;
@@ -37,6 +38,13 @@ public interface IEndpoint {
      * to the caller in the IPacket.
      */
     public List<IField> getDefaultFields();
+
+    /**
+     * Returns the constructor map attached to the endpoint. The constructor map
+     * should be used to retrieve constructor parameters. Note that thread safety
+     * cannot be guaranteed if these parameters are used as read only.
+     */
+    public Map<String,Object> getConstructor();
 
     /**
      * Creates a new packet for returning from the endpoint. As all
