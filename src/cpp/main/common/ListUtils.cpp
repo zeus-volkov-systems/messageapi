@@ -90,6 +90,14 @@ struct val_list *ListUtils::getListItem(struct val_list *list, int index)
     return valueList;
 }
 
+struct val_map *ListUtils::getMapItem(struct val_list *list, int index)
+{
+    jobject mapItem = this->getObjectItem(list, index);
+    struct val_map *valMap = (struct val_map *)malloc(sizeof(struct val_map));
+    valMap->jmap = mapItem;
+    return valMap;
+}
+
 int ListUtils::getIntItem(struct val_list *list, int index)
 {
     jobject list_item = this->getObjectItem(list, index);
@@ -233,6 +241,12 @@ void ListUtils::addShortItem(struct val_list *list, short val)
 void ListUtils::addListItem(struct val_list *list, struct val_list *val)
 {
     this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), val->jlist);
+    list->count += 1;
+}
+
+void ListUtils::addMapItem(struct val_list *list, struct val_map *val)
+{
+    this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), val->jmap);
     list->count += 1;
 }
 

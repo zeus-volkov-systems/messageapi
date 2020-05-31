@@ -43,6 +43,7 @@ public:
     bool getBoolItem(struct val_list *list, int index);
     short getShortItem(struct val_list *list, int index);
     struct val_list *getListItem(struct val_list *list, int index);
+    struct val_map *getMapItem(struct val_list *list, int index);
 
     /*List Item Insertion Methods*/
     void addItem(struct val_list *list, struct list_item *item);
@@ -56,6 +57,7 @@ public:
     void addBoolItem(struct val_list *list, bool val);
     void addShortItem(struct val_list *list, short val);
     void addListItem(struct val_list *list, struct val_list *val);
+    void addMapItem(struct val_list *list, struct val_map *map);
 
     jmethodID createListMethod();
     jmethodID getListSizeMethod();
