@@ -36,6 +36,7 @@ public:
     /*Endpoint Methods*/
     struct record *getStateContainer();
     struct field_list *getDefaultFields();
+    struct val_map *getConstructor();
     struct packet *createPacket();
     struct record *createRecord();
     struct rejection *createRejection(struct record *record, const char *reason);
@@ -50,6 +51,7 @@ private:
     /*Endpoint Methods*/
     jmethodID getStateContainerMethodId;
     jmethodID getDefaultFieldsMethodId;
+    jmethodID getConstructorMethodId;
     jmethodID createPacketMethodId;
     jmethodID createRecordMethodId;
     jmethodID createRejectionMethodId;

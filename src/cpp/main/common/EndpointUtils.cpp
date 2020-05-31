@@ -52,6 +52,14 @@ struct field_list *EndpointUtils::getDefaultFields()
     return field_list;
 }
 
+struct val_map *EndpointUtils::getConstructor()
+{
+    jobject jMap = this->jvm->CallObjectMethod(this->endpoint, this->getConstructorMethodId);
+    struct val_map *map = (struct val_map *)malloc(sizeof(struct val_map));
+    map->jmap = jMap;
+    return map;
+}
+
 struct packet *EndpointUtils::createPacket()
 {
     jobject jpacket = this->jvm->CallObjectMethod(this->endpoint, this->createPacketMethodId);
@@ -93,6 +101,7 @@ void EndpointUtils::loadMethodIds()
     jclass endpointClass = JniUtils::getObjectClass(this->jvm, this->endpoint);
     this->getStateContainerMethodId = JniUtils::getMethod(this->jvm, endpointClass, "getStateContainer", this->getMethodSignature("getStateContainer"), false);
     this->getDefaultFieldsMethodId = JniUtils::getMethod(this->jvm, endpointClass, "getDefaultFields", this->getMethodSignature("getDefaultFields"), false);
+    this->getConstructorMethodId = JniUtils::getMethod(this->jvm, endpointClass, "getConstructor", this->getMethodSignature("getConstructor"), false);
     this->createPacketMethodId = JniUtils::getMethod(this->jvm, endpointClass, "createPacket", this->getMethodSignature("createPacket"), false);
     this->createRecordMethodId = JniUtils::getMethod(this->jvm, endpointClass, "createRecord", this->getMethodSignature("createRecord"), false);
     this->createRejectionMethodId = JniUtils::getMethod(this->jvm, endpointClass, "createRejection", this->getMethodSignature("createRejection"), false);
@@ -108,6 +117,10 @@ const char *EndpointUtils::getMethodSignature(const char *methodName)
     else if (strcmp(methodName, "getDefaultFields") == 0)
     {
         return "()Ljava/util/List;";
+    }
+    else if (strcmp(methodName, "getConstructor") == 0)
+    {
+        return "()Ljava/util/Map;";
     }
     else if (strcmp(methodName, "createPacket") == 0)
     {
