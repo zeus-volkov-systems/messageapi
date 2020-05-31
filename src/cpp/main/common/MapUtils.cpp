@@ -32,7 +32,7 @@ void MapUtils::loadMethodIds()
     this->getSizeMethodId = this->jvm->GetMethodID(mapClass, "size", "()I");
     this->hasKeyMethodId = this->jvm->GetMethodID(mapClass, "containsKey", "(Ljava/lang/Object;)Z");
     this->getValueMethodId = this->jvm->GetMethodID(mapClass, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
-    this->putValueMethodId = this->jvm->GetMethodID(mapClass, "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
+    this->putValueMethodId = this->jvm->GetMethodID(mapClass, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
 
     this->jvm->DeleteLocalRef(mapClass);
 

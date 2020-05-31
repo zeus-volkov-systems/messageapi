@@ -10,7 +10,7 @@ extern "C" {
 /*
  * Class:     gov_noaa_messageapi_transformations_NativeTransformation
  * Method:    process
- * Signature: (J)Ljava/lang/List;
+ * Signature: (J)Ljava/util/List;
  */
 JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_transformations_NativeTransformation_process
   (JNIEnv *, jobject, jlong);
@@ -18,7 +18,7 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_transformations_NativeTransfo
 /*
  * Class:     gov_noaa_messageapi_transformations_NativeTransformation
  * Method:    create
- * Signature: (Ljava/lang/Map;)J
+ * Signature: (Ljava/util/Map;)J
  */
 JNIEXPORT jlong JNICALL Java_gov_noaa_messageapi_transformations_NativeTransformation_create
   (JNIEnv *, jobject, jobject);

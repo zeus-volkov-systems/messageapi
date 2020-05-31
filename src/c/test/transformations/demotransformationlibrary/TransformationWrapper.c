@@ -15,6 +15,6 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_transformations_NativeTransfo
       printf("In our transformation test!\n");
       printf("Hello, World\n");
       fflush(stdout);
-      return;
+      return getRecords(message, "test_key")->jrecords;
   }
 

@@ -20,20 +20,20 @@ UNAME := $(shell uname)
 #The following vars are used to route source code and scripts (from the scripts and src dirs)
 #to the library dir as compiled files (the job name should match the name of the directory/job map.)
 #the job type is simply a test job or a main job and should either be test or main.
-ENDPOINT_NAME=demoendpointlibrary
+ENDPOINT_NAME=demotransformationlibrary
 ENDPOINT_TYPE=test
 
 #USER SPECIFIED
 #The following var represents the output name of the JniLib that will be created and referenced in the job map.
 #Do not specify the extension (.so/.dll/.jnilib) - these are determined automatically on build.
 #The full path to the created library must be referenced in the endpoint config.
-LIBNAME=DemoEndpointLibrary
+LIBNAME=DemoTransformationLibrary
 
 #USER SPECIFIED
 #The following vars should contain strings representing the C, Fortran, and CPP libraries that glue the fortran code to java code.
 #These strings should contain the user libraries in the order they need to be compiled (ex, "First.c Second.c Third.c")
 #These vars do not need to specify libraries they depend on that are found in the common variables (those are automatically compiled first).
-USERC=EndpointWrapper.c
+USERC=TransformationWrapper.c
 USERCPP=
 USERFORTRAN=
 
@@ -63,17 +63,17 @@ FF=gfortran
 #The following vars contain strings representing common libraries used by all code
 #at a project level. These should generally not be touched by users.
 COMMONC=
-COMMONCPP=JniUtils.cpp TypeUtils.cpp MapUtils.cpp ListUtils.cpp ConditionUtils.cpp FieldUtils.cpp \
-EndpointUtils.cpp ProtocolRecordUtils.cpp RecordUtils.cpp RejectionUtils.cpp PacketUtils.cpp \
-MessageApiEndpoint.cpp MessageApiEndpointLib.cpp
+COMMONCPP=JniUtils.cpp TypeUtils.cpp ListUtils.cpp MapUtils.cpp ConditionUtils.cpp FieldUtils.cpp \
+TransformationUtils.cpp RecordUtils.cpp RejectionUtils.cpp PacketUtils.cpp \
+MessageApiTransformation.cpp MessageApiTransformationLib.cpp
 COMMONFORTRAN=
-JAVACLASSES:=$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/endpoints/NativeEndpoint.java
-JAVAPATH=$(PROJECTPATH)/src/java/main:$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/endpoints
+JAVACLASSES:=$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/transformations/NativeTransformation.java
+JAVAPATH=$(PROJECTPATH)/src/java/main:$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/transformations
 
 
 #The following contains source code paths derived from the ENDPOINT_NAME and ENDPOINT_TYPE supplied by the user.
 COMMONCPATH=$(PROJECTPATH)/src/c/main/common/structs/
-USERCPATH=$(PROJECTPATH)/src/c/$(ENDPOINT_TYPE)/endpoints/$(ENDPOINT_NAME)/
+USERCPATH=$(PROJECTPATH)/src/c/$(ENDPOINT_TYPE)/transformations/$(ENDPOINT_NAME)/
 COMMONCPPPATH=$(PROJECTPATH)/src/cpp/main/common/
 USERCPPPATH=$(PROJECTPATH)/src/cpp/$(ENDPOINT_TYPE)/$(ENDPOINT_NAME)/
 COMMONFORTRANPATH=$(PROJECTPATH)/src/fortran/main/common/
