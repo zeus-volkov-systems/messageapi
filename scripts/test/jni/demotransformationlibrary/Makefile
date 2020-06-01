@@ -1,16 +1,16 @@
-### This is a Makefile for MessageAPI Native Endpoints.
+### This is a Makefile for MessageAPI Native Transformations.
 # The majority of this Makefile is standard, with very few user specified things.
 # There are a few specific requirements and other notable things to keep in mind when using this Makefile:
 ## 1. You must have a JDK installed (not JRE). This library requires the jni.h header included in your jdk.
 ## 2. JAVA_HOME must be set to your JDK home directory. This Makefile references JAVA_HOME in looking for jni.h
 ## 3. This Makefile assumes a specific project layout when setting the PROJECTPATH. If the Makefile is not working,
-##    you should look at how it uses PROJECTPATH, ENDPOINT_NAME, and ENDPOINT_TYPE to find required files.
+##    you should look at how it uses PROJECTPATH, TRANSFORMATION_NAME, and TRANSFORMATION_TYPE to find required files.
 ##    if your project is set up differently, i.e. custom project layout, then path dependent vars will need to be
 ##    looked at and possibly changed.
 
 #The following represents the root project path. DO NOT EDIT
 SCRIPTDIR=$(PWD)
-PROJECTPATH=$(firstword $(subst /scripts/$(ENDPOINT_TYPE)/, ,$(SCRIPTDIR)))
+PROJECTPATH=$(firstword $(subst /scripts/$(TRANSFORMATION_TYPE)/, ,$(SCRIPTDIR)))
 
 #The following is used to determine how native resources are compiled. DO NOT EDIT.
 UNAME := $(shell uname)
@@ -20,13 +20,13 @@ UNAME := $(shell uname)
 #The following vars are used to route source code and scripts (from the scripts and src dirs)
 #to the library dir as compiled files (the job name should match the name of the directory/job map.)
 #the job type is simply a test job or a main job and should either be test or main.
-ENDPOINT_NAME=demotransformationlibrary
-ENDPOINT_TYPE=test
+TRANSFORMATION_NAME=demotransformationlibrary
+TRANSFORMATION_TYPE=test
 
 #USER SPECIFIED
 #The following var represents the output name of the JniLib that will be created and referenced in the job map.
 #Do not specify the extension (.so/.dll/.jnilib) - these are determined automatically on build.
-#The full path to the created library must be referenced in the endpoint config.
+#The full path to the created library must be referenced in the transformation config.
 LIBNAME=DemoTransformationLibrary
 
 #USER SPECIFIED
@@ -71,16 +71,16 @@ JAVACLASSES:=$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/transformations/Na
 JAVAPATH=$(PROJECTPATH)/src/java/main:$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/transformations
 
 
-#The following contains source code paths derived from the ENDPOINT_NAME and ENDPOINT_TYPE supplied by the user.
+#The following contains source code paths derived from the TRANSFORMATION_NAME and TRANSFORMATION_TYPE supplied by the user.
 COMMONCPATH=$(PROJECTPATH)/src/c/main/common/structs/
-USERCPATH=$(PROJECTPATH)/src/c/$(ENDPOINT_TYPE)/transformations/$(ENDPOINT_NAME)/
+USERCPATH=$(PROJECTPATH)/src/c/$(TRANSFORMATION_TYPE)/transformations/$(TRANSFORMATION_NAME)/
 COMMONCPPPATH=$(PROJECTPATH)/src/cpp/main/common/
-USERCPPPATH=$(PROJECTPATH)/src/cpp/$(ENDPOINT_TYPE)/$(ENDPOINT_NAME)/
+USERCPPPATH=$(PROJECTPATH)/src/cpp/$(TRANSFORMATION_TYPE)/$(TRANSFORMATION_NAME)/
 COMMONFORTRANPATH=$(PROJECTPATH)/src/fortran/main/common/
-USERFORTRANPATH=$(PROJECTPATH)/src/fortran/$(ENDPOINT_TYPE)/$(ENDPOINT_NAME)/
+USERFORTRANPATH=$(PROJECTPATH)/src/fortran/$(TRANSFORMATION_TYPE)/$(TRANSFORMATION_NAME)/
 
 #The following var contains the target path for the project code.
-TARGETPATH="$(PROJECTPATH)/lib/$(ENDPOINT_TYPE)/native/$(ENDPOINT_NAME)/"
+TARGETPATH="$(PROJECTPATH)/lib/$(TRANSFORMATION_TYPE)/native/$(TRANSFORMATION_NAME)/"
 
 #The following is the target library for the native jni library.
 ifeq ($(UNAME), Linux)
@@ -123,7 +123,7 @@ gen-headers:
 	echo ""
 
 build:
-	echo "Building " $(ENDPOINT_NAME) " in " $(PROJECTPATH)
+	echo "Building " $(TRANSFORMATION_NAME) " in " $(PROJECTPATH)
 	#echo "Compiling Fortran"
 	#echo ""
 	#cd $(TARGETPATH) && $(FF) $(FFLAGS) -c $(COMMONFORTRAN1) $(USERFORTRAN1)
@@ -139,7 +139,7 @@ build:
 	echo "Creating JNI Library"
 	echo ""
 	cd $(TARGETPATH) && $(CXX) $(LNFLAGS) *.o -o $(DYLIB)
-	echo "Build success for " $(ENDPOINT_NAME)
+	echo "Build success for " $(TRANSFORMATION_NAME)
 
 clean:
 	echo "Cleaning up."

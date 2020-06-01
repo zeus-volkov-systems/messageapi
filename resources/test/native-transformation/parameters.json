@@ -1,0 +1,38 @@
+{
+    "fields": [
+            {
+                "id": "initial-value",
+                "type": "integer",
+                "required": true
+            },
+            {
+                "id": "string-test",
+                "type": "string",
+                "required": false
+            },
+            {
+                "id": "null-test",
+                "type": "string",
+                "required": false
+            },
+            {
+                "id": "int-list-test",
+                "type": "list(int)",
+                "required": true,
+                "value": [0,1,2,3,4,5,6]
+            }],
+    "collections": [{"id": "collection-1",
+                     "fields": ["initial-value", "string-test", "int-list-test", "null-test"]}],
+    "transformations": [
+        {
+            "id": "transform-1",
+            "operator": "gov.noaa.messageapi.transformations.NativeTransformation",
+            "constructor": {
+                "native-library": "/Users/rberkheimer/projects/asos/ingest/libraries/messageapi/lib/test/native/demotransformationlibrary/libDemoTransformationLibrary.jnilib"
+            },
+            "records": {"test_key": {"COLLECTION": "collection-1"}}}
+    ],
+    "connections": [{"id": "connection-1",
+                     "transformations": ["transform-1"],
+                     "constructor": {}}]
+}

@@ -5,7 +5,7 @@
 #include "gov_noaa_messageapi_transformations_NativeTransformation.h"
 
 /**
- * Creates a C++ object and returns a pointer to it cast as a long. This allows the NativeEndpoint method
+ * Creates a C++ object and returns a pointer to it cast as a long. This allows the NativeTransformation method
  * to hold onto it and manipulate it during the process method while preventing potential conflicts with
  * other threads or transformations using the same native library. This is used inside the Java process method.
  * The Native process method should be implemented in a separate User class wrapper.

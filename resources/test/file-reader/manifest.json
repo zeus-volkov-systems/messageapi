@@ -18,8 +18,7 @@
                 "metadata": "{}/resources/test/metadata/file-reader/container.json",
                 "collections": "{}/resources/test/file-reader/parameters.json",
                 "transformations": {
-                    "map": "{}/resources/test/file-reader/parameters.json",
-                    "factory": "gov.noaa.messageapi.test.factories.transformations.FileReaderFactory"
+                    "map": "{}/resources/test/file-reader/parameters.json"
                 }
             }
         },

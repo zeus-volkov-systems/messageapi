@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import gov.noaa.messageapi.interfaces.IEndpoint;
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IRecord;
@@ -29,7 +30,7 @@ import gov.noaa.messageapi.utils.general.ListUtils;
  *
  * @author Ryan Berkheimer
  */
-public class EvaluationEndpoint extends BaseEndpoint {
+public class EvaluationEndpoint extends BaseEndpoint implements IEndpoint {
 
     public EvaluationEndpoint(Map<String, Object> parameters) {
         super(parameters);

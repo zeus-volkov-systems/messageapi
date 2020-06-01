@@ -21,7 +21,7 @@
 
 /**
  * This is the header for the MessageApiTransformation class - this class is the native side facility
- * for doing endpoint processing and communicating back with the java side. This class holds
+ * for doing transformation processing and communicating back with the java side. This class holds
  * three private vars - a pointer to the jvm where the call originated from, a pointer to the
  * transformation class instance (jobject), and a pointer to the map that holds data for
  * this transformation to process as a jobject. 
