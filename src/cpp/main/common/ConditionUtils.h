@@ -11,6 +11,7 @@
 
 #include "JniUtils.h"
 #include "ListUtils.h"
+#include "MapUtils.h"
 
 /**
  * This is the header for the ConditionUtils class. 
@@ -21,7 +22,7 @@ class ConditionUtils
 
 public:
     /*Default constructor/destructors*/
-    ConditionUtils(JNIEnv *javaEnv, TypeUtils *typeUtils, ListUtils *listUtils);
+    ConditionUtils(JNIEnv *javaEnv, TypeUtils *typeUtils, ListUtils *listUtils, MapUtils *mapUtils);
     ~ConditionUtils();
 
     /*API Methods*/
@@ -29,6 +30,7 @@ public:
     const char *getType(struct condition *condition);
     const char *getOperator(struct condition *condition);
     bool isNull(struct condition *condition);
+
     struct val *getVal(struct condition *condition);
     int getIntVal(struct condition *condition);
     long getLongVal(struct condition *condition);
@@ -39,6 +41,8 @@ public:
     bool getBoolVal(struct condition *condition);
     short getShortVal(struct condition *condition);
     struct val_list *getListVal(struct condition *condition);
+    struct val_map *getMapVal(struct condition *condition);
+
     void setVal(struct condition *condition, struct val *value);
     void setIntVal(struct condition *condition, int value);
     void setLongVal(struct condition *condition, long value);
@@ -49,12 +53,14 @@ public:
     void setBoolVal(struct condition *condition, bool value);
     void setShortVal(struct condition *condition, short value);
     void setListVal(struct condition *condition, struct val_list *value);
+    void setMapVal(struct condition *condition, struct val_map *value);
 
 private:
     /*Vars*/
     JNIEnv *jvm;
     ListUtils *listUtils;
     TypeUtils *typeUtils;
+    MapUtils *mapUtils;
 
     /*Condition Methods*/
     jmethodID getIdMethodId;
@@ -65,7 +71,7 @@ private:
 
     /*Load method IDS for reuse. MethodIDS do not count against the jref count and do need to be released.*/
     void loadMethodIds();
-    void loadGlobalRefs(JNIEnv *env, TypeUtils *typeUtils, ListUtils *listUtils);
+    void loadGlobalRefs(JNIEnv *env, TypeUtils *typeUtils, ListUtils *listUtils, MapUtils *mapUtils);
 
     /*Grouped methods for returning the matching method signature string for a given interface*/
     const char *getMethodSignature(const char *methodName);

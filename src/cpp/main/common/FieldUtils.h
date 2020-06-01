@@ -12,6 +12,7 @@
 #include "JniUtils.h"
 #include "TypeUtils.h"
 #include "ListUtils.h"
+#include "MapUtils.h"
 
 /**
  * This is the header for the FieldUtils class. 
@@ -22,7 +23,7 @@ class FieldUtils
 
 public:
     /*Default constructor/destructors*/
-    FieldUtils(JNIEnv *javaEnv, TypeUtils *typeUtils, ListUtils *listUtils);
+    FieldUtils(JNIEnv *javaEnv, TypeUtils *typeUtils, ListUtils *listUtils, MapUtils *mapUtils);
     ~FieldUtils();
 
     /*Field Methods*/
@@ -31,6 +32,7 @@ public:
     bool isValid(struct field *field);
     bool isRequired(struct field *field);
     bool isNull(struct field *field);
+    
     struct val *getVal(struct field *field);
     int getIntVal(struct field *field);
     long getLongVal(struct field *field);
@@ -41,6 +43,8 @@ public:
     bool getBoolVal(struct field *field);
     short getShortVal(struct field *field);
     struct val_list *getListVal(struct field *field);
+    struct val_map *getMapVal(struct field *field);
+
     void setVal(struct field *field, struct val *value);
     void setIntVal(struct field *field, int value);
     void setLongVal(struct field *field, long value);
@@ -51,6 +55,7 @@ public:
     void setBoolVal(struct field *field, bool value);
     void setShortVal(struct field *field, short value);
     void setListVal(struct field *field, struct val_list *value);
+    void setMapVal(struct field *field, struct val_map *value);
 
 private:
 
@@ -58,6 +63,7 @@ private:
     JNIEnv *jvm;
     TypeUtils *typeUtils;
     ListUtils *listUtils;
+    MapUtils *mapUtils;
 
     /*Field Methods*/
     jmethodID getIdMethodId;
@@ -69,7 +75,7 @@ private:
 
     /*Load method IDS for reuse. MethodIDS do not count against the jref count and do need to be released.*/
     void loadMethodIds();
-    void loadGlobalRefs(JNIEnv *env, TypeUtils *typeUtils, ListUtils *listUtils);
+    void loadGlobalRefs(JNIEnv *env, TypeUtils *typeUtils, ListUtils *listUtils, MapUtils *mapUtils);
 
     /*Grouped methods for returning the matching method signature string for a given interface*/
     const char *getMethodSignature(const char *methodName);

@@ -10,9 +10,22 @@ extern "C"
 {
 #endif
 
-    /* Transformation methods */
-    struct val_map *getConstructor(jlong message);
-    struct record_list *getRecords(jlong message, const char *key);
+    /* Session methods */
+    struct session *createSession(const char* message);
+    struct request *createRequest(struct session *session);
+
+    /* Request methods */
+    struct record *createRecord(struct request *request);
+    struct request *getCopy(struct request *request);
+    struct request *getCopy(struct request *request, struct val_list *copy_components);
+    const char *getType(struct request *request);
+    struct record_list *getRecords(struct request *request);
+    struct record *getRequestRecord(struct request *request);
+    void setRecords(struct request *request, struct record_list *records);
+    struct response *submitRequest(struct request *request);
+
+    /* Response methods */
+
 
     /*Record Methods*/
     struct record_list *createRecordList(jlong message);
@@ -45,6 +58,8 @@ extern "C"
     bool getFieldIsValid(jlong message, struct field *field);
     bool getFieldIsRequired(jlong message, struct field *field);
     bool getFieldIsNull(jlong message, struct field *field);
+
+    /* Field Value Retrieval */
     struct val *getFieldVal(jlong message, struct field *field);
     int getFieldIntVal(jlong message, struct field *field);
     long getFieldLongVal(jlong message, struct field *field);
@@ -55,6 +70,8 @@ extern "C"
     bool getFieldBoolVal(jlong message, struct field *field);
     short getFieldShortVal(jlong message, struct field *field);
     struct val_list *getFieldListVal(jlong message, struct field *field);
+
+    /*Field Value Puts */
     void setFieldVal(jlong message, struct field *field, struct val *value);
     void setFieldIntVal(jlong message, struct field *field, int value);
     void setFieldLongVal(jlong message, struct field *field, long value);
@@ -71,6 +88,8 @@ extern "C"
     const char *getConditionType(jlong message, struct condition *condition);
     const char *getConditionOperator(jlong message, struct condition *condition);
     bool getConditionIsNull(jlong message, struct condition *condition);
+
+    /* Condition value retrieval */
     struct val *getConditionVal(jlong message, struct condition *condition);
     int getConditionIntVal(jlong message, struct condition *condition);
     long getConditionLongVal(jlong message, struct condition *condition);
@@ -81,6 +100,8 @@ extern "C"
     bool getConditionBoolVal(jlong message, struct condition *condition);
     short getConditionShortVal(jlong message, struct condition *condition);
     struct val_list *getConditionListVal(jlong message, struct condition *condition);
+
+    /* Condition value puts */
     void setConditionVal(jlong message, struct condition *condition, struct val *value);
     void setConditionIntVal(jlong message, struct condition *condition, int value);
     void setConditionLongVal(jlong message, struct condition *condition, long value);

@@ -4,9 +4,9 @@
 
 
 /* Default Constructor */
-ConditionUtils::ConditionUtils(JNIEnv *jvm, TypeUtils *typeUtils, ListUtils *listUtils)
+ConditionUtils::ConditionUtils(JNIEnv *jvm, TypeUtils *typeUtils, ListUtils *listUtils, MapUtils *mapUtils)
 {
-    this->loadGlobalRefs(jvm, typeUtils, listUtils);
+    this->loadGlobalRefs(jvm, typeUtils, listUtils, mapUtils);
     this->loadMethodIds();
 }
 
@@ -134,6 +134,14 @@ struct val_list *ConditionUtils::getListVal(struct condition *condition)
     return valueList;
 }
 
+struct val_map *ConditionUtils::getMapVal(struct condition *condition)
+{
+    struct val *value = this->getVal(condition);
+    struct val_map *valueMap = (struct val_map *)malloc(sizeof(struct val_map));
+    valueMap->jmap = value->jvalue;
+    return valueMap;
+}
+
 void ConditionUtils::setVal(struct condition *condition, struct val *value)
 {
     this->jvm->CallVoidMethod(condition->jcondition, this->setValueMethodId, value->jvalue);
@@ -200,12 +208,18 @@ void ConditionUtils::setListVal(struct condition *condition, struct val_list *va
     this->jvm->CallVoidMethod(condition->jcondition, this->setValueMethodId, value->jlist);
 }
 
+void ConditionUtils::setMapVal(struct condition *condition, struct val_map *value)
+{
+    this->jvm->CallVoidMethod(condition->jcondition, this->setValueMethodId, value->jmap);
+}
+
 /* Private Methods */
-void ConditionUtils::loadGlobalRefs(JNIEnv *jvm, TypeUtils *typeUtils, ListUtils *listUtils)
+void ConditionUtils::loadGlobalRefs(JNIEnv *jvm, TypeUtils *typeUtils, ListUtils *listUtils, MapUtils *mapUtils)
 {
     this->jvm = jvm;
     this->typeUtils = typeUtils;
     this->listUtils = listUtils;
+    this->mapUtils = mapUtils;
 }
 
 void ConditionUtils::loadMethodIds()

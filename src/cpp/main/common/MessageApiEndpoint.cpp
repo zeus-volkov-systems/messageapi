@@ -24,8 +24,8 @@ MessageApiEndpoint::MessageApiEndpoint(JNIEnv *env, jobject jendpoint, jobject j
     this->protocolRecordUtils = new ProtocolRecordUtils(this->jvm, this->protocolRecord, this->typeUtils, this->listUtils);
     this->recordUtils = new RecordUtils(this->jvm, this->typeUtils, this->listUtils);
     this->rejectionUtils = new RejectionUtils(this->jvm, this->typeUtils, this->listUtils);
-    this->fieldUtils = new FieldUtils(this->jvm, this->typeUtils, this->listUtils);
-    this->conditionUtils = new ConditionUtils(this->jvm, this->typeUtils, this->listUtils);
+    this->fieldUtils = new FieldUtils(this->jvm, this->typeUtils, this->listUtils, this->mapUtils);
+    this->conditionUtils = new ConditionUtils(this->jvm, this->typeUtils, this->listUtils, this->mapUtils);
     this->packetUtils = new PacketUtils(this->jvm, this->listUtils);
 
 }

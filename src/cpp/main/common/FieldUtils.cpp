@@ -4,9 +4,9 @@
 
 
 /** Constructor */
-FieldUtils::FieldUtils(JNIEnv *jvm, TypeUtils *typeUtils, ListUtils *listUtils)
+FieldUtils::FieldUtils(JNIEnv *jvm, TypeUtils *typeUtils, ListUtils *listUtils, MapUtils *mapUtils)
 {
-    this->loadGlobalRefs(jvm, typeUtils, listUtils);
+    this->loadGlobalRefs(jvm, typeUtils, listUtils, mapUtils);
     this->loadMethodIds();
 }
 
@@ -138,6 +138,14 @@ struct val_list *FieldUtils::getListVal(struct field *field)
     return valueList;
 }
 
+struct val_map *FieldUtils::getMapVal(struct field *field)
+{
+    struct val *value = this->getVal(field);
+    struct val_map *valueMap = (struct val_map *)malloc(sizeof(struct val_map));
+    valueMap->jmap = value->jvalue;
+    return valueMap;
+}
+
 void FieldUtils::setVal(struct field *field, struct val *value)
 {
     this->jvm->CallVoidMethod(field->jfield, this->setValueMethodId, value->jvalue);
@@ -204,12 +212,18 @@ void FieldUtils::setListVal(struct field *field, struct val_list *value)
     this->jvm->CallVoidMethod(field->jfield, this->setValueMethodId, value->jlist);
 }
 
+void FieldUtils::setMapVal(struct field *field, struct val_map *value)
+{
+    this->jvm->CallVoidMethod(field->jfield, this->setValueMethodId, value->jmap);
+}
+
 /* Private Methods */
-void FieldUtils::loadGlobalRefs(JNIEnv *jvm, TypeUtils *typeUtils, ListUtils *listUtils)
+void FieldUtils::loadGlobalRefs(JNIEnv *jvm, TypeUtils *typeUtils, ListUtils *listUtils, MapUtils *mapUtils)
 {
     this->jvm = jvm;
     this->typeUtils = typeUtils;
     this->listUtils = listUtils;
+    this->mapUtils = mapUtils;
 }
 
 void FieldUtils::loadMethodIds()
