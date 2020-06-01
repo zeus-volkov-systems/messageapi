@@ -46,6 +46,7 @@ extern "C"
     bool getFieldIsValid(jlong message, struct field *field);
     bool getFieldIsRequired(jlong message, struct field *field);
     bool getFieldIsNull(jlong message, struct field *field);
+
     struct val *getFieldVal(jlong message, struct field *field);
     int getFieldIntVal(jlong message, struct field *field);
     long getFieldLongVal(jlong message, struct field *field);
@@ -56,6 +57,8 @@ extern "C"
     bool getFieldBoolVal(jlong message, struct field *field);
     short getFieldShortVal(jlong message, struct field *field);
     struct val_list *getFieldListVal(jlong message, struct field *field);
+    struct val_map *getFieldMapVal(jlong message, struct field *field);
+
     void setFieldVal(jlong message, struct field *field, struct val *value);
     void setFieldIntVal(jlong message, struct field *field, int value);
     void setFieldLongVal(jlong message, struct field *field, long value);
@@ -66,12 +69,14 @@ extern "C"
     void setFieldBoolVal(jlong message, struct field *field, bool value);
     void setFieldShortVal(jlong message, struct field *field, short value);
     void setFieldListVal(jlong message, struct field *field, struct val_list *value);
+    void setFieldMapVal(jlong message, struct field *field, struct val_map *value);
 
     /*Condition Methods*/
     const char *getConditionId(jlong message, struct condition *condition);
     const char *getConditionType(jlong message, struct condition *condition);
     const char *getConditionOperator(jlong message, struct condition *condition);
     bool getConditionIsNull(jlong message, struct condition *condition);
+
     struct val *getConditionVal(jlong message, struct condition *condition);
     int getConditionIntVal(jlong message, struct condition *condition);
     long getConditionLongVal(jlong message, struct condition *condition);
@@ -82,6 +87,8 @@ extern "C"
     bool getConditionBoolVal(jlong message, struct condition *condition);
     short getConditionShortVal(jlong message, struct condition *condition);
     struct val_list *getConditionListVal(jlong message, struct condition *condition);
+    struct val_map *getConditionMapVal(jlong message, struct condition *condition);
+
     void setConditionVal(jlong message, struct condition *condition, struct val *value);
     void setConditionIntVal(jlong message, struct condition *condition, int value);
     void setConditionLongVal(jlong message, struct condition *condition, long value);
@@ -92,8 +99,11 @@ extern "C"
     void setConditionBoolVal(jlong message, struct condition *condition, bool value);
     void setConditionShortVal(jlong message, struct condition *condition, short value);
     void setConditionListVal(jlong message, struct condition *condition, struct val_list *value);
+    void setConditionMapVal(jlong message, struct condition *condition, struct val_map *value);
 
     /*List Utility Methods*/
+    struct val_list *createList(jlong message);
+    
     int getIntItem(jlong message, struct val_list *list, int index);
     long getLongItem(jlong message, struct val_list *list, int index);
     float getFloatItem(jlong message, struct val_list *list, int index);
@@ -105,7 +115,7 @@ extern "C"
     struct list_item *getItem(jlong message, struct val_list *list, int index);
     struct val_list *getListItem(jlong message, struct val_list *list, int index);
     struct val_map *getMapItem(jlong message, struct val_list *list, int index);
-    struct val_list *createList(jlong message);
+
     void addItem(jlong message, struct val_list *list, struct list_item *item);
     void addIntItem(jlong message, struct val_list *list, int val);
     void addLongItem(jlong message, struct val_list *list, long val);

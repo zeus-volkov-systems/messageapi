@@ -177,6 +177,11 @@ extern "C"
         return reinterpret_cast<MessageApiTransformation *>(message)->getFieldUtils()->getListVal(field);
     }
 
+    struct val_map *getFieldMapVal(jlong message, struct field *field)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getFieldUtils()->getMapVal(field);
+    }
+
     void setFieldVal(jlong message, struct field *field, struct val *value)
     {
         return reinterpret_cast<MessageApiTransformation *>(message)->getFieldUtils()->setVal(field, value);
@@ -225,6 +230,11 @@ extern "C"
     void setFieldListVal(jlong message, struct field *field, struct val_list *value)
     {
         return reinterpret_cast<MessageApiTransformation *>(message)->getFieldUtils()->setListVal(field, value);
+    }
+
+    void setFieldMapVal(jlong message, struct field *field, struct val_map *value)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getFieldUtils()->setMapVal(field, value);
     }
 
     /*Condition Methods*/
@@ -299,6 +309,11 @@ extern "C"
         return reinterpret_cast<MessageApiTransformation *>(message)->getConditionUtils()->getListVal(condition);
     }
 
+    struct val_map *getConditionMapVal(jlong message, struct condition *condition)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getConditionUtils()->getMapVal(condition);
+    }
+
     void setConditionVal(jlong message, struct condition *condition, struct val *value)
     {
         return reinterpret_cast<MessageApiTransformation *>(message)->getConditionUtils()->setVal(condition, value);
@@ -347,6 +362,11 @@ extern "C"
     void setConditionListVal(jlong message, struct condition *condition, struct val_list *value)
     {
         return reinterpret_cast<MessageApiTransformation *>(message)->getConditionUtils()->setListVal(condition, value);
+    }
+
+    void setConditionMapVal(jlong message, struct condition *condition, struct val_map *value)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getConditionUtils()->setMapVal(condition, value);
     }
 
     /*List Utility Methods*/
