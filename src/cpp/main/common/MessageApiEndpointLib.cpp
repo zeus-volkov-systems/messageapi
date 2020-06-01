@@ -1,8 +1,5 @@
-#include <iostream>
-#include <string>
-#include <jni.h>
-#include "MessageApiEndpoint.h"
 #include "MessageApiEndpointLib.h"
+#include "MessageApiEndpoint.h"
 #include "gov_noaa_messageapi_endpoints_NativeEndpoint.h"
 
 /**

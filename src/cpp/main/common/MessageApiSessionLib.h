@@ -2,7 +2,6 @@
 #include <stdbool.h>
 
 #include "messageapi_structs.h"
-
 /**
  * @author Ryan Berkheimer
  */
