@@ -2,6 +2,9 @@
 #include <stdbool.h>
 
 #include "messageapi_structs.h"
+
+#include "JniUtils.h"
+#include "MessageApiSession.h"
 /**
  * @author Ryan Berkheimer
  */
@@ -11,175 +14,182 @@ extern "C"
 #endif
 
     /* Session methods */
-    struct session *createSession(const char* message);
-    struct request *createRequest(struct session *session);
+    session *createSession(const char* specPath);
+    void releaseSession(session *session);
+    request *createRequest(session *session);
 
     /* Request methods */
-    struct record *createRecord(struct request *request);
-    struct request *getCopy(struct request *request);
-    struct request *getCopy(struct request *request, struct val_list *copy_components);
-    const char *getType(struct request *request);
-    struct record_list *getRecords(struct request *request);
-    struct record *getRequestRecord(struct request *request);
-    void setRecords(struct request *request, struct record_list *records);
-    struct response *submitRequest(struct request *request);
+    record *createRequestRecord(request *request);
+    request *getRequestCopy(request *request);
+    request *getRequestCopyComponents(request *request, val_list *copy_components);
+    const char *getRequestType(request *request);
+    record_list *getRequestRecords(request *request);
+    record *getRequestRecord(request *request);
+    void setRequestRecords(request *request, record_list *records);
+    response *submitRequest(request *request);
 
     /* Response methods */
-
+    bool isComplete(response *response);
+    request *getResponseRequest(response *response);
+    rejection_list *getResponseRejections(response *response);
+    record_list *getResponseRecords(response *response);
+    void setResponseRejections(response *response, rejection_list *rejections);
+    void setResponseRecords(response *response, record_list *records);
+    void setComplete(response *response, bool isComplete);
 
     /*Record Methods*/
-    struct record_list *createRecordList(jlong message);
-    void addRecord(jlong message, struct record_list *record_list, struct record *record);
+    record_list *createRecordList(session *session);
+    void addRecord(session *session, record_list *record_list, record *record);
 
-    struct record *getRecordCopy(jlong message, struct record *record);
-    bool getRecordIsValid(jlong message, struct record *record);
+    record *getRecordCopy(session *session, record *record);
+    bool getRecordIsValid(session *session, record *record);
 
-    struct string_list *getFieldIds(jlong message, struct record *record);
-    struct field_list *getFields(jlong message, struct record *record);
-    struct field *getField(jlong message, struct record *record, const char *fieldId);
-    bool hasField(jlong message, struct record *record, const char *fieldId);
+    string_list *getFieldIds(session *session, record *record);
+    field_list *getFields(session *session, record *record);
+    field *getField(session *session, record *record, const char *fieldId);
+    bool hasField(session *session, record *record, const char *fieldId);
 
-    struct string_list *getConditionIds(jlong message, struct record *record);
-    struct condition_list *getConditions(jlong message, struct record *record);
-    struct condition *getCondition(jlong message, struct record *record, const char *conditionId);
-    bool hasCondition(jlong message, struct record *record, const char *conditionId);
+    string_list *getConditionIds(session *session, record *record);
+    condition_list *getConditions(session *session, record *record);
+    condition *getCondition(session *session, record *record, const char *conditionId);
+    bool hasCondition(session *session, record *record, const char *conditionId);
 
     /*Rejection Methods*/
-    struct rejection_list *createRejectionList(jlong message);
-    void addRejection(jlong message, struct rejection_list *rejection_list, struct rejection *rejection);
-    struct rejection *getRejectionCopy(jlong message, struct rejection *rejection);
-    struct record *getRejectionRecord(jlong message, struct rejection *rejection);
-    struct string_list *getRejectionReasons(jlong message, struct rejection *rejection);
-    void addRejectionReason(jlong message, struct rejection *rejection, const char *reason);
+    rejection_list *createRejectionList(session *session);
+    void addRejection(session *session, rejection_list *rejection_list, rejection *rejection);
+    rejection *getRejectionCopy(session *session, rejection *rejection);
+    record *getRejectionRecord(session *session, rejection *rejection);
+    string_list *getRejectionReasons(session *session, rejection *rejection);
+    void addRejectionReason(session *session, rejection *rejection, const char *reason);
 
     /*Field Methods*/
-    const char *getFieldId(jlong message, struct field *field);
-    const char *getFieldType(jlong message, struct field *field);
-    bool getFieldIsValid(jlong message, struct field *field);
-    bool getFieldIsRequired(jlong message, struct field *field);
-    bool getFieldIsNull(jlong message, struct field *field);
+    const char *getFieldId(session *session, field *field);
+    const char *getFieldType(session *session, field *field);
+    bool getFieldIsValid(session *session, field *field);
+    bool getFieldIsRequired(session *session, field *field);
+    bool getFieldIsNull(session *session, field *field);
 
     /* Field Value Retrieval */
-    struct val *getFieldVal(jlong message, struct field *field);
-    int getFieldIntVal(jlong message, struct field *field);
-    long getFieldLongVal(jlong message, struct field *field);
-    float getFieldFloatVal(jlong message, struct field *field);
-    double getFieldDoubleVal(jlong message, struct field *field);
-    signed char getFieldByteVal(jlong message, struct field *field);
-    const char *getFieldStringVal(jlong message, struct field *field);
-    bool getFieldBoolVal(jlong message, struct field *field);
-    short getFieldShortVal(jlong message, struct field *field);
-    struct val_list *getFieldListVal(jlong message, struct field *field);
+    val *getFieldVal(session *session, field *field);
+    int getFieldIntVal(session *session, field *field);
+    long getFieldLongVal(session *session, field *field);
+    float getFieldFloatVal(session *session, field *field);
+    double getFieldDoubleVal(session *session, field *field);
+    signed char getFieldByteVal(session *session, field *field);
+    const char *getFieldStringVal(session *session, field *field);
+    bool getFieldBoolVal(session *session, field *field);
+    short getFieldShortVal(session *session, field *field);
+    val_list *getFieldListVal(session *session, field *field);
 
     /*Field Value Puts */
-    void setFieldVal(jlong message, struct field *field, struct val *value);
-    void setFieldIntVal(jlong message, struct field *field, int value);
-    void setFieldLongVal(jlong message, struct field *field, long value);
-    void setFieldFloatVal(jlong message, struct field *field, float value);
-    void setFieldDoubleVal(jlong message, struct field *field, double value);
-    void setFieldByteVal(jlong message, struct field *field, signed char value);
-    void setFieldStringVal(jlong message, struct field *field, const char *value);
-    void setFieldBoolVal(jlong message, struct field *field, bool value);
-    void setFieldShortVal(jlong message, struct field *field, short value);
-    void setFieldListVal(jlong message, struct field *field, struct val_list *value);
+    void setFieldVal(session *session, field *field, val *value);
+    void setFieldIntVal(session *session, field *field, int value);
+    void setFieldLongVal(session *session, field *field, long value);
+    void setFieldFloatVal(session *session, field *field, float value);
+    void setFieldDoubleVal(session *session, field *field, double value);
+    void setFieldByteVal(session *session, field *field, signed char value);
+    void setFieldStringVal(session *session, field *field, const char *value);
+    void setFieldBoolVal(session *session, field *field, bool value);
+    void setFieldShortVal(session *session, field *field, short value);
+    void setFieldListVal(session *session, field *field, val_list *value);
 
     /*Condition Methods*/
-    const char *getConditionId(jlong message, struct condition *condition);
-    const char *getConditionType(jlong message, struct condition *condition);
-    const char *getConditionOperator(jlong message, struct condition *condition);
-    bool getConditionIsNull(jlong message, struct condition *condition);
+    const char *getConditionId(session *session, condition *condition);
+    const char *getConditionType(session *session, condition *condition);
+    const char *getConditionOperator(session *session, condition *condition);
+    bool getConditionIsNull(session *session, condition *condition);
 
     /* Condition value retrieval */
-    struct val *getConditionVal(jlong message, struct condition *condition);
-    int getConditionIntVal(jlong message, struct condition *condition);
-    long getConditionLongVal(jlong message, struct condition *condition);
-    float getConditionFloatVal(jlong message, struct condition *condition);
-    double getConditionDoubleVal(jlong message, struct condition *condition);
-    signed char getConditionByteVal(jlong message, struct condition *condition);
-    const char *getConditionStringVal(jlong message, struct condition *condition);
-    bool getConditionBoolVal(jlong message, struct condition *condition);
-    short getConditionShortVal(jlong message, struct condition *condition);
-    struct val_list *getConditionListVal(jlong message, struct condition *condition);
+    val *getConditionVal(session *session, condition *condition);
+    int getConditionIntVal(session *session, condition *condition);
+    long getConditionLongVal(session *session, condition *condition);
+    float getConditionFloatVal(session *session, condition *condition);
+    double getConditionDoubleVal(session *session, condition *condition);
+    signed char getConditionByteVal(session *session, condition *condition);
+    const char *getConditionStringVal(session *session, condition *condition);
+    bool getConditionBoolVal(session *session, condition *condition);
+    short getConditionShortVal(session *session, condition *condition);
+    val_list *getConditionListVal(session *session, condition *condition);
 
     /* Condition value puts */
-    void setConditionVal(jlong message, struct condition *condition, struct val *value);
-    void setConditionIntVal(jlong message, struct condition *condition, int value);
-    void setConditionLongVal(jlong message, struct condition *condition, long value);
-    void setConditionFloatVal(jlong message, struct condition *condition, float value);
-    void setConditionDoubleVal(jlong message, struct condition *condition, double value);
-    void setConditionByteVal(jlong message, struct condition *condition, signed char value);
-    void setConditionStringVal(jlong message, struct condition *condition, const char *value);
-    void setConditionBoolVal(jlong message, struct condition *condition, bool value);
-    void setConditionShortVal(jlong message, struct condition *condition, short value);
-    void setConditionListVal(jlong message, struct condition *condition, struct val_list *value);
+    void setConditionVal(session *session, condition *condition, val *value);
+    void setConditionIntVal(session *session, condition *condition, int value);
+    void setConditionLongVal(session *session, condition *condition, long value);
+    void setConditionFloatVal(session *session, condition *condition, float value);
+    void setConditionDoubleVal(session *session, condition *condition, double value);
+    void setConditionByteVal(session *session, condition *condition, signed char value);
+    void setConditionStringVal(session *session, condition *condition, const char *value);
+    void setConditionBoolVal(session *session, condition *condition, bool value);
+    void setConditionShortVal(session *session, condition *condition, short value);
+    void setConditionListVal(session *session, condition *condition, val_list *value);
 
     /*List Utility Methods*/
-    int getIntItem(jlong message, struct val_list *list, int index);
-    long getLongItem(jlong message, struct val_list *list, int index);
-    float getFloatItem(jlong message, struct val_list *list, int index);
-    double getDoubleItem(jlong message, struct val_list *list, int index);
-    signed char getByteItem(jlong message, struct val_list *list, int index);
-    const char *getStringItem(jlong message, struct val_list *list, int index);
-    bool getBoolItem(jlong message, struct val_list *list, int index);
-    short getShortItem(jlong message, struct val_list *list, int index);
-    struct list_item *getItem(jlong message, struct val_list *list, int index);
-    struct val_list *getListItem(jlong message, struct val_list *list, int index);
-    struct val_map *getMapItem(jlong message, struct val_list *list, int index);
-    struct val_list *createList(jlong message);
-    void addItem(jlong message, struct val_list *list, struct list_item *item);
-    void addIntItem(jlong message, struct val_list *list, int val);
-    void addLongItem(jlong message, struct val_list *list, long val);
-    void addFloatItem(jlong message, struct val_list *list, float val);
-    void addDoubleItem(jlong message, struct val_list *list, double val);
-    void addByteItem(jlong message, struct val_list *list, signed char val);
-    void addStringItem(jlong message, struct val_list *list, const char *val);
-    void addBoolItem(jlong message, struct val_list *list, bool val);
-    void addShortItem(jlong message, struct val_list *list, short val);
-    void addListItem(jlong message, struct val_list *list, struct val_list *val);
-    void addMapItem(jlong message, struct val_list *list, struct val_map *map);
+    int getIntItem(session *session, val_list *list, int index);
+    long getLongItem(session *session, val_list *list, int index);
+    float getFloatItem(session *session, val_list *list, int index);
+    double getDoubleItem(session *session, val_list *list, int index);
+    signed char getByteItem(session *session, val_list *list, int index);
+    const char *getStringItem(session *session, val_list *list, int index);
+    bool getBoolItem(session *session, val_list *list, int index);
+    short getShortItem(session *session, val_list *list, int index);
+    list_item *getItem(session *session, val_list *list, int index);
+    val_list *getListItem(session *session, val_list *list, int index);
+    val_map *getMapItem(session *session, val_list *list, int index);
+    val_list *createList(session *session);
+    void addItem(session *session, val_list *list, list_item *item);
+    void addIntItem(session *session, val_list *list, int val);
+    void addLongItem(session *session, val_list *list, long val);
+    void addFloatItem(session *session, val_list *list, float val);
+    void addDoubleItem(session *session, val_list *list, double val);
+    void addByteItem(session *session, val_list *list, signed char val);
+    void addStringItem(session *session, val_list *list, const char *val);
+    void addBoolItem(session *session, val_list *list, bool val);
+    void addShortItem(session *session, val_list *list, short val);
+    void addListItem(session *session, val_list *list, val_list *val);
+    void addMapItem(session *session, val_list *list, val_map *map);
 
     /*Map Utility Methods*/
-    struct val_map *createMap(jlong message);
-    int getSize(jlong message, struct val_map *map);
-    bool hasKey(jlong message, struct val_map *map, const char *key);
+    val_map *createMap(session *session);
+    int getSize(session *session, val_map *map);
+    bool hasKey(session *session, val_map *map, const char *key);
 
     /*Map Value Retrieval Methods*/
-    struct map_val *getVal(jlong message, struct val_map *map, const char *key);
-    jobject getObjectVal(jlong message, struct val_map *map, const char *key);
-    int getIntVal(jlong message, struct val_map *map, const char *key);
-    long getLongVal(jlong message, struct val_map *map, const char *key);
-    float getFloatVal(jlong message, struct val_map *map, const char *key);
-    double getDoubleVal(jlong message, struct val_map *map, const char *key);
-    signed char getByteVal(jlong message, struct val_map *map, const char *key);
-    const char *getStringVal(jlong message, struct val_map *map, const char *key);
-    bool getBoolVal(jlong message, struct val_map *map, const char *key);
-    short getShortVal(jlong message, struct val_map *map, const char *key);
-    struct val_list *getListVal(jlong message, struct val_map *map, const char *key);
-    struct val_map *getMapVal(jlong message, struct val_map *map, const char *key);
+    map_val *getVal(session *session, val_map *map, const char *key);
+    jobject getObjectVal(session *session, val_map *map, const char *key);
+    int getIntVal(session *session, val_map *map, const char *key);
+    long getLongVal(session *session, val_map *map, const char *key);
+    float getFloatVal(session *session, val_map *map, const char *key);
+    double getDoubleVal(session *session, val_map *map, const char *key);
+    signed char getByteVal(session *session, val_map *map, const char *key);
+    const char *getStringVal(session *session, val_map *map, const char *key);
+    bool getBoolVal(session *session, val_map *map, const char *key);
+    short getShortVal(session *session, val_map *map, const char *key);
+    val_list *getListVal(session *session, val_map *map, const char *key);
+    val_map *getMapVal(session *session, val_map *map, const char *key);
 
     /*Insert or Update Methods*/
-    void putVal(jlong message, struct val_map *map, const char *key, struct map_val *val);
-    void putObjectVal(jlong message, struct val_map *map, const char *key, jobject val);
-    void putIntVal(jlong message, struct val_map *map, const char *key, int val);
-    void putLongVal(jlong message, struct val_map *map, const char *key, long val);
-    void putFloatVal(jlong message, struct val_map *map, const char *key, float val);
-    void putDoubleVal(jlong message, struct val_map *map, const char *key, double val);
-    void putByteVal(jlong message, struct val_map *map, const char *key, signed char val);
-    void putStringVal(jlong message, struct val_map *map, const char *key, const char *val);
-    void putBoolVal(jlong message, struct val_map *map, const char *key, bool val);
-    void putShortVal(jlong message, struct val_map *map, const char *key, short val);
-    void putListVal(jlong message, struct val_map *map, const char *key, struct val_list *val);
-    void putMapVal(jlong message, struct val_map *map, const char *key, struct val_map *val);
+    void putVal(session *session, val_map *map, const char *key, map_val *val);
+    void putObjectVal(session *session, val_map *map, const char *key, jobject val);
+    void putIntVal(session *session, val_map *map, const char *key, int val);
+    void putLongVal(session *session, val_map *map, const char *key, long val);
+    void putFloatVal(session *session, val_map *map, const char *key, float val);
+    void putDoubleVal(session *session, val_map *map, const char *key, double val);
+    void putByteVal(session *session, val_map *map, const char *key, signed char val);
+    void putStringVal(session *session, val_map *map, const char *key, const char *val);
+    void putBoolVal(session *session, val_map *map, const char *key, bool val);
+    void putShortVal(session *session, val_map *map, const char *key, short val);
+    void putListVal(session *session, val_map *map, const char *key, val_list *val);
+    void putMapVal(session *session, val_map *map, const char *key, val_map *val);
 
     /*Packet Methods*/
-    void addPacketRecord(jlong message, struct packet *packet, struct record *record);
-    void setPacketRecords(jlong message, struct packet *packet, struct record_list *records);
-    void addPacketRecords(jlong message, struct packet *packet, struct record_list *records);
-    void setPacketRejections(jlong message, struct packet *packet, struct rejection_list *rejections);
-    void addPacketRejection(jlong message, struct packet *packet, struct rejection *rejection);
-    void addPacketRejections(jlong message, struct packet *packet, struct rejection_list *rejections);
-    struct record_list *getPacketRecords(jlong message, struct packet *packet);
-    struct rejection_list *getPacketRejections(jlong message, struct packet *packet);
+    void addPacketRecord(session *session, packet *packet, record *record);
+    void setPacketRecords(session *session, packet *packet, record_list *records);
+    void addPacketRecords(session *session, packet *packet, record_list *records);
+    void setPacketRejections(session *session, packet *packet, rejection_list *rejections);
+    void addPacketRejection(session *session, packet *packet, rejection *rejection);
+    void addPacketRejections(session *session, packet *packet, rejection_list *rejections);
+    record_list *getPacketRecords(session *session, packet *packet);
+    rejection_list *getPacketRejections(session *session, packet *packet);
 
 #ifdef __cplusplus
 }

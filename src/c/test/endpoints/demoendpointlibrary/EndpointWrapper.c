@@ -14,22 +14,22 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
   {
       printf("In our test!\n");
       printf("Hello, World\n");
-      struct record_list* default_record_list = getRecords(message);
+      record_list* default_record_list = getRecords(message);
       //struct record_list* classifier_record_list = getRecordsByClassifier(message, "color", "blue");
       //struct record_list* collection_record_list = getRecordsByCollection(message, "gold");
       //struct record_list* transformation_record_list = getRecordsByTransformation(message, "combine-colors");
       printf("Record count: %d\n", default_record_list->count);
-      struct string_list* default_field_name_list = getFieldIds(message, getRecord(message, default_record_list, 0));
+      string_list* default_field_name_list = getFieldIds(message, getRecord(message, default_record_list, 0));
       printf("Field name count: %d\n", default_field_name_list->count);
       printf("Length of longest field name: %d\n", default_field_name_list->max_length);
       for (int i = 0; i < default_field_name_list->count; i++) {
           printf("Field name: %s\n", default_field_name_list->strings[i]);
       }
       fflush(stdout);
-      struct field *testField = getField(message, getRecord(message, default_record_list, 0), "initial-value");
-      struct field *testField2 = getField(message, getRecord(message, default_record_list, 0), "string-test");
-      struct field *testField3 = getField(message, getRecord(message, default_record_list, 0), "int-list-test");
-      struct field *testField4 = getField(message, getRecord(message, default_record_list, 0), "null-test");
+      field *testField = getField(message, getRecord(message, default_record_list, 0), "initial-value");
+      field *testField2 = getField(message, getRecord(message, default_record_list, 0), "string-test");
+      field *testField3 = getField(message, getRecord(message, default_record_list, 0), "int-list-test");
+      field *testField4 = getField(message, getRecord(message, default_record_list, 0), "null-test");
       const char *testFieldId = getFieldId(message, testField);
       const char *testFieldId2 = getFieldId(message, testField2);
       const char *testFieldId3 = getFieldId(message, testField3);
@@ -53,10 +53,11 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
       printf("Field integer value is %d\n", integerFieldValue);
       const char *stringFieldValue = getFieldStringVal(message, testField2);
       printf("Field string value 2 is: %s\n", stringFieldValue);
-      struct val_list *val_list = getFieldListVal(message, testField3);
-      printf("Field value 3 (list) length is: %d\n", val_list->count);
-      for (int i = 0; i < val_list->count; i++) {
-          printf("Field value 3, element %d, is: %d\n", i, getIntItem(message, val_list, i));
+      val_list *fieldList = getFieldListVal(message, testField3);
+      printf("Field value 3 (list) length is: %d\n", fieldList->count);
+      for (int i = 0; i < fieldList->count; i++)
+      {
+          printf("Field value 3, element %d, is: %d\n", i, getIntItem(message, fieldList, i));
       }
       fflush(stdout);
       if (getFieldIsNull(message, testField4)) {
@@ -65,8 +66,8 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
           printf("Field val 4 has a value!\n");
       }
       fflush(stdout);
-      struct record *returnRecord = createRecord(message);
-      struct string_list *fieldIds = getFieldIds(message, returnRecord);
+      record *returnRecord = createRecord(message);
+      string_list *fieldIds = getFieldIds(message, returnRecord);
       printf("field ids for return field follow. \n");
       for (int i=0; i < fieldIds->count; i++) {
           printf("Field name: %s\n", fieldIds->strings[i]);
@@ -81,17 +82,17 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_endpoints_NativeEndpoint_proc
           }
       }
       fflush(stdout);
-      printf("Creating a string list..\n");
-      struct val_list *return_val_list = createList(message);
-      addStringItem(message, return_val_list, "first element of our string!");
-      addStringItem(message, return_val_list, "second element of our string!!");
+      printf("Creating a value list to hold strings..\n");
+      val_list *returnList = createList(message);
+      addStringItem(message, returnList, "first element of our string!");
+      addStringItem(message, returnList, "second element of our string!!");
       printf("Created a string list.\n");
-      setFieldListVal(message, getField(message, returnRecord, "return-list"), return_val_list);
-      printf("First value added to the return-list field: %s\n", getStringItem(message, return_val_list, 0));
-      printf("Second value added to the return-list field: %s\n", getStringItem(message, return_val_list, 1));
+      setFieldListVal(message, getField(message, returnRecord, "return-list"), returnList);
+      printf("First value added to the return-list field: %s\n", getStringItem(message, returnList, 0));
+      printf("Second value added to the return-list field: %s\n", getStringItem(message, returnList, 1));
       printf("Added the string list to the return record. Should have two elements, see above.\n");
       fflush(stdout);
-      struct packet* packet = createPacket(message);
+      packet* packet = createPacket(message);
       addPacketRecord(message, packet, returnRecord);
       printf("Leaving our C test!");
       fflush(stdout);

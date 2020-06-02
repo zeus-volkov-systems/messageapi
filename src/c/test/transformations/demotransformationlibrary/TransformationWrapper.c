@@ -15,7 +15,7 @@ JNIEXPORT jobject JNICALL Java_gov_noaa_messageapi_transformations_NativeTransfo
       printf("In our transformation test!\n");
       printf("Hello, World\n");
       fflush(stdout);
-      struct record_list *records = getRecords(message, "test_key");
+      record_list *records = getRecords(message, "test_key");
       printf("Record count: %d\n", records->count);
       fflush(stdout);
       return records->jrecords;

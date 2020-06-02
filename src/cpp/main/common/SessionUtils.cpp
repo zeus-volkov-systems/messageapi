@@ -11,9 +11,9 @@
  */
 
 /* Default Constructor */
-SessionUtils::SessionUtils(JNIEnv *jvm)
+SessionUtils::SessionUtils(JNIEnv *jvm, jobject session)
 {
-    this->loadGlobalRefs(jvm);
+    this->loadGlobalRefs(jvm, session);
     this->loadMethodIds();
 }
 
@@ -30,9 +30,9 @@ SessionUtils::~SessionUtils()
 
 /* Public API */
 
-struct request *SessionUtils::createRequest(struct session *session)
+struct request *SessionUtils::createRequest()
 {
-    jobject jrequest = this->jvm->CallObjectMethod(session->jsession, this->createRequestMethodId);
+    jobject jrequest = this->jvm->CallObjectMethod(this->session, this->createRequestMethodId);
     struct request *request = (struct request *)malloc(sizeof(struct request) + sizeof(jrequest));
     request->jrequest = jrequest;
     return request;
@@ -40,9 +40,10 @@ struct request *SessionUtils::createRequest(struct session *session)
 
 /* Private Methods */
 
-void SessionUtils::loadGlobalRefs(JNIEnv *jvm)
+void SessionUtils::loadGlobalRefs(JNIEnv *jvm, jobject session)
 {
     this->jvm = jvm;
+    this->session = session;
 }
 
 void SessionUtils::loadMethodIds()

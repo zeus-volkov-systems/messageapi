@@ -8,116 +8,116 @@
  * @author Ryan Berkheimer
  */
 
-struct map_val
+typedef struct map_val
 {
     jobject jval;
-};
+} map_val;
 
-struct val_map
+typedef struct val_map
 {
     jobject jmap;
-};
+} val_map;
 
-struct list_item
+typedef struct list_item
 {
     jobject jitem;
-};
+} list_item;
 
-struct val_list
+typedef struct val_list
 {
     int count;
     jobject jlist;
-};
+} val_list;
 
-struct session
+typedef struct session
 {
-    jobject jsession;
-};
+    jlong sessionLib;
+} session;
 
-struct transformation
+typedef struct transformation
 {
     jobject jtransformation;
-};
+} transformation;
 
-struct transformation_map
+typedef struct transformation_map
 {
     jobject jtransformation_map;
-};
+} transformation_map;
 
-struct response
+typedef struct response
 {
     jobject jresponse;
-};
+} response;
 
-struct request
+typedef struct request
 {
     jobject jrequest;
-};
+} request;
 
-struct condition
+typedef struct condition
 {
     jobject jcondition;
-};
+} condition;
 
-struct condition_list
+typedef struct condition_list
 {
     int count;
     struct condition **conditions;
-};
-struct val
+} condition_list;
+typedef struct val
 {
     jobject jvalue;
-};
+} val;
 
-struct field
+typedef struct field
 {
     jobject jfield;
-};
+} field;
 
-struct field_list
+typedef struct field_list
 {
     int count;
     struct field **fields;
-};
+} field_list;
 
-struct packet
+typedef struct packet
 {
     jobject jpacket;
-};
+} packet;
 
-struct record
+typedef struct record
 {
     jobject jrecord;
-};
+} record;
 
-struct rejection_list
+typedef struct rejection_list
 {
     int count;
     jobject jrejections;
-};
-struct rejection
+} rejection_list;
+typedef struct rejection
 {
     jobject jrejection;
-};
+} rejection;
 
-struct record_list
+typedef struct record_list
 {
     int count;
     jobject jrecords;
-};
+} record_list;
 
 
-struct string_list
+typedef struct string_list
 {
     int count;
     int max_length;
     char **strings;
-};
+} string_list;
 
-struct classifier
+typedef struct classifier
 {
     char* key;
     char* val;
-};
+} classifier;
 
 #endif

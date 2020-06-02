@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     jint res;
     jclass cls;
     jmethodID mid;
-    jstring jstr;
+    //jstring jstr;
     jobjectArray main_args;
 
     //vm_args.version = JNI_V
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    jstr = (*env)->NewStringUTF(env, "");
+    jstring jstr = (*env)->NewStringUTF(env, "");
     main_args = (*env)->NewObjectArray(env, 1, (*env)->FindClass(env, "java/lang/String"), jstr);
     (*env)->CallStaticVoidMethod(env, cls, mid, main_args);
 
