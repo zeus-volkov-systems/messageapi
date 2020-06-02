@@ -8,8 +8,8 @@
 #include <string.h>
 
 /**
-Constructor for the MessageApiEndpoint object. Takes a JNI environment pointer, an endpoint context (this refers to
-the endpoint class that's instantiating the object), and a protocol record which holds containers of records.
+Constructor for the MessageApiSession object. Takes a JNI environment pointer and a session context (this refers to
+the instantiated java session object).
 */
 MessageApiSession::MessageApiSession(JNIEnv *env, jobject session)
 {
