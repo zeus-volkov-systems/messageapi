@@ -58,17 +58,17 @@ struct record *RequestUtils::createRecord(struct request *request)
 struct request *RequestUtils::getCopy(struct request *request)
 {
     jobject jrequest = this->jvm->CallObjectMethod(request->jrequest, this->getCopyDefaultMethodId);
-    struct request *request = (struct request *)malloc(sizeof(struct request) + sizeof(jrequest));
-    request->jrequest = jrequest;
-    return request;
+    struct request *requestCopy = (struct request *)malloc(sizeof(struct request) + sizeof(jrequest));
+    requestCopy->jrequest = jrequest;
+    return requestCopy;
 }
 
 struct request *RequestUtils::getCopy(struct request *request, struct val_list *copy_components)
 {
     jobject jrequest = this->jvm->CallObjectMethod(request->jrequest, this->getCopyDefaultMethodId, copy_components->jlist);
-    struct request *request = (struct request *)malloc(sizeof(struct request) + sizeof(jrequest));
-    request->jrequest = jrequest;
-    return request;
+    struct request *requestCopy = (struct request *)malloc(sizeof(struct request) + sizeof(jrequest));
+    requestCopy->jrequest = jrequest;
+    return requestCopy;
 }
 
 const char *RequestUtils::getType(struct request *request)

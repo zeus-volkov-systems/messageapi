@@ -2,7 +2,6 @@ package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
 
-import gov.noaa.messageapi.interfaces.IComponent;
 import gov.noaa.messageapi.definitions.ProtocolDefinition;
 
 /**

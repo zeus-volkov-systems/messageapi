@@ -3,7 +3,6 @@ package gov.noaa.messageapi.conditions;
 import java.util.List;
 import java.util.Map;
 
-import gov.noaa.messageapi.conditions.BaseCondition;
 import gov.noaa.messageapi.interfaces.ICompositeCondition;
 
 /**

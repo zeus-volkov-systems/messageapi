@@ -7,7 +7,6 @@ extern "C"
  */
     session *createSession(const char *spec)
     {
-        session *session;
         JavaVM *vm;
         JNIEnv *env;
         JavaVMInitArgs vm_args;

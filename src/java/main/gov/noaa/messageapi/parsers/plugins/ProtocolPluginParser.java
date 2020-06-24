@@ -7,8 +7,6 @@ import java.util.HashSet;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IPluginParser;
 
-import gov.noaa.messageapi.parsers.plugins.BasePluginParser;
-
 /**
  * @author Ryan Berkheimer
  */

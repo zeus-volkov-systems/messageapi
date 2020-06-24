@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.HashSet;
 
 import gov.noaa.messageapi.interfaces.IContainer;
-import gov.noaa.messageapi.parsers.plugins.BasePluginParser;
 import gov.noaa.messageapi.interfaces.IPluginParser;
 
 /**

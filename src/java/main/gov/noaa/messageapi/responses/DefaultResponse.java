@@ -14,7 +14,6 @@ import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.IContainerRecord;
 
-import gov.noaa.messageapi.responses.BaseResponse;
 import gov.noaa.messageapi.requests.DefaultRequest;
 
 import gov.noaa.messageapi.utils.protocol.ConnectionUtils;

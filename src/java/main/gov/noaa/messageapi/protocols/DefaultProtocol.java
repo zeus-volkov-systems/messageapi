@@ -9,7 +9,6 @@ import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IConnection;
 
-import gov.noaa.messageapi.protocols.BaseProtocol;
 import gov.noaa.messageapi.metadata.DefaultMetadata;
 import gov.noaa.messageapi.connections.DefaultConnection;
 import gov.noaa.messageapi.definitions.ContainerDefinition;

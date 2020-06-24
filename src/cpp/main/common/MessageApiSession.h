@@ -10,6 +10,7 @@
 #include <string>
 
 #include "JniUtils.h"
+#include "TypeUtils.h"
 #include "MapUtils.h"
 #include "ListUtils.h"
 #include "SessionUtils.h"

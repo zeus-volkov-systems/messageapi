@@ -8,7 +8,6 @@ import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IConditionOperator;
 
-import gov.noaa.messageapi.schemas.BaseSchema;
 import gov.noaa.messageapi.metadata.DefaultMetadata;
 
 import gov.noaa.messageapi.records.schema.SchemaRecord;

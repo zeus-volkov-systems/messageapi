@@ -8,7 +8,6 @@ import gov.noaa.messageapi.interfaces.IRequest;
 import gov.noaa.messageapi.interfaces.IResponse;
 import gov.noaa.messageapi.interfaces.IProtocol;
 
-import gov.noaa.messageapi.requests.BaseRequest;
 import gov.noaa.messageapi.responses.DefaultResponse;
 
 

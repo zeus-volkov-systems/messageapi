@@ -11,8 +11,6 @@ import gov.noaa.messageapi.interfaces.ISchema;
 
 import gov.noaa.messageapi.interfaces.IPluginParser;
 
-import gov.noaa.messageapi.parsers.plugins.BasePluginParser;
-
 /**
  * @author Ryan Berkheimer
  */

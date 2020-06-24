@@ -3,7 +3,6 @@ package gov.noaa.messageapi.operators.conditions;
 import gov.noaa.messageapi.interfaces.IConditionOperator;
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.ICondition;
-import gov.noaa.messageapi.operators.conditions.SimpleConditionOperator;
 
 /**
  * @author Ryan Berkheimer

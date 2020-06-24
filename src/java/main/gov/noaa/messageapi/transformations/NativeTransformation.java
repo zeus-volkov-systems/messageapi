@@ -6,8 +6,6 @@ import java.util.List;
 import gov.noaa.messageapi.interfaces.ITransformation;
 import gov.noaa.messageapi.interfaces.IRecord;
 
-import gov.noaa.messageapi.transformations.BaseTransformation;
-
 /**
  * <h1>NativeTransformation</h1> This is a wrapper class for transformations that call into
  * native code held as binary libs through the <b>JNI (Java Native

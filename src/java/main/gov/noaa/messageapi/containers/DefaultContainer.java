@@ -6,7 +6,6 @@ import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IContainer;
 
-import gov.noaa.messageapi.containers.BaseContainer;
 import gov.noaa.messageapi.metadata.DefaultMetadata;
 
 /**

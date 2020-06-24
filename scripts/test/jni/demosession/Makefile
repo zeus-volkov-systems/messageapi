@@ -1,16 +1,16 @@
-### This is a Makefile for MessageAPI Native Endpoints.
+### This is a Makefile for MessageAPI Native sessions.
 # The majority of this Makefile is standard, with very few user specified things.
 # There are a few specific requirements and other notable things to keep in mind when using this Makefile:
 ## 1. You must have a JDK installed (not JRE). This library requires the jni.h header included in your jdk.
 ## 2. JAVA_HOME must be set to your JDK home directory. This Makefile references JAVA_HOME in looking for jni.h
 ## 3. This Makefile assumes a specific project layout when setting the PROJECTPATH. If the Makefile is not working,
-##    you should look at how it uses PROJECTPATH, ENDPOINT_NAME, and ENDPOINT_TYPE to find required files.
+##    you should look at how it uses PROJECTPATH, SESSION_NAME, and SESSION_TYPE to find required files.
 ##    if your project is set up differently, i.e. custom project layout, then path dependent vars will need to be
 ##    looked at and possibly changed.
 
 #The following represents the root project path. DO NOT EDIT
 SCRIPTDIR=$(PWD)
-PROJECTPATH=$(firstword $(subst /scripts/$(ENDPOINT_TYPE)/, ,$(SCRIPTDIR)))
+PROJECTPATH=$(firstword $(subst /scripts/$(SESSION_TYPE)/, ,$(SCRIPTDIR)))
 
 #The following is used to determine how native resources are compiled. DO NOT EDIT.
 UNAME := $(shell uname)
@@ -20,12 +20,12 @@ UNAME := $(shell uname)
 #The following vars are used to route source code and scripts (from the scripts and src dirs)
 #to the library dir as compiled files (the job name should match the name of the directory/job map.)
 #the job type is simply a test job or a main job and should either be test or main.
-ENDPOINT_NAME=demosession
-ENDPOINT_TYPE=test
+SESSION_NAME=demosession
+SESSION_TYPE=test
 
 #USER SPECIFIED
 #The following var represents the output name of the JniLib that will be created and referenced in the job map.
-#Do not specify the extension (.so/.dll/.jnilib) - these are determined automatically on build.
+#Do not specify the extension (.so/.dll/.jnilib/.dylib) - these are determined automatically on build.
 #The full path to the created library must be referenced in the endpoint config.
 LIBNAME=DemoSession
 
@@ -33,7 +33,7 @@ LIBNAME=DemoSession
 #The following vars should contain strings representing the C, Fortran, and CPP libraries that glue the fortran code to java code.
 #These strings should contain the user libraries in the order they need to be compiled (ex, "First.c Second.c Third.c")
 #These vars do not need to specify libraries they depend on that are found in the common variables (those are automatically compiled first).
-USERC=EndpointWrapper.c
+USERC=NativeSessionDemo.c
 USERCPP=
 USERFORTRAN=
 
@@ -47,12 +47,17 @@ ifeq ($(UNAME), Linux)
 JNIDIR="$(JAVA_HOME)/include"
 JNIMDDIR="$(JAVA_HOME)/include/linux"
 JVMHEADERS="$(JAVA_HOME)/include/linux"
+JVMDIR="$(JAVA_HOME)/lib/server"
+JLIDIR="$(JAVA_HOME)/lib/jli"
 endif
+
 ifeq ($(UNAME), Darwin)
 #The following represent a standard OSX system.
 JNIDIR="$(JAVA_HOME)/include"
 JNIMDDIR="$(JAVA_HOME)/include/darwin"
 JVMHEADERS="$(JAVA_HOME)/include"
+JVMDIR="$(JAVA_HOME)/lib/server"
+JLIDIR="$(JAVA_HOME)/lib/jli"
 endif
 
 #compilers
@@ -63,22 +68,21 @@ FF=gfortran
 #The following vars contain strings representing common libraries used by all code
 #at a project level. These should generally not be touched by users.
 COMMONC=
-COMMONCPP=MessageApiEndpoint.cpp MessageApiEndpointLib.cpp
+COMMONCPP=JniUtils.cpp TypeUtils.cpp ListUtils.cpp MapUtils.cpp ConditionUtils.cpp FieldUtils.cpp \
+RecordUtils.cpp RejectionUtils.cpp PacketUtils.cpp SessionUtils.cpp RequestUtils.cpp ResponseUtils.cpp \
+MessageApiSession.cpp MessageApiSessionLib.cpp
 COMMONFORTRAN=
-JAVACLASSES:=$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/endpoints/NativeEndpoint.java
-JAVAPATH=$(PROJECTPATH)/src/java/main:$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/endpoints
 
-
-#The following contains source code paths derived from the ENDPOINT_NAME and ENDPOINT_TYPE supplied by the user.
+#The following contains source code paths derived from the SESSION_NAME and SESSION_TYPE supplied by the user.
 COMMONCPATH=$(PROJECTPATH)/src/c/main/common/structs/
-USERCPATH=$(PROJECTPATH)/src/c/$(ENDPOINT_TYPE)/endpoints/$(ENDPOINT_NAME)/
-COMMONCPPPATH=$(PROJECTPATH)/src/cpp/main/common/endpoint/
-USERCPPPATH=$(PROJECTPATH)/src/cpp/$(ENDPOINT_TYPE)/$(ENDPOINT_NAME)/
+USERCPATH=$(PROJECTPATH)/src/c/$(SESSION_TYPE)/sessions/$(SESSION_NAME)/
+COMMONCPPPATH=$(PROJECTPATH)/src/cpp/main/common/
+USERCPPPATH=$(PROJECTPATH)/src/cpp/$(SESSION_TYPE)/$(SESSION_NAME)/
 COMMONFORTRANPATH=$(PROJECTPATH)/src/fortran/main/common/
-USERFORTRANPATH=$(PROJECTPATH)/src/fortran/$(ENDPOINT_TYPE)/$(ENDPOINT_NAME)/
+USERFORTRANPATH=$(PROJECTPATH)/src/fortran/$(SESSION_TYPE)/$(SESSION_NAME)/
 
 #The following var contains the target path for the project code.
-TARGETPATH="$(PROJECTPATH)/lib/$(ENDPOINT_TYPE)/native/$(ENDPOINT_NAME)/"
+TARGETPATH="$(PROJECTPATH)/lib/$(SESSION_TYPE)/native/$(SESSION_NAME)/"
 
 #The following is the target library for the native jni library.
 ifeq ($(UNAME), Linux)
@@ -90,7 +94,8 @@ ifeq ($(UNAME), Darwin)
 LNFLAGS=-dynamiclib -shared -lgfortran -I$(JVMHEADERS) -framework JavaVM
 endif
 
-CFLAGS=-I$(JVMHEADERS) -I$(COMMONCPPPATH) -I$(COMMONCPATH) -I$(USERCPPPATH) -I$(USERCPATH) -I$(JNIDIR) -I$(JNIMDDIR) -fpic -std=c99
+CFLAGS=-I$(JVMHEADERS) -I$(COMMONCPPPATH) -I$(COMMONCPATH) -I$(USERCPPPATH) -I$(USERCPATH) -I$(JNIDIR) -I$(JNIMDDIR) \
+-L$(JLIDIR) -L$(JVMDIR) -ljli -ljvm -fpic -std=c99 -Wl,-rpath,$(JVMDIR) -Wl,-rpath,$(JLIDIR)
 FFLAGS=-I$(COMMONFORTRANPATH) -I$(USERFORTRANPATH) -fPIC -fopenmp
 
 #The following is the target library for the native jni library.
@@ -100,7 +105,7 @@ DYLIB=lib$(LIBNAME).so
 endif
 ifeq ($(UNAME), Darwin)
 #The following represents a standard OSX system.
-DYLIB=lib$(LIBNAME).jnilib
+DYLIB=lib$(LIBNAME).dylib
 endif
 
 #COMMONFORTRAN1=$(addprefix $(COMMONFORTRANPATH), $(COMMONFORTRAN))
@@ -110,41 +115,36 @@ USERC1=$(addprefix $(USERCPATH), $(USERC))
 COMMONCPP1=$(addprefix $(COMMONCPPPATH), $(COMMONCPP))
 USERCPP1=$(addprefix $(USERCPPPATH), $(USERCPP))
 
-all: clean gen-headers build
+all: clean build
 
-.PHONY : clean gen-headers build
-
-gen-headers:
-	echo "Generating headers. "
-	echo ""
-	$(foreach header,$(JAVACLASSES),javac -h $(USERCPATH) -classpath $(JAVAPATH) $(header);)
-	echo ""
+.PHONY : clean build
 
 build:
-	echo "Building " $(ENDPOINT_NAME) " in " $(PROJECTPATH)
+	@echo "Building " $(SESSION_NAME) " in " $(PROJECTPATH)
 	#echo "Compiling Fortran"
 	#echo ""
 	#cd $(TARGETPATH) && $(FF) $(FFLAGS) -c $(COMMONFORTRAN1) $(USERFORTRAN1)
 	#echo ""
-	echo "Compiling CPP"
-	echo ""
-	cd $(TARGETPATH) && $(CXX) $(CFLAGS) -c $(COMMONCPP1) $(USERCPP1)
-	echo ""
-	echo "Compiling C"
-	echo ""
-	cd $(TARGETPATH) && $(CC) $(CFLAGS) -c $(COMMONC1) $(USERC1)
-	echo ""
-	echo "Creating JNI Library"
-	echo ""
-	cd $(TARGETPATH) && $(CXX) $(LNFLAGS) *.o -o $(DYLIB)
-	echo "Build success for " $(ENDPOINT_NAME)
+	@echo "Compiling CPP"
+	@echo ""
+	@cd $(TARGETPATH) && $(CXX) $(CFLAGS) -c $(COMMONCPP1) $(USERCPP1)
+	@echo ""
+	#@echo "Compiling C"
+	#@echo ""
+	#@cd $(TARGETPATH) && $(CC) $(CFLAGS) -c $(COMMONC1) $(USERC1)
+	@echo ""
+	@echo "Creating Shared Library"
+	@echo ""
+	@cd $(TARGETPATH) && $(CXX) $(LNFLAGS) *.o -o $(DYLIB)
+	@echo "Build success for " $(SESSION_NAME)
 
 clean:
-	echo "Cleaning up."
-	echo ""
+	@echo "Cleaning up."
+	@echo ""
 	-cd $(TARGETPATH) && rm *.h
 	-cd $(TARGETPATH) && rm *.o
 	-cd $(TARGETPATH) && rm *.mod
+	-cd $(TARGETPATH) && rm *.dylib
 	-cd $(TARGETPATH) && rm *.jnilib
 	-cd $(TARGETPATH) && rm *.so
 	echo ""

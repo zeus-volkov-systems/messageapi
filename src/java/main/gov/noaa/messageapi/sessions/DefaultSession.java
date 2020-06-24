@@ -6,7 +6,6 @@ import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IRequest;
 
-import gov.noaa.messageapi.sessions.BaseSession;
 import gov.noaa.messageapi.requests.DefaultRequest;
 
 /**

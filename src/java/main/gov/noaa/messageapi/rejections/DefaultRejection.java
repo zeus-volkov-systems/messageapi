@@ -4,8 +4,6 @@ import java.util.List;
 
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IRejection;
-import gov.noaa.messageapi.rejections.BaseRejection;
-
 
 /**
  * @author Ryan Berkheimer

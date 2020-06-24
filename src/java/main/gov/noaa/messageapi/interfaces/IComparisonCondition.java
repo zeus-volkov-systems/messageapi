@@ -1,6 +1,5 @@
 package gov.noaa.messageapi.interfaces;
 
-import gov.noaa.messageapi.interfaces.ICondition;
 
 /**
  * ComparisonConditions represent value-checking comparisons.

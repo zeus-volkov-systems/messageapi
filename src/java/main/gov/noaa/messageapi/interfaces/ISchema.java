@@ -1,7 +1,5 @@
 package gov.noaa.messageapi.interfaces;
 
-import gov.noaa.messageapi.interfaces.IComponent;
-
 import gov.noaa.messageapi.definitions.SchemaDefinition;
 
 /**

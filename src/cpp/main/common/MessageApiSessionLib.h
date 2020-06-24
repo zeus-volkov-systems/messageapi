@@ -14,28 +14,28 @@ extern "C"
 #endif
 
     /* Session methods */
-    session *createSession(const char* specPath);
-    void releaseSession(session *session);
-    request *createRequest(session *session);
+    extern session *createSession(const char* specPath);
+    extern void releaseSession(session *session);
+    extern request *createRequest(session *session);
 
     /* Request methods */
-    record *createRequestRecord(request *request);
-    request *getRequestCopy(request *request);
-    request *getRequestCopyComponents(request *request, val_list *copy_components);
-    const char *getRequestType(request *request);
-    record_list *getRequestRecords(request *request);
-    record *getRequestRecord(request *request);
-    void setRequestRecords(request *request, record_list *records);
-    response *submitRequest(request *request);
+    extern record *createRequestRecord(session *session, request *request);
+    extern request *getRequestCopy(session *session, request *request);
+    extern request *getRequestCopyComponents(session *session, request *request, val_list *copy_components);
+    extern const char *getRequestType(session *session, request *request);
+    record_list *getRequestRecords(session *session, request *request);
+    record *getRequestRecord(session *session, request *request);
+    void setRequestRecords(session *session, request *request, record_list *records);
+    response *submitRequest(session *session, request *request);
 
     /* Response methods */
-    bool isComplete(response *response);
-    request *getResponseRequest(response *response);
-    rejection_list *getResponseRejections(response *response);
-    record_list *getResponseRecords(response *response);
-    void setResponseRejections(response *response, rejection_list *rejections);
-    void setResponseRecords(response *response, record_list *records);
-    void setComplete(response *response, bool isComplete);
+    bool isComplete(session *session, response *response);
+    request *getResponseRequest(session *session, response *response);
+    rejection_list *getResponseRejections(session *session, response *response);
+    record_list *getResponseRecords(session *session, response *response);
+    void setResponseRejections(session *session, response *response, rejection_list *rejections);
+    void setResponseRecords(session *session, response *response, record_list *records);
+    void setComplete(session *session, response *response, bool isComplete);
 
     /*Record Methods*/
     record_list *createRecordList(session *session);

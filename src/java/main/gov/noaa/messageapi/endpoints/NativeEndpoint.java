@@ -11,7 +11,6 @@ import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 
-import gov.noaa.messageapi.endpoints.BaseEndpoint;
 import gov.noaa.messageapi.fields.DefaultField;
 import gov.noaa.messageapi.records.schema.SchemaRecord;
 import gov.noaa.messageapi.rejections.DefaultRejection;

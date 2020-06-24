@@ -1,7 +1,6 @@
 package gov.noaa.messageapi.interfaces;
 
 import java.util.List;
-import gov.noaa.messageapi.interfaces.ICondition;
 
 /**
  * A composite condition is a type of condition that combines other
