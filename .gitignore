@@ -6,6 +6,8 @@
 *.jnilib
 *.gch
 
+#Development
+.DS_Store
 
 #for gradle builds
 build/*
@@ -14,6 +16,7 @@ build/*
 #for visual-studio-code
 bin/*
 .vscode/*
+.devcontainer/*
 
 #for leiningen builds
 .lein*
