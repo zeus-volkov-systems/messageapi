@@ -1,4 +1,4 @@
-#Testing 123456789012345
+#Gitlab Runner Configuration for Automatic CI/CD
 stages:
   - test
   - build

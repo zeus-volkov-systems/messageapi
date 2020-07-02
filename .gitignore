@@ -17,6 +17,7 @@ build/*
 bin/*
 .vscode/*
 .devcontainer/*
+*.code-workspace
 
 #for leiningen builds
 .lein*

@@ -1,0 +1,42 @@
+#Dockerfile for RHEL7 MessageAPI Build on UBI (Openshift Compatible)
+#This dockerfile installs the system so that it can be interactively developed and built.
+#All build tools are installed and paths are set properly. Some probing tools are also
+#installed automatically for development.
+
+#Base Image (RHEL7 UBI)
+FROM registry.access.redhat.com/ubi7/ubi:latest
+
+#Install standard RHEL7 tools
+RUN yum -y install --disableplugin=subscription-manager \
+    locate vim unzip wget git java-11-openjdk-devel gcc gcc-gfortran gcc-c++ make \
+    && yum --disableplugin=subscription-manager clean all
+
+#Install Java Variables
+RUN cd $(dirname $(readlink -f $(which java))) && cd .. \
+    && export JAVA_HOME=$PWD \
+    && touch /etc/profile.d/java.sh \
+    && echo "export JAVA_HOME=${JAVA_HOME}" > /etc/profile.d/java.sh \
+    && echo "export PATH=${JAVA_HOME}/bin:$PATH" >> /etc/profile.d/java.sh \
+    && echo "export CLASSPATH=${JAVA_HOME}/bin:${CLASSPATH}" >> /etc/profile.d/java.sh
+
+#Install Gradle and Variables
+RUN wget https://services.gradle.org/distributions/gradle-5.4.1-bin.zip -P /tmp \
+    && unzip -d /opt/gradle /tmp/gradle-*.zip \
+    && export GRADLE_HOME=/opt/gradle/gradle-5.4.1 \
+    && touch /etc/profile.d/gradle.sh \
+    && echo "export GRADLE_HOME=${GRADLE_HOME}" > /etc/profile.d/gradle.sh \
+    && echo "export PATH=${GRADLE_HOME}/bin:$PATH" >> /etc/profile.d/gradle.sh
+
+#Add default type user 'messageapi'
+RUN useradd messageapi
+
+#Change to new 'messageapi' user
+USER messageapi
+
+#Set PATH and other user variables in bashrc
+RUN cd $(dirname $(readlink -f $(which java))) && cd .. \
+    && export JAVA_HOME=$PWD \
+    && echo "PATH=${JAVA_HOME}/bin:\$PATH" >> ~/.bashrc \
+    && export GRADLE_HOME=/opt/gradle/gradle-5.4.1 \
+    && echo "PATH=${GRADLE_HOME}/bin:\$PATH" >> ~/.bashrc \
+    && source ~/.bashrc

@@ -27,7 +27,7 @@
                         "fields": ["initial-value", "string-test", "int-list-test"]}],
     "connections": [{"id": "1",
                      "collections": ["coll-1"],
-                     "constructor": {"native-library": "/Users/rberkheimer/projects/asos/ingest/libraries/messageapi/lib/test/native/demoendpointlibrary/libDemoEndpointLibrary.jnilib",
+                     "constructor": {"native-library": "/workspaces/messageapi/lib/test/native/demoendpointlibrary/libDemoEndpointLibrary.so",
                                     "default-fields": [{"id": "test-integer",
                                                         "type": "integer",
                                                         "required": false,

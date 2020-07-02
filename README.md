@@ -67,8 +67,6 @@ Figure 1 below illustrates the layout of a Session - how MessageAPI structures a
 
 Everything that passes data in MessageAPI consumes and produces the same object type - the record. The manifests are used in code by creating a session based on them - and then using a stable API to create a request, add records, set field and/or condition values, and then submit, which immediately returns an async response. The response will hold its own records and rejections, and eventually get an 'isComplete' flag. That's the entirety of the API surface. Everything else depends on the Manifest.
 
-All of these actions are
-
 MessageAPI is designed to be capable of passing any message content - objects, database entries, emails, etc., to/through anywhere - database tables, inboxes, s3 buckets, ftp, smtp, kafka, files, directories etc.
 
 The benefits of using MessageAPI are its extreme schema flexibility, potential for tool decoupling and transport optimization, API standardization across all messaging, and self documentation through an information model.
@@ -133,7 +131,7 @@ The following is an example of a DefaultSession manifest:
 }
 ```
 
-The general pattern in a manifest is to declare a key with the class as the plugin, and then provide another map that holds constructor parameters. The specification for MessageAPI consists of
+The general pattern in a manifest is to declare a key with the class as the plugin, and then provide another map that holds constructor parameters. The specification for MessageAPI consists of:
 
 - A **Session**, which holds the primary **Schema**, **Container**, and **Protocol** dimensions
 - A **Schema**, which defines all the **Fields** and **Conditions** (optional) a user will interact with for each **Record**
@@ -283,7 +281,7 @@ In the provided implementation, the types understood by the system (for use by c
 
 ###### Condition Sets
 
-Conditions can be set on fields that qualify records when passed in, serving as a potentially powerful filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator. Conditions that are to be used in filtering must be valued on individual records. Conditions are also provided on a whole-request basis - to be used in containerization of records. In this case, conditions can be given values when
+Conditions can be set on fields that qualify records when passed in, serving as a potentially powerful dynamic filtering tool. In the provided default plugin, conditions must specify at least a unique id, a type, and an operator. Conditions that are to be used in filtering must be valued on individual records. Conditions are also provided on a whole-request basis - to be used in containerization of records. In this case, conditions can be given values on the request itself, to be used for parsing into collection-containers by applying to every potential record that is declared as part of a collection set.
 
 There are two condition types in the provided implementation  - composite and comparison.
 

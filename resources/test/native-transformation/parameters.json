@@ -28,7 +28,7 @@
             "id": "transform-1",
             "operator": "gov.noaa.messageapi.transformations.NativeTransformation",
             "constructor": {
-                "native-library": "/Users/rberkheimer/projects/asos/ingest/libraries/messageapi/lib/test/native/demotransformationlibrary/libDemoTransformationLibrary.jnilib"
+                "native-library": "/workspaces/messageapi/lib/test/native/demotransformationlibrary/libDemoTransformationLibrary.so"
             },
             "records": {"test_key": {"COLLECTION": "collection-1"}}}
     ],
