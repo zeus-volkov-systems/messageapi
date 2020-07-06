@@ -1,0 +1,11 @@
+{
+    "fields": [{"id": "file-path",
+                "type": "string",
+                "required": true}],
+    "collections": [{"id": "coll-1",
+                     "fields": ["file-path"]}],
+    "connections": [{"id": "conn-1",
+                     "collections": ["coll-1"],
+                     "constructor": {"file-fields": "file-path"},
+                     "fields" : ["value","number", "length"]}]
+}

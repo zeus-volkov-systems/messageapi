@@ -2,9 +2,13 @@
 
 ## Version
 
-**0.9.0** (Pre-Release)
+**0.9.10** (Pre-Release)
 
 MessageAPI uses [Semantic Versioning 2.0.0](https://semver.org/) as its versioning strategy. The first official version will be released upon the implementation of the C native API. Subsequent minor versions will release the fortran, python, IDL, and R APIs.
+
+## API Docs
+
+Use of this package is described throughout this README through design discussions and examples. Once familiar with the general use case of the package, more complete [API Docs](./dist/docs/api/index.html) can be referenced. 
 
 ## Overview
 
@@ -708,7 +712,13 @@ Because requests contain a copy of the session variables which created them, the
 
 ##### Package Use
 
-When installed from source or acquired through repository, the MessageAPI-all.jar contains all dependencies required to run standalone. Because of the way MessageAPI handles Session bootstrapping, it is not required to bundle the MessageAPI core with user ConditionFactories, TransformationFactories, or Endpoints. As long as these are made available to MessageAPI on the Java classpath at Session creation, Sessions will be able to use them. This design makes it easier to automate things like creating K8s pods of certain session types.
+###### Prebuilt Resources
+The package can be retrieved and used as a precompiled set of artifacts packaged as tar files. There are currently tar files for the core Java library and the precompiled C/C++ native library (compiled using the RHEL7 UBI, which is freely available from Redhat and compatible with Openshift). Each tar comes with an install.sh file that will install the relevant component for the current user. This means that for the Java package, the MessageAPI jar will be installed to a user directory, which will be added to the PATH and the Jar will be added to the CLASSPATH (if not already installed). The C library will add the shared library to the PATH and set up environment variables for use of the packaged header and source files. No root privileges are required to install or use the precompiled package resources.
+
+###### Building From Source
+When acquired through repository, the package can be built from source in order to run included tests. A Dockerfile for building the package is included in the resources/docker directory - this Dockerfile is based on the RHEL7 UBI and contains all necessary packages needed to build the MessageAPI system. This file can be used as-is or as a reference to guide what resources and conditions are necessary.
+
+Important to note - because of the way MessageAPI handles Session bootstrapping, it is not required to bundle the MessageAPI core with user ConditionFactories, TransformationFactories, or Endpoints. As long as these are made available to MessageAPI on the Java classpath at Session creation, Sessions will be able to use them. This design makes it easier to automate things like creating K8s pods of certain session types. If installed from precom
 
 If desired or needed, MessageAPI can be bundled into other JARS or packages containing user Factories and Endpoints for portability, performance, security, or other reasons.
 
@@ -718,7 +728,7 @@ If desired or needed, MessageAPI can be bundled into other JARS or packages cont
 
 ## Installation and Deployment
 
-At the time of this writing, MessageAPI (0.0.10-PRERELEASE) was built using OpenJDK 11.0.3 with gradle 5.4.1. Older JDK versions are not guaranteed to work.
+At the time of this writing, MessageAPI was built using OpenJDK 11.0.3 with gradle 5.4.1. Older JDK versions are not guaranteed to work.
 
 There was a breaking change between older versions of gradle and the 5 series, and a relative path resolution
 method was updated to accommodate this change. If building from scratch, the gradle version must be upgraded to 5.4.1+.
@@ -740,10 +750,9 @@ Other dependencies are installed for the purposes of running tests, including Gr
 
 In addition to reading issue, tag, and push history in the git repository, developers may refer to the more detailed [developer work log history](./DeveloperWorkLog.md). This document outlines features currently and previously under focus, providing motivations, descriptions, design behaviors, and justifications.
 
-### Bugs
+### Bugs and Feature Requests
 
-The package is in current, active development.
-All bugs encountered should be reported to ryan.berkheimer@noaa.gov.
+The package is in current, active development, and as such, some bugs or desired features are expected. Either type of note can be sent on to ryan.berkheimer@noaa.gov.
 
 ## License
 
