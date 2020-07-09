@@ -1,6 +1,14 @@
 #Primary Makefile for the MessageAPI package.
-#This Makefile currently controls the Gradle build for Java and subsequent artifact packaging,
-#the C/C++ library build and subsequent artifact packaging, and API documentation packaging.
+#
+#This Makefile currently controls the Gradle build for:
+#
+#1. Java-core build,test, and subsequent artifact (uberjar + install script) tar packaging
+#2. C/C++ API shared library build, test, and subsequent artifact (.so + full source/header set + install script)
+#tar packaging
+#3. Java API documentation artifact (html documents as tar) packaging
+#
+#Note that the package itself has an install.sh bash script ($PKG/scripts/install/package/install.sh)
+#that controls installation of specific libraries for any logged in user on the NCEI mission network.
 
 #Library Name and Version
 LIBRARY_NAME=messageapi
@@ -59,5 +67,5 @@ dist-java:
 copy-docs:
 	@echo "Copying API docs for distribution."
 	@mkdir -p $(API_DOCS_DIR)
-	@cp -R $(DOCS_SRC_DIR)/* $(API_DOCS_DIR) 
+	@-cd $(DOCS_SRC_DIR) && tar -cf $(API_DOCS_DIR)/messageapi_docs.tar *
 	@echo "Finished copying API docs for distribution."

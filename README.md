@@ -4,11 +4,11 @@
 
 **0.9.10** (Pre-Release)
 
-MessageAPI uses [Semantic Versioning 2.0.0](https://semver.org/) as its versioning strategy. The first official version will be released upon the implementation of the C native API. Subsequent minor versions will release the fortran, python, IDL, and R APIs.
+MessageAPI uses [Semantic Versioning 2.0.0](https://semver.org/) as its versioning strategy. The first official version will be released upon the implementation of the C native API and validation of the Java core. Subsequent minor versions will release the Fortran, Python, R, and IDL APIs, and Bash CLI.
 
 ## API Docs
 
-Use of this package is described throughout this README through design discussions and examples. Once familiar with the general use case of the package, more complete [API Docs](./dist/docs/api/index.html) can be referenced. 
+Use of this package is described throughout this README through design discussions and examples. Once familiar with the general use case of the package, more complete [API Docs](./dist/docs/api/messageapi_docs.tar) can be downloaded and referenced (open index.html after extracting the tar). 
 
 ## Overview
 
@@ -597,9 +597,9 @@ Once the records are set, call submit on the request. This submission immediatel
 ```java
 import gov.noaa.messageapi.interfaces.IResponse;
 
-IResponse response = request.submit(); \\asynchronous, returns immediately
+IResponse response = request.submit(); //asynchronous, returns immediately
 
-System.out.println(response.isComplete()); \\would initially return 'False'
+System.out.println(response.isComplete()); //would initially return 'False'
 ```
 
 When complete, the IResponse will flip isComplete() to true, and will have available IRecords and IRejections.
@@ -748,7 +748,7 @@ Other dependencies are installed for the purposes of running tests, including Gr
 
 ## Developer Guide
 
-In addition to reading issue, tag, and push history in the git repository, developers may refer to the more detailed [developer work log history](./DeveloperWorkLog.md). This document outlines features currently and previously under focus, providing motivations, descriptions, design behaviors, and justifications.
+In addition to reading issue, tag, and push history in the git repository, developers may refer to the more detailed [developer work log history](./docs/development/DeveloperWorkLog.md). This document outlines features currently and previously under focus, providing motivations, descriptions, design behaviors, and justifications.
 
 ### Bugs and Feature Requests
 
