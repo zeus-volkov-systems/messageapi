@@ -43,9 +43,18 @@ int main(int argc, char **argv)
 
     addRecord(session, session_records, record1);
 
-    setRequestRecords(session, request1, session_records);
+    //setRequestRecords(session, request1, session_records);
 
-            response *response = submitRequest(session, request1);
+    record_list *request_records = getRequestRecords(session, request1);
+    printf("Request record count: %d\n", request_records->count);
+    fflush(stdout);
+
+    response *response = submitRequest(session, request1);
+
+    puts("Response completion status right after submission:");
+    fputs(isComplete(session, response) ? "true" : "false", stdout);
+    puts("");
+    fflush(stdout);
 
     puts("Successfully submitted the request.");
     fflush(stdout);
@@ -53,19 +62,25 @@ int main(int argc, char **argv)
     puts(getFieldStringVal(session, field1));
     fflush(stdout);
 
-    while (!isComplete(session, response)) {
-        //puts("waiting...");
-        //fflush(stdout);
-    }
+    /*int c, d;
+
+    for (c = 1; c <= 32767; c++)
+        for (d = 1; d <= 32767; d++)
+        {
+        }
+*/
+    while (!isComplete(session, response)) {}
 
     puts("Successfully returned from the request.");
     fflush(stdout);
 
-    puts(getFieldStringVal(session, field1));
-    fflush(stdout);
+    //puts(getFieldStringVal(session, field1));
+    //fflush(stdout);
 
-    record_list *records = getResponseRecords(session, response);
-    printf("Record count: %d\n", records->count);
+    record_list *response_records = getResponseRecords(session, response);
+    rejection_list *response_rejections = getResponseRejections(session, response);
+    printf("Record count: %d\n", response_records->count);
+    printf("Rejection count: %d\n", response_rejections->count);
     fflush(stdout);
 
     //releaseSession(session);

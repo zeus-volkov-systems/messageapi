@@ -9,12 +9,13 @@ with current development, and should be supplemental to the repository record.
 
 This work log is also useful as a supplemental documentation for end users of the package - features are described and contextualized with as much detail as possible.
 
-## Future Work
+## Future Work in MessageAPI Core
 
 - Fortran API
 - Python API
-- Split Publish/Consumer Sessions
-- Example Endpoints (Email, Directory, Kafka)
+- R API
+- IDL API
+- Shell Utilities
 
 ## Current Focus
 

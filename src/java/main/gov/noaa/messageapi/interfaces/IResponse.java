@@ -19,7 +19,7 @@ public interface IResponse {
      * Returns true or false, depending on if all processing
      * within the response is complete.
      */
-    public Boolean isComplete();
+    public boolean isComplete();
 
     /**
      * Returns the associated request that the response is
@@ -59,7 +59,7 @@ public interface IResponse {
      * there are no more records or rejections coming through for the current
      * submission. 
      */
-    public void setComplete(Boolean isComplete);
+    public void setComplete(boolean isComplete);
 
 
 }

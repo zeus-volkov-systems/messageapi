@@ -35,7 +35,9 @@ ResponseUtils::~ResponseUtils()
 
 bool ResponseUtils::isComplete(struct response *response)
 {
-    return (bool)this->jvm->CallBooleanMethod(response->jresponse, this->isCompleteMethodId);
+    jboolean jBoolVal = this->jvm->CallBooleanMethod(response->jresponse, this->isCompleteMethodId);
+    bool boolVal = (bool)(jBoolVal != JNI_FALSE);
+    return boolVal;
 }
 
 struct request *ResponseUtils::getRequest(struct response *response)
@@ -114,7 +116,7 @@ const char *ResponseUtils::getMethodSignature(const char *methodName)
 {
     if (strcmp(methodName, "isComplete") == 0)
     {
-        return "()Ljava/lang/Boolean;";
+        return "()Z";
     }
     else if (strcmp(methodName, "getRequest") == 0)
     {

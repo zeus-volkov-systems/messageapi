@@ -35,7 +35,7 @@ public class BaseResponse {
         return this.request;
     }
 
-    public Boolean isComplete() {
+    public boolean isComplete() {
         return this.complete;
     }
 
@@ -47,7 +47,7 @@ public class BaseResponse {
         this.rejections = rejections;
     }
 
-    public void setComplete(Boolean complete) {
+    public void setComplete(boolean complete) {
         this.complete = complete;
     }
 

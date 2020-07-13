@@ -1,152 +1,105 @@
-### This is a Makefile for MessageAPI Native Endpoints.
+### This Makefile can be used as a template for writing MessageAPI compatible C/C++ Endpoints that extend the 
+# NativeEndpoint. This Makefile itself is setup for the test endpoint, but with a few modifications, it can be
+# updated for user endpoint content. Note that the goal of native endpoint production is to create a shared library,
+# as shared libraries are used by the Java code. Once produced, the shared library should just be referenced in the
+# config map for the endpoint itself (fully qualified of course).
+
 # The majority of this Makefile is standard, with very few user specified things.
+
 # There are a few specific requirements and other notable things to keep in mind when using this Makefile:
-## 1. You must have a JDK installed (not JRE). This library requires the jni.h header included in your jdk.
-## 2. JAVA_HOME must be set to your JDK home directory. This Makefile references JAVA_HOME in looking for jni.h
-## 3. This Makefile assumes a specific project layout when setting the PROJECTPATH. If the Makefile is not working,
-##    you should look at how it uses PROJECTPATH, ENDPOINT_NAME, and ENDPOINT_TYPE to find required files.
-##    if your project is set up differently, i.e. custom project layout, then path dependent vars will need to be
-##    looked at and possibly changed.
+## 1. You must have a JDK installed (not JRE). This library requires the jni.h and jnimd.h headers included in your jdk.
+## 2. JAVA_HOME must be set to your JDK home directory. This Makefile references JAVA_HOME in looking for jni.h and jnimd.h
 
-#The following represents the root project path. DO NOT EDIT
-SCRIPTDIR=$(PWD)
-PROJECTPATH=$(firstword $(subst /scripts/build/$(ENDPOINT_TYPE)/, ,$(SCRIPTDIR)))
+#The following is used to bootstrap the PROJECT_ROOT 
+CURRENT_DIR=$(PWD)
 
-#The following is used to determine how native resources are compiled. DO NOT EDIT.
-UNAME := $(shell uname)
+#The following represents the root project path. In this tailored example, we use a relative path to the project root.
+#In your own Makefile, this variable can be set directly.
+PROJECT_ROOT=$(firstword $(subst /scripts/build/c/test, ,$(CURRENT_DIR)))
 
-###################################################### USER SPECIFIED SECTION - PLEASE EDIT ###########################
-#USER SPECIFIED
-#The following vars are used to route source code and scripts (from the scripts and src dirs)
-#to the library dir as compiled files (the job name should match the name of the directory/job map.)
-#the job type is simply a test job or a main job and should either be test or main.
-ENDPOINT_NAME=demoendpointlibrary
-ENDPOINT_TYPE=test
+#Set target directories - this is where the library will build from/to.
+BUILD_DIR=$(PROJECT_ROOT)/build/c/test/endpoint
+COMPILE_DIR=$(BUILD_DIR)/compile #.o files produced here
+HEADER_DIR=$(BUILD_DIR)/headers #.h files copied here before build (for central include path)
+LIB_DIR=$(PROJECT_ROOT)/libs/test/c/endpoint #.so moved here before test
 
-#USER SPECIFIED
-#The following var represents the output name of the JniLib that will be created and referenced in the job map.
-#Do not specify the extension (.so/.dll/.jnilib) - these are determined automatically on build.
-#The full path to the created library must be referenced in the endpoint config.
-LIBNAME=DemoEndpointLibrary
 
-#USER SPECIFIED
-#The following vars should contain strings representing the C, Fortran, and CPP libraries that glue the fortran code to java code.
-#These strings should contain the user libraries in the order they need to be compiled (ex, "First.c Second.c Third.c")
-#These vars do not need to specify libraries they depend on that are found in the common variables (those are automatically compiled first).
-USERC=EndpointWrapper.c
-USERCPP=
-USERFORTRAN=
-
-###################################################### END USER SPECIFIED SECTION ###########################
+#The following var represents the base name of the shared .so library that will be created and referenced in the job map.
+LIBRARY_NAME=EndpointDemo
+SO_NAME=lib$(LIBRARY_NAME).so
 
 #The following represent directories for JNI Libraries that must be included during C and CPP compilation.
-#These are platform dependent. If you have a default setup, these probably will not have to be modified.
-#However, if you have nonstandard include paths, or you are getting errors, this may need to be altered.
-ifeq ($(UNAME), Linux)
-#The following represent a standard RHEL 7 system.
-JNIDIR="$(JAVA_HOME)/include"
-JNIMDDIR="$(JAVA_HOME)/include/linux"
-JVMHEADERS="$(JAVA_HOME)/include/linux"
-endif
-ifeq ($(UNAME), Darwin)
-#The following represent a standard OSX system.
-JNIDIR="$(JAVA_HOME)/include"
-JNIMDDIR="$(JAVA_HOME)/include/darwin"
-JVMHEADERS="$(JAVA_HOME)/include"
-endif
+#The following represent a standard RHEL 7/8 system with OpenJDK.
+JNIDIR=$(JAVA_HOME)/include
+JNIMDDIR=$(JAVA_HOME)/include/linux
 
 #compilers
 CXX=g++
 CC=gcc
-FF=gfortran
 
-#The following vars contain strings representing common libraries used by all code
-#at a project level. These should generally not be touched by users.
-COMMONC=
-COMMONCPP=JniUtils.cpp TypeUtils.cpp MapUtils.cpp ListUtils.cpp ConditionUtils.cpp FieldUtils.cpp \
-EndpointUtils.cpp ProtocolRecordUtils.cpp RecordUtils.cpp RejectionUtils.cpp PacketUtils.cpp \
-MessageApiEndpoint.cpp MessageApiEndpointLib.cpp
-COMMONFORTRAN=
-JAVACLASSES:=$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/endpoints/NativeEndpoint.java
-JAVAPATH=$(PROJECTPATH)/src/java/main:$(PROJECTPATH)/src/java/main/gov/noaa/messageapi/endpoints
+C_DIR=$(PROJECT_ROOT)/src/c/
+
+C_SRC_FILES=test/endpoints/endpoint_lib/EndpointWrapper.c
+C_FQ_SRC_FILES=$(addprefix $(C_DIR), $(C_SRC_FILES))
+
+C_H_FILES=main/structs/messageapi_structs.h main/wrappers/endpoint/gov_noaa_messageapi_endpoints_NativeEndpoint.h
+C_FQ_H_FILES=$(addprefix $(C_DIR), $(C_H_FILES))
+
+CPP_DIR=$(PROJECT_ROOT)/src/cpp/main/
+
+CPP_SRC_FILES=utils/general/jni/JniUtils.cpp utils/general/type/TypeUtils.cpp utils/general/map/MapUtils.cpp \
+utils/general/list/ListUtils.cpp utils/api/condition/ConditionUtils.cpp utils/api/field/FieldUtils.cpp \
+utils/api/endpoint/EndpointUtils.cpp utils/api/records/protocol/ProtocolRecordUtils.cpp utils/api/records/schema/RecordUtils.cpp \
+utils/api/rejection/RejectionUtils.cpp utils/api/packet/PacketUtils.cpp \
+api/endpoint/MessageApiEndpoint.cpp libs/endpoint/MessageApiEndpointLib.cpp
+
+CPP_FQ_SRC_FILES=$(addprefix $(CPP_DIR), $(CPP_SRC_FILES))
+
+CPP_H_FILES=utils/general/jni/JniUtils.h utils/general/type/TypeUtils.h utils/general/map/MapUtils.h \
+utils/general/list/ListUtils.h utils/api/condition/ConditionUtils.h utils/api/field/FieldUtils.h \
+utils/api/endpoint/EndpointUtils.h utils/api/records/protocol/ProtocolRecordUtils.h utils/api/records/schema/RecordUtils.h \
+utils/api/rejection/RejectionUtils.h utils/api/packet/PacketUtils.h \
+api/endpoint/MessageApiEndpoint.h libs/endpoint/MessageApiEndpointLib.h
+
+CPP_FQ_H_FILES=$(addprefix $(CPP_DIR), $(CPP_H_FILES))
 
 
-#The following contains source code paths derived from the ENDPOINT_NAME and ENDPOINT_TYPE supplied by the user.
-COMMONCPATH=$(PROJECTPATH)/src/c/main/common/structs/
-USERCPATH=$(PROJECTPATH)/src/c/$(ENDPOINT_TYPE)/endpoints/$(ENDPOINT_NAME)/
-COMMONCPPPATH=$(PROJECTPATH)/src/cpp/main/common/
-USERCPPPATH=$(PROJECTPATH)/src/cpp/$(ENDPOINT_TYPE)/$(ENDPOINT_NAME)/
-COMMONFORTRANPATH=$(PROJECTPATH)/src/fortran/main/common/
-USERFORTRANPATH=$(PROJECTPATH)/src/fortran/$(ENDPOINT_TYPE)/$(ENDPOINT_NAME)/
+all: check_sys prep build
 
-#The following var contains the target path for the project code.
-TARGETPATH="$(PROJECTPATH)/lib/$(ENDPOINT_TYPE)/native/$(ENDPOINT_NAME)/"
+.PHONY : check_sys prep build
 
-#The following is the target library for the native jni library.
-ifeq ($(UNAME), Linux)
-#The following represents a standard RHEL 7 system.
-LNFLAGS=-dynamiclib -shared -lgfortran -I$(JVMHEADERS)
+check_sys:
+	@echo "Checking OS type"
+ifneq ($(shell uname),Linux)
+	@echo "This makefile is for building shared libraries on linux, OS not linux. Terminating."
+	@exit 1
 endif
-ifeq ($(UNAME), Darwin)
-#The following represents a standard OSX system.
-LNFLAGS=-dynamiclib -shared -lgfortran -I$(JVMHEADERS) -framework JavaVM
-endif
+	@echo "System OS is Linux, continuing build."
 
-CFLAGS=-I$(JVMHEADERS) -I$(COMMONCPPPATH) -I$(COMMONCPATH) -I$(USERCPPPATH) -I$(USERCPATH) -I$(JNIDIR) -I$(JNIMDDIR) -fpic -std=c99
-FFLAGS=-I$(COMMONFORTRANPATH) -I$(USERFORTRANPATH) -fPIC -fopenmp
-
-#The following is the target library for the native jni library.
-ifeq ($(UNAME), Linux)
-#The following represents a standard RHEL 7 system.
-DYLIB=lib$(LIBNAME).so
-endif
-ifeq ($(UNAME), Darwin)
-#The following represents a standard OSX system.
-DYLIB=lib$(LIBNAME).jnilib
-endif
-
-#COMMONFORTRAN1=$(addprefix $(COMMONFORTRANPATH), $(COMMONFORTRAN))
-#USERFORTRAN1=$(addprefix $(USERFORTRANPATH), $(USERFORTRAN))
-COMMONC1=$(addprefix $(COMMONCPATH), $(COMMONC))
-USERC1=$(addprefix $(USERCPATH), $(USERC))
-COMMONCPP1=$(addprefix $(COMMONCPPPATH), $(COMMONCPP))
-USERCPP1=$(addprefix $(USERCPPPATH), $(USERCPP))
-
-all: clean gen-headers build
-
-.PHONY : clean gen-headers build
-
-gen-headers:
-	echo "Generating headers. "
-	echo ""
-	$(foreach header,$(JAVACLASSES),javac -h $(USERCPATH) -classpath $(JAVAPATH) $(header);)
-	echo ""
+prep:
+	@echo "Preparing system for build."
+	@rm -rf $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(COMPILE_DIR)
+	@mkdir -p $(HEADER_DIR)
+	@mkdir -p $(LIB_DIR)
 
 build:
-	echo "Building " $(ENDPOINT_NAME) " in " $(PROJECTPATH)
-	#echo "Compiling Fortran"
-	#echo ""
-	#cd $(TARGETPATH) && $(FF) $(FFLAGS) -c $(COMMONFORTRAN1) $(USERFORTRAN1)
-	#echo ""
-	echo "Compiling CPP"
-	echo ""
-	cd $(TARGETPATH) && $(CXX) $(CFLAGS) -c $(COMMONCPP1) $(USERCPP1)
-	echo ""
-	echo "Compiling C"
-	echo ""
-	cd $(TARGETPATH) && $(CC) $(CFLAGS) -c $(COMMONC1) $(USERC1)
-	echo ""
-	echo "Creating JNI Library"
-	echo ""
-	cd $(TARGETPATH) && $(CXX) $(LNFLAGS) *.o -o $(DYLIB)
-	echo "Build success for " $(ENDPOINT_NAME)
+	@echo "Building $(LIBRARY_NAME) as $(SO_NAME) in $(LIB_DIR)"
+	@echo "Copying all headers to include path."
+	@cp $(C_FQ_H_FILES) $(HEADER_DIR)
+	@cp $(CPP_FQ_H_FILES) $(HEADER_DIR)
 
-clean:
-	echo "Cleaning up."
-	echo ""
-	-cd $(TARGETPATH) && rm *.h
-	-cd $(TARGETPATH) && rm *.o
-	-cd $(TARGETPATH) && rm *.mod
-	-cd $(TARGETPATH) && rm *.jnilib
-	-cd $(TARGETPATH) && rm *.so
-	echo ""
+	@echo "Compiling C++ object files with position independent code."
+	@echo ""
+	@-cd $(COMPILE_DIR) && $(CXX) -I$(HEADER_DIR) -I$(JNIDIR) -I$(JNIMDDIR) -fPIC -c $(CPP_FQ_SRC_FILES)
+	@echo ""
+	@echo "Compiling C object files with position independent code."
+	@echo ""
+	@-cd $(COMPILE_DIR) && $(CC) -I$(HEADER_DIR) -I$(JNIDIR) -I$(JNIMDDIR) -fPIC -std=c99 -c $(C_FQ_SRC_FILES)
+	@echo ""
+	@echo "Creating shared library."
+	@echo ""
+	@-cd $(COMPILE_DIR) && $(CXX) -shared -fPIC -std=c99 *.o -o $(SO_NAME)
+	@-cd $(COMPILE_DIR) && mv $(SO_NAME) $(LIB_DIR)
+	@echo "Build success for $(LIBRARY_NAME) as $(LIB_DIR)/$(SO_NAME)"

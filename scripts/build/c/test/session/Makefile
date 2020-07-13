@@ -1,150 +1,95 @@
-### This is a Makefile for MessageAPI Native sessions.
+### This Makefile can be used as a template for writing MessageAPI compatible C/C++ Transformations that extend the 
+# NativeTransformation. This Makefile itself is setup for the test endpoint, but with a few modifications, it can be
+# updated for user endpoint content. Note that the goal of native endpoint production is to create a shared library,
+# as shared libraries are used by the Java code. Once produced, the shared library should just be referenced in the
+# config map for the endpoint itself (fully qualified of course).
+
 # The majority of this Makefile is standard, with very few user specified things.
+
 # There are a few specific requirements and other notable things to keep in mind when using this Makefile:
-## 1. You must have a JDK installed (not JRE). This library requires the jni.h header included in your jdk.
-## 2. JAVA_HOME must be set to your JDK home directory. This Makefile references JAVA_HOME in looking for jni.h
-## 3. This Makefile assumes a specific project layout when setting the PROJECTPATH. If the Makefile is not working,
-##    you should look at how it uses PROJECTPATH, SESSION_NAME, and SESSION_TYPE to find required files.
-##    if your project is set up differently, i.e. custom project layout, then path dependent vars will need to be
-##    looked at and possibly changed.
+## 1. You must have a JDK installed (not JRE). This library requires the jni.h and jnimd.h headers included in your jdk.
+## 2. JAVA_HOME must be set to your JDK home directory. This Makefile references JAVA_HOME in looking for jni.h and jnimd.h
 
-#The following represents the root project path. DO NOT EDIT
-SCRIPTDIR=$(PWD)
-PROJECTPATH=$(firstword $(subst /scripts/build/$(SESSION_TYPE)/, ,$(SCRIPTDIR)))
+#Messageapi C/C++ Artifact Versioning
+SO_NAME=messageapi
+MAJOR_VERSION=1
+MINOR_VERSION=0
+PATCH_VERSION=0
 
-#The following is used to determine how native resources are compiled. DO NOT EDIT.
-UNAME := $(shell uname)
+#The following is used to bootstrap the PROJECT_ROOT 
+CURRENT_DIR=$(PWD)
 
-###################################################### USER SPECIFIED SECTION - PLEASE EDIT ###########################
-#USER SPECIFIED
-#The following vars are used to route source code and scripts (from the scripts and src dirs)
-#to the library dir as compiled files (the job name should match the name of the directory/job map.)
-#the job type is simply a test job or a main job and should either be test or main.
-SESSION_NAME=demosession
-SESSION_TYPE=test
+#The following represents the root project path. In this tailored example, we use a relative path to the project root.
+#In your own Makefile, this variable can be set directly.
+PROJECT_ROOT=$(firstword $(subst /scripts/build/c/test, ,$(CURRENT_DIR)))
 
-#USER SPECIFIED
-#The following var represents the output name of the JniLib that will be created and referenced in the job map.
-#Do not specify the extension (.so/.dll/.jnilib/.dylib) - these are determined automatically on build.
-#The full path to the created library must be referenced in the endpoint config.
-LIBNAME=DemoSession
+#Set target directories - this is where the library will build from/to.
+ARTIFACT_DIR=$(PROJECT_ROOT)/dist/artifacts/c
+BUILD_DIR=$(PROJECT_ROOT)/build/c/test/session
+SO_DIR=$(BUILD_DIR)/resources
+COMPILE_DIR=$(BUILD_DIR)/compile#.o files produced here
+HEADER_DIR=$(BUILD_DIR)/headers#.h files copied here before build (for central include path)
+BIN_DIR=$(PROJECT_ROOT)/libs/test/c/session#.so moved here before test
+DEPS_DIR=$(BIN_DIR)/so
 
-#USER SPECIFIED
-#The following vars should contain strings representing the C, Fortran, and CPP libraries that glue the fortran code to java code.
-#These strings should contain the user libraries in the order they need to be compiled (ex, "First.c Second.c Third.c")
-#These vars do not need to specify libraries they depend on that are found in the common variables (those are automatically compiled first).
-USERC=NativeSessionDemo.c
-USERCPP=
-USERFORTRAN=
 
-###################################################### END USER SPECIFIED SECTION ###########################
+#The following var represents the 
+BIN_NAME=SessionDemo.bin
 
 #The following represent directories for JNI Libraries that must be included during C and CPP compilation.
-#These are platform dependent. If you have a default setup, these probably will not have to be modified.
-#However, if you have nonstandard include paths, or you are getting errors, this may need to be altered.
-ifeq ($(UNAME), Linux)
-#The following represent a standard RHEL 7 system.
-JNIDIR="$(JAVA_HOME)/include"
-JNIMDDIR="$(JAVA_HOME)/include/linux"
-JVMHEADERS="$(JAVA_HOME)/include/linux"
-JVMDIR="$(JAVA_HOME)/lib/server"
-JLIDIR="$(JAVA_HOME)/lib/jli"
-endif
-
-ifeq ($(UNAME), Darwin)
-#The following represent a standard OSX system.
-JNIDIR="$(JAVA_HOME)/include"
-JNIMDDIR="$(JAVA_HOME)/include/darwin"
-JVMHEADERS="$(JAVA_HOME)/include"
-JVMDIR="$(JAVA_HOME)/lib/server"
-JLIDIR="$(JAVA_HOME)/lib/jli"
-endif
+#The following represent a standard RHEL 7/8 system with OpenJDK.
+JNIDIR=$(JAVA_HOME)/include
+JNIMDDIR=$(JAVA_HOME)/include/linux
 
 #compilers
-CXX=g++
 CC=gcc
-FF=gfortran
 
-#The following vars contain strings representing common libraries used by all code
-#at a project level. These should generally not be touched by users.
-COMMONC=
-COMMONCPP=JniUtils.cpp TypeUtils.cpp ListUtils.cpp MapUtils.cpp ConditionUtils.cpp FieldUtils.cpp \
-RecordUtils.cpp RejectionUtils.cpp PacketUtils.cpp SessionUtils.cpp RequestUtils.cpp ResponseUtils.cpp \
-MessageApiSession.cpp MessageApiSessionLib.cpp
-COMMONFORTRAN=
+C_DIR=$(PROJECT_ROOT)/src/c/
 
-#The following contains source code paths derived from the SESSION_NAME and SESSION_TYPE supplied by the user.
-COMMONCPATH=$(PROJECTPATH)/src/c/main/common/structs/
-USERCPATH=$(PROJECTPATH)/src/c/$(SESSION_TYPE)/sessions/$(SESSION_NAME)/
-COMMONCPPPATH=$(PROJECTPATH)/src/cpp/main/common/
-USERCPPPATH=$(PROJECTPATH)/src/cpp/$(SESSION_TYPE)/$(SESSION_NAME)/
-COMMONFORTRANPATH=$(PROJECTPATH)/src/fortran/main/common/
-USERFORTRANPATH=$(PROJECTPATH)/src/fortran/$(SESSION_TYPE)/$(SESSION_NAME)/
+C_SRC_FILES=test/sessions/session_demo/SessionDemo.c
+C_FQ_SRC_FILES=$(addprefix $(C_DIR), $(C_SRC_FILES))
 
-#The following var contains the target path for the project code.
-TARGETPATH="$(PROJECTPATH)/lib/$(SESSION_TYPE)/native/$(SESSION_NAME)/"
 
-#The following is the target library for the native jni library.
-ifeq ($(UNAME), Linux)
-#The following represents a standard RHEL 7 system.
-LNFLAGS=-dynamiclib -shared -lgfortran -I$(JVMHEADERS)
+all: check_sys prep copy-shared build clean
+
+.PHONY : check_sys prep copy-shared build clean
+
+check_sys:
+	@echo "Checking OS type"
+ifneq ($(shell uname),Linux)
+	@echo "This makefile is for building shared libraries on linux, OS not linux. Terminating."
+	@exit 1
 endif
-ifeq ($(UNAME), Darwin)
-#The following represents a standard OSX system.
-LNFLAGS=-dynamiclib -shared -lgfortran -I$(JVMHEADERS) -framework JavaVM
-endif
+	@echo "System OS is Linux, continuing build."
 
-CFLAGS=-I$(JVMHEADERS) -I$(COMMONCPPPATH) -I$(COMMONCPATH) -I$(USERCPPPATH) -I$(USERCPATH) -I$(JNIDIR) -I$(JNIMDDIR) \
--L$(JLIDIR) -L$(JVMDIR) -ljli -ljvm -fpic -std=c99 -Wl,-rpath,$(JVMDIR) -Wl,-rpath,$(JLIDIR)
-FFLAGS=-I$(COMMONFORTRANPATH) -I$(USERFORTRANPATH) -fPIC -fopenmp
+prep:
+	@echo "Preparing system for build."
+	@rm -rf $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(SO_DIR)
+	@mkdir -p $(COMPILE_DIR)
+	@mkdir -p $(HEADER_DIR)
+	@mkdir -p $(BIN_DIR)
+	@mkdir -p $(DEPS_DIR)
+	@echo "Finished preparing system for build."
 
-#The following is the target library for the native jni library.
-ifeq ($(UNAME), Linux)
-#The following represents a standard RHEL 7 system.
-DYLIB=lib$(LIBNAME).so
-endif
-ifeq ($(UNAME), Darwin)
-#The following represents a standard OSX system.
-DYLIB=lib$(LIBNAME).dylib
-endif
+copy-shared:
+	@echo "Extracting and copying production artifacts as shared resources for build."
+	@cp $(ARTIFACT_DIR)/$(SO_NAME)_$(MAJOR_VERSION)_$(MINOR_VERSION)_$(PATCH_VERSION)/$(SO_NAME).tar $(SO_DIR)
+	@-cd $(SO_DIR) && tar -xf $(SO_NAME).tar
+	@cp $(SO_DIR)/libs/* $(DEPS_DIR)
+	@cp $(SO_DIR)/headers/* $(HEADER_DIR)
+	@echo "Finished copying resources."
 
-#COMMONFORTRAN1=$(addprefix $(COMMONFORTRANPATH), $(COMMONFORTRAN))
-#USERFORTRAN1=$(addprefix $(USERFORTRANPATH), $(USERFORTRAN))
-COMMONC1=$(addprefix $(COMMONCPATH), $(COMMONC))
-USERC1=$(addprefix $(USERCPATH), $(USERC))
-COMMONCPP1=$(addprefix $(COMMONCPPPATH), $(COMMONCPP))
-USERCPP1=$(addprefix $(USERCPPPATH), $(USERCPP))
-
-all: clean build
-
-.PHONY : clean build
 
 build:
-	@echo "Building " $(SESSION_NAME) " in " $(PROJECTPATH)
-	#echo "Compiling Fortran"
-	#echo ""
-	#cd $(TARGETPATH) && $(FF) $(FFLAGS) -c $(COMMONFORTRAN1) $(USERFORTRAN1)
-	#echo ""
-	@echo "Compiling CPP"
-	@echo ""
-	@cd $(TARGETPATH) && $(CXX) $(CFLAGS) -c $(COMMONCPP1) $(USERCPP1)
-	@echo ""
-	#@echo "Compiling C"
-	#@echo ""
-	#@cd $(TARGETPATH) && $(CC) $(CFLAGS) -c $(COMMONC1) $(USERC1)
-	@echo ""
-	@echo "Creating Shared Library"
-	@echo ""
-	@cd $(TARGETPATH) && $(CXX) $(LNFLAGS) *.o -o $(DYLIB)
-	@echo "Build success for " $(SESSION_NAME)
+	@echo "Building $(BIN_NAME) in $(BIN_DIR)"
+	@echo "Compiling C object files with position independent code."
+	@-cd $(COMPILE_DIR) && $(CC) -fPIC -std=c99 -I$(HEADER_DIR) -I$(JNIDIR) -I$(JNIMDDIR) -L$(DEPS_DIR) -Wl,-rpath,$(DEPS_DIR) -l$(SO_NAME) $(C_FQ_SRC_FILES) -o $(BIN_NAME)
+	@cp $(COMPILE_DIR)/$(BIN_NAME) $(BIN_DIR)
+	@echo "Completed build of $(BIN_DIR)/$(BIN_NAME)."
 
 clean:
-	@echo "Cleaning up."
-	@echo ""
-	-cd $(TARGETPATH) && rm *.h
-	-cd $(TARGETPATH) && rm *.o
-	-cd $(TARGETPATH) && rm *.mod
-	-cd $(TARGETPATH) && rm *.dylib
-	-cd $(TARGETPATH) && rm *.jnilib
-	-cd $(TARGETPATH) && rm *.so
-	echo ""
+	@echo "Cleaning up build refuse."
+	@rm -rf $(BUILD_DIR)
+	@echo "Finished cleaning up build refuse."

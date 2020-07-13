@@ -12,6 +12,7 @@
 #for gradle builds
 build/*
 .gradle/*
+libs/*
 
 #for visual-studio-code
 bin/*

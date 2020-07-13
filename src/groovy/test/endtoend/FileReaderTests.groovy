@@ -15,7 +15,7 @@ import gov.noaa.messageapi.sessions.DefaultSession;
 class FileReaderTests extends spock.lang.Specification {
 
 
-def "Tests submission of a full file reader task with 1 small input."() {
+/*def "Tests submission of a full file reader task with 1 small input."() {
     given: "A standard condition test request"
         ISession session = new DefaultSession("{}/resources/test/file-reader/manifest.json")
         IRequest request = session.createRequest();
@@ -27,7 +27,7 @@ def "Tests submission of a full file reader task with 1 small input."() {
     then: "We should have no rejections and there should be 7 records in the return set."
         response.getRejections().size() == 0
         response.getRecords().size() == 7
-    }
+    }*/
     
 def "Tests submission of a full file reader task with 1 large input."() {
     given: "A standard condition test request"
