@@ -15,6 +15,7 @@ install_core () {
     #Set tmp dir location
     local tmp_dir=${HOME}/.messageapi/tmp
     #Retrieve file
+    rm -rf ${tmp_dir}
     mkdir -p ${tmp_dir}/java
     cd ${tmp_dir}/java
     wget ${file_path} --no-check-certificate
@@ -33,6 +34,7 @@ install_c_cpp () {
     #Set tmp dir location
     local tmp_dir=${HOME}/.messageapi/tmp
     #Retrieve file
+    rm -rf ${tmp_dir}
     mkdir -p ${tmp_dir}/c
     cd ${tmp_dir}/c
     wget ${file_path} --no-check-certificate
