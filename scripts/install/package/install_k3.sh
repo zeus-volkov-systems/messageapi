@@ -8,40 +8,40 @@ die () {
 }
 
 install_core () {
-    echo "Installing MessageAPI Core version ${MAJOR_VERSION}_${MINOR_VERSION}_${PATCH_VERSION}."
+    echo "Installing MessageAPI Core version ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}"
     #Set target specific vars
     local lib_path=dist/artifacts/java/messageapi_${MAJOR_VERSION}_${MINOR_VERSION}_${PATCH_VERSION}
     local file_path=${BASE_URL}/${BRANCH}/${lib_path}/${FILE_NAME}${FILE_SUFFIX}
     #Set tmp dir location
     local tmp_dir=${HOME}/.messageapi/tmp
     #Retrieve file
-    rm -rf ${tmp_dir}
-    mkdir -p ${tmp_dir}/java
-    cd ${tmp_dir}/java
-    wget ${file_path} --no-check-certificate
-    mv ${FILE_NAME}${FILE_SUFFIX} ${FILE_NAME}
-    tar -xf ${FILE_NAME}
+    rm -rf "${tmp_dir}"
+    mkdir -p "${tmp_dir}/java"
+    cd "${tmp_dir}/java"
+    wget "${file_path}" --no-check-certificate
+    mv "${FILE_NAME}${FILE_SUFFIX}" "${FILE_NAME}"
+    tar -xf "${FILE_NAME}"
     ./install.sh
-    rm -rf ${tmp_dir}
-    echo "Finished installing MessageAPI Core version ${MAJOR_VERSION}_${MINOR_VERSION}_${PATCH_VERSION}."
+    rm -rf "${tmp_dir}"
+    echo "Finished installing MessageAPI Core version ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}"
 }
 
 install_c_cpp () {
-    echo "Installing MessageAPI for C/C++ version ${MAJOR_VERSION}_${MINOR_VERSION}_${PATCH_VERSION}."
+    echo "Installing MessageAPI for C/C++ version ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}"
     #Set target specific vars
     local lib_path=dist/artifacts/c/messageapi_${MAJOR_VERSION}_${MINOR_VERSION}_${PATCH_VERSION}
     local file_path=${BASE_URL}/${BRANCH}/${lib_path}/${FILE_NAME}${FILE_SUFFIX}
     #Set tmp dir location
     local tmp_dir=${HOME}/.messageapi/tmp
     #Retrieve file
-    rm -rf ${tmp_dir}
-    mkdir -p ${tmp_dir}/c
-    cd ${tmp_dir}/c
-    wget ${file_path} --no-check-certificate
-    mv ${FILE_NAME}${FILE_SUFFIX} ${FILE_NAME}
-    tar -xf ${FILE_NAME}
+    rm -rf "${tmp_dir}"
+    mkdir -p "${tmp_dir}/c"
+    cd "${tmp_dir}/c"
+    wget "${file_path}" --no-check-certificate
+    mv "${FILE_NAME}${FILE_SUFFIX}" "${FILE_NAME}"
+    tar -xf "${FILE_NAME}"
     (cd scripts && ./install.sh)
-    rm -rf ${tmp_dir}
+    rm -rf "${tmp_dir}"
     echo "Finished installing MessageAPI for C/C++ version ${MAJOR_VERSION}_${MINOR_VERSION}_${PATCH_VERSION}."
 }
 
@@ -60,7 +60,7 @@ echo "the most current version of the software is most likely what you want."
 BASE_URL=https://k3.cicsnc.org/rberkheimer/messageapi/-/raw
 BRANCH=mac-develop
 FILE_NAME=messageapi.tar
-FILE_SUFFIX=?inline=false
+FILE_SUFFIX="?inline=false"
 MAJOR_VERSION=1
 MINOR_VERSION=0
 PATCH_VERSION=0
