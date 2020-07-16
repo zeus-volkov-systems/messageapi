@@ -52,7 +52,7 @@ echo "We will eventually promote these as optional command line args for buildin
 [ "$#" -eq 1 ] || die "target argument required (CORE or C_CPP), $# provided"
 
 BASE_URL=https://k3.cicsnc.org/rberkheimer/messageapi/-/raw
-BRANCH=mac_develop
+BRANCH=mac-develop
 FILE_NAME=messageapi.tar
 FILE_SUFFIX=?inline=false
 MAJOR_VERSION=1
