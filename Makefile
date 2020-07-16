@@ -37,6 +37,7 @@ C_TEST_BUILD_DIR=$(PROJECT_ROOT)/scripts/build/c/test
 TEST_RESOURCE_DIR=$(PROJECT_ROOT)/libs
 
 run-native-tests: export LD_LIBRARY_PATH = $(JAVA_HOME)/lib/jli:$(JAVA_HOME)/lib/server
+run-native-tests: export CLASSPATH = $(TEST_RESOURCE_DIR)/test/java/jars/$(SRC_JAR)
 
 .PHONY: build-c_cpp prep-java build-java dist-java run-native-tests copy-docs cleanup
 
@@ -66,6 +67,8 @@ prep-java:
 build-java:
 	@echo "Running java gradle build and tests for MessageAPI."
 	@gradle
+	@mkdir -p $(TEST_RESOURCE_DIR)/test/java/jars
+	@cp $(PROJECT_ROOT)/build/libs/$(SRC_JAR) $(TEST_RESOURCE_DIR)/test/java/jars
 	@echo "Finished java gradle build and tests for MessageAPI."
 
 dist-java:
@@ -94,9 +97,9 @@ deploy:
 
 install:
 	@echo "Installing package to system."
-	@cd $(HOME)
 	@wget https://k3.cicsnc.org/rberkheimer/messageapi/-/raw/mac-develop/scripts/install/package/install_k3.sh?inline=false --no-check-certificate
-	mv install_k3.sh?inline=false install_k3.sh
+	@mv install_k3.sh?inline=false install_k3.sh
+	@chmod +x install_k3.sh
 	@./install_k3.sh "C_CPP"
-	@cd $(PROJECT_ROOT)
+	@rm install_k3.sh
 	@echo "Finished installing package, check for success."

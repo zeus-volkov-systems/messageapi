@@ -12,11 +12,10 @@ extern "C"
         JavaVMInitArgs vm_args;
         JavaVMOption options[1];
         jint jvmCreationStatus;
-
-        //char mapiJar[100];
-
-        options[0].optionString = "-Djava.class.path=/workspaces/messageapi/build/libs/messageapi-core-1.0.0.jar";
-
+        char classpath[5000];
+        strcpy(classpath, "-Djava.class.path=");
+        strcat(classpath, getenv("CLASSPATH"));
+        options[0].optionString = classpath;
         vm_args.version = JNI_VERSION_1_8;
         vm_args.options = options;
         vm_args.nOptions = 1;
