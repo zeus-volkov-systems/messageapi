@@ -40,6 +40,10 @@ BIN_NAME=SessionDemo.bin
 #The following represent a standard RHEL 7/8 system with OpenJDK.
 JNIDIR=$(JAVA_HOME)/include
 JNIMDDIR=$(JAVA_HOME)/include/linux
+JVM_SO_DIR=$(JAVA_HOME)/lib/server
+JLI_SO_DIR=$(JAVA_HOME)/lib/jli
+
+export LD_LIBRARY_PATH=$(JLI_SO_DIR):$(JVM_SO_DIR)
 
 #compilers
 CC=gcc

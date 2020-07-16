@@ -34,6 +34,8 @@ JNIMD_H_DIR=$(JAVA_HOME)/include/linux
 JVM_SO_DIR=$(JAVA_HOME)/lib/server
 JLI_SO_DIR=$(JAVA_HOME)/lib/jli
 
+export LD_LIBRARY_PATH=$(JLI_SO_DIR):$(JVM_SO_DIR)
+
 #Compilers
 CXX=g++
 CC=gcc
@@ -128,8 +130,10 @@ build:
 	@echo ""
 	@echo "Creating shared library from object files."
 	@echo ""
-	@-cd $(COMPILE_DIR) && $(CXX) -shared -fPIC -std=c99 -L$(JLI_SO_DIR) -L$(JVM_SO_DIR) \
-	-Wl,-rpath,$(JLI_SO_DIR) -Wl,-rpath,$(JVM_SO_DIR) \
+	@cp $(JVM_SO_DIR)/libjvm.so $(COMPILE_DIR)
+	@cp $(JLI_SO_DIR)/libjli.so $(COMPILE_DIR)
+	@-cd $(COMPILE_DIR) && $(CXX) -shared -fPIC -std=c99 \
+	-L$(COMPILE_DIR) -Wl,-rpath,$(COMPILE_DIR) \
 	-Wl,-soname,$(SO_NAME) -ljli -ljvm -o $(REAL_NAME) *.o
 	@echo "Build success for the C/C++ session shared library."
 
@@ -137,8 +141,8 @@ link:
 	@echo "Linking shared library."
 	@-cd $(COMPILE_DIR) && ln -s $(REAL_NAME) $(SO_NAME)
 	@-cd $(COMPILE_DIR) && ln -s $(SO_NAME) $(LINKER_NAME)
-	@cp $(COMPILE_DIR)/*.so $(LIB_DIR)
-	@cp $(COMPILE_DIR)/*.so.* $(LIB_DIR)
+	@cp $(COMPILE_DIR)/libmessageapi.so $(LIB_DIR)
+	@cp $(COMPILE_DIR)/libmessageapi.so.* $(LIB_DIR)
 	@echo "Finished linking shared library."
 
 dist:

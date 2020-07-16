@@ -2,6 +2,7 @@
 
 #Updates the LD_LIBRARY_PATH for libjli and libjvm. Exits install if no java on path.
 update_ld_library_paths () {
+    echo ""
     if java -version 2>&1 >/dev/null | grep -E "\S+\s+version"; then
         echo "The java binary was found on the path; using to determine path of libjli.so and libjvm.so"
         local java_bin
@@ -18,7 +19,7 @@ update_ld_library_paths () {
             echo "Updating LD_LIBRARY_PATH with locations for libjli and libjvm in bashrc."
             sed '/#messageapi_jvm_ld_library_path/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
             mv "${HOME}/.bashrc_tmp" "${HOME}/.bashrc"
-            echo "LD_LIBRARY_PATH=${java_jli}:${java_jvm}:'$LD_LIBRARY_PATH' #messageapi_jvm_ld_library_path" >> "${HOME}/.bashrc"
+            echo "LD_LIBRARY_PATH=${java_jli}:${java_jvm}:$LD_LIBRARY_PATH #messageapi_jvm_ld_library_path" >> "${HOME}/.bashrc"
             echo "Successfully updated LD_LIBRARY_PATH in ${HOME}/.bashrc"
         else
             echo "Could not find the libjli or libjvm folders. C/C++ lib will not work correctly."
@@ -32,9 +33,11 @@ update_ld_library_paths () {
         echo "Quitting installation."
         exit 1
     fi
+    echo ""
 }
 
 update_headers_var () {
+    echo ""
     echo "Updating the MESSAGEAPI_HEADERS environment variable in $(whoami)'s ~/.bashrc."
     sed '/#messageapi_c_cpp_set_headers/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
     mv "${HOME}/.bashrc_tmp" "${HOME}/.bashrc"
@@ -42,22 +45,26 @@ update_headers_var () {
     echo "Added a 'MESSAGEAPI_HEADERS' environment variable to ${HOME}/.bashrc for convenient inclusion of library headers."
     echo "When creating a C/C++ session, endpoint, condition, or transformation, you can use the MESSAGEAPI_HEADERS as the include location."
     echo "Build file templates for each of these is provided in the templates directory, accessible via the MESSAGEAPI_TEMPLATES environment variable."
+    echo ""
 }
 
 update_libs_var () {
+    echo ""
     echo "Updating the MESSAGEAPI_LIBS environment variable in $(whoami)'s ~/.bashrc."
     sed '/#messageapi_c_cpp_set_libs/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
     mv "${HOME}/.bashrc_tmp" "${HOME}/.bashrc"
     echo "MESSAGEAPI_LIBS=${LIBS_INSTALL_DIR} #messageapi_c_cpp_set_libs" >> "${HOME}/.bashrc"
-    sed '/#messageapi_libs_ld_library_path/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
+    sed '/#messageapi_c_cpp_ld_library_path/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
     mv "${HOME}/.bashrc_tmp" "${HOME}/.bashrc"
-    echo "LD_LIBRARY_PATH=${MESSAGEAPI_LIBS}:'$LD_LIBRARY_PATH' #messageapi_libs_ld_library_path" >> "${HOME}/.bashrc"
+    echo "LD_LIBRARY_PATH=${MESSAGEAPI_LIBS}:$LD_LIBRARY_PATH #messageapi_c_cpp_ld_library_path" >> "${HOME}/.bashrc"
     echo "Added a 'MESSAGEAPI_LIBS' environment variable to ${HOME}/.bashrc for convenient inclusion of the C/C++ shared library."
     echo "Updated the LD_LIBRARY_PATH environment variable to include the MESSAGEAPI_LIBS path."
     echo "When creating a C/C++ program that uses the MessageAPI session library, you can use the MESSAGEAPI_LIBS as the linking location."
+    echo ""
 }
 
 update_src_var () {
+    echo ""
     echo "Updating the MESSAGEAPI_SRC environment variable in $(whoami)'s ~/.bashrc."
     sed '/#messageapi_c_cpp_set_src/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
     mv "${HOME}/.bashrc_tmp" "${HOME}/.bashrc"
@@ -65,35 +72,44 @@ update_src_var () {
     echo "Added a 'MESSAGEAPI_SRC' environment variable to ${HOME}/.bashrc for convenient inclusion of the C/C++ source files."
     echo "When creating a C/C++ session, endpoint, condition, or transformation, you can use the MESSAGEAPI_SRC for base source paths during build."
     echo "Build file templates for each of these is provided in the templates directory, accessible via the MESSAGEAPI_TEMPLATES environment variable."
+    echo ""
 }
 
 install_headers () {
+    echo ""
     echo "Installing messageapi C/C++ headers to ${HEADERS_INSTALL_DIR}."
     rm -rf "${HEADERS_INSTALL_DIR}"
     mkdir -p "${HEADERS_INSTALL_DIR}"
     cp ../headers/* "${HEADERS_INSTALL_DIR}"
     echo "Finished installing messageapi C/C++ headers to ${HEADERS_INSTALL_DIR}."
+    echo ""
 }
 
 install_libs () {
+    echo ""
     echo "Installing messageapi C/C++ shared libs to ${LIBS_INSTALL_DIR}."
     rm -rf "${LIBS_INSTALL_DIR}"
     mkdir -p "${LIBS_INSTALL_DIR}"
     cp ../libs/* "${LIBS_INSTALL_DIR}"
     echo "Finished installing messageapi C/C++ shared libs to ${LIBS_INSTALL_DIR}."
+    echo ""
 }
 
 install_src () {
+    echo ""
     echo "Installing messageapi C/C++ src files to ${SRC_INSTALL_DIR}."
     rm -rf "${SRC_INSTALL_DIR}"
     mkdir -p "${SRC_INSTALL_DIR}"
     cp ../src/* "${SRC_INSTALL_DIR}"
     echo "Finished installing messageapi C/C++ src files to ${SRC_INSTALL_DIR}."
+    echo ""
 }
 
-
 source_bashrc () {
+    echo ""
+    echo "Sourcing bashrc"
     source "${HOME}/.bashrc"
+    echo ""
 }
 
 LIBS_INSTALL_DIR=${HOME}/.messageapi/c/libs
@@ -101,6 +117,7 @@ HEADERS_INSTALL_DIR=${HOME}/.messageapi/c/headers
 SRC_INSTALL_DIR=${HOME}/.messageapi/c/src
 
 #Main Body
+echo ""
 echo "Installing the MessageAPI C/C++ libs, headers, and src for the current user $(whoami)"
 update_ld_library_paths
 install_libs
@@ -111,3 +128,4 @@ install_src
 update_src_var
 source_bashrc
 echo "Finished installing the MessageAPI C/C++ libs, headers, and src for user $(whoami)."
+echo ""
