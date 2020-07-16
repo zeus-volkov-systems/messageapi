@@ -18,6 +18,7 @@ install_core () {
     mkdir -p ${tmp_dir}/java
     cd ${tmp_dir}/java
     wget ${file_path} --no-check-certificate
+    mv ${FILE_NAME}${FILE_SUFFIX} ${FILE_NAME}
     tar -xf ${FILE_NAME}
     (cd messageapi && ./install.sh)
     rm -rf ${tmp_dir}
@@ -35,6 +36,7 @@ install_c_cpp () {
     mkdir -p ${tmp_dir}/c
     cd ${tmp_dir}/c
     wget ${file_path} --no-check-certificate
+    mv ${FILE_NAME}${FILE_SUFFIX} ${FILE_NAME}
     tar -xf ${FILE_NAME}
     (cd messageapi/scripts && ./install.sh)
     rm -rf ${tmp_dir}
