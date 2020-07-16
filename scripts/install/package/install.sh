@@ -11,7 +11,7 @@ install_core () {
     echo "Installing MessageAPI Core."
     #Set target specific vars
     local lib_path=dist/artifacts/java/messageapi_${MAJOR_VERSION}_${MINOR_VERSION}_${PATCH_VERSION}
-    local file_path=${BASE_URL}/${BRANCH}/${lib_path}/${FILE_NAME}
+    local file_path=${BASE_URL}/${BRANCH}/${lib_path}/${FILE_NAME}${FILE_SUFFIX}
     #Set tmp dir location
     local tmp_dir=${HOME}/.messageapi/tmp
     #Retrieve file
@@ -28,7 +28,7 @@ install_c_cpp () {
     echo "Installing MessageAPI for C/C++."
     #Set target specific vars
     local lib_path=dist/artifacts/c/messageapi_${MAJOR_VERSION}_${MINOR_VERSION}_${PATCH_VERSION}
-    local file_path=${BASE_URL}/${BRANCH}/${lib_path}/${FILE_NAME}
+    local file_path=${BASE_URL}/${BRANCH}/${lib_path}/${FILE_NAME}${FILE_SUFFIX}
     #Set tmp dir location
     local tmp_dir=${HOME}/.messageapi/tmp
     #Retrieve file
@@ -54,6 +54,7 @@ echo "We will eventually promote these as optional command line args for buildin
 BASE_URL=https://git.ncei.noaa.gov/sesb/sscs/messageapi/-/raw
 BRANCH=master
 FILE_NAME=messageapi.tar
+FILE_SUFFIX=?inline=false
 MAJOR_VERSION=1
 MINOR_VERSION=0
 PATCH_VERSION=0

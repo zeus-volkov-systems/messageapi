@@ -89,3 +89,8 @@ deploy:
 	@echo "Deploying package to origin repository."
 	@git push origin master
 	@echo "Finished deploying package to origin repository."
+
+install:
+	@echo "Installing package to system."
+	@-cd $(PROJECT_ROOT)/scripts/install/package && ./install_k3.sh "CORE"
+	@echo "Finished installing package, check for success."
