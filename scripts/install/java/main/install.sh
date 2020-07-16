@@ -1,13 +1,13 @@
 #!/bin/bash
 
 update_classpath_var () {
-    echo "Updating the Java CLASSPATH environment variable in $(whoami)'s ~/.bashrc if necessary."
+    echo "Updating the Java CLASSPATH environment variable in $(whoami)'s ~/.bashrc."
     sed '/#messageapi_core_set_path/d' $HOME/.bashrc > $HOME/.bashrc
     echo "PATH=${CORE_INSTALL_DIR}:'$PATH' #messageapi_core_set_path" >> $HOME/.bashrc
 }
 
 update_path_var () {
-    echo "Updating the PATH environment variable in $(whoami)'s ~/.bashrc if necessary."
+    echo "Updating the PATH environment variable in $(whoami)'s ~/.bashrc."
     sed '/#messageapi_core_set_classpath/d' $HOME/.bashrc > $HOME/.bashrc
     echo "CLASSPATH=${CORE_INSTALL_DIR}/*:'$CLASSPATH' #messageapi_core_set_classpath" >> $HOME/.bashrc
 }
