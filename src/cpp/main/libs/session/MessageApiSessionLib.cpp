@@ -15,7 +15,7 @@ extern "C"
 
         //char mapiJar[100];
 
-        options[0].optionString = "-Djava.class.path=/workspaces/messageapi/build/libs/messageapi-0.0.10-all.jar";
+        options[0].optionString = "-Djava.class.path=/workspaces/messageapi/build/libs/messageapi-core-1.0.0.jar";
 
         vm_args.version = JNI_VERSION_1_8;
         vm_args.options = options;

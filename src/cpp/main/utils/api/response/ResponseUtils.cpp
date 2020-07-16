@@ -140,7 +140,7 @@ const char *ResponseUtils::getMethodSignature(const char *methodName)
     }
     else if (strcmp(methodName, "setComplete") == 0)
     {
-        return "(Ljava/lang/Boolean;)V";
+        return "(Z)V";
     }
     return NULL;
 }

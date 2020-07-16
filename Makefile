@@ -12,9 +12,9 @@
 
 #Library Name and Version
 LIBRARY_NAME=messageapi
-MAJOR_VERSION=0
+MAJOR_VERSION=1
 MINOR_VERSION=0
-PATCH_VERSION=10
+PATCH_VERSION=0
 EXTENSION_VERSION=all
 
 #Root Path Computation
@@ -84,3 +84,8 @@ run-native-tests:
 	@echo "Running native C/C++ session test."
 	@-cd $(TEST_RESOURCE_DIR)/test/c/session && ./SessionDemo.bin
 	@echo "Finished running native C/C++ session test."
+
+deploy:
+	@echo "Deploying package to origin repository."
+	@git push origin master
+	@echo "Finished deploying package to origin repository."

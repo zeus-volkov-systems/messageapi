@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 
     record *record1 = createRequestRecord(session, request1);
 
-    record *record2 = createRequestRecord(session, request1);
+    //record *record2 = createRequestRecord(session, request1);
 
     puts("Successfully created a request record.");
     fflush(stdout);
@@ -62,13 +62,6 @@ int main(int argc, char **argv)
     puts(getFieldStringVal(session, field1));
     fflush(stdout);
 
-    /*int c, d;
-
-    for (c = 1; c <= 32767; c++)
-        for (d = 1; d <= 32767; d++)
-        {
-        }
-*/
     while (!isComplete(session, response)) {}
 
     puts("Successfully returned from the request.");

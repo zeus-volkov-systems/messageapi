@@ -1,7 +1,7 @@
 ### This is a Makefile for creating the native session shared library.
 # The majority of this Makefile is standard.
 # There are a few specific requirements and other notable things to keep in mind when using this Makefile:
-# 1. You must have a JDK installed (not JRE). This library requires the jni.h header and the shared libraries for jli and jvm.
+# 1. You must have a JDK installed as well as the JRE. This library requires the jni.h header and the shared libraries for jli and jvm.
 # 2. JAVA_HOME must be set to your JDK home directory. This Makefile references JAVA_HOME in looking for jni.h, libjli.so, and libjvm.so.
 
 #Library info
