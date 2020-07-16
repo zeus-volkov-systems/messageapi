@@ -59,6 +59,7 @@ update_src_var () {
 
 install_headers () {
     echo "Installing messageapi C/C++ headers to ${HEADERS_INSTALL_DIR}."
+    rm -rf ${HEADERS_INSTALL_DIR}
     mkdir -p ${HEADERS_INSTALL_DIR}
     cp ../headers/* ${HEADERS_INSTALL_DIR}
     echo "Finished installing messageapi C/C++ headers to ${HEADERS_INSTALL_DIR}."
@@ -66,6 +67,7 @@ install_headers () {
 
 install_libs () {
     echo "Installing messageapi C/C++ shared libs to ${LIBS_INSTALL_DIR}."
+    rm -rf ${LIBS_INSTALL_DIR}
     mkdir -p ${LIBS_INSTALL_DIR}
     cp ../libs/* ${LIBS_INSTALL_DIR}
     echo "Finished installing messageapi C/C++ shared libs to ${LIBS_INSTALL_DIR}."
@@ -73,6 +75,7 @@ install_libs () {
 
 install_src () {
     echo "Installing messageapi C/C++ src files to ${SRC_INSTALL_DIR}."
+    rm -rf ${SRC_INSTALL_DIR}
     mkdir -p ${SRC_INSTALL_DIR}
     cp ../src/* ${SRC_INSTALL_DIR}
     echo "Finished installing messageapi C/C++ src files to ${SRC_INSTALL_DIR}."

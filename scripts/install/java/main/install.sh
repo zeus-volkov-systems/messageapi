@@ -15,6 +15,7 @@ update_path_var () {
 
 install_core_jar () {
     echo "Installing messageapi core jar to ${CORE_INSTALL_DIR}."
+    rm -rf ${CORE_INSTALL_DIR}
     mkdir -p ${CORE_INSTALL_DIR}
     cp ${JAR_NAME} ${CORE_INSTALL_DIR}
     echo "Finished installing messageapi core jar to ${CORE_INSTALL_DIR}."

@@ -40,7 +40,7 @@ install_c_cpp () {
     wget ${file_path} --no-check-certificate
     mv ${FILE_NAME}${FILE_SUFFIX} ${FILE_NAME}
     tar -xf ${FILE_NAME}
-    (cd messageapi/scripts && ./install.sh)
+    (cd scripts && ./install.sh)
     rm -rf ${tmp_dir}
     echo "Finished installing MessageAPI for C/C++ version ${MAJOR_VERSION}_${MINOR_VERSION}_${PATCH_VERSION}."
 }
