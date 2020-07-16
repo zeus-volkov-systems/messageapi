@@ -19,7 +19,7 @@ update_ld_library_paths () {
             echo "Updating LD_LIBRARY_PATH with locations for libjli and libjvm in bashrc."
             sed '/#messageapi_jvm_ld_library_path/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
             mv "${HOME}/.bashrc_tmp" "${HOME}/.bashrc"
-            echo "LD_LIBRARY_PATH=${java_jli}:${java_jvm}:$LD_LIBRARY_PATH #messageapi_jvm_ld_library_path" >> "${HOME}/.bashrc"
+            echo "export LD_LIBRARY_PATH=${java_jli}:${java_jvm}:$LD_LIBRARY_PATH #messageapi_jvm_ld_library_path" >> "${HOME}/.bashrc"
             export LD_LIBRARY_PATH=${java_jli}:${java_jvm}:$LD_LIBRARY_PATH
             echo "Successfully updated LD_LIBRARY_PATH in ${HOME}/.bashrc"
         else
@@ -54,11 +54,11 @@ update_libs_var () {
     echo "Updating the MESSAGEAPI_LIBS environment variable in $(whoami)'s ~/.bashrc."
     sed '/#messageapi_c_cpp_set_libs/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
     mv "${HOME}/.bashrc_tmp" "${HOME}/.bashrc"
-    echo "MESSAGEAPI_LIBS=${LIBS_INSTALL_DIR} #messageapi_c_cpp_set_libs" >> "${HOME}/.bashrc"
+    echo "export MESSAGEAPI_LIBS=${LIBS_INSTALL_DIR} #messageapi_c_cpp_set_libs" >> "${HOME}/.bashrc"
     export MESSAGEAPI_LIBS=${LIBS_INSTALL_DIR}
     sed '/#messageapi_c_cpp_ld_library_path/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
     mv "${HOME}/.bashrc_tmp" "${HOME}/.bashrc"
-    echo "LD_LIBRARY_PATH=${MESSAGEAPI_LIBS}:${LD_LIBRARY_PATH} #messageapi_c_cpp_ld_library_path" >> "${HOME}/.bashrc"
+    echo "export LD_LIBRARY_PATH=${MESSAGEAPI_LIBS}:${LD_LIBRARY_PATH} #messageapi_c_cpp_ld_library_path" >> "${HOME}/.bashrc"
     echo "Added a 'MESSAGEAPI_LIBS' environment variable to ${HOME}/.bashrc for convenient inclusion of the C/C++ shared library."
     echo "Updated the LD_LIBRARY_PATH environment variable to include the MESSAGEAPI_LIBS path."
     echo "When creating a C/C++ program that uses the MessageAPI session library, you can use the MESSAGEAPI_LIBS as the linking location."
@@ -70,7 +70,7 @@ update_src_var () {
     echo "Updating the MESSAGEAPI_SRC environment variable in $(whoami)'s ~/.bashrc."
     sed '/#messageapi_c_cpp_set_src/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
     mv "${HOME}/.bashrc_tmp" "${HOME}/.bashrc"
-    echo "MESSAGEAPI_SRC=${SRC_INSTALL_DIR} #messageapi_c_cpp_set_src" >> "${HOME}/.bashrc"
+    echo "export MESSAGEAPI_SRC=${SRC_INSTALL_DIR} #messageapi_c_cpp_set_src" >> "${HOME}/.bashrc"
     echo "Added a 'MESSAGEAPI_SRC' environment variable to ${HOME}/.bashrc for convenient inclusion of the C/C++ source files."
     echo "When creating a C/C++ session, endpoint, condition, or transformation, you can use the MESSAGEAPI_SRC for base source paths during build."
     echo "Build file templates for each of these is provided in the templates directory, accessible via the MESSAGEAPI_TEMPLATES environment variable."
