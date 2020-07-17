@@ -82,7 +82,7 @@ install_headers () {
     echo "Installing messageapi C/C++ headers to ${HEADERS_INSTALL_DIR}."
     rm -rf "${HEADERS_INSTALL_DIR}"
     mkdir -p "${HEADERS_INSTALL_DIR}"
-    cp ../headers/* "${HEADERS_INSTALL_DIR}"
+    cp headers/* "${HEADERS_INSTALL_DIR}"
     echo "Finished installing messageapi C/C++ headers to ${HEADERS_INSTALL_DIR}."
     echo ""
 }
@@ -92,7 +92,7 @@ install_libs () {
     echo "Installing messageapi C/C++ shared libs to ${LIBS_INSTALL_DIR}."
     rm -rf "${LIBS_INSTALL_DIR}"
     mkdir -p "${LIBS_INSTALL_DIR}"
-    cp ../libs/* "${LIBS_INSTALL_DIR}"
+    cp libs/* "${LIBS_INSTALL_DIR}"
     echo "Finished installing messageapi C/C++ shared libs to ${LIBS_INSTALL_DIR}."
     echo ""
 }
@@ -102,15 +102,8 @@ install_src () {
     echo "Installing messageapi C/C++ src files to ${SRC_INSTALL_DIR}."
     rm -rf "${SRC_INSTALL_DIR}"
     mkdir -p "${SRC_INSTALL_DIR}"
-    cp ../src/* "${SRC_INSTALL_DIR}"
+    cp src/* "${SRC_INSTALL_DIR}"
     echo "Finished installing messageapi C/C++ src files to ${SRC_INSTALL_DIR}."
-    echo ""
-}
-
-source_bashrc () {
-    echo ""
-    echo "Sourcing bashrc"
-    source "${HOME}/.bashrc"
     echo ""
 }
 
@@ -128,6 +121,5 @@ install_headers
 update_headers_var
 install_src
 update_src_var
-source_bashrc
 echo "Finished installing the MessageAPI C/C++ libs, headers, and src for user $(whoami)."
 echo ""

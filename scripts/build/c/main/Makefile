@@ -24,7 +24,6 @@ SRC_DIR=$(BUILD_DIR)/src
 COMPILE_DIR=$(BUILD_DIR)/compile
 HEADER_DIR=$(BUILD_DIR)/headers
 LIB_DIR=$(BUILD_DIR)/libs
-SCRIPT_DIR=$(BUILD_DIR)/scripts
 
 ARTIFACT_DIR=$(PROJECT_ROOT)/dist/artifacts/c/$(LIBRARY_NAME)_$(MAJOR_VERSION)_$(MINOR_VERSION)_$(PATCH_VERSION)
 
@@ -112,7 +111,6 @@ prep:
 	@mkdir -p $(COMPILE_DIR)
 	@mkdir -p $(HEADER_DIR)
 	@mkdir -p $(LIB_DIR)
-	@mkdir -p $(SCRIPT_DIR)
 
 	@mkdir -p $(ARTIFACT_DIR)
 
@@ -121,7 +119,7 @@ build:
 	@cp $(C_FQ_H_FILES) $(HEADER_DIR)
 	@cp $(CPP_FQ_H_FILES) $(HEADER_DIR)
 	@echo "Copying installation script to build dir."
-	@cp $(SCRIPT_SRC_DIR)/install.sh $(SCRIPT_DIR)
+	@-cd $(SCRIPT_SRC_DIR) && cp install.sh $(BUILD_DIR)
 	@echo "Finished copying resources."
 	@echo "Building $(LIBRARY_NAME) in $(PROJECT_ROOT)."
 	@echo "Compiling object files with position independent code."
@@ -152,7 +150,7 @@ dist:
 	@cp $(CPP_FQ_SRC_FILES) $(SRC_DIR)
 	@cp $(CPP_FQ_FULL_SRC_FILES) $(SRC_DIR)
 	@echo "Building tarfile for distribution."
-	@-cd $(BUILD_DIR) && tar -cf $(LIBRARY_NAME).tar src libs headers scripts/install.sh
+	@-cd $(BUILD_DIR) && tar -cf $(LIBRARY_NAME).tar src libs headers install.sh
 	@echo "Moving tarfile to $(ARTIFACT_DIR)."
 	@-cd $(BUILD_DIR) && mv $(LIBRARY_NAME).tar $(ARTIFACT_DIR)
 	@echo "Finished build, artifacts are now tarred and available in $(ARTIFACT_DIR)."

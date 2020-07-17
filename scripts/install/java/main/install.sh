@@ -19,13 +19,6 @@ install_core_jar () {
     echo ""
 }
 
-source_bashrc () {
-    echo ""
-    echo "Sourcing bashrc"
-    source "${HOME}/.bashrc"
-    echo ""
-}
-
 CORE_INSTALL_DIR=${HOME}/.messageapi/java/jars
 MAJOR_VERSION=1
 MINOR_VERSION=0
@@ -37,6 +30,5 @@ echo ""
 echo "Installing the MessageAPI-Core Jar for the current user $(whoami)"
 install_core_jar
 update_classpath_var
-source_bashrc
 echo "Finished installing the MessageAPI-Core Jar for user $(whoami)."
 echo ""

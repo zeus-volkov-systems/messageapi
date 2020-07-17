@@ -40,21 +40,18 @@ install_c_cpp () {
     wget "${file_path}" --no-check-certificate
     mv "${FILE_NAME}${FILE_SUFFIX}" "${FILE_NAME}"
     tar -xf "${FILE_NAME}"
-    (cd scripts && ./install.sh)
+    ./install.sh
     rm -rf "${tmp_dir}"
     echo "Finished installing MessageAPI for C/C++ version ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}"
 }
 
 #Main Body
 
-echo "This is the main install script to install various MessageAPI packages as precompiled artifacts (not source) built for use on RHEL7/8."
+echo "This is the main install script to install various MessageAPI packages as precompiled artifacts (not source) built for use on RHEL7."
 echo "To use, pass in an argument - current options are CORE or C_CPP"
 echo "If choosing an option with dependencies, those dependencies will first be installed automatically (e.g., C_CPP depends on CORE)."
 echo "To change the version of download, open this file and update the BRANCH, MAJOR_VERSION, MINOR_VERSION, or PATCH_VERSION vars as desired."
-echo "We will eventually promote these as optional command line args for building when time allows."
-echo "Until then, the version that is downloaded will be kept to the most recently approved release. Please note that because the API was designed to be static,"
-echo "the most current version of the software is most likely what you want."
-
+echo "The version that is configured to be automatically downloaded is the most recently approved release."
 
 [ "$#" -eq 1 ] || die "target argument required (CORE or C_CPP), $# provided"
 
