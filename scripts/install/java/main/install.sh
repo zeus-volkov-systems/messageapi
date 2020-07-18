@@ -3,9 +3,9 @@
 update_classpath_var () {
     echo ""
     echo "Updating the CLASSPATH environment variable in $(whoami)'s ~/.bashrc."
-    sed '/#messageapi_core_set_classpath/d' "${HOME}/.bashrc" > "${HOME}/.bashrc_tmp"
-    mv "${HOME}/.bashrc_tmp" "${HOME}/.bashrc"
-    echo "export CLASSPATH=${CORE_INSTALL_DIR}/${JAR_NAME}:$CLASSPATH #messageapi_core_set_classpath" >> "${HOME}/.bashrc"
+    sed '/#messageapi_core_set_classpath/d' "${BASHRC}" > "${BASHRC_TMP}"
+    mv "${BASHRC_TMP}" "${BASHRC}"
+    echo "export CLASSPATH=${CORE_INSTALL_DIR}/${JAR_NAME}:$CLASSPATH #messageapi_core_set_classpath" >> "${BASHRC}"
     echo ""
 }
 
@@ -19,7 +19,11 @@ install_core_jar () {
     echo ""
 }
 
+BASHRC=${HOME}/.bashrc
+BASHRC_TMP=${HOME}/.bashrc_tmp
+
 CORE_INSTALL_DIR=${HOME}/.messageapi/java/jars
+
 MAJOR_VERSION=1
 MINOR_VERSION=0
 PATCH_VERSION=0

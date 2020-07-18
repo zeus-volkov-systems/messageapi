@@ -19,9 +19,9 @@ PROJECT_ROOT=$(firstword $(subst /scripts/build/c/test, ,$(CURRENT_DIR)))
 
 #Set target directories - this is where the library will build from/to.
 BUILD_DIR=$(PROJECT_ROOT)/build/c/test/transformation
-COMPILE_DIR=$(BUILD_DIR)/compile #.o files produced here
-HEADER_DIR=$(BUILD_DIR)/headers #.h files copied here before build (for central include path)
-LIB_DIR=$(PROJECT_ROOT)/libs/test/c/transformation #.so moved here before test
+COMPILE_DIR=$(BUILD_DIR)/compile#.o files produced here
+HEADER_DIR=$(BUILD_DIR)/headers#.h files copied here before build (for central include path)
+LIB_DIR=$(PROJECT_ROOT)/libs/test/c/transformation#.so moved here before test
 
 
 #The following var represents the base name of the shared .so library that will be created and referenced in the job map.
@@ -71,7 +71,7 @@ all: check_sys prep build
 check_sys:
 	@echo "Checking OS type"
 ifneq ($(shell uname),Linux)
-	@echo "This makefile is for building shared libraries on linux, OS not linux. Terminating."
+	@echo "This makefile is for building shared libraries on linux, OS is $(shell uname). Terminating."
 	@exit 1
 endif
 	@echo "System OS is Linux, continuing build."

@@ -18,14 +18,18 @@ REAL_NAME=$(LINKER_NAME).$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
 CURRENT_DIR=$(PWD)
 PROJECT_ROOT=$(firstword $(subst /scripts/build/c/main, ,$(CURRENT_DIR)))
 
-#Set target directoies
+#Set target directories
 BUILD_DIR=$(PROJECT_ROOT)/build/c/main
 SRC_DIR=$(BUILD_DIR)/src
 COMPILE_DIR=$(BUILD_DIR)/compile
 HEADER_DIR=$(BUILD_DIR)/headers
 LIB_DIR=$(BUILD_DIR)/libs
+TEMPLATE_DIR=$(BUILD_DIR)/templates
 
 ARTIFACT_DIR=$(PROJECT_ROOT)/dist/artifacts/c/$(LIBRARY_NAME)_$(MAJOR_VERSION)_$(MINOR_VERSION)_$(PATCH_VERSION)
+
+#Source Template Directory
+TEMPLATE_SRC_DIR=$(PROJECT_ROOT)/scripts/build/c/templates
 
 #Include Paths for JNI (dependent on Java Home being set)
 JNI_H_DIR=$(JAVA_HOME)/include
@@ -96,7 +100,7 @@ all: check_sys prep build link dist clean
 check_sys:
 	@echo "Checking OS type"
 ifneq ($(shell uname),Linux)
-	@echo "This makefile is for building shared libraries on linux, OS not linux. Terminating."
+	@echo "This makefile is for building shared libraries on linux, OS is $(shell uname). Terminating."
 	@exit 1
 endif
 	@echo "System OS is Linux, continuing build."
@@ -111,6 +115,7 @@ prep:
 	@mkdir -p $(COMPILE_DIR)
 	@mkdir -p $(HEADER_DIR)
 	@mkdir -p $(LIB_DIR)
+	@mkdir -p $(TEMPLATE_DIR)
 
 	@mkdir -p $(ARTIFACT_DIR)
 
@@ -149,8 +154,9 @@ dist:
 	@cp $(CPP_FQ_FULL_H_FILES) $(HEADER_DIR)
 	@cp $(CPP_FQ_SRC_FILES) $(SRC_DIR)
 	@cp $(CPP_FQ_FULL_SRC_FILES) $(SRC_DIR)
+	@cp $(TEMPLATE_SRC_DIR)/Makefile.* $(TEMPLATE_DIR)
 	@echo "Building tarfile for distribution."
-	@-cd $(BUILD_DIR) && tar -cf $(LIBRARY_NAME).tar src libs headers install.sh
+	@-cd $(BUILD_DIR) && tar -cf $(LIBRARY_NAME).tar src libs headers templates install.sh
 	@echo "Moving tarfile to $(ARTIFACT_DIR)."
 	@-cd $(BUILD_DIR) && mv $(LIBRARY_NAME).tar $(ARTIFACT_DIR)
 	@echo "Finished build, artifacts are now tarred and available in $(ARTIFACT_DIR)."

@@ -61,7 +61,7 @@ all: check_sys prep copy-shared build clean
 check_sys:
 	@echo "Checking OS type"
 ifneq ($(shell uname),Linux)
-	@echo "This makefile is for building shared libraries on linux, OS not linux. Terminating."
+	@echo "This makefile is for building shared libraries on linux, OS is $(shell uname). Terminating."
 	@exit 1
 endif
 	@echo "System OS is Linux, continuing build."

@@ -1,0 +1,107 @@
+### This Makefile can be used as a template for writing MessageAPI compatible C/C++ Endpoints that extend the 
+# NativeEndpoint.
+# Note that the goal of native endpoint production is to create a shared library,
+# as shared libraries are used by the Java code. Once produced, the fully-qualified shared library should just be referenced in the
+# config map for the endpoint itself. If you are reading this, you most likely understand what is necessary, but if not, see the example
+# 'native endpoint' in the MessageAPI source code 'test' namespace with associated parameter map.
+
+# The majority of this Makefile is standard, with only six user specified variables. These are denoted by the comment USER SPECIFIED.
+# All user specified variables are at the top of this makefile. The build process is standardized to automatically include MessageAPI resources,
+# So if there is an issue at first, make sure you have installed the library correctly (need $MESSAGEAPI_SRC and $MESSAGEAPI_HEADERS env vars).
+
+# There are a few other system-specific requirements and other notable things to keep in mind when using this Makefile:
+## 1. You must have a JDK installed (not JRE). This library requires the jni.h and jnimd.h headers included in your jdk.
+## 2. JAVA_HOME must be set to your JDK home directory (one level above the java binary). This Makefile references JAVA_HOME in looking for jni.h and jnimd.h
+
+
+#USER SPECIFIED - Specify where the library will build to. The library itself will be placed in $BUILD_DIR/compile
+BUILD_DIR=
+#USER SPECIFIED - Specify the base name of the lib (e.g., if lib to be built as libMyEndpoint.so, put MyEndpoint here)
+LIBRARY_NAME=
+
+#USER SPECIFIED - Specify The next two lines with Fully Qualified paths to your C source (if any) and headers (if any) in dependency order.
+#he last C file should correspond to the Messageapi endpoint wrapper (the header is in the $MESSAGEAPI_HEADERS dir and is auto-included).
+#This C file is the entry point for the library. See $MESSAGEAPI_HEADERS/gov_noaa_messageapi_endpoints_NativeEndpoint.h for the signature of
+#the class that must be wrapped.
+USER_C_SRC_FILES=
+USER_C_H_FILES=
+
+#USER SPECIFIED - Specify The next two lines with Fully Qualified paths to your C++ source (if any) and headers (if any) in dependency order.
+USER_CPP_SRC_FILES=
+USER_CPP_H_FILES=
+
+############### The next sections are usually default. You can also contact the MessageAPI maintainers for help if there are issues. ###################
+COMPILE_DIR=$(BUILD_DIR)/compile#.o and .so files produced here
+HEADER_DIR=$(BUILD_DIR)/headers#.h files copied here before build (for central include path)
+
+SO_NAME=lib$(LIBRARY_NAME).so
+
+#The following represent directories for JNI Libraries that must be included during C and CPP compilation.
+#The following represent a standard RHEL 7/8 system with OpenJDK.
+JNIDIR=$(JAVA_HOME)/include
+JNIMDDIR=$(JAVA_HOME)/include/linux
+
+#compilers
+CXX=g++
+CC=gcc
+
+
+MAPI_C_H_FILES=/messageapi_structs.h /gov_noaa_messageapi_endpoints_NativeEndpoint.h
+MAPI_C_FQ_H_FILES=$(addprefix $(MESSAGEAPI_HEADERS), $(MAPI_C_H_FILES))
+
+MAPI_CPP_SRC_FILES=/JniUtils.cpp /TypeUtils.cpp /MapUtils.cpp \
+/ListUtils.cpp /ConditionUtils.cpp /FieldUtils.cpp \
+/EndpointUtils.cpp /ProtocolRecordUtils.cpp /RecordUtils.cpp \
+/RejectionUtils.cpp /PacketUtils.cpp \
+/MessageApiEndpoint.cpp /MessageApiEndpointLib.cpp
+
+MAPI_CPP_FQ_SRC_FILES=$(addprefix $(MESSAGEAPI_SRC), $(MAPI_CPP_SRC_FILES))
+
+MAPI_CPP_H_FILES=/JniUtils.h /TypeUtils.h /MapUtils.h \
+/ListUtils.h /ConditionUtils.h /FieldUtils.h \
+/EndpointUtils.h /ProtocolRecordUtils.h /RecordUtils.h \
+/RejectionUtils.h /PacketUtils.h \
+/MessageApiEndpoint.h /MessageApiEndpointLib.h
+
+MAPI_CPP_FQ_H_FILES=$(addprefix $(MESSAGEAPI_SRC), $(MAPI_CPP_H_FILES))
+
+
+all: check_sys prep build
+
+.PHONY : check_sys prep build
+
+check_sys:
+	@echo "Checking OS type"
+ifneq ($(shell uname),Linux)
+	@echo "This makefile is for building shared libraries on linux, OS is $(shell uname). Terminating."
+	@exit 1
+endif
+	@echo "System OS is Linux, continuing build."
+
+prep:
+	@echo "Preparing system for build."
+	@rm -rf $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(COMPILE_DIR)
+	@mkdir -p $(HEADER_DIR)
+
+build:
+	@echo "Building $(LIBRARY_NAME) as $(SO_NAME) in $(COMPILE_DIR)"
+	@echo "Copying all headers to include path."
+	@cp $(MAPI_C_FQ_H_FILES) $(HEADER_DIR)
+	@cp $(MAPI_CPP_FQ_H_FILES) $(HEADER_DIR)
+	@cp $(USER_C_H_FILES) $(HEADER_DIR)
+	@cp $(USER_CPP_H_FILES) $(HEADER_DIR)
+
+	@echo "Compiling C++ object files with position independent code."
+	@echo ""
+	@-cd $(COMPILE_DIR) && $(CXX) -I$(HEADER_DIR) -I$(JNIDIR) -I$(JNIMDDIR) -fPIC -c $(MAPI_CPP_FQ_SRC_FILES) $(USER_CPP_SRC_FILES)
+	@echo ""
+	@echo "Compiling C object files with position independent code."
+	@echo ""
+	@-cd $(COMPILE_DIR) && $(CC) -I$(HEADER_DIR) -I$(JNIDIR) -I$(JNIMDDIR) -fPIC -std=c99 -c $(MAPI_C_FQ_SRC_FILES) $(USER_C_SRC_FILES)
+	@echo ""
+	@echo "Creating shared library."
+	@echo ""
+	@-cd $(COMPILE_DIR) && $(CXX) -shared -fPIC -std=c99 *.o -o $(SO_NAME)
+	@echo "Build success for $(LIBRARY_NAME) as $(COMPILE_DIR)/$(SO_NAME)"

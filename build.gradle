@@ -2,7 +2,7 @@ plugins {
     id 'groovy'
     id 'maven-publish'
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '5.0.0'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 shadowJar {
@@ -14,6 +14,7 @@ shadowJar {
                    'Implementation-Version': "${messageApiVersion}"
     }
 }
+
 
 publishing {
   publications {
@@ -39,21 +40,27 @@ publishing {
 sourceCompatibility = "${javaVersion}"
 targetCompatibility = "${javaVersion}"
 
-defaultTasks 'clean', 'rebuild','uploadShadow', 'publishToMavenLocal', 'groovydoc'
+defaultTasks 'clean', 'rebuild', 'uploadShadow', 'publishToMavenLocal', 'groovydoc'
+
+
+configurations {
+    // configuration that holds jars to include in the jar
+    directDeps
+}
 
 repositories {
     mavenCentral()
     jcenter()
 }
 
-
 dependencies {
-    compile ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}",
-             "commons-net:commons-net:${apacheCommonsNetVersion}",
+    directDeps ("com.googlecode.json-simple:json-simple:${jsonSimpleVersion}")
+    compile ("commons-net:commons-net:${apacheCommonsNetVersion}",
              "org.codehaus.groovy:groovy-all:${groovyVersion}")
     testCompile ("org.slf4j:slf4j-simple:${slf4jVersion}",
                 "org.spockframework:spock-core:${spockVersion}")
     testRuntime ("com.athaydes:spock-reports:${spockReportsVersion}")
+    configurations.compile.extendsFrom(configurations.directDeps)
 }
 
 jar {
@@ -61,6 +68,11 @@ jar {
         attributes 'Implementation-Title': 'MessageAPI',
                    'Implementation-Version': "${messageApiVersion}"
     }
+    /*from {
+        configurations.directDeps.collect { 
+            it.isDirectory() && it.getPath().contains("json-simple") ? it : project.logger.lifecycle(it.getPath()) 
+        }
+    }*/
 }
 
 sourceSets {
