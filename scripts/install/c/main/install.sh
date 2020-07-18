@@ -54,10 +54,9 @@ update_libs_var () {
     sed '/#messageapi_c_cpp_set_libs/d' "${BASHRC}" > "${BASHRC_TMP}"
     mv "${BASHRC_TMP}" "${BASHRC}"
     echo "export MESSAGEAPI_LIBS=${LIBS_INSTALL_DIR} #messageapi_c_cpp_set_libs" >> "${BASHRC}"
-    export MESSAGEAPI_LIBS=${LIBS_INSTALL_DIR}
     sed '/#messageapi_c_cpp_ld_library_path/d' "${BASHRC}" > "${BASHRC_TMP}"
     mv "${BASHRC_TMP}" "${BASHRC}"
-    echo "export LD_LIBRARY_PATH=${MESSAGEAPI_LIBS}:\$LD_LIBRARY_PATH #messageapi_c_cpp_ld_library_path" >> "${BASHRC}"
+    echo "export LD_LIBRARY_PATH=${LIBS_INSTALL_DIR}:\$LD_LIBRARY_PATH #messageapi_c_cpp_ld_library_path" >> "${BASHRC}"
     echo "Added a 'MESSAGEAPI_LIBS' environment variable to ${BASHRC} for convenient inclusion of the C/C++ shared library."
     echo "Updated the LD_LIBRARY_PATH environment variable to include the MESSAGEAPI_LIBS path."
     echo "When creating a C/C++ program that uses the MessageAPI session library, you can use the MESSAGEAPI_LIBS as the linking location."
@@ -128,6 +127,10 @@ install_templates () {
     echo ""
 }
 
+refresh_shell () {
+    exec env --ignore-environment /bin/bash
+}
+
 BASHRC=${HOME}/.bashrc
 BASHRC_TMP=${HOME}/.bashrc_tmp
 
@@ -149,5 +152,6 @@ install_src
 update_src_var
 install_templates
 update_template_var
+refresh_shell
 echo "Finished installing the MessageAPI C/C++ libs, headers, src, and build templates for user $(whoami)."
 echo ""

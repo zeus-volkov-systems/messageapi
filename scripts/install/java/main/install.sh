@@ -19,6 +19,11 @@ install_core_jar () {
     echo ""
 }
 
+refresh_shell () {
+    exec env --ignore-environment /bin/bash
+}
+
+
 BASHRC=${HOME}/.bashrc
 BASHRC_TMP=${HOME}/.bashrc_tmp
 
@@ -34,5 +39,6 @@ echo ""
 echo "Installing the MessageAPI-Core Jar for the current user $(whoami)"
 install_core_jar
 update_classpath_var
+refresh_shell
 echo "Finished installing the MessageAPI-Core Jar for user $(whoami)."
 echo ""
