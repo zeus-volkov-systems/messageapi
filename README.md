@@ -773,6 +773,12 @@ In addition to reading issue, tag, and push history in the git repository, devel
 
 The package is in current, active development, and as such, some bugs or desired features are expected. Either type of note can be sent on to ryan.berkheimer@noaa.gov.
 
+
+### Caveats and Gotchas
+
+Important to note for native (non-JVM) Session use - MessageAPI Core and any user classes must be included in a JAR (not necessarily the same JAR), and these JARS must be explicitly listed on the Java CLASSPATH (they cannot be included  using directory wildcard expansions). This is due to how the JVM is created during session spin-up. See the CLASSPATH variable in ~/.bashrc with the #messageapi_core_set_classpath comment (after installing the package) to see how the core is included on the classpath. To include user class-containing JARS, just add them in a similar way.
+
+
 ## License
 
 THIS SOFTWARE AND ITS DOCUMENTATION ARE CONSIDERED TO BE IN THE PUBLIC
