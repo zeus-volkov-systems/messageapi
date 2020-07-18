@@ -4,24 +4,11 @@ import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 
-//import gov.noaa.messageapi.utils.general.EnvUtils;
-
 
 /**
  * @author Ryan Berkheimer
  */
 public class PathUtils {
-
-    private static String replaceLast(String string, String toReplace, String replacement) {
-        int pos = string.lastIndexOf(toReplace);
-        if (pos > -1) {
-            return string.substring(0, pos)
-                + replacement
-                + string.substring(pos + toReplace.length(), string.length());
-        } else {
-            return string;
-        }
-    }
 
     /**
      * This method expands the {} special character found in strings that are read during parsing.
@@ -42,20 +29,48 @@ public class PathUtils {
             String returnPath;
             switch (EnvUtils.getOS()) {
             case "osx":
-                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
-                replaceMain = replaceLast(replaceTest, "/classes/java/main", "");
+                replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
                 returnPath = path.replace("{}", replaceMain);
                 return returnPath;
             case "unix":
-                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
-                replaceMain = replaceLast(replaceTest, "/classes/java/main", "");
+                replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
                 returnPath = path.replace("{}", replaceMain);
                 return returnPath;
             default:
-                replaceTest = replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
-                replaceMain = replaceLast(replaceTest, "/classes/java/main", "");
+                replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
                 returnPath = path.replace("{}", replaceMain);
                 return returnPath;
+            }
+        } else {
+            return path;
+        }
+    }
+
+    public static String reconcileKeywords(String path, String keyword) {
+        if (path.contains(keyword)) {
+            File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+            String replaceTest;
+            String replaceMain;
+            String returnPath;
+            switch (EnvUtils.getOS()) {
+                case "osx":
+                    replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                    replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
+                    returnPath = path.replace(keyword, replaceMain);
+                    return returnPath;
+                case "unix":
+                    replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                    replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
+                    returnPath = path.replace(keyword, replaceMain);
+                    return returnPath;
+                default:
+                    replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                    replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
+                    returnPath = path.replace(keyword, replaceMain);
+                    return returnPath;
             }
         } else {
             return path;
