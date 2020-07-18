@@ -724,17 +724,20 @@ The package can be retrieved and used as a precompiled set of artifacts packaged
 To install on a mission system at NCEI, do the following:
 
 1. Make sure you are logged into the NCEI gitlab in the usual way. If you are logged, in, you will be able to access repositories.
-2. Copy/paste the following four lines in a terminal one by one, hitting enter after each, for the user that will be using MessageAPI:
+2. Copy/paste the following five lines in a terminal one by one, hitting enter after each, for the user that will be using MessageAPI:
     - wget https://git.ncei.noaa.gov/sesb/sscs/messageapi/-/raw/master/scripts/install/package/install.sh?inline=false --no-check-certificate -O install.sh
     - chmod +x install.sh
     - ./install.sh "C_CPP"
     - rm install.sh
-3. You now have access to 
+    - source ~/.bashrc
+3. You now have access to all MessageAPI resources needed to build and run MessageAPI dependent software, including build templates, headers, and shared libraries. Convenient environment variables have also been set up in the bashrc (which are also used by build templates) - use a cat ~/.bashrc to see which ones are available.
 
 ###### Building From Source
 When acquired through repository, the package can be built from source in order to run included tests. A Dockerfile for building the package is included in the resources/docker directory - this Dockerfile is based on the RHEL7 UBI and contains all necessary packages needed to build the MessageAPI system. This file can be used as-is or as a reference to guide what resources and conditions are necessary.
 
-Important to note - because of the way MessageAPI handles Session bootstrapping, it is not required to bundle the MessageAPI core with user ConditionFactories, TransformationFactories, or Endpoints. As long as these are made available to MessageAPI on the Java classpath at Session creation, Sessions will be able to use them. This design makes it easier to automate things like creating K8s pods of certain session types. If installed from precom
+Important to note - because of the way MessageAPI handles Session bootstrapping, it is not required or even desired to bundle the MessageAPI core with user classes. As long as these are made available to MessageAPI on the Java classpath at Session creation within a JAR, Sessions will be able to use them. This design makes it easier to automate things like creating K8s pods of certain session types. 
+
+Also important to note for native Session use - MessageAPI Core and any user classes must be included in a JAR (not necessarily the same JAR), and these JARS must be explicitly listed on the Java CLASSPATH (they cannot be included  using directory wildcard expansions). This is due to how the JVM is created during session spin-up. See the CLASSPATH variable in ~/.bashrc with the #messageapi_core_set_classpath comment to see how the core is included on the classpath. To include user class-containing JARS, just add them in a similar way.
 
 If desired or needed, MessageAPI can be bundled into other JARS or packages containing user Factories and Endpoints for portability, performance, security, or other reasons.
 

@@ -1,8 +1,8 @@
 #Primary Makefile for the MessageAPI package.
 #
-#This Makefile currently controls the Gradle build for:
+#This Makefile currently controls the build for:
 #
-#1. Java-core build,test, and subsequent artifact (versioned uberjar + install script) tar packaging
+#1. Java-core build, test, and subsequent artifact (versioned uberjar + install script) tar packaging
 #2. C/C++ API shared library build, test, and subsequent artifact (versioned .so + current full source/header set + install script)
 #tar packaging
 #3. Java API documentation artifact (html documents as tar) packaging
