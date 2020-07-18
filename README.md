@@ -724,8 +724,9 @@ The package can be retrieved and used as a precompiled set of artifacts packaged
 To install on a mission system at NCEI, do the following:
 
 1. Make sure you are logged into the NCEI gitlab in the usual way. If you are logged, in, you will be able to access repositories.
-2. Copy/paste the following three lines in a terminal one by one, hitting enter after each, for the user that will be using MessageAPI:
+2. Copy/paste the following four lines in a terminal one by one, hitting enter after each, for the user that will be using MessageAPI:
     - wget https://git.ncei.noaa.gov/sesb/sscs/messageapi/-/raw/master/scripts/install/package/install.sh?inline=false --no-check-certificate -O install.sh
+    - chmod +x install.sh
     - ./install.sh "C_CPP"
     - rm install.sh
 3. You now have access to 
@@ -743,15 +744,15 @@ If desired or needed, MessageAPI can be bundled into other JARS or packages cont
 
 ## Installation and Deployment
 
-At the time of this writing, MessageAPI was built using OpenJDK 11.0.3 with gradle 5.4.1. Older JDK versions are not guaranteed to work.
+At the time of this writing, MessageAPI was built and tested using OpenJDK 1.8 as well as 11.0.3 with gradle 5.4.1. Older JDK versions are not guaranteed to work.
 
 There was a breaking change between older versions of gradle and the 5 series, and a relative path resolution
 method was updated to accommodate this change. If building from scratch, the gradle version must be upgraded to 5.4.1+.
 
-Once these two system dependencies are met, this package can be run with tests by running 'gradle' from the package root.
+Once these two system dependencies are met, this package can be run with tests by running 'make' from the package root.
 
 ```Makefile
-gradle
+make
 ```
 
 If tests complete successfully, gradle will install MessageAPI to the local repository as an UberJAR on disk (usually in ~/.m2). UberJARs contain all of their dependencies, so the package can be run, for example, in a Java-enabled JupyterNotebook Kernel. Gradle will also create the javadocs (groovydocs) in the build directory ($PACKAGE/build/docs/groovydoc/index.html).
