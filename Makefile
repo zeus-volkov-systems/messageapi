@@ -90,15 +90,18 @@ run-native-tests:
 	@-cd $(TEST_RESOURCE_DIR)/test/c/session && ./SessionDemo.bin
 	@echo "Finished running native C/C++ session test."
 
-deploy:
-	@echo "Deploying package to origin repository."
-	@git push origin master
-	@echo "Finished deploying package to origin repository."
-
-install:
-	@echo "Installing package to system."
+install-k3:
+	@echo "Installing package to system for current user."
 	@wget https://k3.cicsnc.org/rberkheimer/messageapi/-/raw/mac-develop/scripts/install/package/install_k3.sh?inline=false --no-check-certificate -O install_k3.sh
 	@chmod +x install_k3.sh
 	@./install_k3.sh "C_CPP"
 	@rm install_k3.sh
-	@echo "Finished installing package, check for success."
+	@echo "Finished installing package, validate ~./bashrc and env vars for success."
+
+install:
+	@echo "Installing package to system for current user."
+	@wget https://git.ncei.noaa.gov/sesb/sscs/messageapi/-/raw/master/scripts/install/package/install.sh?inline=false --no-check-certificate -O install.sh
+	@chmod +x install.sh
+	@./install.sh "C_CPP"
+	@rm install.sh
+	@echo "Finished installing package, validate ~/.bashrc and env vars for success."
