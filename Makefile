@@ -98,7 +98,6 @@ deploy:
 install:
 	@echo "Installing package to system."
 	@wget https://k3.cicsnc.org/rberkheimer/messageapi/-/raw/mac-develop/scripts/install/package/install_k3.sh?inline=false --no-check-certificate -O install_k3.sh
-	@chmod +x install_k3.sh
 	@./install_k3.sh "C_CPP"
 	@rm install_k3.sh
 	@echo "Finished installing package, check for success."

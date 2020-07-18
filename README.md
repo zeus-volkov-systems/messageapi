@@ -8,7 +8,13 @@ MessageAPI uses [Semantic Versioning 2.0.0](https://semver.org/) as its versioni
 
 ## API Docs
 
-Use of this package is described throughout this README through design discussions and examples. Once familiar with the general use case of the package, more complete [API Docs](./dist/docs/api/messageapi_docs.tar) can be downloaded and referenced (open index.html after extracting the tar). 
+Use of this package is described throughout this README through design discussions and examples. Once familiar with the general use case of the package, more complete [API Docs](./dist/docs/api/messageapi_docs.tar) can be downloaded and referenced (open index.html after extracting the tar).
+
+## Executive Summary
+
+MessageAPI was built to promote and improve the long-term sustainability and enterprise-scale innovative capabilities of large research and operations organizations like NCEI, NESDIS, and NOAA. A simple and static (never changing) language-level API provided in multiple languages together with a completely configurable process configuration allows fast augmentation of legacy code to use evolutionary features, allows teams to reuse existing algorithms, and ensures that code-level details don't have to change as interface-level technologies evolve. The idea is to provide a capability so that Java/JVM C/C++ Fortran Python, R, and IDL programmers can continue to use their own preferred technologies to do research and development, while ensuring that they can continue to evolve along with emerging organizational requirements and trends, without making code changes.
+
+MessageAPI has a small multi-language core that is easily installed on mission systems as a non-root user using the mature build system; allows whitelisting of executable resources and configuration-level exposition to maintain visible security; and provides a thread-safe, asynchronous, stream and batch capable data model to build composable, scalable, and orchestrated computational processes. MessageAPI abstracts conditional filtering, stateless transformation, and bidirectional endpoint processing into JSON configuration.
 
 ## Overview
 
