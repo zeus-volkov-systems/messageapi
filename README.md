@@ -713,7 +713,16 @@ Because requests contain a copy of the session variables which created them, the
 ##### Package Use
 
 ###### Prebuilt Resources
-The package can be retrieved and used as a precompiled set of artifacts packaged as tar files. There are currently tar files for the core Java library and the precompiled C/C++ native library (compiled using the RHEL7 UBI, which is freely available from Redhat and compatible with Openshift). Each tar comes with an install.sh file that will install the relevant component for the current user. This means that for the Java package, the MessageAPI jar will be installed to a user directory, which will be added to the PATH and the Jar will be added to the CLASSPATH (if not already installed). The C library will add the shared library to the PATH and set up environment variables for use of the packaged header and source files. No root privileges are required to install or use the precompiled package resources.
+The package can be retrieved and used as a precompiled set of artifacts packaged as tar files. There are currently tar files for the core Java library and the precompiled C/C++ native library (compiled using the RHEL7 UBI, which is freely available from Redhat and compatible with Openshift). Each tar comes with an install.sh file that will install the relevant component for the current user. This means that for the Java package, the MessageAPI jar will be installed to a user directory, which will be added to the PATH and the Jar will be added to the CLASSPATH (if not already installed). The C library will add the shared library to the PATH and set up environment variables for use of the packaged header and source files. No root privileges are required to install or use the precompiled package resources. There is a central install script that will unpackage and install all components and relevant environment variables for you, for either "C_CPP" or "CORE". See below for instructions.
+
+To install on a mission system at NCEI, do the following:
+
+1. Make sure you are logged into the NCEI gitlab in the usual way. If you are logged, in, you will be able to access repositories.
+2. Copy/paste the following three lines in a terminal one by one, hitting enter after each, for the user that will be using MessageAPI:
+    - wget https://git.ncei.noaa.gov/sesb/sscs/messageapi/-/raw/master/scripts/install/package/install.sh?inline=false --no-check-certificate -O install.sh
+    - ./install.sh "C_CPP"
+    - rm install.sh
+3. You now have access to 
 
 ###### Building From Source
 When acquired through repository, the package can be built from source in order to run included tests. A Dockerfile for building the package is included in the resources/docker directory - this Dockerfile is based on the RHEL7 UBI and contains all necessary packages needed to build the MessageAPI system. This file can be used as-is or as a reference to guide what resources and conditions are necessary.
