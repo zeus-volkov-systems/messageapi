@@ -20,7 +20,7 @@ install_core_jar () {
 }
 
 refresh_shell () {
-    exec env --ignore-environment /bin/bash
+    unset CLASSPATH
 }
 
 

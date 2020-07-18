@@ -128,7 +128,7 @@ install_templates () {
 }
 
 refresh_shell () {
-    exec env --ignore-environment /bin/bash
+    unset LD_LIBRARY_PATH
 }
 
 BASHRC=${HOME}/.bashrc
