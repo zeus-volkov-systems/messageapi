@@ -5,7 +5,7 @@ update_classpath_var () {
     echo "Updating the CLASSPATH environment variable in $(whoami)'s ~/.bashrc."
     sed '/#messageapi_core_set_classpath/d' "${BASHRC}" > "${BASHRC_TMP}"
     mv "${BASHRC_TMP}" "${BASHRC}"
-    echo "export CLASSPATH=${CORE_INSTALL_DIR}/${JAR_NAME}:$CLASSPATH #messageapi_core_set_classpath" >> "${BASHRC}"
+    echo "export CLASSPATH=${CORE_INSTALL_DIR}/${JAR_NAME}:\$CLASSPATH #messageapi_core_set_classpath" >> "${BASHRC}"
     echo ""
 }
 

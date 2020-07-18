@@ -19,8 +19,7 @@ update_ld_library_paths () {
             echo "Updating LD_LIBRARY_PATH with locations for libjli and libjvm in bashrc."
             sed '/#messageapi_jvm_ld_library_path/d' "${BASHRC}" > "${BASHRC_TMP}"
             mv "${BASHRC_TMP}" "${BASHRC}"
-            echo "export LD_LIBRARY_PATH=${java_jli}:${java_jvm}:$LD_LIBRARY_PATH #messageapi_jvm_ld_library_path" >> "${BASHRC}"
-            export LD_LIBRARY_PATH=${java_jli}:${java_jvm}:$LD_LIBRARY_PATH
+            echo "export LD_LIBRARY_PATH=${java_jli}:${java_jvm}:\$LD_LIBRARY_PATH #messageapi_jvm_ld_library_path" >> "${BASHRC}"
             echo "Successfully updated LD_LIBRARY_PATH in ${BASHRC}"
         else
             echo "Could not find the libjli or libjvm folders. C/C++ lib will not work correctly."
@@ -58,7 +57,7 @@ update_libs_var () {
     export MESSAGEAPI_LIBS=${LIBS_INSTALL_DIR}
     sed '/#messageapi_c_cpp_ld_library_path/d' "${BASHRC}" > "${BASHRC_TMP}"
     mv "${BASHRC_TMP}" "${BASHRC}"
-    echo "export LD_LIBRARY_PATH=${MESSAGEAPI_LIBS}:${LD_LIBRARY_PATH} #messageapi_c_cpp_ld_library_path" >> "${BASHRC}"
+    echo "export LD_LIBRARY_PATH=${MESSAGEAPI_LIBS}:\$LD_LIBRARY_PATH #messageapi_c_cpp_ld_library_path" >> "${BASHRC}"
     echo "Added a 'MESSAGEAPI_LIBS' environment variable to ${BASHRC} for convenient inclusion of the C/C++ shared library."
     echo "Updated the LD_LIBRARY_PATH environment variable to include the MESSAGEAPI_LIBS path."
     echo "When creating a C/C++ program that uses the MessageAPI session library, you can use the MESSAGEAPI_LIBS as the linking location."
