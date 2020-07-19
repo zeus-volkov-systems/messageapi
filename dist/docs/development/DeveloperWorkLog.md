@@ -21,8 +21,12 @@ This work log is also useful as a supplemental documentation for end users of th
 
 ### C API
 
-#### Status - In Progress
+#### Status - In Resolution
 
+07/15/2020
+At this stage - the entire API is complete. The general structure is to have importable libs for each interface component (transformation, endpoint, session, condition) and have these libs contain access to every piece of processing logic that users might need. For each lib is associated
+
+06/01/2020
 We are currently working on the linkage between C++ and the NativeEndpoint class. The NativeEndpoint class has been established and the majority of C structs have been created. The next challenge is to create C/C++ methods that work on these C structs, and then methods that bind to Java methods.
 
 #### Description and Goals
