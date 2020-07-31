@@ -1,0 +1,25 @@
+#Dockerfile for RHEL7 MessageAPI Build on UBI (Openshift Compatible)
+#This dockerfile installs only prebuilt artifacts by replicating the instructions
+#given to users within the core package readme.
+
+#Base Image (RHEL7 UBI)
+FROM registry.access.redhat.com/ubi7/ubi:latest
+
+#Install wget and the openjdk (JRE)
+#These are used for installing and running the core.
+RUN yum -y install --disableplugin=subscription-manager \
+    wget java-11-openjdk \
+    && yum --disableplugin=subscription-manager clean all
+
+#Add default type user 'messageapi' for production code as non root
+RUN useradd messageapi
+
+#Change to new 'messageapi' user
+USER messageapi
+
+#Install the Java core
+RUN wget https://k3.cicsnc.org/rberkheimer/messageapi/-/raw/mac-develop/scripts/install/package/install_k3.sh?inline=false \
+    --no-check-certificate -O install_k3.sh \
+    && chmod +x install_k3.sh \
+    && ./install_k3.sh "C_CPP" \
+    && rm install_k3.sh
