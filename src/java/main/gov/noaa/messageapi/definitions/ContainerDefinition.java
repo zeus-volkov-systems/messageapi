@@ -28,7 +28,6 @@ public class ContainerDefinition {
     private List<String> transformations = null;
     private List<Map.Entry<String,String>> classifiers = null;
 
-    @SuppressWarnings("unchecked")
     public ContainerDefinition(Map<String, Object> properties) throws Exception {
         if (properties.containsKey("metadata")) {
             this.parseMetadataSpec((String) properties.get("metadata"));
@@ -41,7 +40,7 @@ public class ContainerDefinition {
             throw new Exception("Missing necessary 'collections' key when parsing container definition.");
         }
         if (properties.containsKey("transformations")) {
-            this.parseTransformationSpec((Map<String,String>) properties.get("transformations"));
+            this.parseTransformationSpec(properties.get("transformations"));
         } else {
             this.setEmptyTransformationMaps();
         }
@@ -56,7 +55,6 @@ public class ContainerDefinition {
         this.transformationMaps = new ArrayList<Map<String,Object>>(definition.getTransformationMaps());
     }
 
-
     private void parseMetadataSpec(String spec) throws Exception {
         MetadataParser parser = new MetadataParser(spec);
         this.metadataMap = parser.getMetadataMap();
@@ -69,12 +67,22 @@ public class ContainerDefinition {
         this.classifiers = parser.getClassifiers();
     }
 
-    private void parseTransformationSpec(Map<String,String> transformationSpec) throws Exception {
-        if (transformationSpec.containsKey("map")) {
-            TransformationParser parser = new TransformationParser(transformationSpec.get("map"));
-            this.transformationMaps = parser.getTransformationMaps();
-            this.transformations = parser.getTransformations();
-        } else {
+    @SuppressWarnings("unchecked")
+    private void parseTransformationSpec(Object transformationSpec) throws Exception {
+        try {
+            if (transformationSpec instanceof String) {
+                TransformationParser parser = new TransformationParser(((String) transformationSpec));
+                this.transformationMaps = parser.getTransformationMaps();
+                this.transformations = parser.getTransformations();
+            } else if (transformationSpec instanceof List) {
+                TransformationParser parser = new TransformationParser((List<Map<String,Object>>)transformationSpec);
+                this.transformationMaps = parser.getTransformationMaps();
+                this.transformations = parser.getTransformations();
+            } else {
+                this.setEmptyTransformationMaps();
+            }
+        } catch (Exception e) {
+            System.out.println("WARNING - transformation parsing failed. Setting empty transformations.");
             this.setEmptyTransformationMaps();
         }
     }

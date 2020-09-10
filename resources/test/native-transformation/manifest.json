@@ -11,7 +11,7 @@
             "plugin": "gov.noaa.messageapi.containers.DefaultContainer",
             "constructor": {
                 "collections": "{}/resources/test/native-transformation/parameters.json",
-                "transformations": {"map": "{}/resources/test/native-transformation/parameters.json"}
+                "transformations": "{}/resources/test/native-transformation/parameters.json"
             }
         },
         "protocol": {

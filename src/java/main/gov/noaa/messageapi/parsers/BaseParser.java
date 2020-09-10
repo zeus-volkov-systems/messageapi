@@ -22,8 +22,11 @@ public abstract class BaseParser {
             update();
         } catch (Exception e) {
             System.err.println("Exception thrown in resource string constructor: " + e.getMessage());
+            System.exit(1);
         }
     }
+
+    public BaseParser(){}
 
     @SuppressWarnings("unchecked")
     public BaseParser(Object jsonModel) throws Exception {
@@ -36,6 +39,7 @@ public abstract class BaseParser {
             }
         } catch (Exception e) {
             System.err.println("Exception thrown in resource hashmap constructor: " + e.getMessage());
+            System.exit(1);
         }
     }
 
@@ -47,6 +51,7 @@ public abstract class BaseParser {
             keys = JsonUtils.keys(jsonModel);
         } catch (Exception e){
             System.err.println("Exception thrown while gathering resource keys: " + e.getMessage());
+            System.exit(1);
         }
     }
 
@@ -79,6 +84,7 @@ public abstract class BaseParser {
             }
         } catch (Exception e) {
             System.err.println("Exception thrown while updating the resource: " + e.getMessage());
+            System.exit(1);
         }
     }
 

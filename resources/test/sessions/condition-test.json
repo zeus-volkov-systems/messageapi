@@ -12,7 +12,7 @@
               "constructor": {
                               "metadata": "{}/resources/test/containers/simple/condition-test/metadata.json",
                               "collections": "{}/resources/test/containers/simple/condition-test/collections.json",
-                              "transformations": {"map": "{}/resources/test/containers/simple/condition-test/transformations.json"}
+                              "transformations": "{}/resources/test/containers/simple/condition-test/transformations.json"
                              }
              },
     "protocol": {

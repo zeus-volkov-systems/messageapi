@@ -7,7 +7,7 @@
                  "container": {"plugin": "gov.noaa.messageapi.containers.DefaultContainer",
                                "constructor": {"metadata": "{}/resources/test/containers/simple/clisam/metadata.json",
                                                "collections": "{}/resources/test/containers/simple/clisam/collections.json",
-                                               "transformations": {"map": "{}/resources/test/containers/simple/clisam/transformations.json"}}},
+                                               "transformations": "{}/resources/test/containers/simple/clisam/transformations.json"}},
                  "protocol": {"plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
                               "constructor": {"metadata": "{}/resources/test/protocols/jdbc/sqlite/clisam/metadata.json",
                                               "endpoints": [{"plugin": "gov.noaa.messageapi.test.endpoints.EmailEndpointTest",

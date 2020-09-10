@@ -14,13 +14,20 @@ import gov.noaa.messageapi.utils.general.PathUtils;
  */
 public class TransformationParser extends BaseParser {
 
-    public TransformationParser(String spec) throws Exception {
-        super(PathUtils.reconcileKeywords(spec));
-    }
+    private List<Map<String,Object>> transformationMaps;
 
     @SuppressWarnings("unchecked")
+    public TransformationParser(String spec) throws Exception {
+        super(PathUtils.reconcileKeywords(spec));
+        this.setTransformationMaps((List<Map<String, Object>>)super.getValue("transformations"));
+    }
+
+    public TransformationParser(List<Map<String,Object>> transformationMapList) throws Exception {
+        this.setTransformationMaps(transformationMapList);
+    }
+
     public List<Map<String, Object>> getTransformationMaps() {
-        return (List<Map<String,Object>>) super.getValue("transformations");
+        return this.transformationMaps;
     }
 
     public List<String> getTransformations() {
@@ -28,6 +35,10 @@ public class TransformationParser extends BaseParser {
     }
 
     public void process(){
+    }
+
+    private void setTransformationMaps(List<Map<String,Object>> transformationMapList){
+        this.transformationMaps = transformationMapList;
     }
 
     public Set<String> getRequiredKeys() {

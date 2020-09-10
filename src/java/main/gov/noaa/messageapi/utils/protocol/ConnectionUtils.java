@@ -111,7 +111,8 @@ public class ConnectionUtils {
             Constructor<?> constructor = pluginClass.getDeclaredConstructor(ctrClasses);
             return (ITransformation) constructor.newInstance(args);
         } catch (Exception e){
-            System.out.println(String.format("Could not build a transformation instance for %s", transformationClass));
+            System.err.println(String.format("Could not build a transformation instance for %s", transformationClass));
+            System.exit(1);
             return null;
         }
     }

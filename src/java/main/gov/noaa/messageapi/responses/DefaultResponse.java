@@ -111,6 +111,7 @@ public class DefaultResponse extends BaseResponse implements IResponse {
                 return ConnectionUtils.submitRecords(c, recordSets.stream().filter(r -> r.getConnectionId().equals(c.getId())).findFirst().get());
             } catch (Exception e) {
                 System.out.println(e.getStackTrace());
+                System.exit(1);
                 return null;
             }
         }).collect(Collectors.toList()));

@@ -23,7 +23,8 @@ public abstract class BasePluginParser extends BaseParser {
 
     public void process(){
         if (!validateConstructorKeys(getRequiredConstructorKeys())) {
-            System.out.println(String.format("Could not parse the %s plugin, invalid keyset.", getPlugin()));
+            System.err.println(String.format("Could not parse the %s plugin, invalid keyset.", getPlugin()));
+            System.exit(1);
         }
     }
 
