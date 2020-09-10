@@ -14,7 +14,7 @@ Use of this package is described throughout this README through design discussio
 
 MessageAPI was built to promote and improve the long-term sustainability and enterprise-scale innovative capabilities of large research and operations organizations like NCEI, NESDIS, and NOAA. A simple and static (never changing) language-level API provided in multiple languages together with a completely configurable process configuration allows fast augmentation of legacy code to use evolutionary features, allows teams to reuse existing algorithms, and ensures that code-level details don't have to change as interface-level technologies evolve. The idea is to provide a capability so that Java/JVM, C/C++, Fortran, Python, R, and IDL programmers can continue to use their own preferred languages and technologies to do research and development, while ensuring that they can continue to evolve along with emerging organizational requirements and trends, without making code changes.
 
-MessageAPI has a small multi-language core that is easily installed on mission systems as a non-root user using the mature build system; allows whitelisting of executable resources and configuration-level exposition to maintain visible security; and provides a thread-safe, asynchronous, stream and batch capable data model to build composable, scalable, and orchestrated computational processes. 
+MessageAPI has a small multi-language core that is easily installed on mission systems as a non-root user using the mature build system; allows whitelisting of executable resources and configuration-level exposition to maintain visible security; and provides a thread-safe, asynchronous, stream and batch capable data model to build composable, scalable, and orchestrated computational processes.
 
 MessageAPI abstracts container factoring, container classification, conditional filtering, stateless transformation, and bidirectional endpoint processing into JSON configuration. This allows legacy code to be refactored or restructures in a fine-grained or large-scale way. Even the core parts of MessageAPI itself are configurable through JSON manifest, allowing the system to be customized to various use cases.
 
@@ -83,7 +83,7 @@ MessageAPI is designed to be capable of passing any message content - objects, d
 
 The benefits of using MessageAPI are its extreme schema flexibility, potential for tool decoupling and transport optimization, API standardization across all messaging, and self documentation through an information model.
 
-It's important to point out that even though it's called MessageAPI, the provided implementations do not replace message tools like ActiveMQ, RabbitMQ, Spark, or Storm. Really, no tools are 'replaced' by this one. MessageAPI is fundamentally a process specification, and the provided implementation is a small (3MB total package size) universal connector. This means that other messaging systems could of course be used with MessageAPI - linking response steps, serving as input or output queues, or transformation steps. Even MessageAPI sessions can be endpoints for MessageAPI sessions.
+It's important to point out that even though it's called MessageAPI, the provided implementations do not replace message tools like ActiveMQ, RabbitMQ, Spark, or Storm. Really, no tools are 'replaced' by this one. MessageAPI is fundamentally a process specification, and the provided implementation is a small (<1MB core package size) universal connector. This means that other messaging systems could of course be used with MessageAPI - linking response steps, serving as input or output queues, or transformation steps. Even MessageAPI sessions can be endpoints for MessageAPI sessions.
 
 ## Package Contents
 
@@ -564,6 +564,7 @@ or
 
 ```java
 import gov.noaa.messageapi.interfaces.ISession;
+import gov.noaa.messageapi.sessions.DefaultSession;
 
 ISession session = new DefaultSession("/path/to/session_manifest.json");
 ```
@@ -721,13 +722,14 @@ Because requests contain a copy of the session variables which created them, the
 ##### Package Use
 
 ###### Prebuilt Resources
+
 The package can be retrieved and used as a precompiled set of artifacts packaged as tar files. There are currently tar files for the core Java library and the precompiled C/C++ native library (compiled using the RHEL7 UBI, which is freely available from Redhat and compatible with Openshift). Each tar comes with an install.sh file that will install the relevant component for the current user. This means that for the Java package, the MessageAPI jar will be installed to a user directory, which will be added to the PATH and the Jar will be added to the CLASSPATH (if not already installed). The C library will add the shared library to the PATH and set up environment variables for use of the packaged header and source files. No root privileges are required to install or use the precompiled package resources. There is a central install script that will unpackage and install all components and relevant environment variables for you, for either "C_CPP" or "CORE". See below for instructions.
 
 To install on a mission system at NCEI, do the following:
 
 1. Make sure you are logged into the NCEI gitlab in the usual way. If you are logged, in, you will be able to access repositories.
 2. Copy/paste the following five lines in a terminal one by one, hitting enter after each, for the user that will be using MessageAPI:
-    - wget https://git.ncei.noaa.gov/sesb/sscs/messageapi/-/raw/master/scripts/install/package/install.sh?inline=false --no-check-certificate -O install.sh
+    - wget <https://git.ncei.noaa.gov/sesb/sscs/messageapi/-/raw/master/scripts/install/package/install.sh?inline=false> --no-check-certificate -O install.sh
     - chmod +x install.sh
     - ./install.sh "C_CPP"
     - rm install.sh
@@ -735,9 +737,10 @@ To install on a mission system at NCEI, do the following:
 3. You now have access to all MessageAPI resources needed to build and run MessageAPI dependent software, including build templates, headers, and shared libraries. Convenient environment variables have also been set up in the bashrc (which are also used by build templates) - use a cat ~/.bashrc to see which ones are available.
 
 ###### Building From Source
+
 When acquired through repository, the package can be built from source in order to run included tests. A Dockerfile for building the package is included in the resources/docker directory - this Dockerfile is based on the RHEL7 UBI and contains all necessary packages needed to build the MessageAPI system. This file can be used as-is or as a reference to guide what resources and conditions are necessary.
 
-Important to note - because of the way MessageAPI handles Session bootstrapping, it is not required or even desired to bundle the MessageAPI core with user classes. As long as these are made available to MessageAPI on the Java classpath at Session creation within a JAR, Sessions will be able to use them. This design makes it easier to automate things like creating K8s pods of certain session types. 
+Important to note - because of the way MessageAPI handles Session bootstrapping, it is not required or even desired to bundle the MessageAPI core with user classes. As long as these are made available to MessageAPI on the Java classpath at Session creation within a JAR, Sessions will be able to use them. This design makes it easier to automate things like creating K8s pods of certain session types.
 
 Also important to note for native Session use - MessageAPI Core and any user classes must be included in a JAR (not necessarily the same JAR), and these JARS must be explicitly listed on the Java CLASSPATH (they cannot be included  using directory wildcard expansions). This is due to how the JVM is created during session spin-up. See the CLASSPATH variable in ~/.bashrc with the #messageapi_core_set_classpath comment to see how the core is included on the classpath. To include user class-containing JARS, just add them in a similar way.
 
@@ -769,17 +772,15 @@ Other dependencies are installed for the purposes of running tests, including Gr
 
 ## Developer Guide
 
-In addition to reading issue, tag, and push history in the git repository, developers may refer to the more detailed [developer work log history](./docs/development/DeveloperWorkLog.md). This document outlines features currently and previously under focus, providing motivations, descriptions, design behaviors, and justifications.
+In addition to reading issue, tag, and push history in the git repository, developers may refer to the more detailed [developer work log history](./dist/docs/development/DeveloperWorkLog.md). This document outlines features currently and previously under focus, providing motivations, descriptions, design behaviors, and justifications.
 
 ### Bugs and Feature Requests
 
 The package is in current, active development, and as such, some bugs or desired features are expected. Either type of note can be sent on to ryan.berkheimer@noaa.gov.
 
-
 ### Caveats and Gotchas
 
 Important to note for native (non-JVM) Session use - MessageAPI Core and any user classes must be included in a JAR (not necessarily the same JAR), and these JARS must be explicitly listed on the Java CLASSPATH (they cannot be included  using directory wildcard expansions). This is due to how the JVM is created during session spin-up. See the CLASSPATH variable in ~/.bashrc with the #messageapi_core_set_classpath comment (after installing the package) to see how the core is included on the classpath. To include user class-containing JARS, just add them in a similar way.
-
 
 ## License
 
