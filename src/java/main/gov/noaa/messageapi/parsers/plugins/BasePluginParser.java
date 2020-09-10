@@ -9,6 +9,9 @@ import gov.noaa.messageapi.parsers.BaseParser;
 import gov.noaa.messageapi.utils.general.PathUtils;
 
 /**
+ * This base parser serves as the underlayment for the other plugin parser classes.
+ * It contains common logic to those plugin parsers, including validation of specific key
+ * requirements and reflection object build utilities.
  * @author Ryan Berkheimer
  */
 public abstract class BasePluginParser extends BaseParser {

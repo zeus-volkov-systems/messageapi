@@ -8,6 +8,7 @@ import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IPluginParser;
 
 /**
+ * This class builds the container plugin from the session spec.
  * @author Ryan Berkheimer
  */
 public class ContainerPluginParser extends BasePluginParser implements IPluginParser {

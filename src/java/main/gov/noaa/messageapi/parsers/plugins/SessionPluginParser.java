@@ -12,6 +12,8 @@ import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IPluginParser;
 
 /**
+ * This class builds the session plugin from the manifest. A session is made up of
+ * container, protocol, and schema so this class builds those in turn.
  * @author Ryan Berkheimer
  */
 public class SessionPluginParser extends BasePluginParser implements IPluginParser {

@@ -8,6 +8,7 @@ import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IPluginParser;
 
 /**
+ * This class builds the protocol plugin from the session spec.
  * @author Ryan Berkheimer
  */
 public class ProtocolPluginParser extends BasePluginParser implements IPluginParser {

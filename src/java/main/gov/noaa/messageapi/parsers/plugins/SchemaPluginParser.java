@@ -8,6 +8,7 @@ import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IPluginParser;
 
 /**
+ * This class builds the schema plugin from the session spec.
  * @author Ryan Berkheimer
  */
 public class SchemaPluginParser extends BasePluginParser implements IPluginParser {
