@@ -13,6 +13,11 @@ import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.general.PathUtils;
 
 /**
+ * This class handles general collection map parsing (collections being part of the container layer).
+ * Currently, collection assembly can be performed using a path-as-string to the file containing a JSON map with
+ * a 'collections' key. The file pointed to by the path should contain a JSON map with a top-level 'collections' key
+ * that itself corresponds to a list of collections, each containing a required id, required array of field ids, 
+ * optional map of classifiers, and optional array of condition ids.
  * @author Ryan Berkheimer
  */
 public class CollectionParser extends BaseParser {

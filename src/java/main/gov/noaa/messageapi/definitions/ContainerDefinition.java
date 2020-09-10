@@ -71,7 +71,7 @@ public class ContainerDefinition {
     private void parseTransformationSpec(Object transformationSpec) throws Exception {
         try {
             if (transformationSpec instanceof String) {
-                TransformationParser parser = new TransformationParser(((String) transformationSpec));
+                TransformationParser parser = new TransformationParser(((String)transformationSpec));
                 this.transformationMaps = parser.getTransformationMaps();
                 this.transformations = parser.getTransformations();
             } else if (transformationSpec instanceof List) {

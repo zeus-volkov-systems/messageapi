@@ -8,6 +8,12 @@ import gov.noaa.messageapi.parsers.BaseParser;
 import gov.noaa.messageapi.utils.general.PathUtils;
 
 /**
+ * This class handles general metadata map parsing (metadata being part of the container layer).
+ * Currently, metadata assembly can be performed using a path-as-string to the file containing a JSON map with
+ * a 'metadata' key pointing to a map. Metadata maps can contain key-value pairs of anything - they are accessible from the session
+ * after creation by accessing the session container interface and then the container definition, then
+ * using the getMetadata method.
+ * 
  * @author Ryan Berkheimer
  */
 public class MetadataParser extends BaseParser {
