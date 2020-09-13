@@ -82,7 +82,7 @@ public class ContainerDefinition {
                 this.setEmptyTransformationMaps();
             }
         } catch (Exception e) {
-            System.out.println("WARNING - transformation parsing failed. Setting empty transformations.");
+            System.err.println("WARNING - transformation parsing failed. Setting empty transformations.");
             this.setEmptyTransformationMaps();
         }
     }

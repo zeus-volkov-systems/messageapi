@@ -18,10 +18,7 @@
         "protocol": {
             "plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
             "constructor": {
-                "endpoints": [{
-                        "plugin": "gov.noaa.messageapi.endpoints.NativeEndpoint",
-                        "connections": "{}/resources/test/basic-native/parameters.json"
-                    }]
+                "endpoints": "{}/resources/test/basic-native/parameters.json"
             }
         }
     }

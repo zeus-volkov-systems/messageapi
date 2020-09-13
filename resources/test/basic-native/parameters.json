@@ -25,18 +25,41 @@
                      "fields": ["initial-value", "string-test", "int-list-test", "null-test"]},
                     {"id": "coll-2",
                         "fields": ["initial-value", "string-test", "int-list-test"]}],
-    "connections": [{"id": "1",
-                     "collections": ["coll-1"],
-                     "constructor": {"native-library": "/workspaces/messageapi/libs/test/c/endpoint/libEndpointDemo.so",
-                                    "default-fields": [{"id": "test-integer",
-                                                        "type": "integer",
-                                                        "required": false,
-                                                        "value": 5},
-                                                       {"id": "return-list",
-                                                        "type": "list(string)",
-                                                        "required": false}],
-                                    "state-container": [{"id": "counter",
-                                                         "type": "integer",
-                                                         "required": false,
-                                                         "value": 0}]}}]
+    "endpoints": [
+        {
+            "plugin": "gov.noaa.messageapi.endpoints.NativeEndpoint",
+            "connections": [
+                {
+                    "id": "1",
+                    "collections": [
+                        "coll-1"
+                    ],
+                    "constructor": {
+                        "native-library": "/workspaces/messageapi/libs/test/c/endpoint/libEndpointDemo.so",
+                        "default-fields": [
+                            {
+                                "id": "test-integer",
+                                "type": "integer",
+                                "required": false,
+                                "value": 5
+                            },
+                            {
+                                "id": "return-list",
+                                "type": "list(string)",
+                                "required": false
+                            }
+                        ],
+                        "state-container": [
+                            {
+                                "id": "counter",
+                                "type": "integer",
+                                "required": false,
+                                "value": 0
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
 }
