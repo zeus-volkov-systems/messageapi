@@ -8,6 +8,7 @@ import java.util.AbstractMap;
 import java.util.stream.Collectors;
 
 import gov.noaa.messageapi.parsers.protocols.MetadataParser;
+import gov.noaa.messageapi.exceptions.ConfigurationParsingException;
 import gov.noaa.messageapi.parsers.protocols.ConnectionParser;
 import gov.noaa.messageapi.parsers.protocols.EndpointParser;
 import gov.noaa.messageapi.utils.general.ListUtils;
@@ -54,6 +55,7 @@ public class ProtocolDefinition {
      * @param endpointSpec A spec that is used to determine how to parse the session endpoints, either through a path or a direct map
      * @throws Exception
      */
+    @SuppressWarnings("unchecked")
     private void parseEndpoints(Object endpoints) throws Exception {
         this.endpointMap = new HashMap<String,List<Map<String,Object>>>();
         try {
@@ -67,12 +69,12 @@ public class ProtocolDefinition {
                 System.exit(1);
             }
         } catch (Exception e) {
-            System.out.println("The endpoint specification was an invalid data structure Needs to be list or map.");
-            System.err.println("The protocol layer must contain a valid endpoint. Ending session building now.");
-            System.exit(1);
+            throw new ConfigurationParsingException(
+                    "The protocol layer must contain a valid endpoint. Ending session building now.", e);
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void parseEndpointsFromSpec(String endpointSpec) throws Exception {
         EndpointParser endpointParser = new EndpointParser(endpointSpec);
         ListUtils.removeAllNulls(endpointParser.getEndpointMaps().stream().map(endpointMap -> {
