@@ -12,7 +12,7 @@ import gov.noaa.messageapi.parsers.schemas.ConditionParser;
 import gov.noaa.messageapi.parsers.schemas.ConditionOperatorParser;
 
 /**
- * A SchemaDefinition is used by the StorageService to parse a specified
+ * A SchemaDefinition is used to parse a specified
  * configuration and create a blueprint for how the user interacts with
  * a session. SchemaDefinitions hold raw and/or simple datatypes to be turned
  * held, referenced, and converted to more complex types over the course of
@@ -46,7 +46,7 @@ public class SchemaDefinition {
      * @throws Exception  An exception is thrown if there is an issue parsing the schema definition.
      */
     @SuppressWarnings("unchecked")
-    public SchemaDefinition(Map<String, Object> properties) throws Exception {
+    public SchemaDefinition(final Map<String, Object> properties) throws Exception {
         if (properties.containsKey("metadata")) {
             this.parseMetadataSpec((String) properties.get("metadata"));
         } else {
@@ -58,82 +58,92 @@ public class SchemaDefinition {
             throw new Exception("Missing necessary 'fields' key when parsing schema definition.");
         }
         if (properties.containsKey("conditions")) {
-            this.parseConditionSpec((Map<String,String>) properties.get("conditions"));
+            this.parseConditionSpec((Map<String, String>) properties.get("conditions"));
         } else {
             this.setEmptyConditions();
         }
     }
 
     /**
-     * Copy constructor for SchemaDefinition. In the context of the Storage
-     * Service, this constructor is used to maintain copies of the schema
-     * definition per-request. This ensures no issues will be caused in the
-     * case that the definition is ever modified by another action during
-     * a specific request. The definition of a schema SHOULD be immutable,
-     * however the configurability of the service makes this impossible to
-     * guarantee.
-     * @param definition The original schema definition for the service when
-     * the request was submitted.
+     * Copy constructor for SchemaDefinition. In the context of the Storage Service,
+     * this constructor is used to maintain copies of the schema definition
+     * per-request. This ensures no issues will be caused in the case that the
+     * definition is ever modified by another action during a specific request. The
+     * definition of a schema SHOULD be immutable, however the configurability of
+     * the service makes this impossible to guarantee.
+     * 
+     * @param definition The original schema definition for the service when the
+     *                   request was submitted.
      */
-    public SchemaDefinition(SchemaDefinition definition) {
-        this.metadataMap = new HashMap<String,Object>(definition.getMetadataMap());
-        this.fieldMaps = new ArrayList<Map<String,Object>>(definition.getFieldMaps());
-        this.conditionMaps = new ArrayList<Map<String,Object>>(definition.getConditionMaps());
+    public SchemaDefinition(final SchemaDefinition definition) {
+        this.metadataMap = new HashMap<String, Object>(definition.getMetadataMap());
+        this.fieldMaps = new ArrayList<Map<String, Object>>(definition.getFieldMaps());
+        this.conditionMaps = new ArrayList<Map<String, Object>>(definition.getConditionMaps());
         this.conditionOperatorFactory = definition.getOperatorFactory().getCopy();
     }
 
     /**
      * This method constructs the operator factory used by certain request
-     * comparisons. This class is bootstrapped at runtime to provide the
-     * user with an ability to either extend a basic set of comparisons, or
-     * specify complex or customized comparison types (on object values).
-     * @param  operatorClass A class that defines operators used in condition-field comparisons
-     * @throws Exception     Throws an exception if there is an error loading the operator class.
+     * comparisons. This class is bootstrapped at runtime to provide the user with
+     * an ability to either extend a basic set of comparisons, or specify complex or
+     * customized comparison types (on object values).
+     * 
+     * @param operatorClass A class that defines operators used in condition-field
+     *                      comparisons
+     * @throws Exception Throws an exception if there is an error loading the
+     *                   operator class.
      */
-    private void createOperatorFactory(String operatorClass) throws Exception {
+    private void createOperatorFactory(final String operatorClass) throws Exception {
         this.conditionOperatorFactory = ConditionOperatorParser.build(operatorClass);
     }
 
     /**
-     * Parses a metadata map from a location specified by a string.
-     * This map holds metadata information related to a user schema - a type,
-     * a schema name, etc.
-     * @param  spec      A string pointing to a JSON map containing a schema metadata spec.
-     * @throws Exception Throws an exception in the case that the map could not be parsed.
+     * Parses a metadata map from a location specified by a string. This map holds
+     * metadata information related to a user schema - a type, a schema name, etc.
+     * 
+     * @param spec A string pointing to a JSON map containing a schema metadata
+     *             spec.
+     * @throws Exception Throws an exception in the case that the map could not be
+     *                   parsed.
      */
-    private void parseMetadataSpec(String spec) throws Exception {
-        MetadataParser parser = new MetadataParser(spec);
+    private void parseMetadataSpec(final String spec) throws Exception {
+        final MetadataParser parser = new MetadataParser(spec);
         this.metadataMap = parser.getMetadataMap();
     }
 
     /**
-     * Parses a field map from a location specified by a string.
-     * This map holds a flat list of fields that the user will interact with
-     * through the record interface. Every field holds a set of properties.
-     * @param  spec      A string pointing to a JSON map containing a schema field spec.
-     * @throws Exception Throws an exception in the case that the map could not be parsed.
+     * Parses a field map from a location specified by a string. This map holds a
+     * flat list of fields that the user will interact with through the record
+     * interface. Every field holds a set of properties.
+     * 
+     * @param spec A string pointing to a JSON map containing a schema field spec.
+     * @throws Exception Throws an exception in the case that the map could not be
+     *                   parsed.
      */
-    private void parseFieldSpec(String spec) throws Exception {
-        FieldParser parser = new FieldParser(spec);
+    private void parseFieldSpec(final String spec) throws Exception {
+        final FieldParser parser = new FieldParser(spec);
         this.fieldMaps = parser.getFieldMaps();
     }
 
     /**
-     * Parses a condition map from a location specified by a string and a factory from a given class string.
-     * The condition map holds a flat list of conditions that the user will interact with
-     * through the record interface. Every condition holds a set of properties.
-     * Properties of conditions are mostly immutable, except for values of basic
-     * comparison conditions.
-     * The factory class usually should contain switches for each condition operator referenced
-     * in a condition map. If no factory is provided, the default factory is used, which handles
-     * basic (=, /=, <, >, <=, >=) operations on basic (boolean, float, double, int, string, datetime) datatypes.
-     * If no conditions are found, currently the
-     * @param  conditionMap      A conditionMap containing map and factory keywords
-     * @throws Exception Throws an exception in the case that the map could not be parsed.
+     * Parses a condition map from a location specified by a string and a factory
+     * from a given class string. The condition map holds a flat list of conditions
+     * that the user will interact with through the record interface. Every
+     * condition holds a set of properties. Properties of conditions are mostly
+     * immutable, except for values of basic comparison conditions. The factory
+     * class usually should contain switches for each condition operator referenced
+     * in a condition map. If no factory is provided, the default factory is used,
+     * which handles basic (=, /=, <, >, <=, >=) operations on basic (boolean,
+     * float, double, int, string, datetime) datatypes. If no conditions are found,
+     * currently the
+     * 
+     * @param conditionMap A conditionMap containing map and factory keywords
+     * @throws Exception Throws an exception in the case that the map could not be
+     *                   parsed.
      */
-    private void parseConditionSpec(Map<String,String> conditionMap) throws Exception {
+    private void parseConditionSpec(final Map<String, String> conditionMap) throws Exception {
         if (conditionMap.containsKey("map")) {
-            ConditionParser parser = new ConditionParser((String) conditionMap.get("map"));
+            final ConditionParser parser = new ConditionParser((String) conditionMap.get("map"));
             this.conditionMaps = parser.getConditionMaps();
             if (conditionMap.containsKey("factory")) {
                 this.createOperatorFactory((String) conditionMap.get("factory"));

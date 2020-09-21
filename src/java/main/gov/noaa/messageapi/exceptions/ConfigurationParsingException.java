@@ -1,8 +1,6 @@
 package gov.noaa.messageapi.exceptions;
 
-import java.lang.Exception;
-
-public class ConfigurationParsingException extends Exception {
+public class ConfigurationParsingException extends MessageApiException {
 
     /**
      * Required (generated) serial version ID for serializable class

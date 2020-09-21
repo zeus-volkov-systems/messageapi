@@ -11,7 +11,6 @@ import gov.noaa.messageapi.rejections.DefaultRejection;
 import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.schema.FieldUtils;
 import gov.noaa.messageapi.utils.schema.ConditionUtils;
-//import gov.noaa.messageapi.utils.request.ReasonUtils;
 
 /**
  * All methods in this class should be static utility methods that can
@@ -27,9 +26,9 @@ public class RejectionUtils {
      * @param  records Records to analyze/determine rejections
      * @return         A list of rejections created for the input records.
      */
-    public static List<IRejection> getRequiredFieldRejections (List<IRecord> records) {
-        List<IRejection> rejections = records.stream().map(r -> {
-            List<String> reasons = r.getFields().stream().map(f -> {
+    public static List<IRejection> getRequiredFieldRejections (final List<IRecord> records) {
+        final List<IRejection> rejections = records.stream().map(r -> {
+            final List<String> reasons = r.getFields().stream().map(f -> {
                 if (!FieldUtils.validateRequired(f)) {
                     return ReasonUtils.getMissingRequiredFieldReason(f);
                 }
@@ -47,17 +46,18 @@ public class RejectionUtils {
     }
 
     /**
-     * Return a list of rejections for a given record list by looking at each
-     * record individually, comparing the field values to conditions, and creating
-     * a rejection for any record with field values that do not meet the conditions.
-     * @param  schema A schema holding the comparison operator factory
-     * @param  records A list of record to use for rejection assembly
-     * @return         A list of rejections based on invalid records
+     * Return a list of rejections for a given record list by looking at each record
+     * individually, comparing the field values to conditions, and creating a
+     * rejection for any record with field values that do not meet the conditions.
+     * 
+     * @param schema  A schema holding the comparison operator factory
+     * @param records A list of record to use for rejection assembly
+     * @return A list of rejections based on invalid records
      */
-    public static List<IRejection> getFieldConditionRejections(ISchema schema, List<IRecord> records) {
-        List<IRejection> rejections = records.stream().map(r -> {
+    public static List<IRejection> getFieldConditionRejections(final ISchema schema, final List<IRecord> records) {
+        final List<IRejection> rejections = records.stream().map(r -> {
             if (!FieldUtils.validateConditions(schema, r, ConditionUtils.getTopLevelConditions(r))) {
-                String reason = ReasonUtils.getInvalidFieldReason();
+                final String reason = ReasonUtils.getInvalidFieldReason();
                 return new DefaultRejection(r, reason);
             }
             return null;

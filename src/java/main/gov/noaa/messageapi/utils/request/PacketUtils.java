@@ -13,30 +13,34 @@ import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.packets.DefaultPacket;
 
 import gov.noaa.messageapi.utils.general.ListUtils;
-//import gov.noaa.messageapi.utils.request.SchemaUtils;
-//import gov.noaa.messageapi.utils.request.RejectionUtils;
 
 
 /**
+ * This class contains static utilities related to creating, parsing, routing, or otherwise
+ * manipulating Packets. Packets are containers that hold records and rejections and are
+ * the return type of endpoints. 
  * @author Ryan Berkheimer
  */
 public class PacketUtils {
 
-    public static IPacket create(ISchema schema, List<IRecord> records) {
-        IPacket dataPacket = new DefaultPacket();
-        List<IRejection> primaryRejections = RejectionUtils.getRequiredFieldRejections(records);
-        List<IRecord> filteredRecords = SchemaUtils.filterFieldlessConditions(
-                                         SchemaUtils.filterNonValuedConditions(
-                                           SchemaUtils.filterRejections(records, primaryRejections)));
-        List<IRejection> secondaryRejections = RejectionUtils.getFieldConditionRejections(schema, filteredRecords);
+    public static IPacket create(final ISchema schema, final List<IRecord> records) {
+        final IPacket dataPacket = new DefaultPacket();
+        final List<IRejection> primaryRejections = RejectionUtils.getRequiredFieldRejections(records);
+        final List<IRecord> filteredRecords = SchemaUtils.filterFieldlessConditions(
+                SchemaUtils.filterNonValuedConditions(SchemaUtils.filterRejections(records, primaryRejections)));
+        final List<IRejection> secondaryRejections = RejectionUtils.getFieldConditionRejections(schema,
+                filteredRecords);
         dataPacket.setRecords(SchemaUtils.filterRejections(filteredRecords, secondaryRejections));
-        dataPacket.setRejections(ListUtils.flatten(new ArrayList<List<IRejection>>(Arrays.asList(primaryRejections, secondaryRejections))));
+        dataPacket.setRejections(ListUtils
+                .flatten(new ArrayList<List<IRejection>>(Arrays.asList(primaryRejections, secondaryRejections))));
         return dataPacket;
     }
 
-    public static IPacket combineResults(List<IPacket> packets) {
-        List<IRecord> allRecords = ListUtils.flatten(packets.stream().map(packet -> packet.getRecords()).collect(Collectors.toList()));
-        List<IRejection> allRejections = ListUtils.flatten(packets.stream().map(packet -> packet.getRejections()).collect(Collectors.toList()));
+    public static IPacket combineResults(final List<IPacket> packets) {
+        final List<IRecord> allRecords = ListUtils
+                .flatten(packets.stream().map(packet -> packet.getRecords()).collect(Collectors.toList()));
+        final List<IRejection> allRejections = ListUtils
+                .flatten(packets.stream().map(packet -> packet.getRejections()).collect(Collectors.toList()));
         return new DefaultPacket(allRecords, allRejections);
     }
 

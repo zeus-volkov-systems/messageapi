@@ -15,6 +15,9 @@ import gov.noaa.messageapi.utils.containers.CollectionUtils;
 
 
 /**
+ * This class contains static utilities for creating, parsing, or otherwise manipulating
+ * containers. Containers are record collections and include collections, transformations,
+ * and classifiers.
  * @author Ryan Berkheimer
  */
 public class ContainerUtils {
@@ -29,10 +32,12 @@ public class ContainerUtils {
      * @param  records   The schema records to be converted to container records
      * @return           A list of container records
      */
-    public static List<IContainerRecord> convertSchemaRecords(ISchema schema, IContainer container, IRecord requestRecord, List<IRecord> schemaRecords) {
-        IContainerRecord containerRecordTemplate = createRecordTemplate(container);
+    public static List<IContainerRecord> convertSchemaRecords(final ISchema schema, final IContainer container,
+            final IRecord requestRecord, final List<IRecord> schemaRecords) {
+        final IContainerRecord containerRecordTemplate = createRecordTemplate(container);
         return schemaRecords.stream().map(schemaRecord -> {
-            IContainerRecord containerRecord = CollectionUtils.setFieldValues(containerRecordTemplate.getCopy(), schemaRecord.getFields());
+            final IContainerRecord containerRecord = CollectionUtils.setFieldValues(containerRecordTemplate.getCopy(),
+                    schemaRecord.getFields());
             return CollectionUtils.validateCollectionConditions(schema, containerRecord, requestRecord);
         }).collect(Collectors.toList());
     }
@@ -41,11 +46,14 @@ public class ContainerUtils {
      * Creates an empty record for use in record conversion by copy. Uses the
      * definition of the provided container to create a new empty record object,
      * with
-     * @param  container The container containing a definition that the template ContainerRecord object will be based on
-     * @return           A new, empty,
+     * 
+     * @param container The container containing a definition that the template
+     *                  ContainerRecord object will be based on
+     * @return A new, empty,
      */
-    public static IContainerRecord createRecordTemplate(IContainer container) {
-        List<ICollection> collections = CollectionUtils.buildCollections(container.getDefinition().getCollectionMaps());
+    public static IContainerRecord createRecordTemplate(final IContainer container) {
+        final List<ICollection> collections = CollectionUtils
+                .buildCollections(container.getDefinition().getCollectionMaps());
         return new ContainerRecord(collections);
     }
 

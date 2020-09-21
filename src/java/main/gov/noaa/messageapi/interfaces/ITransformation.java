@@ -4,6 +4,11 @@ import java.util.Map;
 import java.util.List;
 
 /**
+ * The Transformation is a container that consumes a map of transformation ids
+ * and corresponding record lists. Any business logic that manipulates records can be used in a transformation.
+ * Transformation implementations should endeavor to maintain statelessness. The default Transformation implementation
+ * is automatically stateless in the case that the transformed records contain basic field types (Integer, String, Byte, etc.)
+ * and calls a copy method for user defined object types.
  * @author Ryan Berkheimer
  */
 public interface ITransformation {

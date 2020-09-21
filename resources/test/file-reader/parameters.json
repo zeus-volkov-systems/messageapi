@@ -5,6 +5,7 @@
     "conditions": [{"id": "is-relative-path",
                     "type": "comparison",
                     "operator": "contains",
+                    "factory": "dummy",
                     "field": "file-path",
                     "value": "{}"}],
     "collections": [{"id": "coll-1",

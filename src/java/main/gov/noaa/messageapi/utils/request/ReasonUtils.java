@@ -3,6 +3,8 @@ package gov.noaa.messageapi.utils.request;
 import gov.noaa.messageapi.interfaces.IField;
 
 /**
+ * This class contains static utilities for creating or otherwise manipulating
+ * Record Rection Reasons.
  * All methods in this class should be static utility methods that can
  * return or operate on Rejection reasons. Methods in this class should
  * be immutable and prefer parallelizable mechanisms where possible.
@@ -16,7 +18,7 @@ public class ReasonUtils {
      * @param  f The field for which a required value was missing
      * @return   A missing-required-field rejection reason statement
      */
-    public static String getMissingRequiredFieldReason(IField f) {
+    public static String getMissingRequiredFieldReason(final IField f) {
         return new String(String.format("Required field %s was missing a value.", f.getName()));
     }
 
