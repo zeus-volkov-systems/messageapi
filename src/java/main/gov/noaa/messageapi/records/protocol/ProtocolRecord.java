@@ -31,7 +31,7 @@ public class ProtocolRecord implements IProtocolRecord {
     private List<UUID> uuids;
     private String connectionId;
 
-    public ProtocolRecord(IConnection connection, Map<IRecord, Map<String,Object>> recordMap) {
+    public ProtocolRecord(final IConnection connection, final Map<IRecord, Map<String, Object>> recordMap) {
         this.setConnectionId(connection.getId());
         this.setTransformationMap(connection.getTransformationMap());
         this.setRecordMap(recordMap);
@@ -42,7 +42,7 @@ public class ProtocolRecord implements IProtocolRecord {
         return this.connectionId;
     }
 
-    public Map<String, Map<String,Object>> getTransformationMap(){
+    public Map<String, Map<String, Object>> getTransformationMap() {
         return this.transformationMap;
     }
 
@@ -54,13 +54,13 @@ public class ProtocolRecord implements IProtocolRecord {
         return this.uuids;
     }
 
-    public Map<IRecord,Map<String,Object>> getRecordMap() {
+    public Map<IRecord, Map<String, Object>> getRecordMap() {
         return this.recordMap;
     }
 
-    public List<IRecord> getRecordsByCollection(String collectionId) {
-        List<IRecord> collectionRecords = this.recordMap.entrySet().stream().filter(e -> {
-            if (((String)e.getValue().get("COLLECTION")).equals(collectionId)) {
+    public List<IRecord> getRecordsByCollection(final String collectionId) {
+        final List<IRecord> collectionRecords = this.recordMap.entrySet().stream().filter(e -> {
+            if (((String) e.getValue().get("COLLECTION")).equals(collectionId)) {
                 return true;
             }
             return false;
@@ -71,9 +71,9 @@ public class ProtocolRecord implements IProtocolRecord {
         return new ArrayList<IRecord>();
     }
 
-    public List<IRecord> getRecordsByUUID(UUID uuid) {
-        List<IRecord> uuidRecords = this.recordMap.entrySet().stream().filter(e -> {
-            if (((UUID)e.getValue().get("UUID")).equals(uuid)) {
+    public List<IRecord> getRecordsByUUID(final UUID uuid) {
+        final List<IRecord> uuidRecords = this.recordMap.entrySet().stream().filter(e -> {
+            if (((UUID) e.getValue().get("UUID")).equals(uuid)) {
                 return true;
             }
             return false;
@@ -84,8 +84,8 @@ public class ProtocolRecord implements IProtocolRecord {
         return new ArrayList<IRecord>();
     }
 
-    public List<IRecord> getRecordsByUUID(String uuid) {
-        List<IRecord> uuidRecords = this.recordMap.entrySet().stream().filter(e -> {
+    public List<IRecord> getRecordsByUUID(final String uuid) {
+        final List<IRecord> uuidRecords = this.recordMap.entrySet().stream().filter(e -> {
             if (((UUID) e.getValue().get("UUID")).equals(UUID.fromString(uuid))) {
                 return true;
             }
@@ -98,10 +98,10 @@ public class ProtocolRecord implements IProtocolRecord {
     }
 
     @SuppressWarnings("unchecked")
-    public List<IRecord> getRecordsByClassifier(String key, Object value) {
-        List<IRecord> classRecords = this.recordMap.entrySet().stream().filter(e -> {
-            if (((Map<String,Object>)e.getValue().get("CLASSIFIERS")).keySet().contains(key)) {
-                if (((List<String>)((Map<String,Object>)e.getValue().get("CLASSIFIERS")).get(key)).contains(value)) {
+    public List<IRecord> getRecordsByClassifier(final String key, final Object value) {
+        final List<IRecord> classRecords = this.recordMap.entrySet().stream().filter(e -> {
+            if (((Map<String, Object>) e.getValue().get("CLASSIFIERS")).keySet().contains(key)) {
+                if (((List<String>) ((Map<String, Object>) e.getValue().get("CLASSIFIERS")).get(key)).contains(value)) {
                     return true;
                 }
             }
@@ -114,15 +114,18 @@ public class ProtocolRecord implements IProtocolRecord {
     }
 
     @SuppressWarnings("unchecked")
-    public List<IRecord> getRecordsByTransformation(String transformationId) {
+    public List<IRecord> getRecordsByTransformation(final String transformationId) {
         if (this.getTransformationMap().containsKey(transformationId)) {
-            ITransformation transformationInstance = (ITransformation)this.getTransformationMap().get(transformationId).get("instance");
-            Map<String,String> parameterMapSpec = (Map<String,String>)this.getTransformationMap().get(transformationId).get("parameters");
-            String uuidParam = ProtocolRecordUtils.getUUIDParameter(parameterMapSpec);
-            Map<String,List<IRecord>> parameterMap = ProtocolRecordUtils.buildParameterMap(this, parameterMapSpec);
+            final ITransformation transformationInstance = (ITransformation) this.getTransformationMap()
+                    .get(transformationId).get("instance");
+            final Map<String, String> parameterMapSpec = (Map<String, String>) this.getTransformationMap()
+                    .get(transformationId).get("parameters");
+            final String uuidParam = ProtocolRecordUtils.getUUIDParameter(parameterMapSpec);
+            final Map<String, List<IRecord>> parameterMap = ProtocolRecordUtils.buildParameterMap(this,
+                    parameterMapSpec);
             if (uuidParam != null && !uuidParam.isEmpty()) {
                 return ListUtils.flatten(this.getUUIDs().stream().map(uuid -> {
-                    Map<String,List<IRecord>> uuidParams = new HashMap<String,List<IRecord>>(parameterMap);
+                    final Map<String, List<IRecord>> uuidParams = new HashMap<String, List<IRecord>>(parameterMap);
                     uuidParams.replace(uuidParam, this.getRecordsByUUID(uuid));
                     return transformationInstance.process(uuidParams);
                 }).collect(Collectors.toList()));
@@ -133,19 +136,19 @@ public class ProtocolRecord implements IProtocolRecord {
         return null;
     }
 
-    private void setTransformationMap(Map<String, Map<String,Object>> transformationMap) {
+    private void setTransformationMap(final Map<String, Map<String, Object>> transformationMap) {
         this.transformationMap = transformationMap;
     }
 
-    private void setConnectionId(String connectionId) {
+    private void setConnectionId(final String connectionId) {
         this.connectionId = connectionId;
     }
 
-    private void setRecordMap(Map<IRecord, Map<String,Object>> recordMap) {
+    private void setRecordMap(final Map<IRecord, Map<String, Object>> recordMap) {
         this.recordMap = recordMap;
     }
 
-    private void setUUIDs(Map<IRecord, Map<String,Object>> recordMap) {
+    private void setUUIDs(final Map<IRecord, Map<String, Object>> recordMap) {
         this.uuids = ListUtils.eliminateDuplicates(recordMap.values().stream().map(v -> {
             return (UUID) v.get("UUID");
         }).collect(Collectors.toList()));

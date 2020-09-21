@@ -15,17 +15,17 @@ public class BaseRejection {
     private List<String> reasons = null;
     private IRecord record = null;
 
-    public BaseRejection(IRecord record) {
+    public BaseRejection(final IRecord record) {
         setRecord(record);
         initializeReasons();
     }
 
-    public BaseRejection(IRecord record, List<String> reasons) {
+    public BaseRejection(final IRecord record, final List<String> reasons) {
         setRecord(record);
         setReasons(reasons);
     }
 
-    public BaseRejection(IRejection rejection) {
+    public BaseRejection(final IRejection rejection) {
         setRecord(rejection.getRecord());
         setReasons(rejection.getReasons());
     }
@@ -42,15 +42,15 @@ public class BaseRejection {
         this.reasons = Collections.synchronizedList(new ArrayList<String>());
     }
 
-    public void addReason(String reason) {
+    public void addReason(final String reason) {
         this.reasons.add(reason);
     }
 
-    private void setRecord(IRecord record) {
+    private void setRecord(final IRecord record) {
         this.record = record;
     }
 
-    private void setReasons(List<String> reasons) {
+    private void setReasons(final List<String> reasons) {
         this.reasons = Collections.synchronizedList(new ArrayList<String>(reasons));
     }
 

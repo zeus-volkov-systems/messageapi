@@ -28,18 +28,18 @@ public class ContainerRecord implements IContainerRecord {
      * from an existing set of Collections.
      * @param collections Collections to be used in ContainerRecord construction
      */
-    public ContainerRecord(List<ICollection> collections) {
+    public ContainerRecord(final List<ICollection> collections) {
         this.generateId();
         this.setCollections(collections);
     }
 
-    public ContainerRecord(IContainerRecord containerRecord) {
+    public ContainerRecord(final IContainerRecord containerRecord) {
         this.generateId();
         this.setCollections(containerRecord.getCollections());
         this.setTransformations(containerRecord.getTransformations());
     }
 
-    public ContainerRecord(List<ICollection> collections, List<ITransformation> transformations) {
+    public ContainerRecord(final List<ICollection> collections, final List<ITransformation> transformations) {
         this.generateId();
         this.setCollections(collections);
         this.setTransformations(transformations);
@@ -65,13 +65,13 @@ public class ContainerRecord implements IContainerRecord {
         this.id = UUID.randomUUID();
     }
 
-    private void setCollections(List<ICollection> collections) {
+    private void setCollections(final List<ICollection> collections) {
         this.collections = collections.stream().map(collection -> {
             return collection.getCopy();
         }).collect(Collectors.toList());
     }
 
-    private void setTransformations(List<ITransformation> transformations) {
+    private void setTransformations(final List<ITransformation> transformations) {
         this.transformations = transformations;
     }
 

@@ -18,7 +18,7 @@ public class BaseResponse {
     private List<IRecord> records = null;
     private boolean complete = false;
 
-    public BaseResponse(IRequest request) {
+    public BaseResponse(final IRequest request) {
         this.setRequest(request);
         this.setComplete(false);
     }
@@ -39,19 +39,19 @@ public class BaseResponse {
         return this.complete;
     }
 
-    public void setRecords(List<IRecord> records) {
+    public void setRecords(final List<IRecord> records) {
         this.records = records;
     }
 
-    public void setRejections(List<IRejection> rejections) {
+    public void setRejections(final List<IRejection> rejections) {
         this.rejections = rejections;
     }
 
-    public void setComplete(boolean complete) {
+    public void setComplete(final boolean complete) {
         this.complete = complete;
     }
 
-    private void setRequest(IRequest request) {
+    private void setRequest(final IRequest request) {
         this.request = request.getCopy(Arrays.asList("records"));
     }
 

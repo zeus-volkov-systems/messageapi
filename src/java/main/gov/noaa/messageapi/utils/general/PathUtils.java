@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 
 /**
+ * This class contains static utilities for path manipulation.
+ * This class primarily exists to facilitate keyword reconciliation.
+ * It was used heavily for development, and may deprecate in a future release.
  * @author Ryan Berkheimer
  */
 public class PathUtils {
@@ -21,37 +24,37 @@ public class PathUtils {
      * @param  path The path containing a {} character to be replaced by the relative package path.
      * @return      Returns the path with {} replaced by the package path.
      */
-    public static String reconcileKeywords(String path) {
+    public static String reconcileKeywords(final String path) {
         if (path.contains("{}")) {
-            File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+            final File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
             String replaceTest;
             String replaceMain;
             String returnPath;
             switch (EnvUtils.getOS()) {
-            case "osx":
-                replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
-                replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
-                returnPath = path.replace("{}", replaceMain);
-                return returnPath;
-            case "unix":
-                replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
-                replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
-                returnPath = path.replace("{}", replaceMain);
-                return returnPath;
-            default:
-                replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
-                replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
-                returnPath = path.replace("{}", replaceMain);
-                return returnPath;
+                case "osx":
+                    replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                    replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
+                    returnPath = path.replace("{}", replaceMain);
+                    return returnPath;
+                case "unix":
+                    replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                    replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
+                    returnPath = path.replace("{}", replaceMain);
+                    return returnPath;
+                default:
+                    replaceTest = StringUtils.replaceLast(jarDir.getAbsolutePath(), "/classes/java/test", "");
+                    replaceMain = StringUtils.replaceLast(replaceTest, "/classes/java/main", "");
+                    returnPath = path.replace("{}", replaceMain);
+                    return returnPath;
             }
         } else {
             return path;
         }
     }
 
-    public static String reconcileKeywords(String path, String keyword) {
+    public static String reconcileKeywords(final String path, final String keyword) {
         if (path.contains(keyword)) {
-            File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
+            final File jarDir = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath());
             String replaceTest;
             String replaceMain;
             String returnPath;
@@ -77,9 +80,9 @@ public class PathUtils {
         }
     }
 
-    public static List<String> reconcileKeywords(List<String> paths) {
-        List<String> l = new ArrayList<String>();
-        for (String path: paths) {
+    public static List<String> reconcileKeywords(final List<String> paths) {
+        final List<String> l = new ArrayList<String>();
+        for (final String path : paths) {
             l.add(reconcileKeywords(path));
         }
         return l;

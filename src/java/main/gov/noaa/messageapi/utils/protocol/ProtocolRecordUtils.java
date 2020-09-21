@@ -11,6 +11,8 @@ import java.util.Map;
 
 
 /**
+ * This class contains static utilities for parsing, creating, or otherwise manipulating
+ * internal protocol record components.
  * @author Ryan Berkheimer
  */
 public class ProtocolRecordUtils {
@@ -23,31 +25,34 @@ public class ProtocolRecordUtils {
      * @param  parameterMap A parameter map containing keys/values of transformation map collections
      * @return              True if there's a UUID key, false otherwise.
      */
-    public static String getUUIDParameter(Map<String,String> parameterMap) {
-        List<String> uuidStrings = ListUtils.removeAllNulls(parameterMap.entrySet().stream().map(e -> {
+    public static String getUUIDParameter(final Map<String, String> parameterMap) {
+        final List<String> uuidStrings = ListUtils.removeAllNulls(parameterMap.entrySet().stream().map(e -> {
             if (e.getValue().equals("UUID")) {
                 return e.getKey();
             }
             return null;
         }).collect(Collectors.toList()));
-        if(uuidStrings.size() == 1) {
+        if (uuidStrings.size() == 1) {
             return uuidStrings.get(0);
         }
         return null;
     }
 
-    public static Map<String,List<IRecord>> buildParameterMap(IProtocolRecord protocolRecord, Map<String,String> parameterMapSpec) {
-        List<Map.Entry<String,List<IRecord>>> entries = ProtocolRecordUtils.buildParameterEntries(protocolRecord, parameterMapSpec);
-        Map<String,List<IRecord>> parameterMap = new HashMap<String,List<IRecord>>();
+    public static Map<String, List<IRecord>> buildParameterMap(final IProtocolRecord protocolRecord,
+            final Map<String, String> parameterMapSpec) {
+        final List<Map.Entry<String, List<IRecord>>> entries = ProtocolRecordUtils.buildParameterEntries(protocolRecord,
+                parameterMapSpec);
+        final Map<String, List<IRecord>> parameterMap = new HashMap<String, List<IRecord>>();
         entries.stream().forEach(e -> {
             parameterMap.put(e.getKey(), e.getValue());
         });
         return parameterMap;
     }
 
-    public static List<Map.Entry<String,List<IRecord>>> buildParameterEntries(IProtocolRecord protocolRecord, Map<String,String> parameterMapSpec) {
+    public static List<Map.Entry<String, List<IRecord>>> buildParameterEntries(final IProtocolRecord protocolRecord,
+            final Map<String, String> parameterMapSpec) {
         return ListUtils.removeAllNulls(parameterMapSpec.entrySet().stream().map(e -> {
-            String [] parameterValueArray = e.getValue().split("=");
+            final String[] parameterValueArray = e.getValue().split("=");
             switch(parameterValueArray[0]) {
                 case "CLASSIFIER":
                     return new AbstractMap.SimpleEntry<String,List<IRecord>>(e.getKey(),

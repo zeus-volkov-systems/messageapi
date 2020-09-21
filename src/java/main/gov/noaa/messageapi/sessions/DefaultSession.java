@@ -24,17 +24,19 @@ public class DefaultSession extends BaseSession implements ISession {
      * @param p An IProtocol object
      * @param s An ISchema object
      */
-    public DefaultSession(IContainer c, IProtocol p, ISchema s) {
+    public DefaultSession(final IContainer c, final IProtocol p, final ISchema s) {
         super(c, p, s);
     }
 
     /**
-     * Constructs a new publish session directly from a text map. The text
-     * map should contain all the properties needed for Session Construction.
-     * @param  sessionSpec A text based map containing session construction parameters
-     * @throws Exception   Throws exception if error creating session
+     * Constructs a new publish session directly from a text map. The text map
+     * should contain all the properties needed for Session Construction.
+     * 
+     * @param sessionSpec A text based map containing session construction
+     *                    parameters
+     * @throws Exception Throws exception if error creating session
      */
-    public DefaultSession(String sessionSpec) throws Exception {
+    public DefaultSession(final String sessionSpec) throws Exception {
         super(sessionSpec);
     }
 

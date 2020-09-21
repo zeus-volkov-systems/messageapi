@@ -31,8 +31,7 @@ public class BaseRequest {
     protected List<IRecord> records;
     private IRecord requestRecord;
 
-    public BaseRequest(String type, ISchema schema, IContainer container,
-                        IProtocol protocol) {
+    public BaseRequest(final String type, final ISchema schema, final IContainer container, final IProtocol protocol) {
         this.setType(type);
         this.copySchema(schema);
         this.copyContainer(container);
@@ -44,7 +43,7 @@ public class BaseRequest {
     /**
      * Standard constructor from request - default is to deep copy everything.
      */
-    public BaseRequest(IRequest request) {
+    public BaseRequest(final IRequest request) {
         this.setType(request.getType());
         this.copySchema(request.getSchema());
         this.copyContainer(request.getContainer());
@@ -54,12 +53,14 @@ public class BaseRequest {
     }
 
     /**
-     * Allows specification of a list of named components that will be deep-copied on constructor.
-     * Allowed values are 'schema', 'container', 'protocol', 'records'
+     * Allows specification of a list of named components that will be deep-copied
+     * on constructor. Allowed values are 'schema', 'container', 'protocol',
+     * 'records'
+     * 
      * @param request
      * @param copyComponents
      */
-    public BaseRequest(IRequest request, List<String> copyComponents) {
+    public BaseRequest(final IRequest request, final List<String> copyComponents) {
         this.setType(request.getType());
         if (copyComponents.contains("schema")) {
             this.copySchema(request.getSchema());
@@ -90,12 +91,13 @@ public class BaseRequest {
     }
 
     /**
-     * Creates a new record in a request, making sure the conditions are null,
-     * and returns it for update by the user.
+     * Creates a new record in a request, making sure the conditions are null, and
+     * returns it for update by the user.
+     * 
      * @return A new IRecord belonging to the request records collection
      */
     public IRecord createRecord() {
-        IRecord r = this.schema.createRecord();
+        final IRecord r = this.schema.createRecord();
         this.records.add(ConditionUtils.nullifyComparisonConditions(r));
         return r;
     }
@@ -124,48 +126,49 @@ public class BaseRequest {
         return this.requestRecord;
     }
 
-    public void setCondition(String conditionId, Object value) {
+    public void setCondition(final String conditionId, final Object value) {
         this.getRequestRecord().setCondition(conditionId, value);
     }
 
-    private void setType(String type) {
+    private void setType(final String type) {
         this.type = type;
     }
 
-    private void copySchema(ISchema schema) {
+    private void copySchema(final ISchema schema) {
         this.schema = (ISchema) schema.getCopy();
     }
 
-    private void copyContainer(IContainer container) {
+    private void copyContainer(final IContainer container) {
         this.container = (IContainer) container.getCopy();
     }
 
-    private void copyProtocol(IProtocol protocol) {
+    private void copyProtocol(final IProtocol protocol) {
         this.protocol = (IProtocol) protocol.getCopy();
     }
 
-    protected void copyRecords(List<IRecord> records) {
-        this.records = Collections.synchronizedList(records.stream().map(r -> r.getCopy()).collect(Collectors.toList()));
+    protected void copyRecords(final List<IRecord> records) {
+        this.records = Collections
+                .synchronizedList(records.stream().map(r -> r.getCopy()).collect(Collectors.toList()));
     }
 
-    private void setSchema(ISchema schema) {
+    private void setSchema(final ISchema schema) {
         this.schema = schema;
     }
 
-    private void setContainer(IContainer container) {
+    private void setContainer(final IContainer container) {
         this.container = container;
     }
 
-    private void setProtocol(IProtocol protocol) {
+    private void setProtocol(final IProtocol protocol) {
         this.protocol = protocol;
     }
 
-    public void setRecords(List<IRecord> records) {
+    public void setRecords(final List<IRecord> records) {
         this.records = records;
     }
 
-    private void setRequestRecord(ISchema schema) {
-        IRecord r = schema.createRecord();
+    private void setRequestRecord(final ISchema schema) {
+        final IRecord r = schema.createRecord();
         this.requestRecord = r;
     }
 

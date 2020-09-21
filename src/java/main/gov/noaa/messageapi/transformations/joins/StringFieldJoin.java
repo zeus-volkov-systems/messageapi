@@ -65,20 +65,19 @@ public class StringFieldJoin extends BaseTransformation implements ITransformati
     private IField joinField = null;
     private IField collectionField = null;
 
-    public StringFieldJoin(Map<String,Object> params) {
+    public StringFieldJoin(final Map<String, Object> params) {
         super(params);
         this.setJoinField((String) params.get("join-field"));
         this.setCollectionField((String) params.get("collection-field"));
     }
 
-    public List<IRecord> process(Map<String,List<IRecord>> transformationMap) {
+    public List<IRecord> process(final Map<String, List<IRecord>> transformationMap) {
         return transformationMap.get("parent").stream().map(parentRecord -> {
-            List<IField> recordFields = parentRecord.getFields();
-            IField collectionField = new DefaultField(this.getCollectionField());
+            final List<IField> recordFields = parentRecord.getFields();
+            final IField collectionField = new DefaultField(this.getCollectionField());
             collectionField.setValue(transformationMap.get("child").stream()
-            .filter(childRecord ->
-            ((String)(parentRecord.getField(this.getJoinField().getId()).getValue()))
-            .equals((String)(childRecord.getField(this.getJoinField().getId()).getValue()))));
+                    .filter(childRecord -> ((String) (parentRecord.getField(this.getJoinField().getId()).getValue()))
+                            .equals((String) (childRecord.getField(this.getJoinField().getId()).getValue()))));
             recordFields.add(collectionField);
             return new SchemaRecord(recordFields);
         }).collect(Collectors.toList());
@@ -92,23 +91,23 @@ public class StringFieldJoin extends BaseTransformation implements ITransformati
         return this.collectionField;
     }
 
-    private void setCollectionField(String collectionField) {
+    private void setCollectionField(final String collectionField) {
         this.collectionField = new DefaultField(this.makeCollectionFieldMap(collectionField));
     }
 
-    private void setJoinField(String joinField) {
+    private void setJoinField(final String joinField) {
         this.joinField = new DefaultField(this.makeJoinFieldMap(joinField));
     }
 
-    private Map<String,Object> makeJoinFieldMap(String joinField) {
-        Map<String,Object> fieldMap = new HashMap<String,Object>();
+    private Map<String, Object> makeJoinFieldMap(final String joinField) {
+        final Map<String, Object> fieldMap = new HashMap<String, Object>();
         fieldMap.put("id", joinField);
         fieldMap.put("required", false);
         return fieldMap;
     }
 
-    private Map<String,Object> makeCollectionFieldMap(String collectionField) {
-        Map<String,Object> fieldMap = new HashMap<String,Object>();
+    private Map<String, Object> makeCollectionFieldMap(final String collectionField) {
+        final Map<String, Object> fieldMap = new HashMap<String, Object>();
         fieldMap.put("id", collectionField);
         fieldMap.put("type", "List<IRecord>");
         fieldMap.put("required", false);

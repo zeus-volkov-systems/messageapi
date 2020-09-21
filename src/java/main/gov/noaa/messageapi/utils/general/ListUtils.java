@@ -8,6 +8,8 @@ import java.util.stream.StreamSupport;
 
 
 /**
+ * This class contains static, idempotent utilities for generic java list manipulation
+ * and analysis.
  * @author Ryan Berkheimer
  */
 public class ListUtils {
@@ -17,34 +19,39 @@ public class ListUtils {
      * @param  list The list for which duplicates may exist
      * @return      The input list as a list of a set
      */
-    public static <T> List<T> eliminateDuplicates(List<T> list) {
+    public static <T> List<T> eliminateDuplicates(final List<T> list) {
         return list.stream().distinct().collect(Collectors.toList());
     }
 
     /**
      * Flattens a collection of lists into a single flat list.
-     * @param  collection The collection of lists to flatten
-     * @return      A flat list created from all the comcollectioned elements of the nested input list.
+     * 
+     * @param collection The collection of lists to flatten
+     * @return A flat list created from all the comcollectioned elements of the
+     *         nested input list.
      */
-    public static <T> List<T> flatten(Collection<List<T>> collection) {
+    public static <T> List<T> flatten(final Collection<List<T>> collection) {
         return collection.stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     /**
      * Checks a list, returning true if all elements are null.
-     * @param  array The array to check for nulls.
-     * @return       true if all elements are null, false if there are any non-null elements.
+     * 
+     * @param array The array to check for nulls.
+     * @return true if all elements are null, false if there are any non-null
+     *         elements.
      */
-    public static boolean isAllNulls(Iterable<?> array) {
+    public static boolean isAllNulls(final Iterable<?> array) {
         return StreamSupport.stream(array.spliterator(), true).allMatch(o -> o == null);
     }
 
     /**
      * Returns a new list, removing all null elements from the list.
-     * @param  list The input list possibly containing nulls
-     * @return      The new list, same as old list with any nulls filtered out.
+     * 
+     * @param list The input list possibly containing nulls
+     * @return The new list, same as old list with any nulls filtered out.
      */
-    public static <T> List<T> removeAllNulls(List<T> list) {
+    public static <T> List<T> removeAllNulls(final List<T> list) {
         return list.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 

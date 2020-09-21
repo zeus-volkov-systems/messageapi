@@ -10,15 +10,17 @@ import gov.noaa.messageapi.transformations.BaseTransformation;
 
 
 /**
+ * This class is currently stubbed - it does nothing but extract a reduce-list key from the transformation map
+ * and return the records associated with this key.
  * @author Ryan Berkheimer
  */
 public class ReduceTransformation extends BaseTransformation implements ITransformation {
 
-    public ReduceTransformation(Map<String,Object> params) {
+    public ReduceTransformation(final Map<String, Object> params) {
         super(params);
     }
 
-    public List<IRecord> process(Map<String,List<IRecord>> transformationMap) {
+    public List<IRecord> process(final Map<String, List<IRecord>> transformationMap) {
         return transformationMap.get("reduce-list");
     }
 

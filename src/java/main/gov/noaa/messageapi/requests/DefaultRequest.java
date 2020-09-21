@@ -16,15 +16,15 @@ import gov.noaa.messageapi.responses.DefaultResponse;
  */
 public class DefaultRequest extends BaseRequest implements IRequest {
 
-    public DefaultRequest(ISchema schema, IContainer container, IProtocol protocol) {
+    public DefaultRequest(final ISchema schema, final IContainer container, final IProtocol protocol) {
         super("default", schema, container, protocol);
     }
 
-    public DefaultRequest(IRequest request) {
+    public DefaultRequest(final IRequest request) {
         super(request);
     }
 
-    public DefaultRequest(IRequest request, List<String> copyComponents) {
+    public DefaultRequest(final IRequest request, final List<String> copyComponents) {
         super(request, copyComponents);
     }
 
@@ -32,7 +32,7 @@ public class DefaultRequest extends BaseRequest implements IRequest {
         return new DefaultRequest(this);
     }
 
-    public DefaultRequest getCopy(List<String> copyComponents) {
+    public DefaultRequest getCopy(final List<String> copyComponents) {
         return new DefaultRequest(this, copyComponents);
     }
 

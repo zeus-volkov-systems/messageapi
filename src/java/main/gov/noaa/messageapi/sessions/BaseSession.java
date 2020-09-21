@@ -17,15 +17,15 @@ public class BaseSession {
     private IProtocol protocol;
     private ISchema schema;
 
-    public BaseSession(IContainer c, IProtocol p, ISchema s) {
+    public BaseSession(final IContainer c, final IProtocol p, final ISchema s) {
         this.setContainer(c);
         this.setProtocol(p);
         this.setSchema(s);
         this.initialize(c, p, s);
     }
 
-    public BaseSession(String spec) throws Exception {
-        ISession session = new SessionPluginParser(spec).build();
+    public BaseSession(final String spec) throws Exception {
+        final ISession session = new SessionPluginParser(spec).build();
         this.setContainer(session.getContainer());
         this.setProtocol(session.getProtocol());
         this.setSchema(session.getSchema());
@@ -43,21 +43,21 @@ public class BaseSession {
         return this.protocol;
     }
 
-    private void initialize(IContainer c, IProtocol p, ISchema s) {
+    private void initialize(final IContainer c, final IProtocol p, final ISchema s) {
         c.initialize(p, s);
         p.initialize(c, s);
         s.initialize(c, p);
     }
 
-    private void setContainer(IContainer c) {
+    private void setContainer(final IContainer c) {
         this.container = c;
     }
 
-    private void setProtocol(IProtocol p) {
+    private void setProtocol(final IProtocol p) {
         this.protocol = p;
     }
 
-    private void setSchema(ISchema s) {
+    private void setSchema(final ISchema s) {
         this.schema = s;
     }
 

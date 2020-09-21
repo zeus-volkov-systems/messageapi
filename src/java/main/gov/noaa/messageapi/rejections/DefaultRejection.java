@@ -10,20 +10,20 @@ import gov.noaa.messageapi.interfaces.IRejection;
  */
 public class DefaultRejection extends BaseRejection implements IRejection {
 
-    public DefaultRejection(IRecord record) {
+    public DefaultRejection(final IRecord record) {
         super(record);
     }
 
-    public DefaultRejection(IRecord record, String reason) {
+    public DefaultRejection(final IRecord record, final String reason) {
         super(record);
         addReason(reason);
     }
 
-    public DefaultRejection(IRecord record, List<String> reasons) {
+    public DefaultRejection(final IRecord record, final List<String> reasons) {
         super(record, reasons);
     }
 
-    public DefaultRejection(IRejection rejection) {
+    public DefaultRejection(final IRejection rejection) {
         super(rejection);
     }
 

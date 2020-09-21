@@ -16,6 +16,10 @@ import org.json.simple.parser.JSONParser;
 
 
 /**
+ * This class contains static utilities that handle all manifest and parameter
+ * configuration map JSON format parsing. There are two principal methods in this 
+ * class that are mutually recursive to parse JSON arrays and maps into json.simple.JSONArray
+ * and json.simple.JSONObject respectively. These are then returned as native Java Maps and Lists.
  * @author Ryan Berkheimer
  */
 public class JsonUtils {
@@ -27,110 +31,106 @@ public class JsonUtils {
     }
 
 
-    public static Reader read(String resource) throws Exception {
+    public static Reader read(final String resource) throws Exception {
         try {
-            Reader reader = new FileReader(resource);
+            final Reader reader = new FileReader(resource);
             return reader;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println("Exception thrown while reading file: " + e.getMessage());
             return null;
         }
     }
 
-
-    public static JSONObject parse(String resource) throws Exception {
+    public static JSONObject parse(final String resource) throws Exception {
         try {
-            Reader jsonFile = read(resource);
-            Object jsonObj = parser.parse(jsonFile);
+            final Reader jsonFile = read(resource);
+            final Object jsonObj = parser.parse(jsonFile);
             jsonFile.close();
             return (JSONObject) jsonObj;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println("Exception thrown while parsing JSONObject: " + e.getMessage());
             return null;
         }
     }
 
-
     @SuppressWarnings("unchecked")
-    public static Set<String> keys(JSONObject model) throws Exception {
+    public static Set<String> keys(final JSONObject model) throws Exception {
         try {
-            Set<String> keySet = (Set<String>) model.keySet();
+            final Set<String> keySet = (Set<String>) model.keySet();
             return keySet;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println("Exception thrown while gathering keys: " + e.getMessage());
             return null;
         }
     }
 
-
-    public static boolean hasKey(JSONObject model, String k) throws Exception {
+    public static boolean hasKey(final JSONObject model, final String k) throws Exception {
         try {
             if (Arrays.asList(keys(model)).contains((Object) k)) {
                 return true;
             }
             return false;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println("Exception thrown while testing has key: " + e.getMessage());
             return false;
         }
     }
 
-
-    public static String getType(JSONObject model, String k) throws Exception {
+    public static String getType(final JSONObject model, final String k) throws Exception {
         try {
-            Object v = model.get(k);
+            final Object v = model.get(k);
             return v.getClass().getName();
-        } catch (Exception e){
+        } catch (final Exception e) {
             System.err.println("Exception thrown while getting the value type: " + e.getMessage());
             return null;
         }
     }
 
-    public static Object get(JSONObject model, String k) {
-        Object v = model.get(k);
+    public static Object get(final JSONObject model, final String k) {
+        final Object v = model.get(k);
         return v;
     }
 
-    public static HashMap<String, Object> convertObject(JSONObject jsonObject) throws Exception {
+    public static HashMap<String, Object> convertObject(final JSONObject jsonObject) throws Exception {
         try {
-            HashMap<String, Object> objMap = new HashMap<String, Object>();
-            Set<String> keys = JsonUtils.keys(jsonObject);
-            Iterator<String> it = keys.iterator();
+            final HashMap<String, Object> objMap = new HashMap<String, Object>();
+            final Set<String> keys = JsonUtils.keys(jsonObject);
+            final Iterator<String> it = keys.iterator();
             while (it.hasNext()) {
-                String currKey = it.next();
-                Object currObj = JsonUtils.get(jsonObject, currKey);
+                final String currKey = it.next();
+                final Object currObj = JsonUtils.get(jsonObject, currKey);
                 if (currObj instanceof JSONArray) {
                     objMap.put(currKey, (Object) convertArray((JSONArray) currObj));
-                } else if (currObj instanceof JSONObject){
+                } else if (currObj instanceof JSONObject) {
                     objMap.put(currKey, (Object) convertObject((JSONObject) currObj));
                 } else {
                     objMap.put(currKey, currObj);
                 }
             }
             return objMap;
-        } catch (Exception e){
+        } catch (final Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Object> convertArray(JSONArray jsonArray) throws Exception {
+    public static List<Object> convertArray(final JSONArray jsonArray) throws Exception {
         try {
-            List<Object> arrays = new ArrayList<Object>();
-            Iterator<Object> it = jsonArray.iterator();
+            final List<Object> arrays = new ArrayList<Object>();
+            final Iterator<Object> it = jsonArray.iterator();
             while (it.hasNext()) {
-                Object currObj = it.next();
+                final Object currObj = it.next();
                 if (currObj instanceof JSONArray) {
                     arrays.add((Object) convertArray((JSONArray) currObj));
-                } else if (currObj instanceof JSONObject){
+                } else if (currObj instanceof JSONObject) {
                     arrays.add((Object) convertObject((JSONObject) currObj));
                 } else {
                     arrays.add(currObj);
                 }
             }
             return arrays;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return null;
         }

@@ -33,20 +33,21 @@ public class NativeTransformation extends BaseTransformation implements ITransfo
     private synchronized native long create(Map<String,List<IRecord>> recordMap);
     private synchronized native void release(long instanceId);
 
-    public NativeTransformation(Map<String,Object> params) {
+    public NativeTransformation(final Map<String, Object> params) {
         super(params);
-        this.loadNativeLib((String)params.get("native-library"));
+        this.loadNativeLib((String) params.get("native-library"));
     }
 
-    public void loadNativeLib(String nativeLibrary) {
+    public void loadNativeLib(final String nativeLibrary) {
         try {
             System.load(nativeLibrary);
-        } catch (Exception e) {}
+        } catch (final Exception e) {
+        }
     }
 
-    public List<IRecord> process(Map<String,List<IRecord>> recordMap) {
-        long nativeInstance = this.create(recordMap);
-        List<IRecord> transformedRecords =  this.process(nativeInstance);
+    public List<IRecord> process(final Map<String, List<IRecord>> recordMap) {
+        final long nativeInstance = this.create(recordMap);
+        final List<IRecord> transformedRecords = this.process(nativeInstance);
         this.release(nativeInstance);
         return transformedRecords;
     }
