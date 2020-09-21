@@ -13,11 +13,11 @@ import gov.noaa.messageapi.metadata.DefaultMetadata;
  */
 public class DefaultContainer extends BaseContainer implements IContainer {
 
-    public DefaultContainer(Map<String, Object> properties) {
+    public DefaultContainer(final Map<String, Object> properties) {
         super(properties);
     }
 
-    public DefaultContainer(IContainer container) {
+    public DefaultContainer(final IContainer container) {
         super(container);
         this.setMetadata(container.getDefinition().getMetadataMap());
     }
@@ -26,18 +26,19 @@ public class DefaultContainer extends BaseContainer implements IContainer {
         return new DefaultContainer(this);
     }
 
-    public void initialize(IProtocol p, ISchema s) {
+    public void initialize(final IProtocol p, final ISchema s) {
         try {
             this.createContainerDefinition(this.getProperties());
             this.setMetadata(this.definition.getMetadataMap());
-        } catch (Exception e) {}
+        } catch (final Exception e) {
+        }
     }
 
     public String getType() {
         return "DefaultContainer";
     }
 
-    private void setMetadata(Map<String,Object> metadataMap) {
+    private void setMetadata(final Map<String, Object> metadataMap) {
         this.metadata = new DefaultMetadata(metadataMap);
     }
 

@@ -13,16 +13,16 @@ import gov.noaa.messageapi.interfaces.IPluginParser;
  */
 public class ContainerPluginParser extends BasePluginParser implements IPluginParser {
 
-    public ContainerPluginParser(Object containerMap) throws Exception {
+    public ContainerPluginParser(final Object containerMap) throws Exception {
         super(containerMap);
     }
 
     public IContainer build() throws Exception {
         try {
-            Class<?>[] ctrClasses = {Map.class};
-            Object[] args = {getConstructor()};
+            final Class<?>[] ctrClasses = { Map.class };
+            final Object[] args = { getConstructor() };
             return (IContainer) constructPlugin(Class.forName(getPlugin()), ctrClasses, args);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println("Exception thrown while building the container plugin from spec: " + e.getMessage());
             System.exit(1);
             return null;
@@ -30,7 +30,7 @@ public class ContainerPluginParser extends BasePluginParser implements IPluginPa
     }
 
     protected Set<String> getRequiredConstructorKeys() {
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
         set.add("collections");
         return set;
     }

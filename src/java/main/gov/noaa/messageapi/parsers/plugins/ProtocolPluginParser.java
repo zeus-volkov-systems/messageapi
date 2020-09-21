@@ -13,16 +13,16 @@ import gov.noaa.messageapi.interfaces.IPluginParser;
  */
 public class ProtocolPluginParser extends BasePluginParser implements IPluginParser {
 
-    public ProtocolPluginParser(Object protocolMap) throws Exception {
+    public ProtocolPluginParser(final Object protocolMap) throws Exception {
         super(protocolMap);
     }
 
     public IProtocol build() throws Exception {
         try {
-            Class<?>[] ctrClasses = {Map.class};
-            Object[] args = {getConstructor()};
+            final Class<?>[] ctrClasses = { Map.class };
+            final Object[] args = { getConstructor() };
             return (IProtocol) constructPlugin(Class.forName(getPlugin()), ctrClasses, args);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println("Exception thrown while building the protocol plugin from spec: " + e.getMessage());
             System.exit(1);
             return null;
@@ -30,7 +30,7 @@ public class ProtocolPluginParser extends BasePluginParser implements IPluginPar
     }
 
     protected Set<String> getRequiredConstructorKeys() {
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
         set.add("endpoints");
         return set;
     }

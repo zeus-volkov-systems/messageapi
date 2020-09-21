@@ -22,54 +22,56 @@ import gov.noaa.messageapi.utils.general.PathUtils;
  */
 public class CollectionParser extends BaseParser {
 
-    public CollectionParser(String spec) throws Exception {
+    public CollectionParser(final String spec) throws Exception {
         super(PathUtils.reconcileKeywords(spec));
     }
 
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getCollectionMaps() {
-        return (List<Map<String,Object>>) super.getValue("collections");
+        return (List<Map<String, Object>>) super.getValue("collections");
     }
 
     public List<String> getCollections() {
-        return getCollectionMaps().stream().map(cMap -> (String)cMap.get("id")).collect(Collectors.toList());
+        return getCollectionMaps().stream().map(cMap -> (String) cMap.get("id")).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
-    public List<Map.Entry<String,String>> getClassifiers() {
-        return ListUtils.eliminateDuplicates(ListUtils.removeAllNulls(ListUtils.flatten(getCollectionMaps().stream().map(cMap -> {
-            if (cMap.containsKey("classifiers")) {
-                return this.parseClassifierMap((Map<String,Object>) cMap.get("classifiers"));
-            }
-            return new ArrayList<Map.Entry<String,String>>();
-        }).collect(Collectors.toList()))));
+    public List<Map.Entry<String, String>> getClassifiers() {
+        return ListUtils.eliminateDuplicates(
+                ListUtils.removeAllNulls(ListUtils.flatten(getCollectionMaps().stream().map(cMap -> {
+                    if (cMap.containsKey("classifiers")) {
+                        return this.parseClassifierMap((Map<String, Object>) cMap.get("classifiers"));
+                    }
+                    return new ArrayList<Map.Entry<String, String>>();
+                }).collect(Collectors.toList()))));
     }
 
     @SuppressWarnings("unchecked")
-    private List<Map.Entry<String,String>> parseClassifierMap(Map<String,Object> classifierMap) {
-        List<Map.Entry<String,String>> returnList = new ArrayList<Map.Entry<String,String>>();
+    private List<Map.Entry<String, String>> parseClassifierMap(final Map<String, Object> classifierMap) {
+        final List<Map.Entry<String, String>> returnList = new ArrayList<Map.Entry<String, String>>();
         classifierMap.entrySet().stream().forEach(e -> {
             if (e.getValue() instanceof List) {
-                List<Map.Entry<String,String>> entries = this.parseClassifierList(e.getKey(), (List<String>)e.getValue());
-                entries.forEach(entry->returnList.add(entry));
+                final List<Map.Entry<String, String>> entries = this.parseClassifierList(e.getKey(),
+                        (List<String>) e.getValue());
+                entries.forEach(entry -> returnList.add(entry));
             } else {
-                returnList.add(new AbstractMap.SimpleEntry<String, String>(e.getKey(), (String)e.getValue()));
+                returnList.add(new AbstractMap.SimpleEntry<String, String>(e.getKey(), (String) e.getValue()));
             }
         });
         return returnList;
     }
 
-    private List<Map.Entry<String,String>> parseClassifierList(String key, List<String> vals) {
+    private List<Map.Entry<String, String>> parseClassifierList(final String key, final List<String> vals) {
         return vals.stream().map(val -> {
             return new AbstractMap.SimpleEntry<String, String>(key, val);
         }).collect(Collectors.toList());
     }
 
-    public void process(){
+    public void process() {
     }
 
     public Set<String> getRequiredKeys() {
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
         set.add("collections");
         return set;
     }

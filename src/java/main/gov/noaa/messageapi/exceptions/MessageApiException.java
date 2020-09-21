@@ -13,11 +13,11 @@ public class MessageApiException extends Exception {
      * Required (generated) serial version ID for serializable class
      */
 
-    public MessageApiException(String message, Throwable err) {
+    public MessageApiException(final String message, final Throwable err) {
         super(message, err);
     }
 
-    public MessageApiException(String message) {
+    public MessageApiException(final String message) {
         super(message);
     }
 

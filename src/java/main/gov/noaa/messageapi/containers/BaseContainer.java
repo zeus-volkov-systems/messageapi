@@ -16,31 +16,31 @@ public class BaseContainer {
     protected ContainerDefinition definition;
     protected IMetadata metadata = null;
 
-    public BaseContainer(Map<String, Object> properties) {
+    public BaseContainer(final Map<String, Object> properties) {
         setProperties(properties);
     }
 
-    public BaseContainer(IContainer container) {
+    public BaseContainer(final IContainer container) {
         this.definition = new ContainerDefinition(container.getDefinition());
-        this.properties = new HashMap<String,Object>(container.getProperties());
+        this.properties = new HashMap<String, Object>(container.getProperties());
     }
 
-    private void setProperties(Map<String, Object> properties) {
+    private void setProperties(final Map<String, Object> properties) {
         this.properties = properties;
     }
 
-    public Map<String,Object> getProperties() {
+    public Map<String, Object> getProperties() {
         return this.properties;
     }
 
-    public Object getProperty(String key) {
+    public Object getProperty(final String key) {
         if (hasProperty(key)) {
             return this.properties.get(key);
         }
         return null;
     }
 
-    public boolean hasProperty(String key) {
+    public boolean hasProperty(final String key) {
         if (this.properties.containsKey(key)) {
             return true;
         }
@@ -55,7 +55,7 @@ public class BaseContainer {
         return this.metadata;
     }
 
-    protected void createContainerDefinition(Map<String,Object> properties) throws Exception {
+    protected void createContainerDefinition(final Map<String, Object> properties) throws Exception {
         this.definition = new ContainerDefinition(properties);
     }
 }

@@ -4,6 +4,8 @@ import java.util.UUID;
 import java.util.List;
 
 /**
+ * A container record is an intermediate (factored) record that belongs in a one-to-one
+ * relationship with containers. Containers are principal session components.
  * @author Ryan Berkheimer
  */
 public interface IContainerRecord {

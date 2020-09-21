@@ -13,22 +13,22 @@ import gov.noaa.messageapi.interfaces.IPluginParser;
  */
 public class SchemaPluginParser extends BasePluginParser implements IPluginParser {
 
-    public SchemaPluginParser(Object schemaMap) throws Exception {
+    public SchemaPluginParser(final Object schemaMap) throws Exception {
         super(schemaMap);
     }
 
     public ISchema build() throws Exception {
         try {
-            Class<?>[] ctrClasses = {Map.class};
-            Object[] args = {getConstructor()};
+            final Class<?>[] ctrClasses = { Map.class };
+            final Object[] args = { getConstructor() };
             return (ISchema) constructPlugin(Class.forName(getPlugin()), ctrClasses, args);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
 
     protected Set<String> getRequiredConstructorKeys() {
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
         set.add("fields");
         return set;
     }

@@ -14,20 +14,20 @@ import gov.noaa.messageapi.utils.general.PathUtils;
  */
 public class FieldParser extends BaseParser {
 
-    public FieldParser(String spec) throws Exception {
+    public FieldParser(final String spec) throws Exception {
         super(PathUtils.reconcileKeywords(spec));
     }
 
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getFieldMaps() {
-        return (List<Map<String,Object>>) super.getValue("fields");
+        return (List<Map<String, Object>>) super.getValue("fields");
     }
 
-    public void process(){
+    public void process() {
     }
 
     public Set<String> getRequiredKeys() {
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
         set.add("fields");
         return set;
     }

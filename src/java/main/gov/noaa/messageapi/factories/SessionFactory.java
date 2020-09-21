@@ -18,7 +18,7 @@ public class SessionFactory {
      * @return           A new Session object
      * @throws Exception In the case that parsing or bootstrapping fails
      */
-    public static ISession create(String spec) throws Exception {
+    public static ISession create(final String spec) throws Exception {
          return (ISession) new SessionPluginParser(spec).build();
     }
 

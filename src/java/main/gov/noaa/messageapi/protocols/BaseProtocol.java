@@ -17,31 +17,31 @@ public class BaseProtocol {
     protected ProtocolDefinition definition;
     protected IMetadata metadata = null;
 
-    public BaseProtocol(Map<String, Object> properties) {
+    public BaseProtocol(final Map<String, Object> properties) {
         this.setProperties(properties);
     }
 
-    public BaseProtocol(IProtocol protocol) {
+    public BaseProtocol(final IProtocol protocol) {
         this.definition = new ProtocolDefinition(protocol.getDefinition());
-        this.properties = new HashMap<String,Object>(protocol.getProperties());
+        this.properties = new HashMap<String, Object>(protocol.getProperties());
     }
 
-    private void setProperties(Map<String, Object> properties) {
+    private void setProperties(final Map<String, Object> properties) {
         this.properties = properties;
     }
 
-    public Map<String,Object> getProperties() {
+    public Map<String, Object> getProperties() {
         return this.properties;
     }
 
-    public Object getProperty(String key) {
+    public Object getProperty(final String key) {
         if (hasProperty(key)) {
             return this.properties.get(key);
         }
         return null;
     }
 
-    public boolean hasProperty(String key) {
+    public boolean hasProperty(final String key) {
         if (this.properties.containsKey(key)) {
             return true;
         }
@@ -56,7 +56,7 @@ public class BaseProtocol {
         return this.metadata;
     }
 
-    protected void createProtocolDefinition(Map<String,Object> properties) throws Exception {
+    protected void createProtocolDefinition(final Map<String, Object> properties) throws Exception {
         this.definition = new ProtocolDefinition(properties);
     }
 

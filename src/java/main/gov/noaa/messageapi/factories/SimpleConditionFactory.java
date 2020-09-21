@@ -42,7 +42,7 @@ public class SimpleConditionFactory implements IConditionFactory {
      * @param  type The type of operator to return
      * @return      A new operator based on the specified type
      */
-    public IConditionOperator getOperator(String type) {
+    public IConditionOperator getOperator(final String type) {
         switch (type) {
             case "boolean":
                 return new BooleanConditionOperator();

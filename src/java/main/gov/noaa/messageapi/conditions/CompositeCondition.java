@@ -21,28 +21,30 @@ public class CompositeCondition extends BaseCondition implements ICompositeCondi
      * This is usually used by the schema when bootstrapping a new session.
      * @param conditionMap A map holding all required condition parameters.
      */
-    public CompositeCondition(Map<String,Object> conditionMap) {
+    public CompositeCondition(final Map<String, Object> conditionMap) {
         super(conditionMap);
         setValue(conditionMap.get("conditions"));
     }
 
     /**
-     * Copy constructor for creating a new CompositeCondition from an existing
-     * one. This is generally used in immutable operations when creating new
-     * records during request building.
+     * Copy constructor for creating a new CompositeCondition from an existing one.
+     * This is generally used in immutable operations when creating new records
+     * during request building.
+     * 
      * @param condition The original condition to copy
      */
-    public CompositeCondition(ICompositeCondition condition) {
+    public CompositeCondition(final ICompositeCondition condition) {
         super(condition);
         setValue(condition.getConditions());
     }
 
     /**
-     * sets the value for a composite condition. In a composite condition,
-     * the value is a list of the ids of other conditions.
+     * sets the value for a composite condition. In a composite condition, the value
+     * is a list of the ids of other conditions.
+     * 
      * @param value A list of condition ids
      */
-    public void setValue(Object value){
+    public void setValue(final Object value) {
         this.value = value;
     }
 

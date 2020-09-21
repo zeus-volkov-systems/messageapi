@@ -9,8 +9,8 @@ import gov.noaa.messageapi.interfaces.ICondition;
  */
 public class StringConditionOperator implements IConditionOperator {
 
-    public boolean compare(IField field, ICondition condition) {
-        switch(condition.getOperator()) {
+    public boolean compare(final IField field, final ICondition condition) {
+        switch (condition.getOperator()) {
             case ">":
                 return false;
             case "<":
@@ -29,21 +29,21 @@ public class StringConditionOperator implements IConditionOperator {
         return false;
     }
 
-    private boolean isEqual(String fieldValue, String conditionValue) {
+    private boolean isEqual(final String fieldValue, final String conditionValue) {
         if (fieldValue.equals(conditionValue)) {
             return true;
         }
         return false;
     }
 
-    private boolean isNotEqual(String fieldValue, String conditionValue) {
+    private boolean isNotEqual(final String fieldValue, final String conditionValue) {
         if (!fieldValue.equals(conditionValue)) {
             return true;
         }
         return false;
     }
 
-    private boolean contains(String fieldValue, String conditionValue) {
+    private boolean contains(final String fieldValue, final String conditionValue) {
         if (fieldValue.contains(conditionValue)) {
             return true;
         } else {

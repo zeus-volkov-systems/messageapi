@@ -19,7 +19,7 @@ public class DefaultMetadata implements IMetadata {
     private Map<String,Object> classifiers = null;
 
     @SuppressWarnings("unchecked")
-    public DefaultMetadata(Map<String, Object> metadataMap) {
+    public DefaultMetadata(final Map<String, Object> metadataMap) {
         try {
             if (metadataMap.containsKey("id")) {
                 this.setId((String) metadataMap.get("id"));
@@ -33,10 +33,11 @@ public class DefaultMetadata implements IMetadata {
             if (metadataMap.containsKey("description")) {
                 this.setDescription((String) metadataMap.get("description"));
             }
-        } catch (Exception e) {}
+        } catch (final Exception e) {
+        }
     }
 
-    public String getId(){
+    public String getId() {
         return this.id;
     }
 
@@ -48,27 +49,27 @@ public class DefaultMetadata implements IMetadata {
         return this.description;
     }
 
-    public Map<String,Object> getClassifiers() {
+    public Map<String, Object> getClassifiers() {
         return this.classifiers;
     }
 
-    public Object getClassifier(String classifierKey) {
+    public Object getClassifier(final String classifierKey) {
         return getClassifiers().get(classifierKey);
     }
 
-    private void setId(String id) {
+    private void setId(final String id) {
         this.id = id;
     }
 
-    private void setVersion(Object version) {
+    private void setVersion(final Object version) {
         this.version = version;
     }
 
-    private void setDescription(String description) {
+    private void setDescription(final String description) {
         this.description = description;
     }
 
-    private void setClassifiers(Map<String,Object> classifiers) {
+    private void setClassifiers(final Map<String, Object> classifiers) {
         this.classifiers = classifiers;
     }
 

@@ -16,15 +16,15 @@ import gov.noaa.messageapi.utils.general.PathUtils;
  */
 public abstract class BasePluginParser extends BaseParser {
 
-    public BasePluginParser(String spec) throws Exception {
+    public BasePluginParser(final String spec) throws Exception {
         super(PathUtils.reconcileKeywords(spec));
     }
 
-    public BasePluginParser(Object parserMap) throws Exception {
+    public BasePluginParser(final Object parserMap) throws Exception {
         super(parserMap);
     }
 
-    public void process(){
+    public void process() {
         if (!validateConstructorKeys(getRequiredConstructorKeys())) {
             System.err.println(String.format("Could not parse the %s plugin, invalid keyset.", getPlugin()));
             System.exit(1);
@@ -42,13 +42,14 @@ public abstract class BasePluginParser extends BaseParser {
         return (Map<String, Object>) super.getValue("constructor");
     }
 
-    protected Object constructPlugin(Class<?> pluginClass, Class<?>[] ctrClasses, Object[] args) throws Exception {
-        Constructor<?> constructor = pluginClass.getDeclaredConstructor(ctrClasses);
+    protected Object constructPlugin(final Class<?> pluginClass, final Class<?>[] ctrClasses, final Object[] args)
+            throws Exception {
+        final Constructor<?> constructor = pluginClass.getDeclaredConstructor(ctrClasses);
         return constructor.newInstance(args);
     }
 
-    protected boolean validateConstructorKeys(Set<String> requiredKeys) {
-        Set<String> keys = getConstructor().keySet();
+    protected boolean validateConstructorKeys(final Set<String> requiredKeys) {
+        final Set<String> keys = getConstructor().keySet();
         if (keys.containsAll(requiredKeys)) {
             return true;
         }
@@ -56,7 +57,7 @@ public abstract class BasePluginParser extends BaseParser {
     }
 
     public Set<String> getRequiredKeys() {
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
         set.add("plugin");
         set.add("constructor");
         return set;

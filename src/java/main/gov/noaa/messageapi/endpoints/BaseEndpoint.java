@@ -29,18 +29,18 @@ public abstract class BaseEndpoint {
     public Map<String,Object> constructorMap = null;
 
     @SuppressWarnings("unchecked")
-    public BaseEndpoint(Map<String,Object> parameters) {
-        Map<String,Object> internalParameters = (Map<String,Object>)parameters.get("__internal__");
+    public BaseEndpoint(final Map<String, Object> parameters) {
+        final Map<String, Object> internalParameters = (Map<String, Object>) parameters.get("__internal__");
         this.setConstructor(parameters);
-        this.setFields((List<String>)internalParameters.get("fields"), this.getDefaultFields());
-        this.setCollectionIds((List<String>)internalParameters.get("collections"));
-        this.setClassifierIds((List<Map.Entry<String,String>>)internalParameters.get("classifiers"));
-        this.setTransformationIds((List<String>)internalParameters.get("transformations"));
+        this.setFields((List<String>) internalParameters.get("fields"), this.getDefaultFields());
+        this.setCollectionIds((List<String>) internalParameters.get("collections"));
+        this.setClassifierIds((List<Map.Entry<String, String>>) internalParameters.get("classifiers"));
+        this.setTransformationIds((List<String>) internalParameters.get("transformations"));
     }
 
     protected abstract List<IField> getDefaultFields();
 
-    public Map<String,Object> getConstructor() {
+    public Map<String, Object> getConstructor() {
         return this.constructorMap;
     }
 
@@ -52,7 +52,7 @@ public abstract class BaseEndpoint {
         return new SchemaRecord(this.getFields());
     }
 
-    public IRejection createRejection(IRecord record, String reason) {
+    public IRejection createRejection(final IRecord record, final String reason) {
         return new DefaultRejection(record, reason);
     }
 
@@ -60,7 +60,7 @@ public abstract class BaseEndpoint {
         return this.collectionIds;
     }
 
-    protected List<Map.Entry<String,String>> getClassifiers() {
+    protected List<Map.Entry<String, String>> getClassifiers() {
         return this.classifierIds;
     }
 
@@ -68,7 +68,7 @@ public abstract class BaseEndpoint {
         return this.transformationIds;
     }
 
-    private void setConstructor(Map<String, Object> constructorMap) {
+    private void setConstructor(final Map<String, Object> constructorMap) {
         this.constructorMap = constructorMap;
     }
 
@@ -76,29 +76,29 @@ public abstract class BaseEndpoint {
         return this.fields;
     }
 
-    private void setFields(List<String> userFields, List<IField> defaultFields) {
+    private void setFields(final List<String> userFields, final List<IField> defaultFields) {
         this.fields = this.buildFields(userFields, defaultFields);
     }
 
     @SuppressWarnings("unchecked")
-    protected void updateFields(Map<String, Object> parameters) {
-        Map<String, Object> internalParameters = (Map<String, Object>) parameters.get("__internal__");
+    protected void updateFields(final Map<String, Object> parameters) {
+        final Map<String, Object> internalParameters = (Map<String, Object>) parameters.get("__internal__");
         this.setFields((List<String>) internalParameters.get("fields"), this.getDefaultFields());
     }
 
-    private void setCollectionIds(List<String> collectionIds) {
+    private void setCollectionIds(final List<String> collectionIds) {
         this.collectionIds = collectionIds;
     }
 
-    private void setClassifierIds(List<Map.Entry<String,String>> classifierIds) {
+    private void setClassifierIds(final List<Map.Entry<String, String>> classifierIds) {
         this.classifierIds = classifierIds;
     }
 
-    private void setTransformationIds(List<String> transformationIds) {
+    private void setTransformationIds(final List<String> transformationIds) {
         this.transformationIds = transformationIds;
     }
 
-    private List<IField> buildFields(List<String> userFields, List<IField> defaultFields) {
+    private List<IField> buildFields(final List<String> userFields, final List<IField> defaultFields) {
         if (userFields.size() > 0) {
             return defaultFields.stream().filter(f -> userFields.contains(f.getId())).collect(Collectors.toList());
         }

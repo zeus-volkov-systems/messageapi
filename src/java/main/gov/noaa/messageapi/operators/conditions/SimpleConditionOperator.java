@@ -10,9 +10,9 @@ public abstract class SimpleConditionOperator {
 
     protected abstract Integer getCompareValue(IField field, ICondition condition);
 
-    protected boolean compare(IField field, ICondition condition) {
-        Integer compareValue = getCompareValue(field, condition);
-        switch(condition.getOperator()) {
+    protected boolean compare(final IField field, final ICondition condition) {
+        final Integer compareValue = getCompareValue(field, condition);
+        switch (condition.getOperator()) {
             case ">":
                 return isGreater(compareValue);
             case "<":
@@ -29,7 +29,7 @@ public abstract class SimpleConditionOperator {
         return false;
     }
 
-    private boolean isGreater(Integer retval) {
+    private boolean isGreater(final Integer retval) {
         if (retval > 0) {
             return true;
         } else {
@@ -37,7 +37,7 @@ public abstract class SimpleConditionOperator {
         }
     }
 
-    private boolean isLess(Integer retval) {
+    private boolean isLess(final Integer retval) {
         if (retval < 0) {
             return true;
         } else {
@@ -45,7 +45,7 @@ public abstract class SimpleConditionOperator {
         }
     }
 
-    private boolean isEqual(Integer retval) {
+    private boolean isEqual(final Integer retval) {
         if (retval == 0) {
             return true;
         } else {
@@ -53,7 +53,7 @@ public abstract class SimpleConditionOperator {
         }
     }
 
-    private boolean isNotEqual(Integer retval) {
+    private boolean isNotEqual(final Integer retval) {
         if (!(retval == 0)) {
             return true;
         } else {
@@ -61,7 +61,7 @@ public abstract class SimpleConditionOperator {
         }
     }
 
-    private boolean isLessOrEqual(Integer retval) {
+    private boolean isLessOrEqual(final Integer retval) {
         if (retval < 0 || retval == 0) {
             return true;
         } else {
@@ -69,7 +69,7 @@ public abstract class SimpleConditionOperator {
         }
     }
 
-    private boolean isGreaterOrEqual(Integer retval) {
+    private boolean isGreaterOrEqual(final Integer retval) {
         if (retval > 0 || retval == 0) {
             return true;
         } else {

@@ -3,6 +3,8 @@ package gov.noaa.messageapi.interfaces;
 import java.util.Map;
 
 /**
+ * An IComponent is a base interface for principal system components (Schema, Container, Protocol).
+ * Each of these component interfaces extend this base interface.
  * @author Ryan Berkheimer
  */
 public interface IComponent {

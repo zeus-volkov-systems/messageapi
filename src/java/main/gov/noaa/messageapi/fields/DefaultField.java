@@ -20,7 +20,7 @@ public class DefaultField implements IField {
     private Object value = null;
     private Boolean valid = true;
 
-    public DefaultField(Map<String, Object> fieldMap) {
+    public DefaultField(final Map<String, Object> fieldMap) {
         if (fieldMap.containsKey("id")) {
             this.id = (String) fieldMap.get("id");
         }
@@ -35,11 +35,12 @@ public class DefaultField implements IField {
         }
     }
 
-    public DefaultField(String id) {
+    public DefaultField(final String id) {
         this.id = id;
     }
 
-    public DefaultField(String id, String type, Boolean required, Object value, Boolean valid) {
+    public DefaultField(final String id, final String type, final Boolean required, final Object value,
+            final Boolean valid) {
         this.id = id;
         this.type = type;
         this.required = required;
@@ -47,7 +48,7 @@ public class DefaultField implements IField {
         this.valid = valid;
     }
 
-    public DefaultField(IField field) {
+    public DefaultField(final IField field) {
         this.id = field.getId();
         this.type = field.getType();
         this.required = field.isRequired();
@@ -55,15 +56,15 @@ public class DefaultField implements IField {
         this.value = field.getValue();
     }
 
-    public String getId(){
+    public String getId() {
         return this.id;
     }
 
-    public String getName(){
+    public String getName() {
         return this.id;
     }
 
-    public String getType(){
+    public String getType() {
         return this.type;
     }
 
@@ -75,7 +76,7 @@ public class DefaultField implements IField {
         return this.valid;
     }
 
-    public void setValid(Boolean valid) {
+    public void setValid(final Boolean valid) {
         this.valid = valid;
     }
 
@@ -83,11 +84,11 @@ public class DefaultField implements IField {
         return this.value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         this.value = value;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 

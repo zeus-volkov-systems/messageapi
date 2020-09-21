@@ -13,20 +13,20 @@ import gov.noaa.messageapi.utils.general.PathUtils;
  */
 public class EndpointParser extends BaseParser {
 
-    public EndpointParser(String spec) throws Exception {
+    public EndpointParser(final String spec) throws Exception {
         super(PathUtils.reconcileKeywords(spec));
     }
 
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getEndpointMaps() {
-        return (List<Map<String,Object>>) super.getValue("endpoints");
+        return (List<Map<String, Object>>) super.getValue("endpoints");
     }
 
-    public void process(){
+    public void process() {
     }
 
     public Set<String> getRequiredKeys() {
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
         set.add("endpoints");
         return set;
     }

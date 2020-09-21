@@ -9,13 +9,13 @@ import gov.noaa.messageapi.interfaces.ICondition;
  */
 public class FloatConditionOperator extends SimpleConditionOperator implements IConditionOperator {
 
-    public boolean compare(IField field, ICondition condition) {
+    public boolean compare(final IField field, final ICondition condition) {
         return super.compare(field, condition);
     }
 
-    protected Integer getCompareValue(IField field, ICondition condition) {
-        Float f1 = Float.valueOf((Float) field.getValue());
-        Float f2 = Float.valueOf((Float) condition.getValue());
+    protected Integer getCompareValue(final IField field, final ICondition condition) {
+        final Float f1 = Float.valueOf((Float) field.getValue());
+        final Float f2 = Float.valueOf((Float) condition.getValue());
         return Float.compare(f1, f2);
     }
 

@@ -30,12 +30,12 @@ public class DefaultCollection implements ICollection {
     protected List<String> conditionIds = null;
 
     @SuppressWarnings("unchecked")
-    public DefaultCollection(Map<String,Object> collectionMap) {
+    public DefaultCollection(final Map<String, Object> collectionMap) {
         this.setId((String) collectionMap.get("id"));
         if (collectionMap.containsKey("classifiers")) {
             this.setClassifiers((Map<String, Object>) collectionMap.get("classifiers"));
         } else {
-            this.setClassifiers(new HashMap<String,Object>());
+            this.setClassifiers(new HashMap<String, Object>());
         }
         this.initializeFields((List<String>) collectionMap.get("fields"));
         if (collectionMap.containsKey("conditions")) {
@@ -45,7 +45,7 @@ public class DefaultCollection implements ICollection {
         }
     }
 
-    public DefaultCollection(ICollection collection) {
+    public DefaultCollection(final ICollection collection) {
         this.setId(collection.getId());
         this.copyClassifiers(collection.getClassifiers());
         this.setFields(collection.getFields());
@@ -60,7 +60,7 @@ public class DefaultCollection implements ICollection {
         return this.id;
     }
 
-    public Map<String,Object> getClassifiers() {
+    public Map<String, Object> getClassifiers() {
         return this.classifiers;
     }
 
@@ -72,48 +72,47 @@ public class DefaultCollection implements ICollection {
         return this.conditionIds;
     }
 
-    public Object getClassifier(String classiferKey) {
+    public Object getClassifier(final String classiferKey) {
         return this.classifiers.get(classiferKey);
     }
 
-    private void setId(String id) {
+    private void setId(final String id) {
         this.id = id;
     }
 
-    private void copyClassifiers(Map<String,Object> classifiers) {
+    private void copyClassifiers(final Map<String, Object> classifiers) {
         this.classifiers = classifiers;
     }
 
-    private void setClassifiers(Map<String,Object> classifiers) {
-        this.classifiers = new HashMap<String,Object>();
+    private void setClassifiers(final Map<String, Object> classifiers) {
+        this.classifiers = new HashMap<String, Object>();
         classifiers.entrySet().forEach(classifierEntry -> {
             if (classifierEntry.getValue() instanceof List) {
-                    this.classifiers.put(classifierEntry.getKey(), classifierEntry.getValue());
-                } else {
-                    List<String> classifierEntryValue = new ArrayList<String>();
-                    classifierEntryValue.add((String)classifierEntry.getValue().toString());
-                    this.classifiers.put(classifierEntry.getKey(), classifierEntryValue);
-                }
-            });
+                this.classifiers.put(classifierEntry.getKey(), classifierEntry.getValue());
+            } else {
+                final List<String> classifierEntryValue = new ArrayList<String>();
+                classifierEntryValue.add((String) classifierEntry.getValue().toString());
+                this.classifiers.put(classifierEntry.getKey(), classifierEntryValue);
+            }
+        });
     }
 
-    private void initializeFields(List<String> fieldNames) {
-        this.fields = fieldNames.stream()
-            .map(name -> new DefaultField(name)).collect(Collectors.toList());
+    private void initializeFields(final List<String> fieldNames) {
+        this.fields = fieldNames.stream().map(name -> new DefaultField(name)).collect(Collectors.toList());
     }
 
-    public void setFields(List<IField> fields) {
+    public void setFields(final List<IField> fields) {
         this.fields = fields.stream().map(f -> {
             try {
-                IField newField = new DefaultField(f);
+                final IField newField = new DefaultField(f);
                 return newField;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 return null;
             }
         }).collect(Collectors.toList());
     }
 
-    private void setConditionIds(List<String> conditionIds) {
+    private void setConditionIds(final List<String> conditionIds) {
         this.conditionIds = conditionIds;
     }
 

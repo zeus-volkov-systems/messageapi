@@ -17,12 +17,12 @@ public class TransformationParser extends BaseParser {
     private List<Map<String,Object>> transformationMaps;
 
     @SuppressWarnings("unchecked")
-    public TransformationParser(String spec) throws Exception {
+    public TransformationParser(final String spec) throws Exception {
         super(PathUtils.reconcileKeywords(spec));
-        this.setTransformationMaps((List<Map<String, Object>>)super.getValue("transformations"));
+        this.setTransformationMaps((List<Map<String, Object>>) super.getValue("transformations"));
     }
 
-    public TransformationParser(List<Map<String,Object>> transformationMapList) throws Exception {
+    public TransformationParser(final List<Map<String, Object>> transformationMapList) throws Exception {
         this.setTransformationMaps(transformationMapList);
     }
 
@@ -31,18 +31,18 @@ public class TransformationParser extends BaseParser {
     }
 
     public List<String> getTransformations() {
-        return getTransformationMaps().stream().map(tMap -> (String)tMap.get("id")).collect(Collectors.toList());
+        return getTransformationMaps().stream().map(tMap -> (String) tMap.get("id")).collect(Collectors.toList());
     }
 
-    public void process(){
+    public void process() {
     }
 
-    private void setTransformationMaps(List<Map<String,Object>> transformationMapList){
+    private void setTransformationMaps(final List<Map<String, Object>> transformationMapList) {
         this.transformationMaps = transformationMapList;
     }
 
     public Set<String> getRequiredKeys() {
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
         set.add("transformations");
         return set;
     }

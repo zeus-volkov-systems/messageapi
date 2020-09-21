@@ -115,27 +115,28 @@ public class NativeEndpoint extends BaseEndpoint implements IEndpoint {
     private IRecord stateContainer = null;
     private List<IField> defaultFields = null;
 
-    public NativeEndpoint(Map<String, Object> parameters) {
+    public NativeEndpoint(final Map<String, Object> parameters) {
         super(parameters);
         this.setDefaultFields(parameters);
         super.updateFields(parameters);
         this.setStateContainer(parameters);
-        this.loadNativeLib((String)parameters.get("native-library"));
+        this.loadNativeLib((String) parameters.get("native-library"));
     }
 
-    public void loadNativeLib(String nativeLibrary) {
+    public void loadNativeLib(final String nativeLibrary) {
         try {
             System.load(nativeLibrary);
-        } catch (Exception e) {}
+        } catch (final Exception e) {
+        }
     }
 
     public IRecord getStateContainer() {
         return this.stateContainer;
     }
 
-    public IPacket process(IProtocolRecord protocolRecord) {
-        long nativeInstance = this.create(protocolRecord);
-        IPacket nativePacket =  this.process(nativeInstance);
+    public IPacket process(final IProtocolRecord protocolRecord) {
+        final long nativeInstance = this.create(protocolRecord);
+        final IPacket nativePacket = this.process(nativeInstance);
         this.release(nativeInstance);
         return nativePacket;
     }
@@ -145,24 +146,26 @@ public class NativeEndpoint extends BaseEndpoint implements IEndpoint {
     }
 
     @SuppressWarnings("unchecked")
-    private void setDefaultFields(Map<String,Object> parameters) {
+    private void setDefaultFields(final Map<String, Object> parameters) {
         try {
-            List<Map<String,Object>> fieldMaps = (List<Map<String,Object>>)parameters.get("default-fields");
+            final List<Map<String, Object>> fieldMaps = (List<Map<String, Object>>) parameters.get("default-fields");
             this.defaultFields = fieldMaps.stream().map(fMap -> new DefaultField(fMap)).collect(Collectors.toList());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new Error("Error parsing default-fields parameter in NativeEndpoint.");
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void setStateContainer(Map<String,Object> parameters) {
+    private void setStateContainer(final Map<String, Object> parameters) {
         try {
-            List<Map<String, Object>> fieldMaps = (List<Map<String, Object>>) parameters.get("state-container");
-            this.stateContainer = new SchemaRecord(fieldMaps.stream().map(fMap -> new DefaultField(fMap)).collect(Collectors.toList()));
-        } catch (Exception e) {}
+            final List<Map<String, Object>> fieldMaps = (List<Map<String, Object>>) parameters.get("state-container");
+            this.stateContainer = new SchemaRecord(
+                    fieldMaps.stream().map(fMap -> new DefaultField(fMap)).collect(Collectors.toList()));
+        } catch (final Exception e) {
+        }
     }
 
-    public IRejection createRejection(IRecord record) {
+    public IRejection createRejection(final IRecord record) {
         return new DefaultRejection(record);
     }
     

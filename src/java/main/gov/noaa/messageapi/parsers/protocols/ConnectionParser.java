@@ -13,20 +13,20 @@ import gov.noaa.messageapi.utils.general.PathUtils;
  */
 public class ConnectionParser extends BaseParser {
 
-    public ConnectionParser(String spec) throws Exception {
+    public ConnectionParser(final String spec) throws Exception {
         super(PathUtils.reconcileKeywords(spec));
     }
 
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getConnectionMaps() {
-        return (List<Map<String,Object>>) super.getValue("connections");
+        return (List<Map<String, Object>>) super.getValue("connections");
     }
 
-    public void process(){
+    public void process() {
     }
 
     public Set<String> getRequiredKeys() {
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
         set.add("connections");
         return set;
     }

@@ -32,40 +32,45 @@ import gov.noaa.messageapi.utils.general.ListUtils;
  */
 public class EvaluationEndpoint extends BaseEndpoint implements IEndpoint {
 
-    public EvaluationEndpoint(Map<String, Object> parameters) {
+    public EvaluationEndpoint(final Map<String, Object> parameters) {
         super(parameters);
     }
 
     /**
-     * Default processing method for the evaluation endpoint. This method will gather
-     * any and all records for any and all collections, classifiers, and/or transformations
-     * attached to the associated connection map.
-     * @param  protocolRecord The protocolRecord for this endpoint connection - holds
-     * all containers
-     * @return                A unified record set for all containers associated with the endpoint connection
+     * Default processing method for the evaluation endpoint. This method will
+     * gather any and all records for any and all collections, classifiers, and/or
+     * transformations attached to the associated connection map.
+     * 
+     * @param protocolRecord The protocolRecord for this endpoint connection - holds
+     *                       all containers
+     * @return A unified record set for all containers associated with the endpoint
+     *         connection
      */
-    public IPacket process(IProtocolRecord protocolRecord) {
-        DefaultPacket packet = new DefaultPacket();
+    public IPacket process(final IProtocolRecord protocolRecord) {
+        final DefaultPacket packet = new DefaultPacket();
         try {
-            List<IRecord> collectionRecords = this.processCollections(protocolRecord);
+            final List<IRecord> collectionRecords = this.processCollections(protocolRecord);
             packet.addRecords(collectionRecords);
-            List<IRecord> classifierRecords = this.processClassifiers(protocolRecord);
+            final List<IRecord> classifierRecords = this.processClassifiers(protocolRecord);
             packet.addRecords(classifierRecords);
-            List<IRecord> transformationRecords = this.processTransformations(protocolRecord);
+            final List<IRecord> transformationRecords = this.processTransformations(protocolRecord);
             packet.addRecords(transformationRecords);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
         return packet;
     }
 
     /**
-     * For every collection specified in the Connection map, retrieves records
-     * from the protocol record.
-     * @param  protocolRecord The protocolRecord associated with the endpoint connection
-     * @return                The list of records (minus nulls) for all collections referenced in the endpoint connection
+     * For every collection specified in the Connection map, retrieves records from
+     * the protocol record.
+     * 
+     * @param protocolRecord The protocolRecord associated with the endpoint
+     *                       connection
+     * @return The list of records (minus nulls) for all collections referenced in
+     *         the endpoint connection
      */
-    private List<IRecord> processCollections(IProtocolRecord protocolRecord) {
+    private List<IRecord> processCollections(final IProtocolRecord protocolRecord) {
         return ListUtils.removeAllNulls(ListUtils.flatten(this.getCollections().stream().map(collId -> {
             return protocolRecord.getRecordsByCollection(collId);
         }).collect(Collectors.toList())));
@@ -74,10 +79,13 @@ public class EvaluationEndpoint extends BaseEndpoint implements IEndpoint {
     /**
      * For every classifier entry specified in the Connection map, retrieves records
      * from the protocol record.
-     * @param  protocolRecord The protocolRecord associated with the endpoint connection
-     * @return                The list of records (minus nulls) for all classifiers referenced in the endpoint connection
+     * 
+     * @param protocolRecord The protocolRecord associated with the endpoint
+     *                       connection
+     * @return The list of records (minus nulls) for all classifiers referenced in
+     *         the endpoint connection
      */
-    private List<IRecord> processClassifiers(IProtocolRecord protocolRecord) {
+    private List<IRecord> processClassifiers(final IProtocolRecord protocolRecord) {
         return ListUtils.removeAllNulls(ListUtils.flatten(this.getClassifiers().stream().map(entry -> {
             return protocolRecord.getRecordsByClassifier(entry.getKey(), entry.getValue());
         }).collect(Collectors.toList())));
@@ -86,10 +94,13 @@ public class EvaluationEndpoint extends BaseEndpoint implements IEndpoint {
     /**
      * For every transformation specified in the Connection map, retrieves records
      * from the protocol record.
-     * @param  protocolRecord The protocolRecord associated with the endpoint connection
-     * @return                The list of records (minus nulls) for all transformations referenced in the endpoint connection
+     * 
+     * @param protocolRecord The protocolRecord associated with the endpoint
+     *                       connection
+     * @return The list of records (minus nulls) for all transformations referenced
+     *         in the endpoint connection
      */
-    private List<IRecord> processTransformations(IProtocolRecord protocolRecord) {
+    private List<IRecord> processTransformations(final IProtocolRecord protocolRecord) {
         return ListUtils.removeAllNulls(ListUtils.flatten(this.getTransformations().stream().map(transId -> {
             return protocolRecord.getRecordsByTransformation(transId);
         }).collect(Collectors.toList())));
@@ -100,7 +111,7 @@ public class EvaluationEndpoint extends BaseEndpoint implements IEndpoint {
      * value, length, file, container-type, container-name
      */
     public List<IField> getDefaultFields() {
-        List<IField> fields = new ArrayList<IField>();
+        final List<IField> fields = new ArrayList<IField>();
         return fields;
     }
 

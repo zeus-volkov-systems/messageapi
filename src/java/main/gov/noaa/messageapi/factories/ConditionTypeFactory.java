@@ -16,8 +16,8 @@ import gov.noaa.messageapi.conditions.CompositeCondition;
  */
 public class ConditionTypeFactory {
 
-    public static ICondition create(Map<String,Object> conditionMap) throws Exception {
-        switch((String) conditionMap.get("type")) {
+    public static ICondition create(final Map<String, Object> conditionMap) throws Exception {
+        switch ((String) conditionMap.get("type")) {
             case "comparison":
                 return new ComparisonCondition(conditionMap);
             case "composite":
@@ -26,7 +26,7 @@ public class ConditionTypeFactory {
         return null;
     }
 
-    public static ICondition create(ICondition condition) throws Exception {
+    public static ICondition create(final ICondition condition) throws Exception {
         switch(condition.getType()) {
             case "comparison":
                 return new ComparisonCondition((IComparisonCondition) condition);

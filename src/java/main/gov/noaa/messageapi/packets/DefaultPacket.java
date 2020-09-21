@@ -22,7 +22,7 @@ public class DefaultPacket implements IPacket {
         this.rejections = new ArrayList<IRejection>();
     }
 
-    public DefaultPacket(List<IRecord> records, List<IRejection> rejections) {
+    public DefaultPacket(final List<IRecord> records, final List<IRejection> rejections) {
         this.records = records;
         this.rejections = rejections;
     }
@@ -35,27 +35,27 @@ public class DefaultPacket implements IPacket {
         return this.rejections;
     }
 
-    public void setRecords(List<IRecord> records) {
+    public void setRecords(final List<IRecord> records) {
         this.records = records;
     }
 
-    public void setRejections(List<IRejection> rejections) {
+    public void setRejections(final List<IRejection> rejections) {
         this.rejections = rejections;
     }
 
-    public void addRecord(IRecord record) {
+    public void addRecord(final IRecord record) {
         this.records.add(record);
     }
 
-    public void addRejection(IRejection rejection) {
+    public void addRejection(final IRejection rejection) {
         this.rejections.add(rejection);
     }
 
-    public void addRecords(List<IRecord> records) {
+    public void addRecords(final List<IRecord> records) {
         this.records.addAll(records);
     }
 
-    public void addRejections(List<IRejection> rejections) {
+    public void addRejections(final List<IRejection> rejections) {
         this.rejections.addAll(rejections);
     }
 

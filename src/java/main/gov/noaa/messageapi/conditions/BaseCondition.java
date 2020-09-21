@@ -23,7 +23,7 @@ public class BaseCondition {
      * This is generally used during session bootstrapping.
      * @param conditionMap A map holding the id, type, and operator for a condition.
      */
-    public BaseCondition(Map<String,Object> conditionMap) {
+    public BaseCondition(final Map<String, Object> conditionMap) {
         setId((String) conditionMap.get("id"));
         setType((String) conditionMap.get("type"));
         setOperator((String) conditionMap.get("operator"));
@@ -32,9 +32,10 @@ public class BaseCondition {
     /**
      * Copy constructor for creating a new condition from an existing condition.
      * Used in immutable processing of records.
+     * 
      * @param condition The original condition to copy.
      */
-    public BaseCondition(ICondition condition) {
+    public BaseCondition(final ICondition condition) {
         setId(condition.getId());
         setType(condition.getType());
         setOperator(condition.getOperator());
@@ -42,6 +43,7 @@ public class BaseCondition {
 
     /**
      * Returns the condition ID
+     * 
      * @return condition ID
      */
     public String getId() {
@@ -50,6 +52,7 @@ public class BaseCondition {
 
     /**
      * Returns the condition type (comparison or composite)
+     * 
      * @return condition type
      */
     public String getType() {
@@ -58,21 +61,22 @@ public class BaseCondition {
 
     /**
      * Returns the condition operator
+     * 
      * @return condition operator
      */
     public String getOperator() {
         return this.operator;
     }
 
-    private void setId(String id) {
+    private void setId(final String id) {
         this.id = id;
     }
 
-    private void setType(String type) {
+    private void setType(final String type) {
         this.type = type;
     }
 
-    private void setOperator(String operator) {
+    private void setOperator(final String operator) {
         this.operator = operator;
     }
 

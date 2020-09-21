@@ -28,7 +28,7 @@ public class ContainerDefinition {
     private List<String> transformations = null;
     private List<Map.Entry<String,String>> classifiers = null;
 
-    public ContainerDefinition(Map<String, Object> properties) throws Exception {
+    public ContainerDefinition(final Map<String, Object> properties) throws Exception {
         if (properties.containsKey("metadata")) {
             this.parseMetadataSpec((String) properties.get("metadata"));
         } else {
@@ -46,42 +46,43 @@ public class ContainerDefinition {
         }
     }
 
-    public ContainerDefinition(ContainerDefinition definition) {
-        this.metadataMap = new HashMap<String,Object>(definition.getMetadataMap());
-        this.collectionMaps = new ArrayList<Map<String,Object>>(definition.getCollectionMaps());
+    public ContainerDefinition(final ContainerDefinition definition) {
+        this.metadataMap = new HashMap<String, Object>(definition.getMetadataMap());
+        this.collectionMaps = new ArrayList<Map<String, Object>>(definition.getCollectionMaps());
         this.collections = new ArrayList<String>(definition.getCollections());
-        this.classifiers = new ArrayList<Map.Entry<String,String>>(definition.getClassifiers());
+        this.classifiers = new ArrayList<Map.Entry<String, String>>(definition.getClassifiers());
         this.transformations = new ArrayList<String>(definition.getTransformations());
-        this.transformationMaps = new ArrayList<Map<String,Object>>(definition.getTransformationMaps());
+        this.transformationMaps = new ArrayList<Map<String, Object>>(definition.getTransformationMaps());
     }
 
-    private void parseMetadataSpec(String spec) throws Exception {
-        MetadataParser parser = new MetadataParser(spec);
+    private void parseMetadataSpec(final String spec) throws Exception {
+        final MetadataParser parser = new MetadataParser(spec);
         this.metadataMap = parser.getMetadataMap();
     }
 
-    private void parseCollectionSpec(String spec) throws Exception {
-        CollectionParser parser = new CollectionParser(spec);
+    private void parseCollectionSpec(final String spec) throws Exception {
+        final CollectionParser parser = new CollectionParser(spec);
         this.collectionMaps = parser.getCollectionMaps();
         this.collections = parser.getCollections();
         this.classifiers = parser.getClassifiers();
     }
 
     @SuppressWarnings("unchecked")
-    private void parseTransformationSpec(Object transformationSpec) throws Exception {
+    private void parseTransformationSpec(final Object transformationSpec) throws Exception {
         try {
             if (transformationSpec instanceof String) {
-                TransformationParser parser = new TransformationParser(((String)transformationSpec));
+                final TransformationParser parser = new TransformationParser(((String) transformationSpec));
                 this.transformationMaps = parser.getTransformationMaps();
                 this.transformations = parser.getTransformations();
             } else if (transformationSpec instanceof List) {
-                TransformationParser parser = new TransformationParser((List<Map<String,Object>>)transformationSpec);
+                final TransformationParser parser = new TransformationParser(
+                        (List<Map<String, Object>>) transformationSpec);
                 this.transformationMaps = parser.getTransformationMaps();
                 this.transformations = parser.getTransformations();
             } else {
                 this.setEmptyTransformationMaps();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println("WARNING - transformation parsing failed. Setting empty transformations.");
             this.setEmptyTransformationMaps();
         }

@@ -24,25 +24,28 @@ public class BaseConnection {
     private Map<String,Object> constructorMap = null;
 
     @SuppressWarnings("unchecked")
-    public BaseConnection(String endpointClass, Map<String,Object> connectionMap, ContainerDefinition containerDefinition) throws Exception {
+    public BaseConnection(final String endpointClass, final Map<String, Object> connectionMap,
+            final ContainerDefinition containerDefinition) throws Exception {
         try {
-            Map<String,Object> constructorMap = (Map<String,Object>)connectionMap.get("constructor");
+            final Map<String, Object> constructorMap = (Map<String, Object>) connectionMap.get("constructor");
             this.updateConstructorMap(connectionMap, constructorMap, containerDefinition);
             this.setEndpointClass(endpointClass);
             this.setEndpointConstructor(constructorMap);
             this.setEndpoint(endpointClass, constructorMap);
-        } catch (Exception e) {
-            throw new InstantiationException(String.format("Could not initialize the base connection class from the specified class %s.",endpointClass));
+        } catch (final Exception e) {
+            throw new InstantiationException(String.format(
+                    "Could not initialize the base connection class from the specified class %s.", endpointClass));
         }
     }
 
-    public BaseConnection(IConnection connection) throws Exception {
+    public BaseConnection(final IConnection connection) throws Exception {
         try {
             this.setEndpointClass(connection.getEndpointClass());
             this.setEndpointConstructor(connection.getEndpointConstructor());
             this.setEndpoint(this.getEndpointClass(), this.getEndpointConstructor());
-        } catch (Exception e) {
-            throw new InstantiationException("Could not initialize the base connection class from the passed existing connection object.");
+        } catch (final Exception e) {
+            throw new InstantiationException(
+                    "Could not initialize the base connection class from the passed existing connection object.");
         }
     }
 
@@ -50,7 +53,7 @@ public class BaseConnection {
         return this.endpointClass;
     }
 
-    public Map<String,Object> getEndpointConstructor() {
+    public Map<String, Object> getEndpointConstructor() {
         return this.constructorMap;
     }
 
@@ -58,26 +61,29 @@ public class BaseConnection {
         return this.endpoint;
     }
 
-    private void updateConstructorMap(Map<String,Object> connectionMap, Map<String,Object> constructorMap,
-                                        ContainerDefinition containerDefinition) throws Exception {
-        Map<String,Object> parameterMap = new HashMap<String,Object>();
+    private void updateConstructorMap(final Map<String, Object> connectionMap, final Map<String, Object> constructorMap,
+            final ContainerDefinition containerDefinition) throws Exception {
+        final Map<String, Object> parameterMap = new HashMap<String, Object>();
         if (connectionMap.containsKey("fields")) {
             parameterMap.put("fields", this.parseFields(connectionMap.get("fields")));
         } else {
             parameterMap.put("fields", new ArrayList<String>());
         }
         if (connectionMap.containsKey("collections")) {
-            parameterMap.put("collections", this.parseCollections(connectionMap.get("collections"), containerDefinition.getCollections()));
+            parameterMap.put("collections",
+                    this.parseCollections(connectionMap.get("collections"), containerDefinition.getCollections()));
         } else {
             parameterMap.put("collections", new ArrayList<String>());
         }
         if (connectionMap.containsKey("classifiers")) {
-            parameterMap.put("classifiers", this.parseClassifiers(connectionMap.get("classifiers"),containerDefinition.getClassifiers()));
+            parameterMap.put("classifiers",
+                    this.parseClassifiers(connectionMap.get("classifiers"), containerDefinition.getClassifiers()));
         } else {
-            parameterMap.put("classifiers", new ArrayList<Map.Entry<String,String>>());
+            parameterMap.put("classifiers", new ArrayList<Map.Entry<String, String>>());
         }
         if (connectionMap.containsKey("transformations")) {
-            parameterMap.put("transformations", this.parseTransformations(connectionMap.get("transformations"), containerDefinition.getTransformations()));
+            parameterMap.put("transformations", this.parseTransformations(connectionMap.get("transformations"),
+                    containerDefinition.getTransformations()));
         } else {
             parameterMap.put("transformations", new ArrayList<Map<String, Object>>());
         }
@@ -85,7 +91,7 @@ public class BaseConnection {
     }
 
     @SuppressWarnings("unchecked")
-    private List<String> parseFields(Object fields) {
+    private List<String> parseFields(final Object fields) {
         if (fields instanceof List) {
             return (List<String>) fields;
         } else {
@@ -94,13 +100,14 @@ public class BaseConnection {
     }
 
     @SuppressWarnings("unchecked")
-    private List<String> parseCollections(Object rawCollections, List<String> allCollections) throws Exception {
+    private List<String> parseCollections(final Object rawCollections, final List<String> allCollections)
+            throws Exception {
         try {
             if (rawCollections instanceof String) {
                 if (((String) rawCollections).equals("*")) {
                     return new ArrayList<String>(allCollections);
                 } else {
-                    List<String> collections = new ArrayList<String>();
+                    final List<String> collections = new ArrayList<String>();
                     if (allCollections.contains((String) rawCollections)) {
                         collections.add((String) rawCollections);
                     }
@@ -110,54 +117,64 @@ public class BaseConnection {
                 if (((List<String>) rawCollections).contains("*")) {
                     return new ArrayList<String>(allCollections);
                 } else {
-                    return ((List<String>) rawCollections).stream().filter(rC -> allCollections.contains(rC)).collect(Collectors.toList());
+                    return ((List<String>) rawCollections).stream().filter(rC -> allCollections.contains(rC))
+                            .collect(Collectors.toList());
                 }
             }
             return new ArrayList<String>();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new Exception("Error while attempting to parse internal collections in BaseCollection.");
         }
     }
 
     @SuppressWarnings("unchecked")
-    private List<Map.Entry<String,String>> parseClassifiers(Object rawClassifiers, List<Map.Entry<String,String>> allClassifiers) throws Exception {
+    private List<Map.Entry<String, String>> parseClassifiers(final Object rawClassifiers,
+            final List<Map.Entry<String, String>> allClassifiers) throws Exception {
         try {
             if (rawClassifiers instanceof String && rawClassifiers.equals("*")) {
                 return allClassifiers;
             } else if (rawClassifiers instanceof Map) {
-                return ListUtils.flatten(((Map<String,Object>) rawClassifiers).entrySet().stream().map(e -> {
+                return ListUtils.flatten(((Map<String, Object>) rawClassifiers).entrySet().stream().map(e -> {
                     if (e.getValue() instanceof List) {
-                        if (((List<String>) e.getValue()).size() == 1 && ((List<String>) e.getValue()).get(0).equals("*")) {
-                            return allClassifiers.stream().filter(c -> c.getKey().equals(e.getKey())).collect(Collectors.toList());
+                        if (((List<String>) e.getValue()).size() == 1
+                                && ((List<String>) e.getValue()).get(0).equals("*")) {
+                            return allClassifiers.stream().filter(c -> c.getKey().equals(e.getKey()))
+                                    .collect(Collectors.toList());
                         } else {
                             return ListUtils.flatten(((List<String>) e.getValue()).stream().map(c -> {
-                                return allClassifiers.stream().filter(allc -> (allc.getKey().equals(e.getKey()) && allc.getValue().equals(c))).collect(Collectors.toList());
+                                return allClassifiers.stream()
+                                        .filter(allc -> (allc.getKey().equals(e.getKey()) && allc.getValue().equals(c)))
+                                        .collect(Collectors.toList());
                             }).collect(Collectors.toList()));
                         }
                     } else if (e.getValue() instanceof String) {
                         if (((String) e.getValue()).equals("*")) {
-                            return allClassifiers.stream().filter(c -> c.getKey().equals(e.getKey())).collect(Collectors.toList());
+                            return allClassifiers.stream().filter(c -> c.getKey().equals(e.getKey()))
+                                    .collect(Collectors.toList());
                         } else {
-                            return allClassifiers.stream().filter(c -> (c.getKey().equals(e.getKey()) && c.getValue().equals(e.getValue()))).collect(Collectors.toList());
+                            return allClassifiers.stream()
+                                    .filter(c -> (c.getKey().equals(e.getKey()) && c.getValue().equals(e.getValue())))
+                                    .collect(Collectors.toList());
                         }
                     }
                     return null;
                 }).collect(Collectors.toList()));
             }
-            return new ArrayList<Map.Entry<String,String>>();
-        } catch (Exception e) {
+            return new ArrayList<Map.Entry<String, String>>();
+        } catch (final Exception e) {
             throw new Exception("Error while attempting to parse collections in BaseCollection.");
         }
     }
 
     @SuppressWarnings("unchecked")
-    private List<String> parseTransformations(Object rawTransformations, List<String> allTransformations) throws Exception {
+    private List<String> parseTransformations(final Object rawTransformations, final List<String> allTransformations)
+            throws Exception {
         try {
             if (rawTransformations instanceof String) {
                 if (((String) rawTransformations).equals("*")) {
                     return allTransformations;
                 } else {
-                    List<String> transformations = new ArrayList<String>();
+                    final List<String> transformations = new ArrayList<String>();
                     if (allTransformations.contains((String) rawTransformations)) {
                         transformations.add((String) rawTransformations);
                     }
@@ -172,32 +189,34 @@ public class BaseConnection {
                 }
             }
             return new ArrayList<String>();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new Exception("Error while attempting to parse internal collections in BaseCollection.");
         }
 
     }
 
-    private IEndpoint initializeConnection(String endpoint, Map<String,Object> constructor) throws Exception {
-        Class<?>[] ctrClasses = {Map.class};
-        Object[] args = {constructor};
+    private IEndpoint initializeConnection(final String endpoint, final Map<String, Object> constructor)
+            throws Exception {
+        final Class<?>[] ctrClasses = { Map.class };
+        final Object[] args = { constructor };
         return (IEndpoint) instantiateEndpoint(Class.forName(endpoint), ctrClasses, args);
     }
 
-    private Object instantiateEndpoint(Class<?> pluginClass, Class<?>[] ctrClasses, Object[] args) throws Exception {
-        Constructor<?> constructor = pluginClass.getDeclaredConstructor(ctrClasses);
+    private Object instantiateEndpoint(final Class<?> pluginClass, final Class<?>[] ctrClasses, final Object[] args)
+            throws Exception {
+        final Constructor<?> constructor = pluginClass.getDeclaredConstructor(ctrClasses);
         return constructor.newInstance(args);
     }
 
-    private void setEndpointConstructor(Map<String,Object> constructorMap) {
+    private void setEndpointConstructor(final Map<String, Object> constructorMap) {
         this.constructorMap = constructorMap;
     }
 
-    private void setEndpointClass(String endpointClass) {
+    private void setEndpointClass(final String endpointClass) {
         this.endpointClass = endpointClass;
     }
 
-    protected void setEndpoint(String endpointClass, Map<String,Object> constructorMap) throws Exception {
+    protected void setEndpoint(final String endpointClass, final Map<String, Object> constructorMap) throws Exception {
         this.endpoint = this.initializeConnection(endpointClass, constructorMap);
     }
 

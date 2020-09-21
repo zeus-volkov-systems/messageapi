@@ -13,20 +13,20 @@ import gov.noaa.messageapi.utils.general.PathUtils;
  */
 public class ConditionParser extends BaseParser {
 
-    public ConditionParser(String spec) throws Exception {
+    public ConditionParser(final String spec) throws Exception {
         super(PathUtils.reconcileKeywords(spec));
     }
 
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getConditionMaps() {
-        return (List<Map<String,Object>>) super.getValue("conditions");
+        return (List<Map<String, Object>>) super.getValue("conditions");
     }
 
-    public void process(){
+    public void process() {
     }
 
     public Set<String> getRequiredKeys() {
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
         set.add("conditions");
         return set;
     }
