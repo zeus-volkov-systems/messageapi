@@ -1,15 +1,22 @@
 package gov.noaa.messageapi.definitions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.stream.Collectors;
+
 import gov.noaa.messageapi.interfaces.IConditionFactory;
+import gov.noaa.messageapi.interfaces.IConditionOperator;
 import gov.noaa.messageapi.parsers.schemas.MetadataParser;
 import gov.noaa.messageapi.parsers.schemas.FieldParser;
 import gov.noaa.messageapi.parsers.schemas.ConditionParser;
 import gov.noaa.messageapi.parsers.schemas.ConditionOperatorParser;
+
+import gov.noaa.messageapi.enums.ConditionStrategy;
+import gov.noaa.messageapi.exceptions.ConfigurationParsingException;
+import gov.noaa.messageapi.exceptions.MessageApiException;
 
 /**
  * A SchemaDefinition is used to parse a specified
@@ -27,6 +34,8 @@ public class SchemaDefinition {
     private List<Map<String,Object>> fieldMaps = null;
     private List<Map<String,Object>> conditionMaps = null;
     private IConditionFactory conditionOperatorFactory = null;
+    private Enum<ConditionStrategy> conditionStrategy = null;
+    private Map<String,Map<String,Object>> conditionOperatorMap = null;
 
     /**
      * This is the operator factory provided by the service. If users
@@ -45,7 +54,6 @@ public class SchemaDefinition {
      * @param  properties A map containing specific schema-blueprint-related info
      * @throws Exception  An exception is thrown if there is an issue parsing the schema definition.
      */
-    @SuppressWarnings("unchecked")
     public SchemaDefinition(final Map<String, Object> properties) throws Exception {
         if (properties.containsKey("metadata")) {
             this.parseMetadataSpec((String) properties.get("metadata"));
@@ -55,10 +63,10 @@ public class SchemaDefinition {
         if (properties.containsKey("fields")) {
             this.parseFieldSpec((String) properties.get("fields"));
         } else {
-            throw new Exception("Missing necessary 'fields' key when parsing schema definition.");
+            throw new ConfigurationParsingException("Missing necessary 'fields' key when parsing schema definition.");
         }
         if (properties.containsKey("conditions")) {
-            this.parseConditionSpec((Map<String, String>) properties.get("conditions"));
+            this.parseConditions(properties.get("conditions"));
         } else {
             this.setEmptyConditions();
         }
@@ -79,7 +87,12 @@ public class SchemaDefinition {
         this.metadataMap = new HashMap<String, Object>(definition.getMetadataMap());
         this.fieldMaps = new ArrayList<Map<String, Object>>(definition.getFieldMaps());
         this.conditionMaps = new ArrayList<Map<String, Object>>(definition.getConditionMaps());
-        this.conditionOperatorFactory = definition.getOperatorFactory().getCopy();
+        this.conditionStrategy = definition.getConditionStrategy();
+        if (definition.getConditionStrategy().equals(ConditionStrategy.FACTORY)) {
+            this.conditionOperatorFactory = definition.getOperatorFactory().getCopy();
+        } else if (definition.getConditionStrategy().equals(ConditionStrategy.SPEC)) {
+            this.conditionOperatorMap = definition.getConditionOperatorMap();
+        }
     }
 
     /**
@@ -94,7 +107,32 @@ public class SchemaDefinition {
      *                   operator class.
      */
     private void createOperatorFactory(final String operatorClass) throws Exception {
-        this.conditionOperatorFactory = ConditionOperatorParser.build(operatorClass);
+        this.conditionOperatorFactory = ConditionOperatorParser.buildFactory(operatorClass);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void createConditionOperatorMap(final List<Map<String,Object>> conditionMaps) throws Exception {
+        try {
+            List<Map<String,Object>> conditionOperatorList = conditionMaps.stream().map(cmap -> {
+                Map<String,Object> externalMap = new HashMap<String,Object>();
+                Map<String,Object> internalMap = new HashMap<String,Object>();
+                try {
+                    internalMap.put("class", ConditionOperatorParser.buildOperatorClass((String)cmap.get("operator")));
+                } catch (Exception e) {
+                    return null;
+                }
+                if (cmap.containsKey("constructor")) {
+                    internalMap.put("constructor", (Map<String,Object>)cmap.get("constructor"));
+                }
+                externalMap.put("id", (String)cmap.get("id"));
+                externalMap.put("map", internalMap);
+                return externalMap;
+            }).collect(Collectors.toList());
+            this.conditionOperatorMap = conditionOperatorList.stream()
+                    .collect(Collectors.toMap(m -> (String) m.get("id"), m -> (Map<String, Object>) m.get("map")));
+        } catch (Exception e) {
+            throw new MessageApiException("Condition Operator Map creation failed. Check your configuration.");
+        }
     }
 
     /**
@@ -125,6 +163,26 @@ public class SchemaDefinition {
         this.fieldMaps = parser.getFieldMaps();
     }
 
+    @SuppressWarnings("unchecked")
+    private void parseConditions(Object conditionValue) throws Exception {
+        if (conditionValue instanceof String) {
+            this.parseConditionsFromSpec((String) conditionValue);
+        } else if (conditionValue instanceof Map) {
+            this.parseConditionsFromManifest((Map<String, String>) conditionValue);
+        }
+    }
+
+    private void parseConditionsFromSpec(String conditionSpec) throws Exception {
+        try {
+            final ConditionParser parser = new ConditionParser(conditionSpec);
+            this.conditionMaps = parser.getConditionMaps();
+            this.setConditionStrategy(ConditionStrategy.SPEC);
+            this.createConditionOperatorMap(this.conditionMaps);
+        } catch (Exception e) {
+            throw new ConfigurationParsingException("Attempted to parse conditions (spec type) but failed.");
+        }
+    }
+
     /**
      * Parses a condition map from a location specified by a string and a factory
      * from a given class string. The condition map holds a flat list of conditions
@@ -141,14 +199,19 @@ public class SchemaDefinition {
      * @throws Exception Throws an exception in the case that the map could not be
      *                   parsed.
      */
-    private void parseConditionSpec(final Map<String, String> conditionMap) throws Exception {
+    private void parseConditionsFromManifest(final Map<String, String> conditionMap) throws Exception {
         if (conditionMap.containsKey("map")) {
-            final ConditionParser parser = new ConditionParser((String) conditionMap.get("map"));
-            this.conditionMaps = parser.getConditionMaps();
-            if (conditionMap.containsKey("factory")) {
-                this.createOperatorFactory((String) conditionMap.get("factory"));
-            } else {
-                this.createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
+            try {
+                final ConditionParser parser = new ConditionParser((String) conditionMap.get("map"));
+                this.conditionMaps = parser.getConditionMaps();
+                if (conditionMap.containsKey("factory")) {
+                    this.createOperatorFactory((String) conditionMap.get("factory"));
+                } else {
+                    this.createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
+                }
+                this.setConditionStrategy(ConditionStrategy.FACTORY);
+            } catch (Exception e) {
+                throw new ConfigurationParsingException("Attempted to parse conditions (factory type) but failed.");
             }
         } else {
             this.setEmptyConditions();
@@ -188,11 +251,23 @@ public class SchemaDefinition {
     }
 
     /**
+     * Returns a new operator instance corresponding to the class referenced by the given methodId.
+     * This method is used in the case that the ConditionStrategy is SPEC (i.e., classes are directly
+     * specified in the parameter map.)
+     * @param methodId
+     * @return
+     */
+    public IConditionOperator getOperator(String methodId) throws Exception {
+        return ConditionOperatorParser.constructOperatorInstance(this.conditionOperatorMap.get(methodId));
+    }
+
+    /**
      * sets empty conditions on the definition, in the case that we aren't using conditions.
      */
     private void setEmptyConditions() throws Exception {
         this.conditionMaps = new ArrayList<Map<String,Object>>();
         this.createOperatorFactory(DEFAULT_OPERATOR_FACTORY);
+        this.setConditionStrategy(ConditionStrategy.FACTORY);
     }
 
     /**
@@ -200,6 +275,18 @@ public class SchemaDefinition {
      */
     private void setEmptyMetadata() throws Exception {
         this.metadataMap = new HashMap<String,Object>();
+    }
+
+    private void setConditionStrategy(Enum<ConditionStrategy> conditionStrategy) {
+        this.conditionStrategy = conditionStrategy;
+    }
+
+    public Enum<ConditionStrategy> getConditionStrategy() {
+        return this.conditionStrategy;
+    }
+
+    public Map<String,Map<String,Object>> getConditionOperatorMap() {
+        return this.conditionOperatorMap;
     }
 
 }

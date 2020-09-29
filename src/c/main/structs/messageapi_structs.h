@@ -95,6 +95,7 @@ typedef struct rejection_list
     int count;
     jobject jrejections;
 } rejection_list;
+
 typedef struct rejection
 {
     jobject jrejection;

@@ -12,6 +12,8 @@ import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.ICompositeCondition;
 import gov.noaa.messageapi.interfaces.IComparisonCondition;
 
+import gov.noaa.messageapi.enums.ConditionStrategy;
+
 import gov.noaa.messageapi.rejections.DefaultRejection;
 
 import gov.noaa.messageapi.utils.general.ListUtils;
@@ -108,20 +110,25 @@ public class FieldUtils {
      * comparison condition.
      * 
      * @param schema    The schema holding the comparison operators.
-     * @param type      The type of comparison to make (=, /=, >, <=, etc.) Any
-     *                  comparsion type is fine if specified in the operator
-     *                  factory.
      * @param field     The field to be compared
      * @param condition The condition to compare
      * @return whether the field value matches the specified condition value
      */
-    private static boolean validateFieldCondition(final ISchema schema, final String type, final IField field,
-            final ICondition condition) {
-        try {
-            return schema.getOperator(type).compare(field, condition);
-        } catch (final Exception e) {
-            return false;
+    private static boolean validateFieldCondition(final ISchema schema, final IField field, final ICondition condition) {
+        if (schema.getConditionStrategy().equals(ConditionStrategy.FACTORY)) {
+            try {
+                return schema.getOperator(ConditionStrategy.FACTORY, field.getType()).compare(field, condition);
+            } catch (final Exception e) {
+                return false;
+            }
+        } else if (schema.getConditionStrategy().equals(ConditionStrategy.SPEC)) {
+            try {
+                return schema.getOperator(ConditionStrategy.SPEC, condition.getId()).compare(field, condition);
+            } catch (final Exception e) {
+                return false;
+            }
         }
+        return false;
     }
 
     /**
@@ -138,7 +145,7 @@ public class FieldUtils {
     private static boolean evaluateFieldCondition(final ISchema s, final IRecord r, final ICondition condition) {
         if (condition.getType().equals("comparison")) {
             final IComparisonCondition c = (IComparisonCondition) condition;
-            if (validateFieldCondition(s, r.getField(c.getField()).getType(), r.getField(c.getField()), c)) {
+            if (validateFieldCondition(s, r.getField(c.getField()), c)) {
                 return true;
             }
             return false;

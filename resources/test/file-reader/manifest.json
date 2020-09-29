@@ -6,10 +6,11 @@
             "constructor": {
                 "metadata": "{}/resources/test/metadata/file-reader/schema.json",
                 "fields": "{}/resources/test/file-reader/parameters.json",
-                "conditions": {
+                "conditionsblahblah": {
                     "map": "{}/resources/test/file-reader/parameters.json",
                     "factory": "gov.noaa.messageapi.factories.SimpleConditionFactory"
-                }
+                },
+                "conditions": "{}/resources/test/file-reader/parameters_with_conds.json"
             }
         },
         "container": {

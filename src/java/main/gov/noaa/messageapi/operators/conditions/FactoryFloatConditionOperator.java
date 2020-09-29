@@ -7,7 +7,7 @@ import gov.noaa.messageapi.interfaces.ICondition;
 /**
  * @author Ryan Berkheimer
  */
-public class FloatConditionOperator extends SimpleConditionOperator implements IConditionOperator {
+public class FactoryFloatConditionOperator extends FactorySimpleConditionOperator implements IConditionOperator {
 
     public boolean compare(final IField field, final ICondition condition) {
         return super.compare(field, condition);

@@ -7,15 +7,15 @@ import gov.noaa.messageapi.interfaces.ICondition;
 /**
  * @author Ryan Berkheimer
  */
-public class BooleanConditionOperator extends SimpleConditionOperator implements IConditionOperator {
+public class FactoryIntegerConditionOperator extends FactorySimpleConditionOperator implements IConditionOperator {
 
     public boolean compare(final IField field, final ICondition condition) {
         return super.compare(field, condition);
     }
 
     protected Integer getCompareValue(final IField field, final ICondition condition) {
-        final Boolean b1 = Boolean.valueOf((Boolean) field.getValue());
-        final Boolean b2 = Boolean.valueOf((Boolean) condition.getValue());
-        return Boolean.compare(b1, b2);
+        final Integer i1 = Integer.valueOf((Integer) field.getValue());
+        final Integer i2 = Integer.valueOf((Integer) condition.getValue());
+        return Integer.compare(i1, i2);
     }
 }

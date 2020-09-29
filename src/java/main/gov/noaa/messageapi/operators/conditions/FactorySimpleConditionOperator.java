@@ -6,7 +6,7 @@ import gov.noaa.messageapi.interfaces.ICondition;
 /**
  * @author Ryan Berkheimer
  */
-public abstract class SimpleConditionOperator {
+public abstract class FactorySimpleConditionOperator {
 
     protected abstract Integer getCompareValue(IField field, ICondition condition);
 

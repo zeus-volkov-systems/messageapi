@@ -1,30 +1,39 @@
 package gov.noaa.messageapi.operators.conditions;
 
+import java.util.Map;
+
 import gov.noaa.messageapi.interfaces.IConditionOperator;
 import gov.noaa.messageapi.interfaces.IField;
+import gov.noaa.messageapi.exceptions.MessageApiException;
 import gov.noaa.messageapi.interfaces.ICondition;
 
 /**
+ * This comparison condition class contains various string comparisons.
+ * Currently supported are '=', '/=', and 'contains'. These must be specified
+ * in the constructor with the 'comparison' key (e.g., {'comparison':'='}).
  * @author Ryan Berkheimer
  */
 public class StringConditionOperator implements IConditionOperator {
 
+    private String comparison = null;
+
+    public StringConditionOperator(Map<String,Object> params) throws Exception {
+        try {
+            this.setComparison((String)params.get("comparison"));
+        } catch (Exception e) {
+            throw new MessageApiException("The StringConditionOperator operator class needs a constructor parameter 'comparison'." +
+                                            "Failed to initialize this condition.");
+        }
+    }
+
     public boolean compare(final IField field, final ICondition condition) {
-        switch (condition.getOperator()) {
-            case ">":
-                return false;
-            case "<":
-                return false;
-            case ">=":
-                return false;
-            case "<=":
-                return false;
+        switch (this.comparison) {
             case "=":
-                return isEqual((String) field.getValue(), (String) condition.getValue());
+                return this.isEqual((String) field.getValue(), (String) condition.getValue());
             case "/=":
-                return isNotEqual((String) field.getValue(), (String) condition.getValue());
+                return this.isNotEqual((String) field.getValue(), (String) condition.getValue());
             case "contains":
-                return contains((String) field.getValue(), (String) condition.getValue());
+                return this.contains((String) field.getValue(), (String) condition.getValue());
         }
         return false;
     }
@@ -49,6 +58,10 @@ public class StringConditionOperator implements IConditionOperator {
         } else {
             return false;
         }
+    }
+
+    private void setComparison(String comparison) {
+        this.comparison = comparison;
     }
 
 }

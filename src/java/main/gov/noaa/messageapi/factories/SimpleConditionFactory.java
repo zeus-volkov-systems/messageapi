@@ -3,12 +3,12 @@ package gov.noaa.messageapi.factories;
 import gov.noaa.messageapi.interfaces.IConditionOperator;
 import gov.noaa.messageapi.interfaces.IConditionFactory;
 
-import gov.noaa.messageapi.operators.conditions.BooleanConditionOperator;
-import gov.noaa.messageapi.operators.conditions.FloatConditionOperator;
-import gov.noaa.messageapi.operators.conditions.DoubleConditionOperator;
-import gov.noaa.messageapi.operators.conditions.IntegerConditionOperator;
-import gov.noaa.messageapi.operators.conditions.StringConditionOperator;
-import gov.noaa.messageapi.operators.conditions.DateTimeConditionOperator;
+import gov.noaa.messageapi.operators.conditions.FactoryBooleanConditionOperator;
+import gov.noaa.messageapi.operators.conditions.FactoryFloatConditionOperator;
+import gov.noaa.messageapi.operators.conditions.FactoryDoubleConditionOperator;
+import gov.noaa.messageapi.operators.conditions.FactoryIntegerConditionOperator;
+import gov.noaa.messageapi.operators.conditions.FactoryStringConditionOperator;
+import gov.noaa.messageapi.operators.conditions.FactoryDateTimeConditionOperator;
 
 /**
  * Creates new Operators for use in comparison between conditions and fields attached to
@@ -45,17 +45,17 @@ public class SimpleConditionFactory implements IConditionFactory {
     public IConditionOperator getOperator(final String type) {
         switch (type) {
             case "boolean":
-                return new BooleanConditionOperator();
+                return new FactoryBooleanConditionOperator();
             case "float":
-                return new FloatConditionOperator();
+                return new FactoryFloatConditionOperator();
             case "double":
-                return new DoubleConditionOperator();
+                return new FactoryDoubleConditionOperator();
             case "integer":
-                return new IntegerConditionOperator();
+                return new FactoryIntegerConditionOperator();
             case "string":
-                return new StringConditionOperator();
+                return new FactoryStringConditionOperator();
             case "datetime":
-                return new DateTimeConditionOperator();
+                return new FactoryDateTimeConditionOperator();
         }
         return null;
     }
