@@ -1,5 +1,7 @@
 package gov.noaa.messageapi.sessions;
 
+import java.util.Map;
+
 import gov.noaa.messageapi.interfaces.ISession;
 import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IProtocol;
@@ -24,8 +26,20 @@ public class DefaultSession extends BaseSession implements ISession {
      * @param p An IProtocol object
      * @param s An ISchema object
      */
-    public DefaultSession(final IContainer c, final IProtocol p, final ISchema s) {
+    public DefaultSession(final IContainer c, final IProtocol p, final ISchema s) throws Exception {
         super(c, p, s);
+    }
+
+    /**
+     * Constructs a new publish session from existing session.
+     * @param session A preexisting ISession object
+     */
+    public DefaultSession(final ISession session) throws Exception {
+        super(session);
+    }
+
+    public DefaultSession(final Map<String,Object> sessionMap) throws Exception {
+        super(sessionMap);
     }
 
     /**

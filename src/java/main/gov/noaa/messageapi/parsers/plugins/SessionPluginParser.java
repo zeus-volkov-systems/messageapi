@@ -22,6 +22,10 @@ public class SessionPluginParser extends BasePluginParser implements IPluginPars
         super(spec);
     }
 
+    public SessionPluginParser(final Object parserMap) throws Exception {
+        super(parserMap);
+    }
+
     @SuppressWarnings("unchecked")
     public ISession build() throws Exception {
         try {

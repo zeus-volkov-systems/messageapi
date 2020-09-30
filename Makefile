@@ -29,6 +29,10 @@ JAR_INSTALL_SCRIPT=$(PROJECT_ROOT)/scripts/install/java/main/install.sh
 DOCS_SRC_DIR=$(PROJECT_ROOT)/build/docs/groovydoc
 API_DOCS_DIR=$(PROJECT_ROOT)/dist/docs/api
 
+TEMPLATE_SRC_DIR=$(PROJECT_ROOT)/resources/main/templates
+SESSION_TEMPLATE_SRC_DIR=$(TEMPLATE_SRC_DIR)/sessions
+METADATA_TEMPLATE_SRC_DIR=$(TEMPLATE_SRC_DIR)/metadata
+
 #C/C++ Related Paths
 C_MAIN_BUILD_DIR=$(PROJECT_ROOT)/scripts/build/c/main
 C_TEST_BUILD_DIR=$(PROJECT_ROOT)/scripts/build/c/test
@@ -74,8 +78,10 @@ dist-java:
 	@echo "Creating distributable Java artifacts."
 	@cp $(JAR_SRC_DIR)/$(SRC_JAR) $(JAR_SRC_DIR)/$(TARGET_JAR)
 	@cp $(JAR_INSTALL_SCRIPT) $(JAR_SRC_DIR)
+	@cp $(SESSION_TEMPLATE_SRC_DIR)/*.json $(JAR_SRC_DIR)
+	@cp $(METADATA_TEMPLATE_SRC_DIR)/*.json $(JAR_SRC_DIR)
 	@mkdir -p $(JAVA_ARTIFACT_DIR)
-	@-cd $(JAR_SRC_DIR) && tar -cf $(LIBRARY_NAME).tar $(TARGET_JAR) install.sh
+	@-cd $(JAR_SRC_DIR) && tar -cf $(LIBRARY_NAME).tar $(TARGET_JAR) install.sh *.json
 	@-cd $(JAR_SRC_DIR) && mv $(LIBRARY_NAME).tar $(JAVA_ARTIFACT_DIR)
 
 copy-docs:

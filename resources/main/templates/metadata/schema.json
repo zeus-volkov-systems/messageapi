@@ -1,0 +1,10 @@
+{
+    "metadata": {
+        "id": "DefaultSchema",
+        "version": "1.0.0",
+        "classifiers": {"class": "schema",
+                        "author": "Ryan Berkheimer",
+                        "components":["field", "condition"]},
+        "description": "DefaultSchema ships with MessageAPI core. Contains fields and conditions per-record and per-request. Initial values set on conditions are nullified for individual records but not requests."
+    }
+}

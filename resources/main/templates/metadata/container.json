@@ -1,0 +1,10 @@
+{
+    "metadata": {
+        "id": "DefaultContainer",
+        "version": "1.0.0",
+        "classifiers": {"class": "container",
+                        "author": "Ryan Berkheimer",
+                        "components": ["collection", "classifier", "transformation"]},
+        "description": "DefaultContainer ships with MessageAPI core. Contains collections, classifiers, and transformations that 'bin' fields and conditions in a schema. Fields can be repeatedly binned, classifiers apply to collections, and transformations consume collections, classifiers, UUID bins, or other transformations immutably."
+    }
+}

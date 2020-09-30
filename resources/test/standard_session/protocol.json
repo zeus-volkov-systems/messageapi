@@ -1,0 +1,10 @@
+{
+    "metadata": {
+        "id": "DefaultProtocol",
+        "version": "1.0.0",
+        "classifiers": {"class": "protocol",
+                        "author": "Ryan Berkheimer",
+                        "components": ["endpoint", "connection"]},
+        "description": "DefaultProtocol ships with MessageAPI core. Contains endpoints and associated connections. Connections are assigned arbitrary container lists of transformations, collections, or classifiers."
+    }
+}

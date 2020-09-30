@@ -3,6 +3,9 @@ package gov.noaa.messageapi.sessions;
 import gov.noaa.messageapi.interfaces.ISession;
 import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IProtocol;
+
+import java.util.Map;
+
 import gov.noaa.messageapi.interfaces.IContainer;
 
 import gov.noaa.messageapi.parsers.plugins.SessionPluginParser;
@@ -22,6 +25,19 @@ public class BaseSession {
         this.setProtocol(p);
         this.setSchema(s);
         this.initialize(c, p, s);
+    }
+
+    public BaseSession(final ISession session) {
+        this.setContainer(session.getContainer());
+        this.setProtocol(session.getProtocol());
+        this.setSchema(session.getSchema());
+    }
+
+    public BaseSession(final Map<String,Object> sessionMap) throws Exception {
+        final ISession session = new SessionPluginParser(sessionMap).build();
+        this.setContainer(session.getContainer());
+        this.setProtocol(session.getProtocol());
+        this.setSchema(session.getSchema());
     }
 
     public BaseSession(final String spec) throws Exception {

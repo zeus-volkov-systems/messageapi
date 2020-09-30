@@ -10,6 +10,8 @@
 
 import gov.noaa.messageapi.factories.SessionFactory;
 import gov.noaa.messageapi.sessions.DefaultSession;
+import gov.noaa.messageapi.sessions.StandardSession;
+
 class SessionUnitTests extends spock.lang.Specification {
 
     def "Test session creation from a json spec using factory."() {
@@ -38,4 +40,14 @@ class SessionUnitTests extends spock.lang.Specification {
         then: "An ISession instance is created without error."
             session in gov.noaa.messageapi.interfaces.ISession
     }
+
+    def "Test a standard session creation." () {
+        given: "we pass a session parameter spec path."
+            def sessionSpec = this.getClass().getResource('standard_session/parameters.json').getPath()
+        when: "We create a standard session"
+            ISession session = new StandardSession(sessionSpec)
+        then: "An ISession instance is created without error."
+            session in gov.noaa.messageapi.interfaces.ISession
+    }
+
 }

@@ -44,7 +44,7 @@ update_headers_var () {
     echo "export MESSAGEAPI_HEADERS=${HEADERS_INSTALL_DIR} #messageapi_c_cpp_set_headers" >> "${BASHRC}"
     echo "Added a 'MESSAGEAPI_HEADERS' environment variable to ${BASHRC} for convenient inclusion of library headers."
     echo "When creating a C/C++ session, endpoint, condition, or transformation, you can use the MESSAGEAPI_HEADERS as the include location."
-    echo "Build file templates for each of these is provided in the templates directory, accessible via the MESSAGEAPI_TEMPLATES environment variable."
+    echo "Build file templates for each of these is provided in the templates directory, accessible via the MESSAGEAPI_C_TEMPLATES environment variable."
     echo ""
 }
 
@@ -71,17 +71,17 @@ update_src_var () {
     echo "export MESSAGEAPI_SRC=${SRC_INSTALL_DIR} #messageapi_c_cpp_set_src" >> "${BASHRC}"
     echo "Added a 'MESSAGEAPI_SRC' environment variable to ${BASHRC} for convenient inclusion of the C/C++ source files."
     echo "When creating a C/C++ session, endpoint, condition, or transformation, you can use the MESSAGEAPI_SRC for base source paths during build."
-    echo "Build file templates for each of these is provided in the templates directory, accessible via the MESSAGEAPI_TEMPLATES environment variable."
+    echo "Build file templates for each of these is provided in the templates directory, accessible via the MESSAGEAPI_C_TEMPLATES environment variable."
     echo ""
 }
 
 update_template_var () {
     echo ""
-    echo "Updating the MESSAGEAPI_TEMPLATES environment variable in $(whoami)'s ~/.bashrc."
+    echo "Updating the MESSAGEAPI_C_TEMPLATES environment variable in $(whoami)'s ~/.bashrc."
     sed '/#messageapi_c_cpp_build_templates/d' "${BASHRC}" > "${BASHRC_TMP}"
     mv "${BASHRC_TMP}" "${BASHRC}"
-    echo "export MESSAGEAPI_TEMPLATES=${TEMPLATE_INSTALL_DIR} #messageapi_c_cpp_build_templates" >> "${BASHRC}"
-    echo "Added a 'MESSAGEAPI_TEMPLATES' environment variable to ${BASHRC} for convenient access to the C/C++ build templates."
+    echo "export MESSAGEAPI_C_TEMPLATES=${TEMPLATE_INSTALL_DIR} #messageapi_c_cpp_build_templates" >> "${BASHRC}"
+    echo "Added a 'MESSAGEAPI_C_TEMPLATES' environment variable to ${BASHRC} for convenient access to the C/C++ build templates."
     echo "These templates are set up to use the installation paths for messageapi source code, libraries, and headers."
     echo "To use them, copy the template to your desired build location, fill out the fields with USER FIELD comments, and run 'make'."
     echo ""
