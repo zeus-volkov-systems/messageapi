@@ -1,4 +1,4 @@
-package gov.noaa.messageapi.operators.conditions;
+package gov.noaa.messageapi.operators;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package gov.noaa.messageapi.operators.conditions;
+package gov.noaa.messageapi.operators;
 
 import gov.noaa.messageapi.interfaces.IConditionOperator;
 import gov.noaa.messageapi.interfaces.IField;
@@ -7,16 +7,16 @@ import gov.noaa.messageapi.interfaces.ICondition;
 /**
  * @author Ryan Berkheimer
  */
-public class FactoryDoubleConditionOperator extends FactorySimpleConditionOperator implements IConditionOperator {
+public class FactoryFloatConditionOperator extends FactorySimpleConditionOperator implements IConditionOperator {
 
     public boolean compare(final IField field, final ICondition condition) {
         return super.compare(field, condition);
     }
 
     protected Integer getCompareValue(final IField field, final ICondition condition) {
-        final Double d1 = Double.valueOf((Double) field.getValue());
-        final Double d2 = Double.valueOf((Double) condition.getValue());
-        return Double.compare(d1, d2);
+        final Float f1 = Float.valueOf((Float) field.getValue());
+        final Float f2 = Float.valueOf((Float) condition.getValue());
+        return Float.compare(f1, f2);
     }
 
 }

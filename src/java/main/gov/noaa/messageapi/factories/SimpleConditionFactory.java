@@ -3,12 +3,12 @@ package gov.noaa.messageapi.factories;
 import gov.noaa.messageapi.interfaces.IConditionOperator;
 import gov.noaa.messageapi.interfaces.IConditionFactory;
 
-import gov.noaa.messageapi.operators.conditions.FactoryBooleanConditionOperator;
-import gov.noaa.messageapi.operators.conditions.FactoryFloatConditionOperator;
-import gov.noaa.messageapi.operators.conditions.FactoryDoubleConditionOperator;
-import gov.noaa.messageapi.operators.conditions.FactoryIntegerConditionOperator;
-import gov.noaa.messageapi.operators.conditions.FactoryStringConditionOperator;
-import gov.noaa.messageapi.operators.conditions.FactoryDateTimeConditionOperator;
+import gov.noaa.messageapi.operators.FactoryBooleanConditionOperator;
+import gov.noaa.messageapi.operators.FactoryFloatConditionOperator;
+import gov.noaa.messageapi.operators.FactoryDoubleConditionOperator;
+import gov.noaa.messageapi.operators.FactoryIntegerConditionOperator;
+import gov.noaa.messageapi.operators.FactoryStringConditionOperator;
+import gov.noaa.messageapi.operators.FactoryDateTimeConditionOperator;
 
 /**
  * Creates new Operators for use in comparison between conditions and fields attached to

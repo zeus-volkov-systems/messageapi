@@ -1,4 +1,4 @@
-package gov.noaa.messageapi.operators.conditions;
+package gov.noaa.messageapi.operators;
 
 import gov.noaa.messageapi.interfaces.IField;
 import gov.noaa.messageapi.interfaces.ICondition;

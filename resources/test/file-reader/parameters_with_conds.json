@@ -4,7 +4,7 @@
                 "required": true}],
     "conditions": [{"id": "is-relative-path",
                     "type": "comparison",
-                    "operator": "gov.noaa.messageapi.operators.conditions.StringConditionOperator",
+                    "operator": "gov.noaa.messageapi.operators.StringConditionOperator",
                     "constructor": {"comparison": "contains"},
                     "field": "file-path",
                     "value": "{}"}],
