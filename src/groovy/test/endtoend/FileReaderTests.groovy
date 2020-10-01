@@ -56,7 +56,8 @@ def "Tests submission of a full file reader task with 1 large input using a Stan
         ISession session = new StandardSession(parameterPath)
         IRequest request = session.createRequest()
         IRecord record = request.createRecord()
-        String filePath = '{}/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt'
+        //String filePath = '{}/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt'
+        String filePath = '/workspaces/messageapi/build/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt'
         record.setField('file-path', filePath)
         //println record.getField('file-path').getValue()
     when: 'We submit the test session and wait for completion'

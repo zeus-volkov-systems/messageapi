@@ -6,27 +6,12 @@
             "required": true
         }
     ],
-    "conditions": [
-        {
-            "id": "is-relative-path",
-            "type": "comparison",
-            "operator": "gov.noaa.messageapi.operators.StringConditionOperator",
-            "constructor": {
-                "comparison": "contains"
-            },
-            "field": "file-path",
-            "value": "{}"
-        }
-    ],
     "collections": [
         {
             "id": "coll-1",
             "classifiers": {},
             "fields": [
                 "file-path"
-            ],
-            "conditions": [
-                "is-relative-path"
             ]
         }
     ],

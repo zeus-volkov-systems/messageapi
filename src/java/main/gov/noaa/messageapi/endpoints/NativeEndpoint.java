@@ -53,7 +53,7 @@ import gov.noaa.messageapi.rejections.DefaultRejection;
  * <p>
  * <p>
  * <h3>Implementation</h3>
- * The specific API of methods in native code are dependent on the language (e.g, C, Fortran);
+ * The specific API of methods in native code are dependent on the language (e.g, C, C++, Fortran, Python,...);
  * however, every native language will be initially wrapped by a JNI method in a C file that corresponds to the
  * 'process' method in this class, and all native processing related to use
  * of MessageAPI will operate on the passed jlong and the provided MessageApiEndpoint Library.
