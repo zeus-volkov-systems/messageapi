@@ -1,0 +1,71 @@
+{
+    "fields": [
+        {
+            "id": "file-path",
+            "type": "string",
+            "required": true
+        }
+    ],
+    "conditions": [
+        {
+            "id": "is-relative-path",
+            "type": "comparison",
+            "operator": "gov.noaa.messageapi.operators.StringConditionOperator",
+            "constructor": {
+                "comparison": "contains"
+            },
+            "field": "file-path",
+            "value": "{}"
+        }
+    ],
+    "collections": [
+        {
+            "id": "coll-1",
+            "classifiers": {},
+            "fields": [
+                "file-path"
+            ],
+            "conditions": [
+                "is-relative-path"
+            ]
+        }
+    ],
+    "transformations": [
+        {
+            "id": "trans-1",
+            "operator": "gov.noaa.messageapi.test.transformations.FixRelativePathsTransformation",
+            "constructor": {
+                "transform-key": "file-collection",
+                "fields": [
+                    "file-path"
+                ]
+            },
+            "records": {
+                "file-collection": {
+                    "COLLECTION": "coll-1"
+                }
+            }
+        }
+    ],
+    "endpoints": [
+        {
+            "plugin": "gov.noaa.messageapi.test.endpoints.InMemoryFileReader",
+            "connections": [
+                {
+                    "id": "conn-1",
+                    "transformations": [
+                        "trans-1"
+                    ],
+                    "constructor": {
+                        "file-fields": "file-path"
+                    },
+                    "fields": [
+                        "value",
+                        "number",
+                        "length"
+                    ]
+                }
+            ]
+        }
+    ]
+}
