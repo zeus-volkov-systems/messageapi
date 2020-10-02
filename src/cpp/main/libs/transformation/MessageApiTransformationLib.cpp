@@ -476,6 +476,146 @@ extern "C"
         return reinterpret_cast<MessageApiTransformation *>(message)->getListUtils()->addListItem(list, val);
     }
 
+    /*Map Utils*/
+
+    /*Map Utility Methods*/
+    val_map *createMap(jlong message)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->createMap();
+    }
+
+    int getSize(jlong message, val_map *map)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getSize(map);
+    }
+
+    bool hasKey(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->hasKey(map, key);
+    }
+
+    /*Map Value Retrieval Methods*/
+    map_val *getVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getVal(map, key);
+    }
+
+    jobject getObjectVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getObjectVal(map, key);
+    }
+
+    int getIntVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getIntVal(map, key);
+    }
+
+    long getLongVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getLongVal(map, key);
+    }
+
+    float getFloatVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getFloatVal(map, key);
+    }
+
+    double getDoubleVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getDoubleVal(map, key);
+    }
+
+    signed char getByteVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getByteVal(map, key);
+    }
+
+    const char *getStringVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getStringVal(map, key);
+    }
+
+    bool getBoolVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getBoolVal(map, key);
+    }
+
+    short getShortVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getShortVal(map, key);
+    }
+
+    val_list *getListVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getListVal(map, key);
+    }
+
+    val_map *getMapVal(jlong message, val_map *map, const char *key)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->getMapVal(map, key);
+    }
+
+    /*Insert or Update Methods*/
+    void putVal(jlong message, val_map *map, const char *key, map_val *val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putVal(map, key, val);
+    }
+
+    void putObjectVal(jlong message, val_map *map, const char *key, jobject val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putObjectVal(map, key, val);
+    }
+
+    void putIntVal(jlong message, val_map *map, const char *key, int val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putIntVal(map, key, val);
+    }
+
+    void putLongVal(jlong message, val_map *map, const char *key, long val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putLongVal(map, key, val);
+    }
+
+    void putFloatVal(jlong message, val_map *map, const char *key, float val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putFloatVal(map, key, val);
+    }
+
+    void putDoubleVal(jlong message, val_map *map, const char *key, double val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putDoubleVal(map, key, val);
+    }
+
+    void putByteVal(jlong message, val_map *map, const char *key, signed char val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putByteVal(map, key, val);
+    }
+
+    void putStringVal(jlong message, val_map *map, const char *key, const char *val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putStringVal(map, key, val);
+    }
+
+    void putBoolVal(jlong message, val_map *map, const char *key, bool val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putBoolVal(map, key, val);
+    }
+
+    void putShortVal(jlong message, val_map *map, const char *key, short val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putShortVal(map, key, val);
+    }
+
+    void putListVal(jlong message, val_map *map, const char *key, val_list *val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putListVal(map, key, val);
+    }
+
+    void putMapVal(jlong message, val_map *map, const char *key, val_map *val)
+    {
+        return reinterpret_cast<MessageApiTransformation *>(message)->getMapUtils()->putMapVal(map, key, val);
+    }
+
     /*Rejection Utils*/
     rejection_list *createRejectionList(jlong message)
     {

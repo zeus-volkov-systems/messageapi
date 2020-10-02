@@ -34,7 +34,7 @@ public class StandardSession extends DefaultSession {
      * @throws Exception Throws exception if error creating session
      */
     public StandardSession(final String parameterSpec) throws Exception {
-        super(buildStandardSession(parameterSpec));
+        super(StandardSession.buildStandardSession(parameterSpec));
     }
 
     /**

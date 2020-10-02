@@ -1,0 +1,42 @@
+{
+    "fields": [
+        {
+            "id": "int-field",
+            "required": true,
+            "type": "integer"
+        }
+    ],
+    "conditions": [
+        {
+            "id": "int-condition-test",
+            "type": "comparison",
+            "operator": "gov.noaa.messageapi.conditions.NativeCondition",
+            "constructor": {
+                "native-library": "/workspaces/messageapi/libs/test/c/condition/libConditionDemo.so"
+            },
+            "field": "int-field",
+            "value": 5
+        }
+    ],
+    "collections": [
+        {
+            "id": "collection-1",
+            "fields": ["int-field"],
+            "conditions": ["int-condition-test"]
+        },
+        {
+            "id": "collection-2",
+            "fields": ["int-field"]
+        }
+    ],
+    "endpoints": [
+        {
+            "plugin": "gov.noaa.messageapi.EvaluationEndpoint",
+            "connections": [{
+                "id": "conn-1",
+                "constructor": {},
+                "collections": ["collection-1", "collection-2"]
+            }]
+        }
+    ]
+}

@@ -51,6 +51,8 @@ build-c_cpp:
 	@make -C $(C_MAIN_BUILD_DIR)
 	@echo "Building C/C++ binary for native transformation tests."
 	@make -C $(C_TEST_BUILD_DIR)/transformation
+	@echo "Building C/C++ binary for native condition tests."
+	@make -C $(C_TEST_BUILD_DIR)/condition
 	@echo "Building C/C++ binary for native endpoint tests."
 	@make -C $(C_TEST_BUILD_DIR)/endpoint
 	@echo "Building C/C++ binary for native session tests."

@@ -55,7 +55,8 @@ C_FQ_SRC_FILES=$(addprefix $(C_DIR), $(C_SRC_FILES))
 C_H_FILES=structs/messageapi_structs.h
 
 C_FULL_H_FILES=wrappers/endpoint/gov_noaa_messageapi_endpoints_NativeEndpoint.h \
-wrappers/transformation/gov_noaa_messageapi_transformations_NativeTransformation.h
+wrappers/transformation/gov_noaa_messageapi_transformations_NativeTransformation.h \
+wrappers/condition/gov_noaa_messageapi_conditions_NativeCondition.h
 
 C_FQ_H_FILES=$(addprefix $(C_DIR), $(C_H_FILES))
 
@@ -63,14 +64,17 @@ C_FQ_FULL_H_FILES=$(addprefix $(C_DIR), $(C_FULL_H_FILES))
 
 CPP_DIR=$(PROJECT_ROOT)/src/cpp/main/
 
+#These files are involved in the native session, which is why they are separate
 CPP_SRC_FILES=utils/general/jni/JniUtils.cpp utils/general/type/TypeUtils.cpp utils/general/list/ListUtils.cpp \
 utils/general/map/MapUtils.cpp utils/api/condition/ConditionUtils.cpp utils/api/field/FieldUtils.cpp \
 utils/api/records/schema/RecordUtils.cpp utils/api/rejection/RejectionUtils.cpp utils/api/packet/PacketUtils.cpp \
 utils/api/session/SessionUtils.cpp utils/api/request/RequestUtils.cpp utils/api/response/ResponseUtils.cpp \
 api/session/MessageApiSession.cpp libs/session/MessageApiSessionLib.cpp
 
+#These files do not need to be included in native session.
 CPP_FULL_SRC_FILES=utils/api/endpoint/EndpointUtils.cpp utils/api/records/protocol/ProtocolRecordUtils.cpp \
 utils/api/transformation/TransformationUtils.cpp api/endpoint/MessageApiEndpoint.cpp \
+utils/api/condition/NativeConditionUtils.cpp api/condition/MessageApiCondition.cpp libs/condition/MessageApiConditionLib.cpp \
 api/transformation/MessageApiTransformation.cpp libs/endpoint/MessageApiEndpointLib.cpp \
 libs/transformation/MessageApiTransformationLib.cpp
 
@@ -86,6 +90,7 @@ api/session/MessageApiSession.h libs/session/MessageApiSessionLib.h
 
 CPP_FULL_H_FILES=utils/api/endpoint/EndpointUtils.h utils/api/records/protocol/ProtocolRecordUtils.h \
 utils/api/transformation/TransformationUtils.h api/endpoint/MessageApiEndpoint.h \
+utils/api/condition/NativeConditionUtils.h api/condition/MessageApiCondition.h libs/condition/MessageApiConditionLib.h \
 api/transformation/MessageApiTransformation.h libs/endpoint/MessageApiEndpointLib.h \
 libs/transformation/MessageApiTransformationLib.h
 
