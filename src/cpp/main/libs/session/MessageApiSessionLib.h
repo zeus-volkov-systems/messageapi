@@ -42,6 +42,7 @@ extern "C"
     /*Record Methods*/
     extern record_list *createRecordList(session *session);
     extern void addRecord(session *session, record_list *record_list, record *record);
+    extern record *getRecord(session *session, record_list *record_list, int index);
 
     extern record *getRecordCopy(session *session, record *record);
     extern bool getRecordIsValid(session *session, record *record);
