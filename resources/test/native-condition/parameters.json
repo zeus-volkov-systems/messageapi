@@ -31,7 +31,7 @@
     ],
     "endpoints": [
         {
-            "plugin": "gov.noaa.messageapi.EvaluationEndpoint",
+            "plugin": "gov.noaa.messageapi.endpoints.EvaluationEndpoint",
             "connections": [{
                 "id": "conn-1",
                 "constructor": {},

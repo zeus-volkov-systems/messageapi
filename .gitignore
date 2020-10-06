@@ -20,6 +20,9 @@ bin/*
 .devcontainer/*
 *.code-workspace
 
+#For demos
+.ipynb_checkpoints/*
+
 #for leiningen builds
 .lein*
 /.lein-*

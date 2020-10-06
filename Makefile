@@ -42,9 +42,9 @@ TEST_RESOURCE_DIR=$(PROJECT_ROOT)/libs
 run-native-tests: export LD_LIBRARY_PATH = $(JAVA_HOME)/lib/jli:$(JAVA_HOME)/lib/server
 run-native-tests: export CLASSPATH = $(TEST_RESOURCE_DIR)/test/java/jars/$(SRC_JAR)
 
-.PHONY: build-c_cpp prep-java build-java dist-java run-native-tests copy-docs cleanup
+.PHONY: build-c_cpp prep-java build-java dist-java run-native-tests copy-docs #cleanup
 
-all: build-c_cpp prep-java build-java dist-java copy-docs run-native-tests cleanup
+all: build-c_cpp prep-java build-java dist-java copy-docs run-native-tests #cleanup
 
 build-c_cpp:
 	@echo "Building the shared library for C/C++ native sessions and the distributable native C artifacts."

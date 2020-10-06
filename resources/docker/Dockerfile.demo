@@ -8,7 +8,7 @@ FROM registry.access.redhat.com/ubi7/ubi:latest
 
 #Install standard RHEL7 tools
 RUN yum -y install --disableplugin=subscription-manager \
-    vim wget git java-11-openjdk-devel gcc gcc-gfortran gcc-c++ make \
+    vim wget git java-11-openjdk-devel gcc gcc-gfortran gcc-c++ make unzip \
     && yum --disableplugin=subscription-manager clean all
 
 #Install Java Variables
@@ -34,6 +34,17 @@ RUN /bin/bash miniconda.sh -b -p ${workdir}/miniconda
 
 #Install Jupyter Notebook via Conda
 RUN cd ${workdir}/miniconda/bin && ./conda install -y jupyter
+
+#Install the Java Kernel
+RUN wget https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip -O ijava.zip
+RUN unzip ijava.zip
+RUN ${workdir}/miniconda/bin/python install.py --sys-prefix
+
+#Install the C Kernel
+RUN git clone https://github.com/brendan-rius/jupyter-c-kernel.git
+RUN ${workdir}/miniconda/bin/pip install --no-cache-dir jupyter-c-kernel/
+RUN cd ${workdir}/jupyter-c-kernel/jupyter_c_kernel && ${workdir}/miniconda/bin/python install_c_kernel --user
+RUN cp -r ${workdir}/jupyter-c-kernel/jupyter_c_kernel/resources ${workdir}/miniconda/lib/python3.8/site-packages
 
 #Retrieve the installation script to the user's home directory and set permissions for execution
 RUN wget https://k3.cicsnc.org/rberkheimer/messageapi/-/raw/mac-develop/scripts/install/package/install_k3.sh?inline=false \
