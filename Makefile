@@ -42,9 +42,9 @@ TEST_RESOURCE_DIR=$(PROJECT_ROOT)/libs
 run-native-tests: export LD_LIBRARY_PATH = $(JAVA_HOME)/lib/jli:$(JAVA_HOME)/lib/server
 run-native-tests: export CLASSPATH = $(TEST_RESOURCE_DIR)/test/java/jars/$(SRC_JAR)
 
-.PHONY: build-c_cpp prep-java build-java dist-java run-native-tests copy-docs #cleanup
+.PHONY: build-c_cpp prep-java build-java dist-java run-native-tests copy-docs create-demo-resources cleanup
 
-all: build-c_cpp prep-java build-java dist-java copy-docs run-native-tests #cleanup
+all: build-c_cpp prep-java build-java dist-java copy-docs run-native-tests create-demo-resources cleanup
 
 build-c_cpp:
 	@echo "Building the shared library for C/C++ native sessions and the distributable native C artifacts."
@@ -66,7 +66,7 @@ cleanup:
 prep-java:
 	@echo "Cleaning any residual Java artifacts."
 	@rm -rf $(JAVA_ARTIFACT_DIR)
-	@rm -rf $(API_DOCS_DIR)
+	@rm -rf $(API_DOCS_DIR)P
 	@echo "Java ready for build."
 
 build-java:
@@ -92,6 +92,10 @@ copy-docs:
 	@-cd $(DOCS_SRC_DIR) && tar -cf $(API_DOCS_DIR)/messageapi_docs.tar *
 	@echo "Finished copying API docs for distribution."
 
+create-demo-resources:
+	@echo "Creating Demo resources."
+	@echo "Finished creating Demo resources."
+
 run-native-tests:
 	@echo "Running native C/C++ session test."
 	@-cd $(TEST_RESOURCE_DIR)/test/c/session && ./SessionDemo.bin
@@ -112,3 +116,11 @@ install:
 	@./install.sh "C_CPP"
 	@rm install.sh
 	@echo "Finished installing package, validate ~/.bashrc and env vars for success."
+
+demo: install
+	@echo "Installing demo dependencies."
+	@echo "Finished insatlling demo dependencies."
+
+demo-k3: install-k3
+	@echo "Installing demo dependencies."
+	@echo "Finished insatlling demo dependencies."

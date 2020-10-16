@@ -1,13 +1,30 @@
 {
-    "fields": [{
+    "fields": [
+        {
             "id": "directory",
             "type": "string",
-            "required": true}],
-    "collections": [{"id": "coll-1",
-                     "classifiers": {},
-                     "fields": ["directory"]}],
-    "connections": [{"id": "conn-1",
-                     "collections": ["coll-1"],
-                     "constructor": {"directory-fields": "directory",
-                                     "server": "ftp.ncdc.noaa.gov"}}]
+            "required": true
+        }
+    ],
+    "collections": [
+        {
+            "id": "coll-1",
+            "classifiers": {},
+            "fields": [
+                "directory"
+            ]
+        }
+    ],
+    "connections": [
+        {
+            "id": "conn-1",
+            "collections": [
+                "coll-1"
+            ],
+            "constructor": {
+                "directory-fields": "directory",
+                "server": "ftp.ncdc.noaa.gov"
+            }
+        }
+    ]
 }
