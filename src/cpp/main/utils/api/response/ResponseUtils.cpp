@@ -33,6 +33,11 @@ ResponseUtils::~ResponseUtils()
 
 /* Public API */
 
+/**
+ * As request/response pairs are asynchronous by nature, this method provides callers with the status of the response.
+ * It will only be 'true' when the response has completed all requested processing (whether successful or not).
+ * Until then, this method will return 'false'.
+ **/
 bool ResponseUtils::isComplete(struct response *response)
 {
     jboolean jBoolVal = this->jvm->CallBooleanMethod(response->jresponse, this->isCompleteMethodId);
@@ -40,6 +45,11 @@ bool ResponseUtils::isComplete(struct response *response)
     return boolVal;
 }
 
+/**
+ * This method will return the request struct associated with the given response. As a single request can be submitted
+ * multiple times to produce different responses, this method will return the idempotent request that was used to produce a
+ * given response.
+ **/
 struct request *ResponseUtils::getRequest(struct response *response)
 {
     jobject jrequest = this->jvm->CallObjectMethod(response->jresponse, this->getRequestMethodId);

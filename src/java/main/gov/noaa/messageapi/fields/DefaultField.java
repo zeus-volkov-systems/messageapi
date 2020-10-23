@@ -68,11 +68,11 @@ public class DefaultField implements IField {
         return this.type;
     }
 
-    public Boolean isRequired() {
+    public boolean isRequired() {
         return this.required;
     }
 
-    public Boolean isValid() {
+    public boolean isValid() {
         return this.valid;
     }
 

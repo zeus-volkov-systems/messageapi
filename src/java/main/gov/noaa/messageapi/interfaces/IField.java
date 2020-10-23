@@ -34,14 +34,14 @@ public interface IField {
      * Used contextually to determine whether
      * or not this field is required for subsequent processing.
      */
-    public Boolean isRequired();
+    public boolean isRequired();
 
     /**
      * Used contextually to determine whether or not
      * this field is valid. This could be used in type validation
      * or some other way.
      */
-    public Boolean isValid();
+    public boolean isValid();
 
     /**
      * Returns the value of the field.

@@ -41,12 +41,16 @@ const char *FieldUtils::getType(struct field *field)
 
 bool FieldUtils::isValid(struct field *field)
 {
-    return (bool)this->jvm->CallBooleanMethod(field->jfield, this->isValidMethodId);
+    jboolean jBoolVal = this->jvm->CallBooleanMethod(field->jfield, this->isValidMethodId);
+    bool boolVal = (bool)(jBoolVal != JNI_FALSE);
+    return boolVal;
 }
 
 bool FieldUtils::isRequired(struct field *field)
 {
-    return (bool)this->jvm->CallBooleanMethod(field->jfield, this->isRequiredMethodId);
+    jboolean jBoolVal = this->jvm->CallBooleanMethod(field->jfield, this->isRequiredMethodId);
+    bool boolVal = (bool)(jBoolVal != JNI_FALSE);
+    return boolVal;
 }
 
 bool FieldUtils::isNull(struct field *field)
@@ -190,7 +194,6 @@ void FieldUtils::setStringVal(struct field *field, const char *value)
 {
     jstring jStringVal = this->typeUtils->toJavaString(value);
     this->jvm->CallVoidMethod(field->jfield, this->setValueMethodId, jStringVal);
-    //this->jvm->DeleteLocalRef(jStringVal);
 }
 
 void FieldUtils::setBoolVal(struct field *field, bool value)
@@ -254,11 +257,11 @@ const char *FieldUtils::getMethodSignature(const char *methodName)
     }
     else if (strcmp(methodName, "isValid") == 0)
     {
-        return "()Ljava/lang/Boolean;";
+        return "()Z";
     }
     else if (strcmp(methodName, "isRequired") == 0)
     {
-        return "()Ljava/lang/Boolean;";
+        return "()Z";
     }
     else if (strcmp(methodName, "setValue") == 0)
     {
