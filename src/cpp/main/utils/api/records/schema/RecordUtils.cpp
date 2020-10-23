@@ -26,14 +26,15 @@ RecordUtils::~RecordUtils()
 
 bool RecordUtils::isValid(struct record *record)
 {
-    return (bool)this->jvm->CallBooleanMethod(record->jrecord, this->isValidMethodId);
+    jboolean jBoolVal = this->jvm->CallBooleanMethod(record->jrecord, this->isValidMethodId);
+    bool boolVal = (bool)(jBoolVal != JNI_FALSE);
+    return boolVal;
 }
 
 void RecordUtils::setValid(struct record *record, bool isValid)
 {
-    jobject jBoolVal = jvm->NewObject(this->typeUtils->getBoolClass(), this->typeUtils->createBoolMethod(), (jboolean)isValid);
+    jboolean jBoolVal = (isValid) ? JNI_TRUE : JNI_FALSE;
     this->jvm->CallVoidMethod(record->jrecord, this->setValidMethodId, jBoolVal);
-    this->jvm->DeleteLocalRef(jBoolVal);
 }
 
 struct record *RecordUtils::getCopy(struct record *record)
@@ -47,7 +48,8 @@ struct record *RecordUtils::getCopy(struct record *record)
 bool RecordUtils::hasField(struct record *record, const char *fieldId)
 {
     jstring jFieldId = this->typeUtils->toJavaString(fieldId);
-    bool hasJField = (bool)this->jvm->CallBooleanMethod(record->jrecord, this->hasFieldMethodId, jFieldId);
+    jboolean jBoolVal = this->jvm->CallBooleanMethod(record->jrecord, this->hasFieldMethodId, jFieldId);
+    bool hasJField = (bool)(jBoolVal != JNI_FALSE);
     this->jvm->DeleteLocalRef(jFieldId);
     return hasJField;
 }
@@ -92,7 +94,8 @@ struct field *RecordUtils::getField(struct record *record, const char *fieldId)
 bool RecordUtils::hasCondition(struct record *record, const char *conditionId)
 {
     jstring jConditionId = this->typeUtils->toJavaString(conditionId);
-    bool hasJCondition = (bool)this->jvm->CallBooleanMethod(record->jrecord, this->hasConditionMethodId, jConditionId);
+    jboolean jBoolVal = this->jvm->CallBooleanMethod(record->jrecord, this->hasConditionMethodId, jConditionId);
+    bool hasJCondition = (bool)(jBoolVal != JNI_FALSE);
     this->jvm->DeleteLocalRef(jConditionId);
     return hasJCondition;
 }
@@ -192,11 +195,11 @@ const char *RecordUtils::getMethodSignature(const char *methodName)
 {
     if (strcmp(methodName, "isValid") == 0)
     {
-        return "()Ljava/lang/Boolean;";
+        return "()Z";
     }
     else if (strcmp(methodName, "setValid") == 0)
     {
-        return "(Ljava/lang/Boolean;)V";
+        return "(Z)V";
     }
 
     else if (strcmp(methodName, "getCopy") == 0)
@@ -209,7 +212,7 @@ const char *RecordUtils::getMethodSignature(const char *methodName)
     }
     else if (strcmp(methodName, "hasField") == 0)
     {
-        return "(Ljava/lang/String;)Ljava/lang/Boolean;";
+        return "(Ljava/lang/String;)Z";
     }
     else if (strcmp(methodName, "getFields") == 0)
     {
@@ -225,7 +228,7 @@ const char *RecordUtils::getMethodSignature(const char *methodName)
     }
     else if (strcmp(methodName, "hasCondition") == 0)
     {
-        return "(Ljava/lang/String;)Ljava/lang/Boolean;";
+        return "(Ljava/lang/String;)Z";
     }
     else if (strcmp(methodName, "getConditions") == 0)
     {

@@ -22,7 +22,7 @@ public class SchemaRecord implements IRecord {
 
     private List<IField> fields = null;
     private List<ICondition> conditions = null;
-    private Boolean valid = true;
+    private boolean valid = true;
 
     public SchemaRecord(final List<Map<String, Object>> fieldMaps, final List<Map<String, Object>> conditionMaps) {
         this.initializeFields(fieldMaps);
@@ -140,11 +140,11 @@ public class SchemaRecord implements IRecord {
         }
     }
 
-    public Boolean hasField(final String fieldId) {
+    public boolean hasField(final String fieldId) {
         return this.fields.stream().filter(field -> field.getId().equals(fieldId)).findFirst().isPresent();
     }
 
-    public Boolean hasCondition(final String conditionId) {
+    public boolean hasCondition(final String conditionId) {
         return this.conditions.stream().filter(condition -> condition.getId().equals(conditionId)).findFirst()
                 .isPresent();
     }
@@ -174,11 +174,11 @@ public class SchemaRecord implements IRecord {
         return this.conditions.stream().map(condition -> condition.getId()).collect(Collectors.toList());
     }
 
-    public void setValid(final Boolean valid) {
+    public void setValid(final boolean valid) {
         this.valid = valid;
     }
 
-    public Boolean isValid() {
+    public boolean isValid() {
         return this.valid;
     }
 

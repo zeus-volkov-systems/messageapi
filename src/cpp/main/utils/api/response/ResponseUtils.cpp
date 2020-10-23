@@ -92,9 +92,8 @@ void ResponseUtils::setRecords(struct response *response, struct record_list *re
 
 void ResponseUtils::setComplete(struct response *response, bool isComplete)
 {
-    jobject jBoolVal = jvm->NewObject(this->typeUtils->getBoolClass(), this->typeUtils->createBoolMethod(), (jboolean)isComplete);
+    jboolean jBoolVal = (isComplete) ? JNI_TRUE : JNI_FALSE;
     this->jvm->CallVoidMethod(response->jresponse, this->setCompleteMethodId, jBoolVal);
-    this->jvm->DeleteLocalRef(jBoolVal);
 }
 
 /* Private Methods */
