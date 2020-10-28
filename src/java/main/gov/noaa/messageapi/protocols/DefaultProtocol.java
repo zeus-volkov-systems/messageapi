@@ -19,6 +19,7 @@ import gov.noaa.messageapi.utils.general.ListUtils;
  * an arbitrary number of connections. Each connection to each endpoint is a separate object.
  * The default protocol also contains a Metadata object to allow tracking of information
  *  relevant to quality control of this class.
+ * This is a basic change
  *  @author Ryan Berkheimer
  */
 public class DefaultProtocol extends BaseProtocol implements IProtocol {
