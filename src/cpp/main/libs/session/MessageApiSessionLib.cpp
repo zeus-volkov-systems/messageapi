@@ -2,10 +2,25 @@
 
 extern "C"
 {
+
+    session *createSequentialSession(const char *spec) {
+        return createSession("gov/noaa/messageapi/sessions/SequentialSession", spec);
+    }
+
+    session *createParallelSession(const char *spec)
+    {
+        return createSession("gov/noaa/messageapi/sessions/ParallelSession", spec);
+    }
+
     /**
- * Creates the default session.
- */
-    session *createSession(const char *spec)
+    * Creates a default session. A default session requires a 
+    */
+    session *createDefaultSession(const char *spec)
+    {
+        return createSession("gov/noaa/messageapi/sessions/DefaultSession", spec);
+    }
+
+    session *createSession(const char *sessionType, const char *spec)
     {
         JavaVM *vm;
         JNIEnv *env;
@@ -30,7 +45,7 @@ extern "C"
             return NULL;
         }
 
-        jclass sessionClass = JniUtils::getNamedClass(env, "gov/noaa/messageapi/sessions/DefaultSession");
+        jclass sessionClass = JniUtils::getNamedClass(env, sessionType);
         jmethodID createSessionMethodId = JniUtils::getMethod(env, sessionClass, "<init>", "(Ljava/lang/String;)V", false);
         jstring jSpec = env->NewStringUTF(spec);
         jobject jSession = env->NewObject(sessionClass, createSessionMethodId, jSpec);

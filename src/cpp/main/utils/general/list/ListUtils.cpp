@@ -244,6 +244,9 @@ void ListUtils::addListItem(struct val_list *list, struct val_list *val)
     list->count += 1;
 }
 
+/**
+ * Adds a val_map (backed by java 'Map') type item to the specified list
+ */
 void ListUtils::addMapItem(struct val_list *list, struct val_map *val)
 {
     this->jvm->CallVoidMethod(list->jlist, this->addListItemMethod(), val->jmap);

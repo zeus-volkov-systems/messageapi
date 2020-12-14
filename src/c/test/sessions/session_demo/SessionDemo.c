@@ -5,18 +5,18 @@
 
 int main(int argc, char **argv)
 {
-    puts("In our native session demo test!\n");
+    puts("In our native sequential session demo test!\n");
     puts("Hello, World\n");
     fflush(stdout);
 
-    session *session = createSession("/workspaces/messageapi/resources/test/file-reader-native/manifest.json");
+    session *session = createSequentialSession("/workspaces/messageapi/resources/test/file-reader-native/manifest.json");
 
-    puts("Successfully created session.");
+    puts("Successfully created sequential session.");
     fflush(stdout);
 
     request *request1 = createRequest(session);
 
-    puts("Successfully created a request.");
+    puts("Successfully created a request for the sequential session.");
     fflush(stdout);
 
     record *record1 = createRequestRecord(session, request1);
