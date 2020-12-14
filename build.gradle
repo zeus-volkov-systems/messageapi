@@ -64,7 +64,7 @@ test {
     testLogging {
         showStandardStreams = true
     }
-    environment "MESSAGEAPI_SESSION_TEMPLATE_DIR", "/workspaces/messageapi/resources/test/standard_session"
+    environment "MESSAGEAPI_SESSION_TEMPLATE_DIR", "/workspaces/messageapi/resources/test/session_templates"
 }
 
 

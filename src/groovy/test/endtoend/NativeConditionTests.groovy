@@ -13,7 +13,7 @@ import gov.noaa.messageapi.interfaces.IRecord
 import gov.noaa.messageapi.interfaces.IField
 
 import gov.noaa.messageapi.utils.general.PathUtils
-import gov.noaa.messageapi.sessions.StandardSession
+import gov.noaa.messageapi.sessions.SimpleSequentialSession
 
 class NativeConditionTests extends spock.lang.Specification {
 
@@ -21,7 +21,7 @@ def "Tests submission of a simple native condition comparing integer fields usin
     given: 'A standard session based condition test request'
         String parameterPath = PathUtils.reconcileKeywords('{}/resources/test/native-condition/parameters.json')
         println parameterPath
-        ISession session = new StandardSession(parameterPath)
+        ISession session = new SimpleSequentialSession(parameterPath)
         IRequest request = session.createRequest()
         IRecord record = request.createRecord()
         //String filePath = '{}/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt'

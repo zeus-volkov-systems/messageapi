@@ -12,12 +12,14 @@ extern "C"
         return createSession("gov/noaa/messageapi/sessions/ParallelSession", spec);
     }
 
-    /**
-    * Creates a default session. A default session requires a 
-    */
-    session *createDefaultSession(const char *spec)
+    session *createSimpleSequentialSession(const char *spec)
     {
-        return createSession("gov/noaa/messageapi/sessions/DefaultSession", spec);
+        return createSession("gov/noaa/messageapi/sessions/SimpleSequentialSession", spec);
+    }
+
+    session *createSimpleParallelSession(const char *spec)
+    {
+        return createSession("gov/noaa/messageapi/sessions/SimpleParallelSession", spec);
     }
 
     session *createSession(const char *sessionType, const char *spec)

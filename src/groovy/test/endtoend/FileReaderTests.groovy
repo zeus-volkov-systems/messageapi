@@ -8,8 +8,8 @@ import gov.noaa.messageapi.interfaces.IRequest
 import gov.noaa.messageapi.interfaces.IResponse
 import gov.noaa.messageapi.interfaces.IRecord
 
-import gov.noaa.messageapi.sessions.DefaultSession
-import gov.noaa.messageapi.sessions.StandardSession
+import gov.noaa.messageapi.sessions.SequentialSession
+import gov.noaa.messageapi.sessions.SimpleSequentialSession
 
 import gov.noaa.messageapi.utils.general.PathUtils
 
@@ -21,7 +21,7 @@ class FileReaderTests extends spock.lang.Specification {
 
 /*def "Tests submission of a full file reader task with 1 small input."() {
     given: "A standard condition test request"
-        ISession session = new DefaultSession("{}/resources/test/file-reader/manifest.json")
+        ISession session = new SequentialSession("{}/resources/test/file-reader/manifest.json")
         IRequest request = session.createRequest();
         IRecord record = request.createRecord();
         record.setField("file-path", "{}/resources/test/inputs/file-reader/simpletextfile");
@@ -35,7 +35,7 @@ class FileReaderTests extends spock.lang.Specification {
 
 def "Tests submission of a full file reader task with 1 large input using a Default Session."() {
     given: 'A default session condition test request'
-        ISession session = new DefaultSession('{}/resources/test/file-reader/manifest.json')
+        ISession session = new SequentialSession('{}/resources/test/file-reader/manifest.json')
         IRequest request = session.createRequest()
         IRecord record = request.createRecord()
         record.setField('file-path', '{}/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt')
@@ -46,14 +46,13 @@ def "Tests submission of a full file reader task with 1 large input using a Defa
         //println response.getRecords().get(0).getField("value").getValue()
         response.getRejections().size() == 0
         response.getRecords().size() == 79794
-        println 'finished default session test!'
     }
 
 def "Tests submission of a full file reader task with 1 large input using a Standard Session."() {
     given: 'A standard session based condition test request'
         String parameterPath = PathUtils.reconcileKeywords('{}/resources/test/file-reader/parameter_map_style.json')
         println parameterPath
-        ISession session = new StandardSession(parameterPath)
+        ISession session = new SimpleSequentialSession(parameterPath)
         IRequest request = session.createRequest()
         IRecord record = request.createRecord()
         //String filePath = '{}/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt'

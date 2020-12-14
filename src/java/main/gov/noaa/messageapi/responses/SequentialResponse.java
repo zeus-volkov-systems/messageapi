@@ -14,7 +14,7 @@ import gov.noaa.messageapi.interfaces.IPacket;
 import gov.noaa.messageapi.interfaces.IProtocolRecord;
 import gov.noaa.messageapi.interfaces.IContainerRecord;
 
-import gov.noaa.messageapi.requests.DefaultRequest;
+import gov.noaa.messageapi.requests.SequentialRequest;
 
 import gov.noaa.messageapi.utils.protocol.ConnectionUtils;
 import gov.noaa.messageapi.utils.request.ContainerUtils;
@@ -24,17 +24,17 @@ import gov.noaa.messageapi.utils.general.ListUtils;
 
 
 /**
- * A DefaultResponse is the main processing unit of Default System Publishing.
- * Default Responses operate on Default Requests, which are the fundamental
- * containers and work specifications of Default System Publishing.
- * DefaultResponses work in a procedurally stereotyped manner - requests are
+ * A SequentialResponse is the main processing unit of Sequential System Publishing.
+ * Sequential Responses operate on Sequential Requests, which are the fundamental
+ * containers and work specifications of Sequential System Publishing.
+ * SequentialResponses work in a procedurally stereotyped manner - requests are
  * validated, factored, prepared, processed, resolved, and then marked as completed,
  * in that order. Each of these stages is run in an internally-asynchronous manner,
  * which allows for parallelization on an intra-stage level. On an inter-stage level,
  * they are dependent on each other in a procedural manner.
  * @author Ryan Berkheimer
  */
-public class DefaultResponse extends BaseResponse implements IResponse {
+public class SequentialResponse extends BaseResponse implements IResponse {
 
     /**
      * The default constructor for a publish response. When a response is created
@@ -43,7 +43,7 @@ public class DefaultResponse extends BaseResponse implements IResponse {
      * and resolution.
      * @param request A request containing records to process and resolve in the response.
      */
-    public DefaultResponse(final DefaultRequest request) {
+    public SequentialResponse(final SequentialRequest request) {
         super(request);
         this.validate(this.request.getSchema(), this.request.getRecords())
                 .thenCompose(outgoingPacket -> this.factor(this.request.getSchema(), this.request.getContainer(),

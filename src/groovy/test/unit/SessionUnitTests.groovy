@@ -9,8 +9,8 @@
  import gov.noaa.messageapi.interfaces.IField;
 
 import gov.noaa.messageapi.factories.SessionFactory;
-import gov.noaa.messageapi.sessions.DefaultSession;
-import gov.noaa.messageapi.sessions.StandardSession;
+import gov.noaa.messageapi.sessions.SequentialSession;
+import gov.noaa.messageapi.sessions.SimpleSequentialSession;
 
 class SessionUnitTests extends spock.lang.Specification {
 
@@ -27,7 +27,7 @@ class SessionUnitTests extends spock.lang.Specification {
         given: "session test spec."
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
         when: "We create a session"
-            ISession session = new DefaultSession(sessionSpec)
+            ISession session = new SequentialSession(sessionSpec)
         then: "An ISession instance is created without error."
             session in gov.noaa.messageapi.interfaces.ISession
     }
@@ -36,16 +36,16 @@ class SessionUnitTests extends spock.lang.Specification {
         given: "session test spec."
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
         when: "We create a session"
-            ISession session = new DefaultSession(sessionSpec)
+            ISession session = new SequentialSession(sessionSpec)
         then: "An ISession instance is created without error."
             session in gov.noaa.messageapi.interfaces.ISession
     }
 
-    def "Test a standard session creation." () {
+    def "Test a simple sequential session creation." () {
         given: "we pass a session parameter spec path."
-            def sessionSpec = this.getClass().getResource('standard_session/parameters.json').getPath()
+            def sessionSpec = this.getClass().getResource('session_templates/parameters.json').getPath()
         when: "We create a standard session"
-            ISession session = new StandardSession(sessionSpec)
+            ISession session = new SimpleSequentialSession(sessionSpec)
         then: "An ISession instance is created without error."
             session in gov.noaa.messageapi.interfaces.ISession
     }

@@ -1,5 +1,5 @@
 {
-    "plugin": "gov.noaa.messageapi.sessions.DefaultSession",
+    "plugin": "gov.noaa.messageapi.sessions.ParallelSession",
     "constructor": {
         "schema": {
             "plugin": "gov.noaa.messageapi.schemas.DefaultSchema",

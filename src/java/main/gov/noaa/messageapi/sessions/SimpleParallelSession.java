@@ -12,15 +12,15 @@ import gov.noaa.messageapi.utils.general.JsonUtils;
 import gov.noaa.messageapi.interfaces.ISession;
 
 /**
- * The StandardSession allows users to ignore the system manifest and pass only
+ * The SimpleParallelSession allows users to ignore the system manifest and pass only
  * a fully qualified path to their parameter configuration. Once created, the
- * StandardSession should be used as an ISession.
+ * SimpleParallelSession should be used as an ISession.
  * 
  * @author Ryan Berkheimer
  */
-public class StandardSession extends DefaultSession {
+public class SimpleParallelSession extends ParallelSession {
 
-    final static String standardSessionName = "standard_session.json";
+    final static String standardSessionName = "parallel_session.json";
     final static String schemaMetadataName = "schema.json";
     final static String containerMetadataName = "container.json";
     final static String protocolMetadataName = "protocol.json";
@@ -33,51 +33,51 @@ public class StandardSession extends DefaultSession {
      *                      parameters
      * @throws Exception Throws exception if error creating session
      */
-    public StandardSession(final String parameterSpec) throws Exception {
-        super(StandardSession.buildStandardSession(parameterSpec));
+    public SimpleParallelSession(final String parameterSpec) throws Exception {
+        super(SimpleParallelSession.buildSimpleParallelSession(parameterSpec));
     }
 
     /**
      * Accesses the installed template file using an env var, parses it into json,
-     * and then updates targeted keys to
+     * and then updates targeted keys to create a session without requiring use of a manifest file.
      */
-    private static ISession buildStandardSession(final String fqParamSpec) throws Exception {
-        final Map<String, Object> parameterMap = StandardSession.parseParameterMap(fqParamSpec);
+    private static ISession buildSimpleParallelSession(final String fqParamSpec) throws Exception {
+        final Map<String, Object> parameterMap = SimpleParallelSession.parseParameterMap(fqParamSpec);
         final String sessionTemplateDir = System.getenv("MESSAGEAPI_SESSION_TEMPLATE_DIR");
         final String sessionTemplateFQName = String.join(File.separator, sessionTemplateDir, standardSessionName);
-        final Map<String, Object> sessionMap = StandardSession.parseSessionMap(sessionTemplateFQName);
+        final Map<String, Object> sessionMap = SimpleParallelSession.parseSessionMap(sessionTemplateFQName);
         final String schemaMetadataFQName = String.join(File.separator, sessionTemplateDir, schemaMetadataName);
         final String containerMetadataFQName = join(File.separator, sessionTemplateDir, containerMetadataName);
         final String protocolMetadataFQName = String.join(File.separator, sessionTemplateDir, protocolMetadataName);
         if (parameterMap.containsKey("fields")) {
-            StandardSession.setMapValue(sessionMap, "schema", "fields", fqParamSpec);
+            SimpleParallelSession.setMapValue(sessionMap, "schema", "fields", fqParamSpec);
         } else {
-            throw new MessageApiException(StandardSession.getMissingKeyErrorMessage("fields"));
+            throw new MessageApiException(SimpleParallelSession.getMissingKeyErrorMessage("fields"));
         }
         if (parameterMap.containsKey("collections")) {
-            StandardSession.setMapValue(sessionMap, "container", "collections", fqParamSpec);
+            SimpleParallelSession.setMapValue(sessionMap, "container", "collections", fqParamSpec);
         } else {
-            throw new MessageApiException(StandardSession.getMissingKeyErrorMessage("collections"));
+            throw new MessageApiException(SimpleParallelSession.getMissingKeyErrorMessage("collections"));
         }
         if (parameterMap.containsKey("endpoints")) {
-            StandardSession.setMapValue(sessionMap, "protocol", "endpoints", fqParamSpec);
+            SimpleParallelSession.setMapValue(sessionMap, "protocol", "endpoints", fqParamSpec);
         } else {
-            throw new MessageApiException(StandardSession.getMissingKeyErrorMessage("endpoints"));
+            throw new MessageApiException(SimpleParallelSession.getMissingKeyErrorMessage("endpoints"));
         }
         if (parameterMap.containsKey("conditions")) {
-            StandardSession.setMapValue(sessionMap, "schema", "conditions", fqParamSpec);
+            SimpleParallelSession.setMapValue(sessionMap, "schema", "conditions", fqParamSpec);
         } else {
-            StandardSession.removeMapKey(sessionMap, "schema", "conditions");
+            SimpleParallelSession.removeMapKey(sessionMap, "schema", "conditions");
         }
         if (parameterMap.containsKey("transformations")) {
-            StandardSession.setMapValue(sessionMap, "container", "transformations", fqParamSpec);
+            SimpleParallelSession.setMapValue(sessionMap, "container", "transformations", fqParamSpec);
         } else {
-            StandardSession.removeMapKey(sessionMap, "container", "transformations");
+            SimpleParallelSession.removeMapKey(sessionMap, "container", "transformations");
         }
-        StandardSession.setMapValue(sessionMap, "schema", "metadata", schemaMetadataFQName);
-        StandardSession.setMapValue(sessionMap, "container", "metadata", containerMetadataFQName);
-        StandardSession.setMapValue(sessionMap, "protocol", "metadata", protocolMetadataFQName);
-        return new DefaultSession(sessionMap);
+        SimpleParallelSession.setMapValue(sessionMap, "schema", "metadata", schemaMetadataFQName);
+        SimpleParallelSession.setMapValue(sessionMap, "container", "metadata", containerMetadataFQName);
+        SimpleParallelSession.setMapValue(sessionMap, "protocol", "metadata", protocolMetadataFQName);
+        return new ParallelSession(sessionMap);
     }
 
     /**

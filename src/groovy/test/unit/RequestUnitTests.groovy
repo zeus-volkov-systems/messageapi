@@ -16,16 +16,28 @@ import gov.noaa.messageapi.interfaces.IField;
 
 class RequestUnitTests extends spock.lang.Specification {
 
-    def "Test creating a default request."() {
+    def "Test creating a sequential request."() {
         given:
             def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam.json').getPath()
             ISession session = SessionFactory.create(sessionSpec)
         when: "We create an add request"
             IRequest request = session.createRequest()
         then: "Add request is created and of the proper type"
-            request.getType() == "default"
+            request.getType() == "sequential"
             request in gov.noaa.messageapi.interfaces.IRequest
     }
+
+        def "Test creating a parallel request."() {
+        given:
+            def sessionSpec = this.getClass().getResource('sessions/sqlite-jdbc-clisam-parallel.json').getPath()
+            ISession session = SessionFactory.create(sessionSpec)
+        when: "We create an add request"
+            IRequest request = session.createRequest()
+        then: "Add request is created and of the proper type"
+            request.getType() == "parallel"
+            request in gov.noaa.messageapi.interfaces.IRequest
+    }
+
 
     def "Test creating two session add requests, make sure they are different instances"() {
         given:

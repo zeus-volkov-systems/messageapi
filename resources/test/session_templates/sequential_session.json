@@ -4,22 +4,24 @@
         "schema": {
             "plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
             "constructor": {
-                "fields": "/workspaces/messageapi/resources/test/file-reader-native/parameters.json"
+                "metadata": "{_schema_metadata_}",
+                "fields": "{_standard_}",
+                "conditions": "{_standard_}"
             }
         },
         "container": {
             "plugin": "gov.noaa.messageapi.containers.DefaultContainer",
             "constructor": {
-                "collections": "/workspaces/messageapi/resources/test/file-reader-native/parameters.json"
+                "metadata": "{_container_metadata_}",
+                "collections": "{_standard_}",
+                "transformations": "{_standard_}"
             }
         },
         "protocol": {
             "plugin": "gov.noaa.messageapi.protocols.DefaultProtocol",
             "constructor": {
-                "endpoints": [{
-                        "plugin": "gov.noaa.messageapi.test.endpoints.InMemoryFileReader",
-                        "connections": "/workspaces/messageapi/resources/test/file-reader-native/parameters.json"
-                    }]
+                "metadata": "{_protocol_metadata_}",
+                "endpoints": "{_standard_}"
             }
         }
     }

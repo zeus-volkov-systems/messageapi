@@ -93,7 +93,7 @@ This package includes the MessageAPI specification as a set of interfaces, usefu
 
 Using MessageAPI means taking a data-messaging process, defining the process alphabet in terms of fields and conditions, determining how those fields are contained as different record permutations (including any transformations or conditions that affect that containment), and determining what to do with the records. All this information is then laid out in the session manifest and parameter map, and then data is moved through the initialized session by submitting records as either discrete requests, or resubmitting new records as a stream on the same request.
 
-As previously described, in the provided implementation of the DefaultSession, records can be moved through the system in batch by using separate requests, or in stream by reusing the same request. When streaming over the same request, endpoints have a shared state over submissions.
+As previously described, in the provided implementation of the SequentialSession, records can be moved through the system in batch by using separate requests, or in stream by reusing the same request. When streaming over the same request, endpoints have a shared state over submissions.
 
 The MessageAPI information model manifest is completely pluggable and is read when specifically referenced at runtime in code (i.e., ISession s = new Session('manifest.json')). This allows targeted improvements or modifications of the standard. Want to change the containers to ship somewhere else? Build Docker containers? Make Requests enforce always-batch behavior? Change the container plugin, or another plugin, and reuse the rest.
 
@@ -101,11 +101,11 @@ The complete pluggability of MessageAPI also provides another powerful potential
 
 The default MessageAPI session provides a standard topology that will suit many messaging tasks (either publishing or consuming oriented, batch or stream oriented), along with providing a matching set of basic plugins. The provided implementations are well suited for individual or distributed use. For example, a MessageAPI session could be wrapped as a Kafka consumer, deployed as a single runtime pod in Kubernetes as a consumer group, started up, and then fed records coming from a service. Or a session could be used intra-process to send emails to different groups based on different conditions. Or, as recently discovered, MessageAPI could serve as the in-core engine for custom Apache NiFi processors. There are a lot of varied uses.
 
-The following is an example of a DefaultSession manifest:
+The following is an example of a SequentialSession manifest:
 
 ```json
 {
-    "plugin": "gov.noaa.messageapi.sessions.DefaultSession",
+    "plugin": "gov.noaa.messageapi.sessions.SequentialSession",
     "constructor": {
         "schema": {
             "plugin": "gov.noaa.messageapi.schemas.DefaultSchema",
@@ -564,9 +564,9 @@ or
 
 ```java
 import gov.noaa.messageapi.interfaces.ISession;
-import gov.noaa.messageapi.sessions.DefaultSession;
+import gov.noaa.messageapi.sessions.SequentialSession;
 
-ISession session = new DefaultSession("/path/to/session_manifest.json");
+ISession session = new SequentialSession("/path/to/session_manifest.json");
 ```
 
 Using the created Session object, create a Request - the Request type was baked into the session on session creation. All fields and conditions that define the Request Record template will be available from the same Record.

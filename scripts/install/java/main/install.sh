@@ -28,7 +28,7 @@ install_core_jar () {
     echo ""
 }
 
-install_standard_session_template_resources () {
+install_session_template_resources () {
     echo ""
     echo "Installing messageapi standard session template resources to ${SESSION_TEMPLATE_INSTALL_DIR}."
     rm -rf "${SESSION_TEMPLATE_INSTALL_DIR}"
@@ -59,7 +59,7 @@ JAR_NAME=messageapi-core-${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}.jar
 echo ""
 echo "Installing the MessageAPI-Core Jar for the current user $(whoami)"
 install_core_jar
-install_standard_session_template_resources
+install_session_template_resources
 update_classpath_var
 update_template_var
 refresh_shell

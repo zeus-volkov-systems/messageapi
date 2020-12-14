@@ -18,7 +18,8 @@ extern "C"
     /* Session methods */
     extern session *createSequentialSession(const char* specPath);
     extern session *createParallelSession(const char *specPath);
-    extern session *createDefaultSession(const char *specPath);
+    extern session *createSimpleSequentialSession(const char *specPath);
+    extern session *createSimpleParallelSession(const char *specPath);
     extern session *createSession(const char* sessionType, const char* specPath);
     extern void releaseSession(session *session);
     extern request *createRequest(session *session);

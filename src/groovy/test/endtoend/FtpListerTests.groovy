@@ -10,13 +10,13 @@ import gov.noaa.messageapi.interfaces.IRejection;
 import gov.noaa.messageapi.interfaces.IRecord;
 import gov.noaa.messageapi.interfaces.IField;
 
-import gov.noaa.messageapi.sessions.DefaultSession;
+import gov.noaa.messageapi.sessions.SequentialSession;
 
 class FtpListerTests extends spock.lang.Specification {
 
 def "Tests submission of a request containing a record that contains a directory field to retrieve contents of.This tests basic functionality of the FtpLister endpoint."() {
     given: "A session created based on a ftp-lister manifest."
-        ISession session = new DefaultSession("{}/resources/test/ftp-lister/manifest.json")
+        ISession session = new SequentialSession("{}/resources/test/ftp-lister/manifest.json")
         IRequest request = session.createRequest();
         IRecord record = request.createRecord();
         record.setField("directory", "pub/download/hidden");

@@ -7,17 +7,16 @@ import gov.noaa.messageapi.interfaces.ISchema;
 import gov.noaa.messageapi.interfaces.IProtocol;
 import gov.noaa.messageapi.interfaces.IContainer;
 import gov.noaa.messageapi.interfaces.IRequest;
-
-import gov.noaa.messageapi.requests.DefaultRequest;
+import gov.noaa.messageapi.requests.ParallelRequest;
 
 /**
- * A default session is used for producing default requests.
+ * A parallel session is used for producing parallel requests.
  * The request is clean, in the sense that a new request gets its own copy of session
  * properties on creation - and is publish focused, in the sense that the request
  * is designed for publishing data to arbitrary endpoints through a protocol.
  * @author Ryan Berkheimer
  */
-public class DefaultSession extends BaseSession implements ISession {
+public class ParallelSession extends BaseSession implements ISession {
 
     /**
      * Constructs a new publish session from existing container, protocol, and
@@ -26,7 +25,7 @@ public class DefaultSession extends BaseSession implements ISession {
      * @param p An IProtocol object
      * @param s An ISchema object
      */
-    public DefaultSession(final IContainer c, final IProtocol p, final ISchema s) throws Exception {
+    public ParallelSession(final IContainer c, final IProtocol p, final ISchema s) throws Exception {
         super(c, p, s);
     }
 
@@ -34,11 +33,11 @@ public class DefaultSession extends BaseSession implements ISession {
      * Constructs a new publish session from existing session.
      * @param session A preexisting ISession object
      */
-    public DefaultSession(final ISession session) throws Exception {
+    public ParallelSession(final ISession session) throws Exception {
         super(session);
     }
 
-    public DefaultSession(final Map<String,Object> sessionMap) throws Exception {
+    public ParallelSession(final Map<String,Object> sessionMap) throws Exception {
         super(sessionMap);
     }
 
@@ -50,7 +49,7 @@ public class DefaultSession extends BaseSession implements ISession {
      *                    parameters
      * @throws Exception Throws exception if error creating session
      */
-    public DefaultSession(final String sessionSpec) throws Exception {
+    public ParallelSession(final String sessionSpec) throws Exception {
         super(sessionSpec);
     }
 
@@ -60,7 +59,7 @@ public class DefaultSession extends BaseSession implements ISession {
      * @return returns the created request
      */
     public IRequest createRequest() {
-        return new DefaultRequest(this.getSchema(), this.getContainer(), this.getProtocol());
+        return new ParallelRequest(this.getSchema(), this.getContainer(), this.getProtocol());
     }
 
 }

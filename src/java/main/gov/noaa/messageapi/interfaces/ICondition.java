@@ -4,7 +4,7 @@ package gov.noaa.messageapi.interfaces;
  * IConditions are filtering tools that can operate on things like
  * IRecords or IRequests. To illustrate - 
  * 
- * in the DefaultSession, individual Records may set a value for any
+ * in the SequentialSession, individual Records may set a value for any
  * Condition in the global set - the set conditions are then evaluated
  * on that Record to filter and/or reject that record.
  * Alternatively, Requests may set values on any global Condition, and

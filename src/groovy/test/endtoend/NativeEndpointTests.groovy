@@ -12,13 +12,13 @@ import gov.noaa.messageapi.interfaces.IRejection
 import gov.noaa.messageapi.interfaces.IRecord
 import gov.noaa.messageapi.interfaces.IField
 
-import gov.noaa.messageapi.sessions.DefaultSession
+import gov.noaa.messageapi.sessions.SequentialSession
 
 class NativeEndpointTests extends spock.lang.Specification {
 
 def 'Session with one endpoint that calls into C, populates a return record, and checks vals.'() {
     given: 'A session created based on a native counter'
-        ISession session = new DefaultSession('{}/resources/test/basic-native/manifest.json')
+        ISession session = new SequentialSession('{}/resources/test/basic-native/manifest.json')
         IRequest request = session.createRequest()
         IRecord record1 = request.createRecord()
         IRecord record2 = request.createRecord()
