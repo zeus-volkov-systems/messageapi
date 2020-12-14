@@ -16,6 +16,8 @@ import gov.noaa.messageapi.utils.general.ListUtils;
 import gov.noaa.messageapi.utils.general.MapUtils;
 import gov.noaa.messageapi.utils.protocol.ConnectionUtils;
 
+import java.applet.*;
+
 /**
  * @author Ryan Berkheimer
  */
