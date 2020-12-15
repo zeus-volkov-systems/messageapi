@@ -10,6 +10,7 @@ import gov.noaa.messageapi.interfaces.IRecord
 
 import gov.noaa.messageapi.sessions.SequentialSession
 import gov.noaa.messageapi.sessions.SimpleSequentialSession
+import gov.noaa.messageapi.sessions.SimpleParallelSession
 
 import gov.noaa.messageapi.utils.general.PathUtils
 
@@ -33,7 +34,7 @@ class FileReaderTests extends spock.lang.Specification {
         response.getRecords().size() == 7
 }*/
 
-def "Tests submission of a full file reader task with 1 large input using a Default Session."() {
+def "Tests submission of a full file reader task with 1 large input using a Sequential Session."() {
     given: 'A default session condition test request'
         ISession session = new SequentialSession('{}/resources/test/file-reader/manifest.json')
         IRequest request = session.createRequest()
@@ -48,7 +49,7 @@ def "Tests submission of a full file reader task with 1 large input using a Defa
         response.getRecords().size() == 79794
     }
 
-def "Tests submission of a full file reader task with 1 large input using a Standard Session."() {
+def "Tests submission of a full file reader task with 1 large input using a Simple Sequential Session."() {
     given: 'A standard session based condition test request'
         String parameterPath = PathUtils.reconcileKeywords('{}/resources/test/file-reader/parameter_map_style.json')
         println parameterPath
@@ -71,6 +72,31 @@ def "Tests submission of a full file reader task with 1 large input using a Stan
         //println 'Size of return records: ' + response.getRecords().size()
         response.getRecords().size() == 79794
     }
+
+    def "Tests submission of a full file reader task with 1 large input using a Simple Parallel Session."() {
+    given: 'A standard session based condition test request'
+        String parameterPath = PathUtils.reconcileKeywords('{}/resources/test/file-reader/parameter_map_style.json')
+        println parameterPath
+        ISession session = new SimpleParallelSession(parameterPath)
+        IRequest request = session.createRequest()
+        IRecord record = request.createRecord()
+        //String filePath = '{}/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt'
+        String filePath = '/workspaces/messageapi/build/resources/test/inputs/file-reader/proc_sm_gtsnp_data_ftp_CF6_cf6_20190506.txt'
+        record.setField('file-path', filePath)
+        //println record.getField('file-path').getValue()
+    when: 'We submit the test session and wait for completion'
+        //println 'submitting standard session test'
+        IResponse response = request.submit()
+        //println 'submitted standard session test'
+        while (!response.isComplete()) {}
+        //println 'response is complete'
+    then: 'We should have no rejections and there should be 79794 records in the return set.'
+        //println response.getRecords().get(0).getField("value").getValue()
+        response.getRejections().size() == 0
+        //println 'Size of return records: ' + response.getRecords().size()
+        response.getRecords().size() == 79794
+    }
+
 
 
 }

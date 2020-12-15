@@ -46,6 +46,31 @@ public class RejectionUtils {
     }
 
     /**
+     * Creates a new list of rejections for the given input record set.
+     * 
+     * @param records Records to analyze/determine rejections
+     * @return A list of rejections created for the input records.
+     */
+    public static List<IRejection> getRequiredFieldRejectionsInParallel(final List<IRecord> records) {
+        final List<IRejection> rejections = records.parallelStream().map(r -> {
+            final List<String> reasons = r.getFields().parallelStream().map(f -> {
+                if (!FieldUtils.validateRequired(f)) {
+                    return ReasonUtils.getMissingRequiredFieldReason(f);
+                }
+                return null;
+            }).collect(Collectors.toList());
+            if (!ListUtils.isAllNulls(reasons)) {
+                return new DefaultRejection(r, ListUtils.removeAllNulls(reasons));
+            }
+            return null;
+        }).collect(Collectors.toList());
+        if (!ListUtils.isAllNulls(rejections)) {
+            return ListUtils.removeAllNulls(rejections);
+        }
+        return new ArrayList<IRejection>();
+    }
+
+    /**
      * Return a list of rejections for a given record list by looking at each record
      * individually, comparing the field values to conditions, and creating a
      * rejection for any record with field values that do not meet the conditions.
@@ -67,5 +92,29 @@ public class RejectionUtils {
         }
         return new ArrayList<IRejection>();
     }
+
+    /**
+     * Return a list of rejections for a given record list by looking at each record
+     * individually, comparing the field values to conditions, and creating a
+     * rejection for any record with field values that do not meet the conditions.
+     * 
+     * @param schema  A schema holding the comparison operator factory
+     * @param records A list of record to use for rejection assembly
+     * @return A list of rejections based on invalid records
+     */
+    public static List<IRejection> getFieldConditionRejectionsInParallel(final ISchema schema, final List<IRecord> records) {
+        final List<IRejection> rejections = records.parallelStream().map(r -> {
+            if (!FieldUtils.validateConditions(schema, r, ConditionUtils.getTopLevelConditions(r))) {
+                final String reason = ReasonUtils.getInvalidFieldReason();
+                return new DefaultRejection(r, reason);
+            }
+            return null;
+        }).collect(Collectors.toList());
+        if (!ListUtils.isAllNulls(rejections)) {
+            return ListUtils.removeAllNulls(rejections);
+        }
+        return new ArrayList<IRejection>();
+    }
+
 
 }

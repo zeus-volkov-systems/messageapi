@@ -36,6 +36,19 @@ public class PacketUtils {
         return dataPacket;
     }
 
+    public static IPacket createInParallel(final ISchema schema, final List<IRecord> records) {
+        final IPacket dataPacket = new DefaultPacket();
+        final List<IRejection> primaryRejections = RejectionUtils.getRequiredFieldRejectionsInParallel(records);
+        final List<IRecord> filteredRecords = SchemaUtils.filterFieldlessConditionsInParallel(
+                SchemaUtils.filterNonValuedConditionsInParallel(SchemaUtils.filterRejectionsInParallel(records, primaryRejections)));
+        final List<IRejection> secondaryRejections = RejectionUtils.getFieldConditionRejectionsInParallel(schema,
+                filteredRecords);
+        dataPacket.setRecords(SchemaUtils.filterRejectionsInParallel(filteredRecords, secondaryRejections));
+        dataPacket.setRejections(ListUtils
+                .flatten(new ArrayList<List<IRejection>>(Arrays.asList(primaryRejections, secondaryRejections))));
+        return dataPacket;
+    }
+
     public static IPacket combineResults(final List<IPacket> packets) {
         final List<IRecord> allRecords = ListUtils
                 .flatten(packets.stream().map(packet -> packet.getRecords()).collect(Collectors.toList()));

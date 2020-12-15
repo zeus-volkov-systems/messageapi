@@ -42,6 +42,26 @@ public class SchemaUtils {
     }
 
     /**
+     * Returns a new list of IRecords based on the passed IRecord list with those
+     * IRecords that are also contained in the rejections removed.
+     * 
+     * @param records    A list of Records to filter
+     * @param rejections A list of rejections to filter from the Records
+     * @return A new list of records minus the rejections
+     */
+    public static List<IRecord> filterRejectionsInParallel(final List<IRecord> records, final List<IRejection> rejections) {
+        if (rejections != null) {
+            final List<IRecord> rejectedRecords = rejections.parallelStream().map(r -> {
+                return r.getRecord();
+            }).collect(Collectors.toList());
+            final List<IRecord> filteredRecords = records.parallelStream().filter(r -> !rejectedRecords.contains(r))
+                    .collect(Collectors.toList());
+            return filteredRecords;
+        }
+        return records;
+    }
+
+    /**
      * Returns a new list of IRecords based on the passed IRecord list with all
      * non-valued fields (fields without values) removed from each record.
      * 
@@ -67,10 +87,22 @@ public class SchemaUtils {
     public static List<IRecord> filterNonValuedConditions(final List<IRecord> records) {
         return records.stream().map(r -> {
             final List<ICondition> conditions = ConditionUtils.filterNonValuedConditions(r.getConditions());
-            // IRecord newR = r.getCopy();
-            // newR.setConditions(conditions);
             r.setConditions(conditions);
-            // return newR;
+            return r;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * Returns a new list of IRecords based on the passed IRecord list with all
+     * non-valued conditions (conditions without values) removed from each record.
+     * 
+     * @param records The list of records to process
+     * @return A list of new IRecords with non-valued conditions removed.
+     */
+    public static List<IRecord> filterNonValuedConditionsInParallel(final List<IRecord> records) {
+        return records.stream().map(r -> {
+            final List<ICondition> conditions = ConditionUtils.filterNonValuedConditionsInParallel(r.getConditions());
+            r.setConditions(conditions);
             return r;
         }).collect(Collectors.toList());
     }
@@ -85,6 +117,23 @@ public class SchemaUtils {
      */
     public static List<IRecord> filterFieldlessConditions(final List<IRecord> records) {
         return records.stream().map(r -> {
+            final List<ICondition> conditions = ConditionUtils.filterFieldlessConditions(r);
+            final IRecord newR = r.getCopy();
+            newR.setConditions(conditions);
+            return newR;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * Returns a new list of IRecords based on the passed IRecord list with all
+     * fieldless conditions (conditions corresponding to a non-existent record
+     * field) removed from the record. Does it in parallel.
+     * 
+     * @param records The list of records to process
+     * @return A list of new IRecords with fieldless conditions removed.
+     */
+    public static List<IRecord> filterFieldlessConditionsInParallel(final List<IRecord> records) {
+        return records.parallelStream().map(r -> {
             final List<ICondition> conditions = ConditionUtils.filterFieldlessConditions(r);
             final IRecord newR = r.getCopy();
             newR.setConditions(conditions);

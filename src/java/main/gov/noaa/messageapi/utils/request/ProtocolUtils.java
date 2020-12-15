@@ -47,6 +47,25 @@ public class ProtocolUtils {
     }
 
     /**
+     * Converts a list of containerized(factored into collections) records into
+     * protocol records for use by endpoint connections IN PARALLEL. A protocol record has a one
+     * to one relationship with a connection - i.e., there is one and only one
+     * protocol record created for every connection held by the protocol passed to
+     * this method.
+     * 
+     * @param protocol         The protocol holding connection instances
+     * @param containerRecords A list of container Records to be parsed,
+     *                         categorized, and loaded into protocol records
+     * @return A list of protocol records, one per connection
+     */
+    public static List<IProtocolRecord> convertContainerRecordsInParallel(final IProtocol protocol,
+            final List<IContainerRecord> containerRecords) {
+        return protocol.getConnections().parallelStream().map(conn -> {
+            return createProtocolRecordInParallel(conn, containerRecords);
+        }).collect(Collectors.toList());
+    }
+
+    /**
      * The singular method called by convertContainerRecords, accepts a single
      * connection and a list of container records, and creates a protocol record
      * based on what the connection specified as data needs
@@ -67,6 +86,33 @@ public class ProtocolUtils {
                 .flatten(containerRecords.stream().map(containerRecord -> {
                     final UUID recordId = containerRecord.getId();
                     return ListUtils.removeAllNulls(containerRecord.getCollections().stream().map(collection -> {
+                        return convertCollectionToRecord(collection, recordId, connCollections, connClassifiers);
+                    }).collect(Collectors.toList()));
+                }).collect(Collectors.toList()));
+        return new ProtocolRecord(connection, MapUtils.mergeMapList(recordList));
+    }
+
+    /**
+     * The singular method called by convertContainerRecords, accepts a single
+     * connection and a list of container records, and creates a protocol record
+     * based on what the connection specified as data needs IN PARALLEL.
+     * 
+     * @param connection       A connection containing information on what type of
+     *                         records it needs (classifications, collections,
+     *                         transformations)
+     * @param containerRecords A list of container records that will be the basis
+     *                         for records added to the protocol record
+     * @return A protocol record, containing a record map based on the
+     *         containerRecords, for the given connection
+     */
+    public static IProtocolRecord createProtocolRecordInParallel(final IConnection connection,
+            final List<IContainerRecord> containerRecords) {
+        final List<String> connCollections = connection.getCollections();
+        final Map<String, List<Object>> connClassifiers = connection.getClassifiers();
+        final List<Map<IRecord, Map<String, Object>>> recordList = ListUtils
+                .flatten(containerRecords.parallelStream().map(containerRecord -> {
+                    final UUID recordId = containerRecord.getId();
+                    return ListUtils.removeAllNulls(containerRecord.getCollections().parallelStream().map(collection -> {
                         return convertCollectionToRecord(collection, recordId, connCollections, connClassifiers);
                     }).collect(Collectors.toList()));
                 }).collect(Collectors.toList()));

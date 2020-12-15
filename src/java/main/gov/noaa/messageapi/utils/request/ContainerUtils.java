@@ -43,6 +43,29 @@ public class ContainerUtils {
     }
 
     /**
+     * Converts a set of schema records to container records according to the
+     * specified container IN PARALLEL. This involves first creating a record blueprint based on
+     * the container definition (which contains field sets (called field units), and
+     * transformation sets (called transformation units), and then duplicating the
+     * record blueprint for every schema record and copying values from those fields
+     * to any matching field unit. Uses the parallelStreams mechanism to do the conversion.
+     * 
+     * @param container The container containing definitions of field units and
+     *                  transformation units
+     * @param records   The schema records to be converted to container records
+     * @return A list of container records
+     */
+    public static List<IContainerRecord> convertSchemaRecordsInParallel(final ISchema schema, final IContainer container,
+            final IRecord requestRecord, final List<IRecord> schemaRecords) {
+        final IContainerRecord containerRecordTemplate = createRecordTemplate(container);
+        return schemaRecords.parallelStream().map(schemaRecord -> {
+            final IContainerRecord containerRecord = CollectionUtils.setFieldValues(containerRecordTemplate.getCopy(),
+                    schemaRecord.getFields());
+            return CollectionUtils.validateCollectionConditions(schema, containerRecord, requestRecord);
+        }).collect(Collectors.toList());
+    }
+
+    /**
      * Creates an empty record for use in record conversion by copy. Uses the
      * definition of the provided container to create a new empty record object,
      * with

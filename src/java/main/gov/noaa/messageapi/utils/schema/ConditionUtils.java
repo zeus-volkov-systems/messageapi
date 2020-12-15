@@ -62,6 +62,17 @@ public class ConditionUtils {
     }
 
     /**
+     * Returns a subset of the input conditions list by filtering out those
+     * conditions without a set value.
+     * 
+     * @param conditions The input field set to filter
+     * @return A list of filtered fields containing only those with values.
+     */
+    public static List<ICondition> filterNonValuedConditionsInParallel(final List<ICondition> conditions) {
+        return conditions.parallelStream().filter(c -> c.getValue() != null).collect(Collectors.toList());
+    }
+
+    /**
      * For a given record, filters all conditions corresponding to a field that is
      * no longer attached to a record. This is done by first assembling a current
      * map of condtitionIds to comparison Condition ids, and then filtering out

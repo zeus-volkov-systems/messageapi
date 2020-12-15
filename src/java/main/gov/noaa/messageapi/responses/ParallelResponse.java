@@ -67,7 +67,7 @@ public class ParallelResponse extends BaseResponse implements IResponse {
      */
     CompletableFuture<IPacket> validate(final ISchema schema, final List<IRecord> records) {
         return CompletableFuture.supplyAsync(() -> {
-            final IPacket packet = PacketUtils.create(this.request.getSchema(), this.request.getRecords());
+            final IPacket packet = PacketUtils.createInParallel(this.request.getSchema(), this.request.getRecords());
             this.setRejections(packet.getRejections());
             return packet;
         });
@@ -87,7 +87,7 @@ public class ParallelResponse extends BaseResponse implements IResponse {
     CompletableFuture<List<IContainerRecord>> factor(final ISchema schema, final IContainer container,
             final IRecord requestRecord, final IPacket packet) {
         return CompletableFuture.supplyAsync(() -> {
-            return ContainerUtils.convertSchemaRecords(schema, container, requestRecord, packet.getRecords());
+            return ContainerUtils.convertSchemaRecordsInParallel(schema, container, requestRecord, packet.getRecords());
         });
     }
 
@@ -104,7 +104,7 @@ public class ParallelResponse extends BaseResponse implements IResponse {
      */
     CompletableFuture<List<IProtocolRecord>> prepare(final IProtocol protocol, final List<IContainerRecord> records) {
         return CompletableFuture.supplyAsync(() -> {
-            return ProtocolUtils.convertContainerRecords(protocol, records);
+            return ProtocolUtils.convertContainerRecordsInParallel(protocol, records);
         });
     }
 
