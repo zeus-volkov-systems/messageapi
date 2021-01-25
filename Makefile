@@ -103,7 +103,7 @@ run-native-tests:
 
 install-k3:
 	@echo "Installing package to system for current user."
-	@wget https://k3.cicsnc.org/rberkheimer/messageapi/-/raw/mac-develop/scripts/install/package/install_k3.sh?inline=false --no-check-certificate -O install_k3.sh
+	@wget https://k3.cicsnc.org/rberkheimer/messageapi/-/raw/master/scripts/install/package/install_k3.sh?inline=false --no-check-certificate -O install_k3.sh
 	@chmod +x install_k3.sh
 	@./install_k3.sh "C_CPP"
 	@rm install_k3.sh

@@ -2,9 +2,9 @@
 
 ## Version
 
-**0.9.10** (Pre-Release)
+**1.0.0** 
 
-MessageAPI uses [Semantic Versioning 2.0.0](https://semver.org/) as its versioning strategy. The first official version will be released upon the implementation of the C native API and validation of the Java core. Subsequent minor versions will release the Fortran, Python, R, and IDL APIs, and Bash CLI.
+MessageAPI uses [Semantic Versioning 2.0.0](https://semver.org/) as its versioning strategy. The first official version was released upon the implementation of the C native API and validation of the Java core. Subsequent minor versions may release the Fortran, Python, R, Perl, and IDL APIs, and Bash CLI, as they are needed.
 
 ## API Docs
 

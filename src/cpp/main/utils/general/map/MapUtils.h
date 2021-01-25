@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <iostream>
+#include <vector>
 
 #include "JniUtils.h"
 #include "TypeUtils.h"
@@ -71,6 +72,7 @@ private:
     JNIEnv *jvm;
     TypeUtils *typeUtils;
     ListUtils *listUtils;
+    std::vector<struct val_map*> valueMapVector;
 
     jmethodID createMapMethodId;
     jmethodID getSizeMethodId;
@@ -81,6 +83,9 @@ private:
     /* Initialization Methods */
     void loadGlobalRefs(JNIEnv *env, TypeUtils *TypeUtils);
     void loadMethodIds();
+
+    /* Destructor Methods*/
+    void freeRefs();
 
 };
 

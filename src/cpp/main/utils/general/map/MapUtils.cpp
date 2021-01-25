@@ -10,12 +10,29 @@ MapUtils::MapUtils(JNIEnv *env, TypeUtils *typeUtils)
 /* Default destructor */
 MapUtils::~MapUtils()
 {
+    printf("Map utils destructor called.\n");
     try
     {
+        printf("Inside map utils destructor free block.\n");
+        this->freeRefs();
     }
     catch (const std::exception &e)
     {
         std::cout << e.what();
+    }
+}
+
+void MapUtils::freeRefs()
+{
+    printf("Inside map utils freeRefs method\n");
+    while (!this->valueMapVector.empty())
+    {
+        struct val_map *val_map_ptr = this->valueMapVector.back();
+        this->valueMapVector.pop_back();
+        this->jvm->DeleteLocalRef(val_map_ptr->jmap);
+        printf("Freeing a pointer inside the map.\n");
+        free(val_map_ptr);
+        //delete val_map_ptr;
     }
 }
 
@@ -66,9 +83,11 @@ jmethodID MapUtils::putValueMethod()
 
 struct val_map *MapUtils::createMap()
 {
+    printf("Creating a new map.\n");
     jobject jMap = this->jvm->NewObject(this->typeUtils->getMapClass(), this->createMapMethod());
     struct val_map *valueMap = (struct val_map *)malloc(sizeof(struct val_map));
     valueMap->jmap = jMap;
+    this->valueMapVector.push_back(valueMap);
     return valueMap;
 }
 

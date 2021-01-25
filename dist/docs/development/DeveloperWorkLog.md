@@ -21,7 +21,10 @@ This work log is also useful as a supplemental documentation for end users of th
 
 ### C API
 
-#### Status - In Resolution
+#### Status - Notionally Complete
+
+12/15/2020
+At this stage - The native bridge API is complete. Bugs or issues will be worked out and released in minor or patch versions.
 
 07/15/2020
 At this stage - the entire API is complete. The general structure is to have importable libs for each interface component (transformation, endpoint, session, condition) and have these libs contain access to every piece of processing logic that users might need. For each lib is associated
