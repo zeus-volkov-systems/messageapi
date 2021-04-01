@@ -1,0 +1,128 @@
+{
+    "fields": [
+        {
+            "id": "person",
+            "type": "string",
+            "required": false
+        },
+        {
+            "id": "institution",
+            "type": "string",
+            "required": false
+        },
+        {
+            "id": "project",
+            "type": "string",
+            "required": false
+        },
+        {
+            "id": "platform",
+            "type": "string",
+            "required": false
+        },
+        {
+            "id": "datatype",
+            "type": "string",
+            "required": false
+        },
+        {
+            "id": "insttype",
+            "type": "string",
+            "required": false
+        },
+        {
+            "id": "obstype",
+            "type": "string",
+            "required": false
+        },
+        {
+            "id": "seaname",
+            "type": "string",
+            "required": false
+        },
+        {
+            "id": "accession_status",
+            "type": "string",
+            "required": false
+        },
+        {
+            "id": "accession",
+            "type": "xml",
+            "required": true
+        },
+        {
+            "id": "accession_id",
+            "type": "uuid",
+            "required": false
+        }
+    ],
+    "conditions": [
+        {
+            "id": "is-relative-path",
+            "type": "comparison",
+            "operator": "gov.noaa.messageapi.operators.StringConditionOperator",
+            "constructor": {
+                "comparison": "contains"
+            },
+            "field": "file-path",
+            "value": "{}"
+        }
+    ],
+    "collections": [
+        {
+            "id": "accession_metadata",
+            "fields": [
+                "person",
+                "institution",
+                "project",
+                "platform",
+                "datatype",
+                "insttype",
+                "obstype",
+                "seaname",
+                "accession_status",
+                "accession_id"
+            ]
+        },
+        {
+            "id": "accession_value",
+            "fields": [
+                "accession"
+            ]
+        }
+    ],
+    "transformations": [
+        {
+            "id": "trans-1",
+            "operator": "gov.noaa.ams.transformations.",
+            "constructor": {
+                "transform-key": "file-collection",
+                "fields": [
+                    "file-path"
+                ]
+            },
+            "records": {
+                "file-collection": {
+                    "COLLECTION": "coll-1"
+                }
+            }
+        }
+    ],
+    "endpoints": [
+        {
+            "plugin": "gov.noaa.messageapi.test.endpoints.FtpLister",
+            "connections": [
+                {
+                    "id": "conn-1",
+                    "collections": [
+                        "coll-1"
+                    ],
+                    "constructor": {
+                        "directory-fields": "directory",
+                        "server": "ftp.ncdc.noaa.gov"
+                    }
+                }
+            ]
+        }
+    ]
+}
