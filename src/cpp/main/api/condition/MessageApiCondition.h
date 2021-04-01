@@ -16,6 +16,8 @@
 #include "ConditionUtils.h"
 #include "NativeConditionUtils.h"
 
+//test commit
+
 /**
  * This is the header for the MessageApiCondition class - this class is the native side facility
  * for doing condition comparison processing and communicating back with the java side. This class holds
