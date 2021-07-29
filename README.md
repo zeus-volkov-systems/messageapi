@@ -12,9 +12,9 @@ Use of this package is described throughout this README through design discussio
 
 ## Executive Summary
 
-MessageAPI was built to promote and improve the long-term sustainability and enterprise-scale innovative capabilities of large research and operations organizations like NCEI, NESDIS, and NOAA. A simple and static (never changing) language-level API provided in multiple languages together with a completely configurable process configuration allows fast augmentation of legacy code to use evolutionary features, allows teams to reuse existing algorithms, and ensures that code-level details don't have to change as interface-level technologies evolve. The idea is to provide a capability so that Java/JVM, C/C++, Fortran, Python, R, and IDL programmers can continue to use their own preferred languages and technologies to do research and development, while ensuring that they can continue to evolve along with emerging organizational requirements and trends, without making code changes.
+MessageAPI was built to promote and improve the long-term sustainability and enterprise-scale innovative capabilities of large research and operations organizations like NOAA, NASA, and USGS. A simple and static (never changing) language-level API provided in multiple languages together with a completely configurable process configuration allows fast augmentation of legacy code to use evolutionary features, allows teams to reuse existing algorithms, and ensures that code-level details don't have to change as interface-level technologies evolve. The idea is to provide a capability so that Java/JVM, C/C++, Fortran, Python, R, and IDL programmers can continue to use their own preferred languages and technologies to do research and development, while ensuring that they can continue to evolve along with emerging organizational requirements and trends, without making code changes.
 
-MessageAPI has a small multi-language core that is easily installed on mission systems as a non-root user using the mature build system; allows whitelisting of executable resources and configuration-level exposition to maintain visible security; and provides a thread-safe, asynchronous, stream and batch capable data model to build composable, scalable, and orchestrated computational processes.
+MessageAPI has a small multi-language core that is easily installed on mission systems as a non-root user using the mature build system; allows safelisting of executable resources and configuration-level exposition to maintain visible security; and provides a thread-safe, asynchronous, stream and batch capable data model to build composable, scalable, and orchestrated computational processes.
 
 MessageAPI abstracts container factoring, container classification, conditional filtering, stateless transformation, and bidirectional endpoint processing into JSON configuration. This allows legacy code to be refactored or restructures in a fine-grained or large-scale way. Even the core parts of MessageAPI itself are configurable through JSON manifest, allowing the system to be customized to various use cases.
 
@@ -112,10 +112,7 @@ The following is an example of a SequentialSession manifest:
             "constructor": {
                 "metadata": "{}/resources/test/metadata/file-reader/schema.json",
                 "fields": "{}/resources/test/file-reader/parameters.json",
-                "conditions": {
-                    "map": "{}/resources/test/file-reader/parameters.json",
-                    "factory": "gov.noaa.messageapi.factories.SimpleConditionFactory"
-                }
+                "conditions": "{}/resources/test/file-reader/parameters.json"
             }
         },
         "container": {
@@ -123,10 +120,7 @@ The following is an example of a SequentialSession manifest:
             "constructor": {
                 "metadata": "{}/resources/test/metadata/file-reader/container.json",
                 "collections": "{}/resources/test/file-reader/parameters.json",
-                "transformations": {
-                    "map": "{}/resources/test/file-reader/parameters.json",
-                    "factory": "gov.noaa.messageapi.test.factories.transformations.FileReaderFactory"
-                }
+                "transformations": "{}/resources/test/file-reader/parameters.json",
             }
         },
         "protocol": {
@@ -514,9 +508,9 @@ Endpoints are written as classes and initialized using configurable Connection m
             "transformations": ["join-test"],
             "fields": [],
             "constructor": {
-                "sender": "ryan.berkheimer@noaa.gov",
+                "sender": "me.me@noaa.gov",
                 "password": "testpassword1234",
-                "receivers": ["rab25@case.edu", "ryan.berkheimer@noaa.gov"]
+                "receivers": ["me@you.edu", "yes.iam@nasa.gov"]
             }
         },
         {
